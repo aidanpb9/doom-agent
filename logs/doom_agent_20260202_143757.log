@@ -1,0 +1,333 @@
+2026-02-02 14:37:57,055 - INFO - Starting Doom Agent with WAD: wads\doom2.wad
+2026-02-02 14:37:57,593 - INFO - Game initialized with WAD: wads\doom2.wad
+2026-02-02 14:37:57,593 - INFO - ============================================================
+2026-02-02 14:37:57,594 - INFO - Starting new episode
+2026-02-02 14:37:57,594 - INFO - ============================================================
+2026-02-02 14:37:57,655 - INFO - Episode started successfully
+2026-02-02 14:37:57,658 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=3 Labels=['DoomPlayer', 'HealthBonus', 'Zombieman']
+2026-02-02 14:37:58,484 - INFO - Step 20: Health=100 Ammo=194 Kills=0 Enemies=3 Labels=['BulletPuff', 'DoomPlayer', 'HealthBonus', 'Zombieman']
+2026-02-02 14:37:59,284 - INFO - Step 40: Health=94 Ammo=189 Kills=1 Enemies=1 Labels=['DoomPlayer', 'Zombieman']
+2026-02-02 14:37:59,300 - INFO - DAMAGE TAKEN: -6.0 HP - enemy must be present!
+2026-02-02 14:37:59,539 - INFO - DAMAGE TAKEN: -3.0 HP - enemy must be present!
+2026-02-02 14:37:59,981 - INFO - Step 60: Health=91 Ammo=188 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:38:00,457 - INFO - EXIT SEEKING MODE
+2026-02-02 14:38:00,849 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:00,877 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:00,918 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:00,945 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,018 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,050 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,081 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:38:01,103 - INFO - EXPLORATION: use door
+2026-02-02 14:38:01,167 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:01,167 - INFO - Step 80: Health=91 Ammo=182 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:38:01,214 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:01,259 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:01,285 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,308 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:01,337 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:01,365 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,432 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:01,479 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:01,496 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:01,535 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:38:01,566 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,588 - INFO - DEPTH BLOCKED: strafing right
+2026-02-02 14:38:01,613 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,677 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,708 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,739 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,818 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,864 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:38:01,900 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,959 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:01,960 - INFO - Step 100: Health=91 Ammo=177 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:38:01,992 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:38:02,040 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,069 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,136 - INFO - EXPLORATION: use door
+2026-02-02 14:38:02,159 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,192 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,257 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,288 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,351 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:38:02,412 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,443 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,468 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:02,492 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:38:02,568 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,592 - INFO - DEPTH BLOCKED: strafing right
+2026-02-02 14:38:02,619 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,646 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,676 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,741 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,772 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,772 - INFO - Step 120: Health=91 Ammo=172 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:38:02,803 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:38:02,835 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,866 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:02,914 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:38:02,995 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,022 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,054 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,086 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,139 - INFO - EXPLORATION: use door
+2026-02-02 14:38:03,211 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,243 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,293 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:38:03,375 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,389 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:03,461 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,494 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:38:03,517 - INFO - DEPTH BLOCKED: strafing right
+2026-02-02 14:38:03,543 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,588 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,636 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,637 - INFO - Step 140: Health=91 Ammo=167 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:38:03,670 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,743 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,809 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,885 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:38:03,964 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:03,998 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:04,028 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:38:04,110 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:04,128 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:38:04,472 - INFO - Step 160: Health=91 Ammo=164 Kills=3 Enemies=0 Labels=['Clip', 'DoomPlayer']
+2026-02-02 14:38:05,050 - INFO - Step 180: Health=91 Ammo=164 Kills=3 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 14:38:05,217 - INFO - Escape mode complete
+2026-02-02 14:38:05,218 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:38:05,234 - INFO - ENEMY SEARCH: start sweep
+2026-02-02 14:38:05,298 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,361 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,423 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,471 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,486 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,548 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,564 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,580 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,596 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,659 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,676 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,677 - INFO - Step 200: Health=91 Ammo=164 Kills=3 Enemies=0 Labels=['DoomPlayer', 'Medikit']
+2026-02-02 14:38:05,738 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,754 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,800 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,864 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,927 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,943 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:05,959 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,022 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,088 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,103 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,148 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,166 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,181 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,198 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,245 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,261 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,294 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,341 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,356 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,373 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,373 - INFO - Step 220: Health=91 Ammo=162 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:38:06,402 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,432 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,479 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,496 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,510 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:06,575 - INFO - ENEMY SEARCH: start sweep
+2026-02-02 14:38:06,590 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,607 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,669 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,701 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,717 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,779 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,811 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,826 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,860 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,921 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:06,937 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,000 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,015 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,080 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,080 - INFO - Step 240: Health=91 Ammo=160 Kills=3 Enemies=0 Labels=['DoomPlayer', 'Medikit']
+2026-02-02 14:38:07,094 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,110 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,157 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,189 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,204 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,220 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,282 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,296 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,312 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,328 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:07,342 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:07,358 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:07,406 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:07,423 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:07,439 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:07,462 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:07,550 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:07,578 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:38:07,656 - INFO - Step 260: Health=91 Ammo=158 Kills=3 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 14:38:08,390 - INFO - Step 280: Health=91 Ammo=158 Kills=3 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 14:38:08,826 - INFO - Escape mode complete
+2026-02-02 14:38:08,826 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:08,840 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:08,855 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:08,871 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:08,871 - INFO - Step 300: Health=91 Ammo=157 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:38:08,886 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:08,949 - INFO - ENEMY SEARCH: start sweep
+2026-02-02 14:38:08,964 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,011 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,042 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,061 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,124 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,139 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,152 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,168 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,185 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,217 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,250 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,264 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,329 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,345 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,376 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,437 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,453 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,517 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,518 - INFO - Step 320: Health=91 Ammo=156 Kills=3 Enemies=0 Labels=['Clip', 'DoomPlayer']
+2026-02-02 14:38:09,577 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,594 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,608 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,625 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,673 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,736 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:09,784 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:09,799 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:09,813 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:09,878 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:09,893 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:09,909 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:09,925 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:09,988 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:10,048 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:10,097 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:10,112 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:10,142 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:10,158 - INFO - ENEMY SEARCH: start sweep
+2026-02-02 14:38:10,222 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,222 - INFO - Step 340: Health=91 Ammo=152 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:38:10,235 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,253 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,266 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,330 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,393 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,409 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,441 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,503 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,567 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,583 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,650 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,666 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,682 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,697 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,712 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,729 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,791 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,806 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,821 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,837 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,837 - INFO - Step 360: Health=91 Ammo=152 Kills=3 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 14:38:10,869 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,902 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,964 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:10,997 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:11,013 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:11,076 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:11,107 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:38:11,594 - INFO - Step 380: Health=91 Ammo=151 Kills=3 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 14:38:12,464 - INFO - Step 400: Health=91 Ammo=151 Kills=3 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 14:38:12,717 - INFO - Escape mode complete
+2026-02-02 14:38:12,717 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:12,731 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:12,780 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:12,840 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:12,874 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:12,922 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:12,937 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:12,953 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:12,967 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:13,030 - INFO - ENEMY SEARCH: start sweep
+2026-02-02 14:38:13,093 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,107 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,125 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,140 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,172 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,173 - INFO - Step 420: Health=91 Ammo=148 Kills=3 Enemies=0 Labels=['DoomPlayer', 'HealthBonus', 'Medikit']
+2026-02-02 14:38:13,187 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,202 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,217 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,280 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,312 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,329 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,343 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,374 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,390 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,407 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,469 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,485 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,547 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,563 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,578 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,595 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,625 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,688 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,713 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:13,751 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:13,752 - INFO - Step 440: Health=91 Ammo=148 Kills=3 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 14:38:13,780 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:13,796 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:13,810 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:13,874 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:13,903 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:13,919 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:13,949 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:13,995 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:14,011 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:14,045 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:14,058 - INFO - ENEMY SEARCH: probing forward
+2026-02-02 14:38:14,122 - INFO - ENEMY SEARCH: start sweep
+2026-02-02 14:38:14,138 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:14,170 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:38:14,374 - INFO - Step 460: Health=88 Ammo=142 Kills=3 Enemies=1 Labels=['Blood', 'BulletPuff', 'DoomPlayer', 'ShotgunGuy']
+2026-02-02 14:38:14,468 - INFO - DAMAGE TAKEN: -3.0 HP - enemy must be present!
+2026-02-02 14:38:15,114 - INFO - Step 480: Health=88 Ammo=137 Kills=3 Enemies=0 Labels=['BulletPuff', 'Clip', 'DoomPlayer']
+2026-02-02 14:38:15,207 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:38:15,726 - INFO - Step 500: Health=88 Ammo=136 Kills=3 Enemies=0 Labels=['Clip', 'DoomPlayer', 'HealthBonus']
+2026-02-02 14:38:16,352 - INFO - Step 520: Health=88 Ammo=136 Kills=3 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 14:38:16,384 - INFO - Escape mode complete
+2026-02-02 14:38:16,414 - INFO - DAMAGE TAKEN: -9.0 HP - enemy must be present!
+2026-02-02 14:38:17,088 - INFO - Step 540: Health=79 Ammo=131 Kills=3 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'ShotgunGuy']
+2026-02-02 14:38:17,935 - INFO - Step 560: Health=79 Ammo=125 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:18,639 - INFO - Step 580: Health=79 Ammo=119 Kills=5 Enemies=1 Labels=['BulletPuff', 'Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:19,311 - INFO - Step 600: Health=79 Ammo=114 Kills=5 Enemies=1 Labels=['Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:20,034 - INFO - Step 620: Health=79 Ammo=108 Kills=5 Enemies=1 Labels=['BulletPuff', 'Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:20,702 - INFO - Step 640: Health=79 Ammo=102 Kills=5 Enemies=1 Labels=['BulletPuff', 'Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:21,265 - INFO - Step 660: Health=79 Ammo=96 Kills=5 Enemies=1 Labels=['BulletPuff', 'Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:21,903 - INFO - Step 680: Health=79 Ammo=91 Kills=5 Enemies=1 Labels=['BulletPuff', 'Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:22,574 - INFO - Step 700: Health=79 Ammo=85 Kills=5 Enemies=1 Labels=['BulletPuff', 'Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:23,138 - INFO - Step 720: Health=79 Ammo=79 Kills=5 Enemies=1 Labels=['BulletPuff', 'Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:23,785 - INFO - Step 740: Health=79 Ammo=74 Kills=5 Enemies=1 Labels=['Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:24,600 - INFO - Step 760: Health=79 Ammo=68 Kills=5 Enemies=1 Labels=['BulletPuff', 'Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:25,400 - INFO - Step 780: Health=79 Ammo=62 Kills=5 Enemies=1 Labels=['BulletPuff', 'Clip', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:38:25,663 - INFO - ============================================================
+2026-02-02 14:38:25,664 - INFO - Episode finished
+2026-02-02 14:38:25,664 - INFO - Total reward: -3150.00
+2026-02-02 14:38:25,664 - INFO - Kills: 5
+2026-02-02 14:38:25,665 - INFO - Health lost: 21.00
+2026-02-02 14:38:25,665 - INFO - Actions taken: 788
+2026-02-02 14:38:25,665 - INFO - Episode time: 28.07s
+2026-02-02 14:38:25,665 - INFO - ============================================================

@@ -1,0 +1,23 @@
+2026-02-02 03:43:56,746 - INFO - Starting Doom Agent with WAD: DOOM\wads\doom2.wad
+2026-02-02 03:43:57,314 - INFO - Game initialized with WAD: DOOM\wads\doom2.wad
+2026-02-02 03:43:57,314 - INFO - ============================================================
+2026-02-02 03:43:57,314 - INFO - Starting new episode
+2026-02-02 03:43:57,315 - INFO - ============================================================
+2026-02-02 03:43:57,377 - INFO - Episode started successfully
+2026-02-02 03:43:57,379 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:43:58,096 - INFO - Step 20: Health=100 Ammo=45 Kills=2 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:43:58,870 - INFO - Step 40: Health=100 Ammo=46 Kills=2 Enemies=2 Labels=['Blood', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:43:59,571 - INFO - Step 60: Health=100 Ammo=47 Kills=4 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:44:00,661 - INFO - Step 80: Health=100 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 03:44:01,483 - INFO - Step 100: Health=103 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 03:44:02,203 - INFO - Step 120: Health=105 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 03:44:03,109 - INFO - Step 140: Health=108 Ammo=56 Kills=4 Enemies=3 Labels=['BulletPuff', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:44:03,846 - INFO - Step 160: Health=93 Ammo=60 Kills=6 Enemies=3 Labels=['Blood', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:44:03,971 - INFO - DAMAGE TAKEN: -15.0 HP - enemy must be present!
+2026-02-02 03:44:04,704 - INFO - Step 180: Health=93 Ammo=64 Kills=7 Enemies=1 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 03:44:05,492 - INFO - Step 200: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:44:06,135 - INFO - Step 220: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:44:06,282 - INFO - EXIT SEEKING MODE - Killed 7 enemies, looking for exit
+2026-02-02 03:44:06,935 - INFO - Step 240: Health=93 Ammo=64 Kills=7 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 03:44:07,113 - INFO - Using A* for exit (stuck=False, frames_no_enemies=81)
+2026-02-02 03:45:22,644 - INFO - A* target: row_delta=-32, col_delta=0

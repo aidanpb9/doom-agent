@@ -1,0 +1,269 @@
+2026-02-02 14:38:56,595 - INFO - Starting Doom Agent with WAD: wads\doom2.wad
+2026-02-02 14:38:57,152 - INFO - Game initialized with WAD: wads\doom2.wad
+2026-02-02 14:38:57,153 - INFO - ============================================================
+2026-02-02 14:38:57,153 - INFO - Starting new episode
+2026-02-02 14:38:57,153 - INFO - ============================================================
+2026-02-02 14:38:57,199 - INFO - Episode started successfully
+2026-02-02 14:38:57,202 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=3 Labels=['DoomPlayer', 'HealthBonus', 'Zombieman']
+2026-02-02 14:38:58,049 - INFO - Step 20: Health=100 Ammo=194 Kills=0 Enemies=3 Labels=['Blood', 'DoomPlayer', 'HealthBonus', 'Zombieman']
+2026-02-02 14:38:58,706 - INFO - Step 40: Health=100 Ammo=189 Kills=1 Enemies=2 Labels=['BulletPuff', 'DoomPlayer', 'Zombieman']
+2026-02-02 14:38:59,057 - INFO - EXIT SEEKING MODE
+2026-02-02 14:38:59,460 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,490 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,552 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,599 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,636 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,668 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,741 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:38:59,774 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,804 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,834 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:38:59,869 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,949 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,975 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:38:59,975 - INFO - Step 60: Health=100 Ammo=183 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:00,007 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,085 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,118 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,152 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:00,180 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,227 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,256 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:00,294 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,335 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,368 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,389 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:00,430 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,460 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,493 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,563 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:00,633 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:00,664 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,689 - INFO - EXPLORATION: use door
+2026-02-02 14:39:00,717 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,776 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:00,776 - INFO - Step 80: Health=100 Ammo=178 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:00,860 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,902 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,932 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:00,956 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:00,980 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,027 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,059 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,081 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:01,156 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:01,231 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,265 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,326 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:01,363 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,420 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,512 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,540 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:01,561 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,640 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,663 - INFO - DEPTH BLOCKED: strafing right
+2026-02-02 14:39:01,740 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,741 - INFO - Step 100: Health=100 Ammo=173 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:01,783 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:01,858 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,914 - INFO - EXPLORATION: use door
+2026-02-02 14:39:01,937 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:01,968 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:02,036 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:02,061 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:02,091 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:02,157 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:02,179 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:02,218 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:02,251 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:02,271 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:02,299 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:02,329 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:02,359 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:02,383 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:39:02,492 - INFO - Step 120: Health=100 Ammo=168 Kills=3 Enemies=0 Labels=['Clip', 'DoomPlayer']
+2026-02-02 14:39:03,190 - INFO - Step 140: Health=100 Ammo=168 Kills=3 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 14:39:03,706 - INFO - Escape mode complete
+2026-02-02 14:39:03,715 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:03,794 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:03,863 - INFO - DEPTH BLOCKED: strafing right
+2026-02-02 14:39:03,908 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:03,983 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:03,983 - INFO - Step 160: Health=100 Ammo=167 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:04,039 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:04,078 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,125 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,160 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,235 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,266 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:04,289 - INFO - EXPLORATION: use door
+2026-02-02 14:39:04,321 - INFO - DEPTH BLOCKED: strafing right
+2026-02-02 14:39:04,346 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,408 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,487 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:04,534 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,566 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,598 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,619 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:04,644 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,709 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,741 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,810 - INFO - DEPTH BLOCKED: strafing right
+2026-02-02 14:39:04,850 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:04,850 - INFO - Step 180: Health=100 Ammo=161 Kills=3 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:04,927 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,960 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:04,992 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:05,026 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:05,052 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:05,084 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:05,116 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:05,138 - INFO - ENEMY SEARCH: start sweep
+2026-02-02 14:39:05,200 - INFO - ENEMY SEARCH: sweeping turn
+2026-02-02 14:39:05,544 - INFO - Step 200: Health=100 Ammo=155 Kills=3 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'ShotgunGuy']
+2026-02-02 14:39:05,850 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:05,883 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:06,130 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:06,238 - INFO - Step 220: Health=100 Ammo=150 Kills=4 Enemies=1 Labels=['DoomPlayer', 'Shotgun']
+2026-02-02 14:39:06,416 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:06,747 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:06,826 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:06,862 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:06,886 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:06,887 - INFO - Step 240: Health=100 Ammo=144 Kills=4 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:06,917 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:07,208 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:07,603 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:07,727 - INFO - Step 260: Health=100 Ammo=138 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:08,105 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:08,414 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:08,415 - INFO - Step 280: Health=100 Ammo=132 Kills=4 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:08,808 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:09,123 - INFO - Step 300: Health=100 Ammo=127 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:09,154 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:09,562 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:09,889 - INFO - Step 320: Health=100 Ammo=121 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:09,999 - INFO - DEPTH BLOCKED: turning left
+2026-02-02 14:39:10,024 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:10,056 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:10,087 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:10,329 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:10,424 - INFO - Step 340: Health=100 Ammo=116 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:10,697 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:10,729 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:10,759 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:10,791 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:10,838 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:10,872 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:10,901 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:11,127 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:11,159 - INFO - Step 360: Health=100 Ammo=111 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:11,402 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:11,424 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:11,816 - INFO - Step 380: Health=100 Ammo=105 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:11,906 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:11,957 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:12,358 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:12,423 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:12,454 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:12,489 - INFO - Step 400: Health=100 Ammo=100 Kills=4 Enemies=1 Labels=['DoomPlayer', 'Shotgun']
+2026-02-02 14:39:12,740 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:39:13,162 - INFO - Step 420: Health=100 Ammo=97 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 14:39:13,821 - INFO - Step 440: Health=100 Ammo=93 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:14,479 - INFO - Escape mode complete
+2026-02-02 14:39:14,490 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:14,490 - INFO - Step 460: Health=100 Ammo=93 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 14:39:14,521 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:14,558 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:14,927 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:14,957 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:15,134 - INFO - Step 480: Health=100 Ammo=87 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:15,183 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:15,402 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:15,821 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:15,883 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:15,883 - INFO - Step 500: Health=100 Ammo=82 Kills=4 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:15,929 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,006 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,044 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,085 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:16,116 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,151 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,220 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:16,248 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,275 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,308 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,376 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:16,657 - INFO - Step 520: Health=100 Ammo=76 Kills=4 Enemies=1 Labels=['DoomPlayer', 'Shotgun']
+2026-02-02 14:39:16,729 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,760 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,792 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:16,826 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:17,080 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:17,316 - INFO - Step 540: Health=100 Ammo=71 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:17,478 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:17,512 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:17,555 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:17,622 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:17,684 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:17,884 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:18,064 - INFO - Step 560: Health=100 Ammo=65 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:18,297 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:18,581 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:18,623 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:18,655 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:18,708 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:18,708 - INFO - Step 580: Health=100 Ammo=59 Kills=4 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:19,036 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:19,538 - INFO - Step 600: Health=100 Ammo=54 Kills=4 Enemies=1 Labels=['DoomPlayer', 'Shotgun']
+2026-02-02 14:39:19,587 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:20,106 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:20,296 - INFO - Step 620: Health=100 Ammo=48 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:20,541 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:20,620 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:20,685 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:20,722 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:20,894 - INFO - Step 640: Health=100 Ammo=43 Kills=4 Enemies=1 Labels=['DoomPlayer', 'Shotgun']
+2026-02-02 14:39:20,920 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:20,943 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:21,227 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:21,399 - INFO - Step 660: Health=100 Ammo=37 Kills=4 Enemies=1 Labels=['DoomPlayer', 'Shotgun']
+2026-02-02 14:39:21,429 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:21,454 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:21,488 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:21,535 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:21,566 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:21,628 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:21,690 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:22,019 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:22,052 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:22,083 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:22,084 - INFO - Step 680: Health=100 Ammo=31 Kills=4 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:22,161 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:22,191 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:22,386 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:22,713 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:22,714 - INFO - Step 700: Health=100 Ammo=26 Kills=4 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 14:39:22,741 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:22,779 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:22,821 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:22,867 - INFO - AUTOMAP MOVE: strafe
+2026-02-02 14:39:22,896 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:22,930 - INFO - AUTOMAP MOVE: forward
+2026-02-02 14:39:22,977 - INFO - AUTOMAP MOVE: sweep turn
+2026-02-02 14:39:23,000 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:23,358 - INFO - Step 720: Health=100 Ammo=21 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:23,375 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:23,676 - INFO - DEPTH BLOCKED: strafing left
+2026-02-02 14:39:24,035 - INFO - Step 740: Health=100 Ammo=15 Kills=4 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Shotgun']
+2026-02-02 14:39:24,130 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:39:24,586 - INFO - Step 760: Health=100 Ammo=14 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 14:39:25,248 - INFO - Step 780: Health=100 Ammo=10 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 14:39:25,451 - INFO - ============================================================
+2026-02-02 14:39:25,451 - INFO - Episode finished
+2026-02-02 14:39:25,452 - INFO - Total reward: -3150.00
+2026-02-02 14:39:25,452 - INFO - Kills: 4
+2026-02-02 14:39:25,452 - INFO - Health lost: 0.00
+2026-02-02 14:39:25,452 - INFO - Actions taken: 788
+2026-02-02 14:39:25,453 - INFO - Episode time: 28.30s
+2026-02-02 14:39:25,453 - INFO - ============================================================

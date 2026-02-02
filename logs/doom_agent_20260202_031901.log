@@ -1,0 +1,290 @@
+2026-02-02 03:19:01,443 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 03:19:02,101 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 03:19:02,101 - INFO - ============================================================
+2026-02-02 03:19:02,101 - INFO - Starting new episode
+2026-02-02 03:19:02,102 - INFO - ============================================================
+2026-02-02 03:19:02,146 - INFO - Episode started successfully
+2026-02-02 03:19:02,148 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:19:02,715 - INFO - Step 20: Health=100 Ammo=45 Kills=2 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:19:04,008 - INFO - Step 40: Health=100 Ammo=55 Kills=2 Enemies=2 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 03:19:04,738 - INFO - Step 60: Health=100 Ammo=51 Kills=2 Enemies=3 Labels=['ArmorBonus', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:19:05,332 - INFO - Step 80: Health=100 Ammo=45 Kills=3 Enemies=5 Labels=['ArmorBonus', 'Blood', 'DeadZombieman', 'DoomPlayer', 'Stimpack', 'Zombieman']
+2026-02-02 03:19:06,033 - INFO - DAMAGE TAKEN: -15.0 HP - enemy must be present!
+2026-02-02 03:19:06,072 - INFO - Step 100: Health=85 Ammo=49 Kills=5 Enemies=1 Labels=['Blood', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:19:06,801 - INFO - Step 120: Health=85 Ammo=52 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:19:07,673 - INFO - Step 140: Health=95 Ammo=60 Kills=5 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 03:19:08,477 - INFO - Step 160: Health=95 Ammo=60 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:09,308 - INFO - Step 180: Health=95 Ammo=60 Kills=5 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:19:10,180 - INFO - Step 200: Health=95 Ammo=60 Kills=5 Enemies=6 Labels=['DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:19:11,076 - INFO - Step 220: Health=95 Ammo=54 Kills=6 Enemies=6 Labels=['Blood', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:19:11,824 - INFO - Step 240: Health=95 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:12,470 - INFO - Step 260: Health=95 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 03:19:13,246 - INFO - Step 280: Health=99 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:13,520 - INFO - EXIT SEEKING MODE - Explored 1 cells, killed 7 enemies
+2026-02-02 03:19:13,520 - INFO - Using A* for exit (stuck=False, frames_no_enemies=61)
+2026-02-02 03:19:13,570 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:13,598 - INFO - Using A* for exit (stuck=False, frames_no_enemies=62)
+2026-02-02 03:19:13,641 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:13,662 - INFO - Using A* for exit (stuck=False, frames_no_enemies=63)
+2026-02-02 03:19:13,705 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:13,724 - INFO - Using A* for exit (stuck=False, frames_no_enemies=64)
+2026-02-02 03:19:13,768 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:13,785 - INFO - Using A* for exit (stuck=False, frames_no_enemies=65)
+2026-02-02 03:19:13,835 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:13,847 - INFO - Using A* for exit (stuck=False, frames_no_enemies=66)
+2026-02-02 03:19:13,936 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:13,959 - INFO - Using A* for exit (stuck=False, frames_no_enemies=67)
+2026-02-02 03:19:14,005 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,021 - INFO - Using A* for exit (stuck=False, frames_no_enemies=68)
+2026-02-02 03:19:14,066 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,132 - INFO - Using A* for exit (stuck=False, frames_no_enemies=69)
+2026-02-02 03:19:14,174 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,194 - INFO - Using A* for exit (stuck=False, frames_no_enemies=70)
+2026-02-02 03:19:14,249 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,273 - INFO - Using A* for exit (stuck=False, frames_no_enemies=71)
+2026-02-02 03:19:14,316 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,336 - INFO - Using A* for exit (stuck=False, frames_no_enemies=72)
+2026-02-02 03:19:14,381 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,399 - INFO - Using A* for exit (stuck=False, frames_no_enemies=73)
+2026-02-02 03:19:14,443 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,463 - INFO - Using A* for exit (stuck=False, frames_no_enemies=74)
+2026-02-02 03:19:14,506 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,525 - INFO - Using A* for exit (stuck=False, frames_no_enemies=75)
+2026-02-02 03:19:14,568 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,568 - INFO - Step 300: Health=100 Ammo=62 Kills=7 Enemies=1 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 03:19:14,604 - INFO - Using A* for exit (stuck=False, frames_no_enemies=76)
+2026-02-02 03:19:14,647 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,700 - INFO - Using A* for exit (stuck=False, frames_no_enemies=77)
+2026-02-02 03:19:14,741 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,795 - INFO - Using A* for exit (stuck=False, frames_no_enemies=78)
+2026-02-02 03:19:14,849 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,873 - INFO - Using A* for exit (stuck=False, frames_no_enemies=79)
+2026-02-02 03:19:14,915 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:14,936 - INFO - Using A* for exit (stuck=False, frames_no_enemies=80)
+2026-02-02 03:19:14,985 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,030 - INFO - Using A* for exit (stuck=False, frames_no_enemies=81)
+2026-02-02 03:19:15,073 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,109 - INFO - Using A* for exit (stuck=False, frames_no_enemies=82)
+2026-02-02 03:19:15,161 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,185 - INFO - Using A* for exit (stuck=False, frames_no_enemies=83)
+2026-02-02 03:19:15,229 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,250 - INFO - Using A* for exit (stuck=False, frames_no_enemies=84)
+2026-02-02 03:19:15,305 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,347 - INFO - Using A* for exit (stuck=False, frames_no_enemies=85)
+2026-02-02 03:19:15,389 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,409 - INFO - Using A* for exit (stuck=False, frames_no_enemies=86)
+2026-02-02 03:19:15,455 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,472 - INFO - Using A* for exit (stuck=False, frames_no_enemies=87)
+2026-02-02 03:19:15,515 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,535 - INFO - Using A* for exit (stuck=False, frames_no_enemies=88)
+2026-02-02 03:19:15,578 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,598 - INFO - Using A* for exit (stuck=False, frames_no_enemies=89)
+2026-02-02 03:19:15,641 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,694 - INFO - Using A* for exit (stuck=False, frames_no_enemies=90)
+2026-02-02 03:19:15,737 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,755 - INFO - Using A* for exit (stuck=False, frames_no_enemies=91)
+2026-02-02 03:19:15,797 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,864 - INFO - Using A* for exit (stuck=False, frames_no_enemies=92)
+2026-02-02 03:19:15,908 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:15,960 - INFO - Using A* for exit (stuck=False, frames_no_enemies=93)
+2026-02-02 03:19:16,006 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,022 - INFO - Using A* for exit (stuck=False, frames_no_enemies=94)
+2026-02-02 03:19:16,067 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,085 - INFO - Using A* for exit (stuck=False, frames_no_enemies=95)
+2026-02-02 03:19:16,138 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,138 - INFO - Step 320: Health=100 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:16,149 - INFO - Using A* for exit (stuck=False, frames_no_enemies=96)
+2026-02-02 03:19:16,193 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,211 - INFO - Using A* for exit (stuck=False, frames_no_enemies=97)
+2026-02-02 03:19:16,259 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,322 - INFO - Using A* for exit (stuck=False, frames_no_enemies=98)
+2026-02-02 03:19:16,368 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,417 - INFO - Using A* for exit (stuck=False, frames_no_enemies=99)
+2026-02-02 03:19:16,459 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,511 - INFO - Using A* for exit (stuck=False, frames_no_enemies=100)
+2026-02-02 03:19:16,555 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,574 - INFO - Using A* for exit (stuck=False, frames_no_enemies=101)
+2026-02-02 03:19:16,616 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,638 - INFO - Using A* for exit (stuck=False, frames_no_enemies=102)
+2026-02-02 03:19:16,682 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,700 - INFO - Using A* for exit (stuck=False, frames_no_enemies=103)
+2026-02-02 03:19:16,742 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,764 - INFO - Using A* for exit (stuck=False, frames_no_enemies=104)
+2026-02-02 03:19:16,806 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,826 - INFO - Using A* for exit (stuck=True, frames_no_enemies=105)
+2026-02-02 03:19:16,867 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:16,921 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 03:19:17,184 - INFO - Step 340: Health=100 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:18,007 - INFO - Step 360: Health=100 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:18,872 - INFO - Escape mode complete
+2026-02-02 03:19:18,872 - INFO - Using A* for exit (stuck=False, frames_no_enemies=106)
+2026-02-02 03:19:18,914 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:18,915 - INFO - Step 380: Health=100 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:18,933 - INFO - Using A* for exit (stuck=False, frames_no_enemies=107)
+2026-02-02 03:19:18,976 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:18,998 - INFO - Using A* for exit (stuck=False, frames_no_enemies=108)
+2026-02-02 03:19:19,040 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,060 - INFO - Using A* for exit (stuck=False, frames_no_enemies=109)
+2026-02-02 03:19:19,102 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,122 - INFO - Using A* for exit (stuck=False, frames_no_enemies=110)
+2026-02-02 03:19:19,164 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,186 - INFO - Using A* for exit (stuck=False, frames_no_enemies=111)
+2026-02-02 03:19:19,238 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,282 - INFO - Using A* for exit (stuck=False, frames_no_enemies=112)
+2026-02-02 03:19:19,323 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,390 - INFO - Using A* for exit (stuck=False, frames_no_enemies=113)
+2026-02-02 03:19:19,432 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,452 - INFO - Using A* for exit (stuck=False, frames_no_enemies=114)
+2026-02-02 03:19:19,503 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,517 - INFO - Using A* for exit (stuck=False, frames_no_enemies=115)
+2026-02-02 03:19:19,559 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,581 - INFO - Using A* for exit (stuck=False, frames_no_enemies=116)
+2026-02-02 03:19:19,623 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,672 - INFO - Using A* for exit (stuck=False, frames_no_enemies=117)
+2026-02-02 03:19:19,714 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,735 - INFO - Using A* for exit (stuck=False, frames_no_enemies=118)
+2026-02-02 03:19:19,778 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,800 - INFO - Using A* for exit (stuck=False, frames_no_enemies=119)
+2026-02-02 03:19:19,842 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,865 - INFO - Using A* for exit (stuck=False, frames_no_enemies=120)
+2026-02-02 03:19:19,909 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,926 - INFO - Using A* for exit (stuck=False, frames_no_enemies=121)
+2026-02-02 03:19:19,968 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:19,990 - INFO - Using A* for exit (stuck=False, frames_no_enemies=122)
+2026-02-02 03:19:20,031 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,055 - INFO - Using A* for exit (stuck=False, frames_no_enemies=123)
+2026-02-02 03:19:20,097 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,117 - INFO - Using A* for exit (stuck=False, frames_no_enemies=124)
+2026-02-02 03:19:20,160 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,180 - INFO - Using A* for exit (stuck=False, frames_no_enemies=125)
+2026-02-02 03:19:20,229 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,242 - INFO - Using A* for exit (stuck=False, frames_no_enemies=126)
+2026-02-02 03:19:20,286 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,286 - INFO - Step 400: Health=102 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:20,352 - INFO - Using A* for exit (stuck=False, frames_no_enemies=127)
+2026-02-02 03:19:20,403 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,431 - INFO - Using A* for exit (stuck=False, frames_no_enemies=128)
+2026-02-02 03:19:20,481 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,494 - INFO - Using A* for exit (stuck=False, frames_no_enemies=129)
+2026-02-02 03:19:20,548 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,572 - INFO - Using A* for exit (stuck=False, frames_no_enemies=130)
+2026-02-02 03:19:20,616 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,635 - INFO - Using A* for exit (stuck=False, frames_no_enemies=131)
+2026-02-02 03:19:20,677 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,698 - INFO - Using A* for exit (stuck=False, frames_no_enemies=132)
+2026-02-02 03:19:20,740 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,762 - INFO - Using A* for exit (stuck=False, frames_no_enemies=133)
+2026-02-02 03:19:20,804 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,855 - INFO - Using A* for exit (stuck=False, frames_no_enemies=134)
+2026-02-02 03:19:20,898 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,918 - INFO - Using A* for exit (stuck=False, frames_no_enemies=135)
+2026-02-02 03:19:20,961 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:20,982 - INFO - Using A* for exit (stuck=False, frames_no_enemies=136)
+2026-02-02 03:19:21,024 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,045 - INFO - Using A* for exit (stuck=False, frames_no_enemies=137)
+2026-02-02 03:19:21,089 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,109 - INFO - Using A* for exit (stuck=False, frames_no_enemies=138)
+2026-02-02 03:19:21,151 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,172 - INFO - Using A* for exit (stuck=False, frames_no_enemies=139)
+2026-02-02 03:19:21,216 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,235 - INFO - Using A* for exit (stuck=False, frames_no_enemies=140)
+2026-02-02 03:19:21,279 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,300 - INFO - Using A* for exit (stuck=False, frames_no_enemies=141)
+2026-02-02 03:19:21,342 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,363 - INFO - Using A* for exit (stuck=False, frames_no_enemies=142)
+2026-02-02 03:19:21,406 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,426 - INFO - Using A* for exit (stuck=False, frames_no_enemies=143)
+2026-02-02 03:19:21,468 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,503 - INFO - Using A* for exit (stuck=False, frames_no_enemies=144)
+2026-02-02 03:19:21,565 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,613 - INFO - Using A* for exit (stuck=False, frames_no_enemies=145)
+2026-02-02 03:19:21,654 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,708 - INFO - Using A* for exit (stuck=False, frames_no_enemies=146)
+2026-02-02 03:19:21,750 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,750 - INFO - Step 420: Health=102 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:21,804 - INFO - Using A* for exit (stuck=False, frames_no_enemies=147)
+2026-02-02 03:19:21,847 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:21,867 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 03:19:22,603 - INFO - Step 440: Health=102 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:23,407 - INFO - Step 460: Health=102 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:23,880 - INFO - Escape mode complete
+2026-02-02 03:19:23,880 - INFO - Using A* for exit (stuck=False, frames_no_enemies=148)
+2026-02-02 03:19:23,923 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:23,944 - INFO - Using A* for exit (stuck=False, frames_no_enemies=149)
+2026-02-02 03:19:23,984 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,022 - INFO - Using A* for exit (stuck=False, frames_no_enemies=150)
+2026-02-02 03:19:24,063 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,084 - INFO - Using A* for exit (stuck=False, frames_no_enemies=151)
+2026-02-02 03:19:24,127 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,147 - INFO - Using A* for exit (stuck=False, frames_no_enemies=152)
+2026-02-02 03:19:24,190 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,211 - INFO - Using A* for exit (stuck=False, frames_no_enemies=153)
+2026-02-02 03:19:24,253 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,275 - INFO - Using A* for exit (stuck=False, frames_no_enemies=154)
+2026-02-02 03:19:24,318 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,385 - INFO - Using A* for exit (stuck=False, frames_no_enemies=155)
+2026-02-02 03:19:24,427 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,447 - INFO - Using A* for exit (stuck=False, frames_no_enemies=156)
+2026-02-02 03:19:24,489 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,510 - INFO - Using A* for exit (stuck=False, frames_no_enemies=157)
+2026-02-02 03:19:24,551 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,552 - INFO - Step 480: Health=102 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:24,574 - INFO - Using A* for exit (stuck=False, frames_no_enemies=158)
+2026-02-02 03:19:24,615 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,636 - INFO - Using A* for exit (stuck=False, frames_no_enemies=159)
+2026-02-02 03:19:24,695 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,715 - INFO - Using A* for exit (stuck=False, frames_no_enemies=160)
+2026-02-02 03:19:24,757 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,810 - INFO - Using A* for exit (stuck=False, frames_no_enemies=161)
+2026-02-02 03:19:24,861 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,872 - INFO - Using A* for exit (stuck=False, frames_no_enemies=162)
+2026-02-02 03:19:24,923 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:24,935 - INFO - Using A* for exit (stuck=False, frames_no_enemies=163)
+2026-02-02 03:19:24,992 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,013 - INFO - Using A* for exit (stuck=False, frames_no_enemies=164)
+2026-02-02 03:19:25,057 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,092 - INFO - Using A* for exit (stuck=False, frames_no_enemies=165)
+2026-02-02 03:19:25,135 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,153 - INFO - Using A* for exit (stuck=False, frames_no_enemies=166)
+2026-02-02 03:19:25,197 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,217 - INFO - Using A* for exit (stuck=False, frames_no_enemies=167)
+2026-02-02 03:19:25,263 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,282 - INFO - Using A* for exit (stuck=False, frames_no_enemies=168)
+2026-02-02 03:19:25,325 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,345 - INFO - Using A* for exit (stuck=False, frames_no_enemies=169)
+2026-02-02 03:19:25,388 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,438 - INFO - Using A* for exit (stuck=False, frames_no_enemies=170)
+2026-02-02 03:19:25,481 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,533 - INFO - Using A* for exit (stuck=False, frames_no_enemies=171)
+2026-02-02 03:19:25,575 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,597 - INFO - Using A* for exit (stuck=False, frames_no_enemies=172)
+2026-02-02 03:19:25,640 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,661 - INFO - Using A* for exit (stuck=False, frames_no_enemies=173)
+2026-02-02 03:19:25,703 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,723 - INFO - Using A* for exit (stuck=False, frames_no_enemies=174)
+2026-02-02 03:19:25,783 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,802 - INFO - Using A* for exit (stuck=False, frames_no_enemies=175)
+2026-02-02 03:19:25,845 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,917 - INFO - Using A* for exit (stuck=False, frames_no_enemies=176)
+2026-02-02 03:19:25,959 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:25,981 - INFO - Using A* for exit (stuck=False, frames_no_enemies=177)
+2026-02-02 03:19:26,022 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:26,022 - INFO - Step 500: Health=102 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:26,076 - INFO - Using A* for exit (stuck=False, frames_no_enemies=178)
+2026-02-02 03:19:26,129 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:26,153 - INFO - Using A* for exit (stuck=False, frames_no_enemies=179)
+2026-02-02 03:19:26,196 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:26,216 - INFO - Using A* for exit (stuck=False, frames_no_enemies=180)
+2026-02-02 03:19:26,279 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 03:19:26,296 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 03:19:26,783 - INFO - Step 520: Health=102 Ammo=62 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:19:26,921 - INFO - ============================================================
+2026-02-02 03:19:26,921 - INFO - Episode finished
+2026-02-02 03:19:26,921 - INFO - Total reward: 0.00
+2026-02-02 03:19:26,921 - INFO - Kills: 7
+2026-02-02 03:19:26,921 - INFO - Cells explored: 1
+2026-02-02 03:19:26,922 - INFO - Exploration reward: 1
+2026-02-02 03:19:26,922 - INFO - Health lost: 0.00
+2026-02-02 03:19:26,922 - INFO - Actions taken: 525
+2026-02-02 03:19:26,922 - INFO - Episode time: 24.82s
+2026-02-02 03:19:26,922 - INFO - ============================================================

@@ -1,0 +1,52 @@
+2026-02-02 14:58:44,805 - INFO - Starting Doom Agent with WAD: wads\doom2.wad
+2026-02-02 14:58:45,470 - INFO - Game initialized with WAD: wads\doom2.wad
+2026-02-02 14:58:45,471 - INFO - ============================================================
+2026-02-02 14:58:45,471 - INFO - Starting new episode
+2026-02-02 14:58:45,471 - INFO - ============================================================
+2026-02-02 14:58:45,625 - INFO - Episode started successfully
+2026-02-02 14:58:45,626 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 14:58:46,290 - INFO - Step 20: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 14:58:46,573 - INFO - DAMAGE TAKEN: -9.0 HP - enemy must be present!
+2026-02-02 14:58:46,778 - INFO - DAMAGE TAKEN: -12.0 HP - enemy must be present!
+2026-02-02 14:58:47,064 - INFO - Step 40: Health=79 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 14:58:47,807 - INFO - Step 60: Health=79 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 14:58:47,822 - INFO - DAMAGE TAKEN: -6.0 HP - enemy must be present!
+2026-02-02 14:58:48,203 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:58:48,647 - INFO - Step 80: Health=73 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 14:58:49,287 - INFO - Step 100: Health=49 Ammo=50 Kills=2 Enemies=0 Labels=None
+2026-02-02 14:58:49,555 - INFO - Escape mode complete
+2026-02-02 14:58:49,556 - INFO - DAMAGE TAKEN: -24.0 HP - enemy must be present!
+2026-02-02 14:58:49,983 - INFO - Step 120: Health=49 Ammo=55 Kills=2 Enemies=0 Labels=None
+2026-02-02 14:58:50,298 - INFO - DAMAGE TAKEN: -9.0 HP - enemy must be present!
+2026-02-02 14:58:50,706 - INFO - Step 140: Health=40 Ammo=55 Kills=2 Enemies=0 Labels=None
+2026-02-02 14:58:51,371 - INFO - Step 160: Health=40 Ammo=55 Kills=2 Enemies=0 Labels=None
+2026-02-02 14:58:51,669 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:58:51,677 - INFO - Step 180: Health=40 Ammo=55 Kills=2 Enemies=0 Labels=None
+2026-02-02 14:58:51,826 - INFO - Step 200: Health=40 Ammo=55 Kills=2 Enemies=0 Labels=None
+2026-02-02 14:58:51,891 - INFO - Escape mode complete
+2026-02-02 14:58:51,910 - INFO - Step 220: Health=40 Ammo=55 Kills=2 Enemies=0 Labels=None
+2026-02-02 14:58:51,984 - INFO - DAMAGE TAKEN: -6.0 HP - enemy must be present!
+2026-02-02 14:58:52,044 - INFO - DAMAGE TAKEN: -12.0 HP - enemy must be present!
+2026-02-02 14:58:52,052 - INFO - Step 240: Health=22 Ammo=55 Kills=2 Enemies=0 Labels=None
+2026-02-02 14:58:52,109 - INFO - DAMAGE TAKEN: -6.0 HP - enemy must be present!
+2026-02-02 14:58:52,167 - INFO - Step 260: Health=16 Ammo=55 Kills=2 Enemies=0 Labels=None
+2026-02-02 14:58:52,259 - INFO - DAMAGE TAKEN: -6.0 HP - enemy must be present!
+2026-02-02 14:58:52,333 - INFO - Step 280: Health=10 Ammo=55 Kills=3 Enemies=0 Labels=None
+2026-02-02 14:58:52,368 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:58:52,419 - INFO - Step 300: Health=7 Ammo=55 Kills=3 Enemies=0 Labels=None
+2026-02-02 14:58:52,501 - INFO - Step 320: Health=7 Ammo=55 Kills=3 Enemies=0 Labels=None
+2026-02-02 14:58:52,534 - INFO - Escape mode complete
+2026-02-02 14:58:52,534 - INFO - DAMAGE TAKEN: -3.0 HP - enemy must be present!
+2026-02-02 14:58:52,600 - INFO - Step 340: Health=7 Ammo=55 Kills=3 Enemies=0 Labels=None
+2026-02-02 14:58:52,677 - INFO - Step 360: Health=7 Ammo=55 Kills=4 Enemies=0 Labels=None
+2026-02-02 14:58:52,769 - INFO - Step 380: Health=7 Ammo=60 Kills=4 Enemies=0 Labels=None
+2026-02-02 14:58:52,869 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 14:58:52,887 - INFO - Step 400: Health=7 Ammo=60 Kills=4 Enemies=0 Labels=None
+2026-02-02 14:58:52,903 - INFO - ============================================================
+2026-02-02 14:58:52,903 - INFO - Episode finished
+2026-02-02 14:58:52,903 - INFO - Total reward: -1707.00
+2026-02-02 14:58:52,904 - INFO - Kills: 4
+2026-02-02 14:58:52,904 - INFO - Health lost: 93.00
+2026-02-02 14:58:52,904 - INFO - Actions taken: 402
+2026-02-02 14:58:52,904 - INFO - Episode time: 7.43s
+2026-02-02 14:58:52,904 - INFO - ============================================================

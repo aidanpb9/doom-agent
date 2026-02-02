@@ -1,0 +1,28 @@
+2026-02-02 03:55:01,871 - INFO - Starting Doom Agent with WAD: DOOM\wads\doom2.wad
+2026-02-02 03:55:02,473 - INFO - Game initialized with WAD: DOOM\wads\doom2.wad
+2026-02-02 03:55:02,473 - INFO - ============================================================
+2026-02-02 03:55:02,473 - INFO - Starting new episode
+2026-02-02 03:55:02,474 - INFO - ============================================================
+2026-02-02 03:55:02,645 - INFO - Episode started successfully
+2026-02-02 03:55:02,648 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:55:03,509 - INFO - Step 20: Health=100 Ammo=45 Kills=2 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:55:04,484 - INFO - Step 40: Health=100 Ammo=46 Kills=2 Enemies=2 Labels=['Blood', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:55:05,290 - INFO - Step 60: Health=100 Ammo=47 Kills=4 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:55:06,378 - INFO - Step 80: Health=100 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 03:55:07,146 - INFO - Step 100: Health=103 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 03:55:07,917 - INFO - Step 120: Health=105 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 03:55:08,638 - INFO - Step 140: Health=108 Ammo=56 Kills=4 Enemies=3 Labels=['BulletPuff', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:55:09,559 - INFO - Step 160: Health=93 Ammo=60 Kills=6 Enemies=3 Labels=['Blood', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:55:09,606 - INFO - DAMAGE TAKEN: -15.0 HP - enemy must be present!
+2026-02-02 03:55:10,344 - INFO - Step 180: Health=93 Ammo=64 Kills=7 Enemies=1 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 03:55:11,037 - INFO - Step 200: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:55:11,724 - INFO - Step 220: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:55:11,886 - INFO - EXIT SEEKING MODE - Killed 7 enemies, looking for exit
+2026-02-02 03:55:12,480 - INFO - ============================================================
+2026-02-02 03:55:12,480 - INFO - Episode finished
+2026-02-02 03:55:12,480 - INFO - Total reward: 0.00
+2026-02-02 03:55:12,481 - INFO - Kills: 7
+2026-02-02 03:55:12,481 - INFO - Health lost: 7.00
+2026-02-02 03:55:12,481 - INFO - Actions taken: 239
+2026-02-02 03:55:12,481 - INFO - Episode time: 10.01s
+2026-02-02 03:55:12,481 - INFO - ============================================================

@@ -1,0 +1,45 @@
+2026-02-02 03:42:19,252 - INFO - Starting Doom Agent with WAD: DOOM\wads\doom2.wad
+2026-02-02 03:42:19,916 - INFO - Game initialized with WAD: DOOM\wads\doom2.wad
+2026-02-02 03:42:19,916 - INFO - ============================================================
+2026-02-02 03:42:19,917 - INFO - Starting new episode
+2026-02-02 03:42:19,917 - INFO - ============================================================
+2026-02-02 03:42:19,947 - INFO - Episode started successfully
+2026-02-02 03:42:19,948 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:20,700 - INFO - Step 20: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:21,340 - INFO - Step 40: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:22,372 - INFO - Step 60: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:22,561 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 03:42:23,304 - INFO - Step 80: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:23,873 - INFO - Step 100: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:24,747 - INFO - Escape mode complete
+2026-02-02 03:42:24,967 - INFO - Step 120: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:25,569 - INFO - Step 140: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:26,170 - INFO - Step 160: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:27,117 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 03:42:27,117 - INFO - Step 180: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:27,809 - INFO - Step 200: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:28,374 - INFO - Step 220: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:28,689 - INFO - Escape mode complete
+2026-02-02 03:42:28,971 - INFO - Step 240: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:29,598 - INFO - Step 260: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:30,332 - INFO - Step 280: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:30,712 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 03:42:30,789 - INFO - Step 300: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:31,388 - INFO - Step 320: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:32,233 - INFO - Step 340: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:32,312 - INFO - Escape mode complete
+2026-02-02 03:42:32,768 - INFO - Step 360: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:33,413 - INFO - Step 380: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:34,023 - INFO - Step 400: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:34,228 - INFO - STUCK DETECTED - Entering escape mode
+2026-02-02 03:42:34,466 - INFO - Step 420: Health=100 Ammo=50 Kills=0 Enemies=0 Labels=None
+2026-02-02 03:42:34,921 - INFO - ============================================================
+2026-02-02 03:42:34,921 - INFO - Episode finished
+2026-02-02 03:42:34,922 - INFO - Total reward: -1756.00
+2026-02-02 03:42:34,922 - INFO - Kills: 0
+2026-02-02 03:42:34,922 - INFO - Cells explored: 1
+2026-02-02 03:42:34,922 - INFO - Exploration reward: 1
+2026-02-02 03:42:34,922 - INFO - Health lost: 0.00
+2026-02-02 03:42:34,922 - INFO - Actions taken: 439
+2026-02-02 03:42:34,922 - INFO - Episode time: 15.00s
+2026-02-02 03:42:34,923 - INFO - ============================================================

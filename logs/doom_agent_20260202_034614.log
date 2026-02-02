@@ -1,0 +1,20 @@
+2026-02-02 03:46:14,933 - INFO - Starting Doom Agent with WAD: DOOM\wads\doom2.wad
+2026-02-02 03:46:15,527 - INFO - Game initialized with WAD: DOOM\wads\doom2.wad
+2026-02-02 03:46:15,528 - INFO - ============================================================
+2026-02-02 03:46:15,528 - INFO - Starting new episode
+2026-02-02 03:46:15,528 - INFO - ============================================================
+2026-02-02 03:46:15,572 - INFO - Episode started successfully
+2026-02-02 03:46:15,574 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:46:16,395 - INFO - Step 20: Health=100 Ammo=46 Kills=2 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:46:17,383 - INFO - Step 40: Health=100 Ammo=41 Kills=3 Enemies=3 Labels=['Blood', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:46:18,143 - INFO - Step 60: Health=100 Ammo=42 Kills=5 Enemies=1 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:46:19,340 - INFO - Step 80: Health=100 Ammo=50 Kills=5 Enemies=1 Labels=['Blood', 'DoomPlayer', 'HealthBonus', 'Zombieman']
+2026-02-02 03:46:20,074 - INFO - Step 100: Health=102 Ammo=53 Kills=6 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 03:46:20,998 - INFO - Step 120: Health=105 Ammo=51 Kills=6 Enemies=5 Labels=['Blood', 'DeadZombieman', 'DoomPlayer', 'HealthBonus', 'Zombieman']
+2026-02-02 03:46:21,849 - INFO - Step 140: Health=105 Ammo=55 Kills=7 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 03:46:22,610 - INFO - Step 160: Health=107 Ammo=55 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:46:23,413 - INFO - Step 180: Health=108 Ammo=55 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:46:23,594 - INFO - EXIT SEEKING MODE - Killed 7 enemies, looking for exit
+2026-02-02 03:46:24,329 - INFO - Step 200: Health=108 Ammo=55 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:46:24,478 - INFO - Using A* for exit (stuck=False, frames_no_enemies=81)
+2026-02-02 03:47:44,050 - INFO - A* target: row_delta=-32, col_delta=0

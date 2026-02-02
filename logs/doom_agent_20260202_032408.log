@@ -1,0 +1,44 @@
+2026-02-02 03:24:08,976 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 03:24:09,641 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 03:24:09,641 - INFO - ============================================================
+2026-02-02 03:24:09,641 - INFO - Starting new episode
+2026-02-02 03:24:09,641 - INFO - ============================================================
+2026-02-02 03:24:09,765 - INFO - Episode started successfully
+2026-02-02 03:24:09,767 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:24:10,395 - INFO - Step 20: Health=100 Ammo=44 Kills=1 Enemies=3 Labels=['ArmorBonus', 'Blood', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack', 'Zombieman']
+2026-02-02 03:24:11,321 - INFO - Step 40: Health=100 Ammo=39 Kills=2 Enemies=4 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack', 'Zombieman']
+2026-02-02 03:24:12,340 - INFO - Step 60: Health=100 Ammo=34 Kills=3 Enemies=0 Labels=['ArmorBonus', 'DoomPlayer']
+2026-02-02 03:24:13,686 - INFO - Step 80: Health=100 Ammo=33 Kills=3 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:24:14,538 - INFO - Step 100: Health=100 Ammo=29 Kills=3 Enemies=5 Labels=['Blood', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:24:15,196 - INFO - DAMAGE TAKEN: -14.0 HP - enemy must be present!
+2026-02-02 03:24:15,358 - INFO - Step 120: Health=86 Ammo=24 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:24:15,872 - INFO - Step 140: Health=86 Ammo=20 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:24:16,698 - INFO - Step 160: Health=86 Ammo=14 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:24:17,387 - INFO - Step 180: Health=86 Ammo=9 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:24:18,138 - INFO - Step 200: Health=86 Ammo=3 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:24:18,788 - INFO - Step 220: Health=96 Ammo=0 Kills=5 Enemies=5 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:24:19,490 - INFO - Step 240: Health=96 Ammo=15 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:24:20,292 - INFO - Step 260: Health=96 Ammo=15 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:24:21,139 - INFO - Step 280: Health=96 Ammo=15 Kills=5 Enemies=1 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 03:24:21,847 - INFO - Step 300: Health=96 Ammo=15 Kills=5 Enemies=5 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:24:22,615 - INFO - Step 320: Health=96 Ammo=15 Kills=5 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:24:23,509 - INFO - Step 340: Health=96 Ammo=15 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:24:24,499 - INFO - Step 360: Health=96 Ammo=15 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:24:25,355 - INFO - Step 380: Health=96 Ammo=15 Kills=5 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 03:24:26,130 - INFO - Step 400: Health=96 Ammo=15 Kills=5 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:24:26,991 - INFO - Step 420: Health=96 Ammo=15 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:24:27,793 - INFO - Step 440: Health=96 Ammo=15 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:24:28,644 - INFO - Step 460: Health=96 Ammo=15 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:24:29,525 - INFO - Step 480: Health=96 Ammo=15 Kills=5 Enemies=4 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:24:30,537 - INFO - Step 500: Health=96 Ammo=15 Kills=5 Enemies=3 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:24:31,400 - INFO - Step 520: Health=96 Ammo=15 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:24:31,547 - INFO - ============================================================
+2026-02-02 03:24:31,547 - INFO - Episode finished
+2026-02-02 03:24:31,547 - INFO - Total reward: 0.00
+2026-02-02 03:24:31,547 - INFO - Kills: 5
+2026-02-02 03:24:31,547 - INFO - Cells explored: 60
+2026-02-02 03:24:31,547 - INFO - Exploration reward: 60
+2026-02-02 03:24:31,547 - INFO - Health lost: 4.00
+2026-02-02 03:24:31,548 - INFO - Actions taken: 525
+2026-02-02 03:24:31,548 - INFO - Episode time: 21.91s
+2026-02-02 03:24:31,548 - INFO - ============================================================

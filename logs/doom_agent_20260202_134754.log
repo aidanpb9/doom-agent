@@ -1,0 +1,176 @@
+2026-02-02 13:47:54,586 - INFO - Starting Doom Agent with WAD: wads\doom2.wad
+2026-02-02 13:47:55,348 - INFO - Game initialized with WAD: wads\doom2.wad
+2026-02-02 13:47:55,348 - INFO - ============================================================
+2026-02-02 13:47:55,348 - INFO - Starting new episode
+2026-02-02 13:47:55,349 - INFO - ============================================================
+2026-02-02 13:47:55,550 - INFO - Episode started successfully
+2026-02-02 13:47:55,553 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 13:47:56,482 - INFO - EXIT SEEKING MODE
+2026-02-02 13:47:56,892 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:56,892 - INFO - Step 20: Health=100 Ammo=44 Kills=2 Enemies=0 Labels=['Blood', 'Clip', 'DoomPlayer']
+2026-02-02 13:47:56,960 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,024 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:57,103 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,134 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,164 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:57,229 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,259 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:47:57,294 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,338 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,368 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:57,416 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,446 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,482 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:57,556 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,588 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:47:57,623 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,695 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,760 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:57,823 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,854 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,855 - INFO - Step 40: Health=100 Ammo=64 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:47:57,918 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:57,949 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:57,980 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:47:58,045 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,104 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,166 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:58,198 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,260 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,327 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:58,399 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,460 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:47:58,498 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,546 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,571 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:58,606 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,637 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,719 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:58,745 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,777 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:47:58,844 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,845 - INFO - Step 60: Health=100 Ammo=64 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:47:58,918 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:58,950 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:59,586 - INFO - DAMAGE TAKEN: -9.0 HP - enemy must be present!
+2026-02-02 13:47:59,599 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:59,642 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:59,642 - INFO - Step 80: Health=91 Ammo=64 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:47:59,674 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:47:59,706 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:59,736 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:47:59,817 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:59,892 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:47:59,953 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:00,015 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,046 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,110 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:00,173 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,206 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:00,241 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,266 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,328 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:00,392 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,424 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,487 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:00,519 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,551 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:00,616 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,617 - INFO - Step 100: Health=91 Ammo=69 Kills=4 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 13:48:00,644 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,685 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:00,724 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,755 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,787 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:00,835 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:00,910 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:00,983 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,005 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,054 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:01,116 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,178 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,209 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:01,240 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,272 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:01,324 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,398 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,428 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:01,459 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,522 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,522 - INFO - Step 120: Health=91 Ammo=69 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:48:01,552 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:01,600 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,632 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:01,667 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,696 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,773 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:01,805 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,838 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,869 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:01,900 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:01,975 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:02,042 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,071 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,131 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:02,163 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,194 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,241 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:02,272 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,304 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:02,384 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,384 - INFO - Step 140: Health=91 Ammo=69 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:48:02,459 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,521 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:02,567 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,590 - INFO - DAMAGE TAKEN: -12.0 HP - enemy must be present!
+2026-02-02 13:48:02,600 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,675 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:02,706 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,757 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:02,822 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,897 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:02,961 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:02,992 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:03,407 - INFO - Step 160: Health=73 Ammo=67 Kills=4 Enemies=2 Labels=['DoomPlayer', 'Zombieman']
+2026-02-02 13:48:03,753 - INFO - DAMAGE TAKEN: -15.0 HP - enemy must be present!
+2026-02-02 13:48:03,762 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:03,792 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:03,815 - INFO - DAMAGE TAKEN: -12.0 HP - enemy must be present!
+2026-02-02 13:48:03,823 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:03,855 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:03,891 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:03,964 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:03,995 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:04,025 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,057 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,090 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:04,121 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,151 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:04,231 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,232 - INFO - Step 180: Health=52 Ammo=74 Kills=6 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:48:04,307 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,339 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:04,371 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,403 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,450 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:04,493 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,558 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:04,591 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,634 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,679 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:04,741 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,773 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,805 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:48:04,838 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,899 - INFO - AUTOMAP MOVE: reset target (turn streak)
+2026-02-02 13:48:04,935 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:04,992 - INFO - AUTOMAP MOVE: forward (turn throttle)
+2026-02-02 13:48:05,079 - INFO - Step 200: Health=52 Ammo=73 Kills=6 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Zombieman']
+2026-02-02 13:48:05,359 - INFO - ============================================================
+2026-02-02 13:48:05,360 - INFO - Episode finished
+2026-02-02 13:48:05,360 - INFO - Total reward: -832.00
+2026-02-02 13:48:05,360 - INFO - Kills: 6
+2026-02-02 13:48:05,360 - INFO - Health lost: 48.00
+2026-02-02 13:48:05,360 - INFO - Actions taken: 208
+2026-02-02 13:48:05,361 - INFO - Episode time: 10.01s
+2026-02-02 13:48:05,361 - INFO - ============================================================

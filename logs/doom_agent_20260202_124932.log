@@ -1,0 +1,37 @@
+2026-02-02 12:49:32,684 - INFO - Starting Doom Agent with WAD: wads\doom2.wad
+2026-02-02 12:49:33,271 - INFO - Game initialized with WAD: wads\doom2.wad
+2026-02-02 12:49:33,272 - INFO - ============================================================
+2026-02-02 12:49:33,272 - INFO - Starting new episode
+2026-02-02 12:49:33,272 - INFO - ============================================================
+2026-02-02 12:49:33,380 - INFO - Episode started successfully
+2026-02-02 12:49:33,382 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 12:49:33,997 - INFO - Step 20: Health=85 Ammo=45 Kills=2 Enemies=0 Labels=['Blood', 'Clip', 'DoomPlayer']
+2026-02-02 12:49:34,770 - INFO - Step 40: Health=85 Ammo=45 Kills=3 Enemies=2 Labels=['Blood', 'DoomPlayer', 'Zombieman']
+2026-02-02 12:49:35,369 - INFO - Step 60: Health=85 Ammo=40 Kills=4 Enemies=1 Labels=['Clip', 'DoomPlayer', 'Zombieman']
+2026-02-02 12:49:35,620 - INFO - DAMAGE TAKEN: -15.0 HP - enemy must be present!
+2026-02-02 12:49:36,412 - INFO - Step 80: Health=85 Ammo=49 Kills=5 Enemies=1 Labels=['DoomPlayer', 'HealthBonus', 'Zombieman']
+2026-02-02 12:49:37,042 - INFO - Step 100: Health=82 Ammo=48 Kills=6 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Zombieman']
+2026-02-02 12:49:37,185 - INFO - DAMAGE TAKEN: -3.0 HP - enemy must be present!
+2026-02-02 12:49:37,778 - INFO - Step 120: Health=82 Ammo=52 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:49:38,440 - INFO - Step 140: Health=82 Ammo=52 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:49:39,212 - INFO - Step 160: Health=82 Ammo=52 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:49:39,363 - INFO - EXIT SEEKING MODE - Killed 7 enemies, looking for exit
+2026-02-02 12:49:39,861 - INFO - Step 180: Health=82 Ammo=52 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:49:40,010 - INFO - Using A* for exit (stuck=False, frames_no_enemies=81)
+2026-02-02 12:49:40,026 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:49:40,388 - INFO - Step 200: Health=82 Ammo=50 Kills=7 Enemies=2 Labels=['Blood', 'DoomImp', 'DoomPlayer']
+2026-02-02 12:49:40,657 - INFO - DAMAGE TAKEN: -9.0 HP - enemy must be present!
+2026-02-02 12:49:40,784 - INFO - DAMAGE TAKEN: -18.0 HP - enemy must be present!
+2026-02-02 12:49:40,969 - INFO - Step 220: Health=55 Ammo=47 Kills=8 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:49:41,751 - INFO - Step 240: Health=49 Ammo=44 Kills=8 Enemies=1 Labels=['DoomImp', 'DoomPlayer']
+2026-02-02 12:49:42,100 - INFO - DAMAGE TAKEN: -6.0 HP - enemy must be present!
+2026-02-02 12:49:42,409 - INFO - Step 260: Health=49 Ammo=40 Kills=9 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:49:42,994 - INFO - Step 280: Health=49 Ammo=40 Kills=9 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:49:43,318 - INFO - ============================================================
+2026-02-02 12:49:43,319 - INFO - Episode finished
+2026-02-02 12:49:43,319 - INFO - Total reward: -1152.00
+2026-02-02 12:49:43,319 - INFO - Kills: 9
+2026-02-02 12:49:43,319 - INFO - Health lost: 51.00
+2026-02-02 12:49:43,319 - INFO - Actions taken: 288
+2026-02-02 12:49:43,320 - INFO - Episode time: 10.05s
+2026-02-02 12:49:43,320 - INFO - ============================================================

@@ -1,0 +1,61 @@
+2026-02-02 12:48:43,136 - INFO - Starting Doom Agent with WAD: wads\doom2.wad
+2026-02-02 12:48:43,713 - INFO - Game initialized with WAD: wads\doom2.wad
+2026-02-02 12:48:43,713 - INFO - ============================================================
+2026-02-02 12:48:43,714 - INFO - Starting new episode
+2026-02-02 12:48:43,714 - INFO - ============================================================
+2026-02-02 12:48:43,775 - INFO - Episode started successfully
+2026-02-02 12:48:43,777 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 12:48:44,349 - INFO - Step 20: Health=100 Ammo=45 Kills=2 Enemies=0 Labels=['Clip', 'DoomPlayer']
+2026-02-02 12:48:45,044 - INFO - Step 40: Health=100 Ammo=46 Kills=2 Enemies=2 Labels=['Blood', 'DoomPlayer', 'Zombieman']
+2026-02-02 12:48:45,803 - INFO - Step 60: Health=100 Ammo=47 Kills=4 Enemies=0 Labels=['Clip', 'DoomPlayer']
+2026-02-02 12:48:46,933 - INFO - Step 80: Health=100 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 12:48:47,631 - INFO - Step 100: Health=103 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 12:48:48,230 - INFO - Step 120: Health=105 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 12:48:48,957 - INFO - Step 140: Health=108 Ammo=56 Kills=4 Enemies=2 Labels=['BulletPuff', 'DoomPlayer', 'Zombieman']
+2026-02-02 12:48:49,926 - INFO - Step 160: Health=93 Ammo=60 Kills=6 Enemies=1 Labels=['Blood', 'DoomPlayer', 'Zombieman']
+2026-02-02 12:48:50,068 - INFO - DAMAGE TAKEN: -15.0 HP - enemy must be present!
+2026-02-02 12:48:50,709 - INFO - Step 180: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:48:51,355 - INFO - Step 200: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:48:52,082 - INFO - Step 220: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:48:52,217 - INFO - EXIT SEEKING MODE - Killed 7 enemies, looking for exit
+2026-02-02 12:48:52,764 - INFO - Step 240: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 12:48:52,946 - INFO - Using A* for exit (stuck=False, frames_no_enemies=81)
+2026-02-02 12:48:52,957 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:52,979 - INFO - Using A* for exit (stuck=False, frames_no_enemies=82)
+2026-02-02 12:48:52,992 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,057 - INFO - Using A* for exit (stuck=False, frames_no_enemies=83)
+2026-02-02 12:48:53,068 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,090 - INFO - Using A* for exit (stuck=False, frames_no_enemies=84)
+2026-02-02 12:48:53,102 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,121 - INFO - Using A* for exit (stuck=False, frames_no_enemies=85)
+2026-02-02 12:48:53,133 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,152 - INFO - Using A* for exit (stuck=False, frames_no_enemies=86)
+2026-02-02 12:48:53,164 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,183 - INFO - Using A* for exit (stuck=False, frames_no_enemies=87)
+2026-02-02 12:48:53,198 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,262 - INFO - Using A* for exit (stuck=False, frames_no_enemies=88)
+2026-02-02 12:48:53,280 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,327 - INFO - Using A* for exit (stuck=False, frames_no_enemies=89)
+2026-02-02 12:48:53,346 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,359 - INFO - Using A* for exit (stuck=False, frames_no_enemies=90)
+2026-02-02 12:48:53,372 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,390 - INFO - Using A* for exit (stuck=False, frames_no_enemies=91)
+2026-02-02 12:48:53,405 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,421 - INFO - Using A* for exit (stuck=False, frames_no_enemies=92)
+2026-02-02 12:48:53,438 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,500 - INFO - Using A* for exit (stuck=False, frames_no_enemies=93)
+2026-02-02 12:48:53,519 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,564 - INFO - Using A* for exit (stuck=False, frames_no_enemies=94)
+2026-02-02 12:48:53,584 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,626 - INFO - Using A* for exit (stuck=False, frames_no_enemies=95)
+2026-02-02 12:48:53,640 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,658 - INFO - Using A* for exit (stuck=False, frames_no_enemies=96)
+2026-02-02 12:48:53,671 - INFO - A* target: row_delta=-32, col_delta=0
+2026-02-02 12:48:53,734 - INFO - ============================================================
+2026-02-02 12:48:53,734 - INFO - Episode finished
+2026-02-02 12:48:53,734 - INFO - Total reward: -1040.00
+2026-02-02 12:48:53,735 - INFO - Kills: 7
+2026-02-02 12:48:53,735 - INFO - Health lost: 7.00
+2026-02-02 12:48:53,735 - INFO - Actions taken: 260
+2026-02-02 12:48:53,735 - INFO - Episode time: 10.02s
+2026-02-02 12:48:53,735 - INFO - ============================================================

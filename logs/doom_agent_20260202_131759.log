@@ -1,0 +1,26 @@
+2026-02-02 13:17:59,333 - INFO - Starting Doom Agent with WAD: wads\doom2.wad
+2026-02-02 13:17:59,979 - INFO - Game initialized with WAD: wads\doom2.wad
+2026-02-02 13:17:59,979 - INFO - ============================================================
+2026-02-02 13:17:59,979 - INFO - Starting new episode
+2026-02-02 13:17:59,980 - INFO - ============================================================
+2026-02-02 13:18:00,131 - INFO - Episode started successfully
+2026-02-02 13:18:00,134 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 13:18:01,534 - INFO - Step 20: Health=100 Ammo=56 Kills=2 Enemies=0 Labels=['ArmorBonus', 'DoomPlayer']
+2026-02-02 13:18:02,530 - INFO - Step 40: Health=100 Ammo=52 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:18:03,236 - INFO - Step 60: Health=100 Ammo=62 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:18:03,951 - INFO - Step 80: Health=100 Ammo=63 Kills=3 Enemies=1 Labels=['ArmorBonus', 'DoomPlayer', 'Stimpack']
+2026-02-02 13:18:04,794 - INFO - Step 100: Health=100 Ammo=60 Kills=3 Enemies=1 Labels=['DoomPlayer', 'Zombieman']
+2026-02-02 13:18:05,523 - INFO - Step 120: Health=100 Ammo=62 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:18:06,203 - INFO - Step 140: Health=100 Ammo=59 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:18:06,912 - INFO - Step 160: Health=100 Ammo=56 Kills=5 Enemies=0 Labels=['Clip', 'DoomPlayer']
+2026-02-02 13:18:07,693 - INFO - Step 180: Health=100 Ammo=61 Kills=5 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 13:18:08,317 - INFO - Step 200: Health=104 Ammo=61 Kills=5 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 13:18:09,172 - INFO - Step 220: Health=107 Ammo=61 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:18:09,994 - INFO - ============================================================
+2026-02-02 13:18:09,995 - INFO - Episode finished
+2026-02-02 13:18:09,995 - INFO - Total reward: -960.00
+2026-02-02 13:18:09,995 - INFO - Kills: 5
+2026-02-02 13:18:09,995 - INFO - Health lost: 0.00
+2026-02-02 13:18:09,996 - INFO - Actions taken: 240
+2026-02-02 13:18:09,996 - INFO - Episode time: 10.01s
+2026-02-02 13:18:09,996 - INFO - ============================================================

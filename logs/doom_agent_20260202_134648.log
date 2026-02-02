@@ -1,0 +1,171 @@
+2026-02-02 13:46:48,999 - INFO - Starting Doom Agent with WAD: wads\doom2.wad
+2026-02-02 13:46:49,672 - INFO - Game initialized with WAD: wads\doom2.wad
+2026-02-02 13:46:49,672 - INFO - ============================================================
+2026-02-02 13:46:49,673 - INFO - Starting new episode
+2026-02-02 13:46:49,673 - INFO - ============================================================
+2026-02-02 13:46:49,734 - INFO - Episode started successfully
+2026-02-02 13:46:49,735 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 13:46:50,193 - INFO - EXIT SEEKING MODE
+2026-02-02 13:46:50,582 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:50,614 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:50,677 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:50,723 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:50,787 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:50,819 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:50,852 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:50,926 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:50,927 - INFO - Step 20: Health=100 Ammo=56 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:46:50,990 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:51,051 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:51,629 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:51,661 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:51,726 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:51,757 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:51,802 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:51,862 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:51,911 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:51,912 - INFO - Step 40: Health=100 Ammo=52 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:46:51,939 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:51,976 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:52,003 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:52,068 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:52,129 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:52,190 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:52,225 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:52,258 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:52,300 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:52,362 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:52,424 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:52,454 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:52,757 - INFO - Step 60: Health=100 Ammo=50 Kills=2 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Zombieman']
+2026-02-02 13:46:53,573 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:53,646 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:53,646 - INFO - Step 80: Health=100 Ammo=49 Kills=4 Enemies=0 Labels=['Blood', 'DoomPlayer']
+2026-02-02 13:46:53,716 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:53,745 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:53,806 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:53,843 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:53,885 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:53,921 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:53,962 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:53,993 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,057 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,104 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,137 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:54,185 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,228 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,260 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,309 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,372 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,434 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:54,470 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,496 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,532 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,533 - INFO - Step 100: Health=100 Ammo=54 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:46:54,606 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,637 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,670 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:54,706 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,777 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,810 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,841 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,874 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:54,905 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:54,971 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,000 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,030 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,092 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,123 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,156 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:55,191 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,218 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,280 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,312 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,335 - INFO - Step 120: Health=100 Ammo=64 Kills=4 Enemies=1 Labels=['DoomPlayer', 'Stimpack']
+2026-02-02 13:46:55,858 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,889 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:55,925 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:55,998 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,058 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,123 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,156 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,188 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:56,188 - INFO - Step 140: Health=100 Ammo=60 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:46:56,224 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,246 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,293 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,325 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,390 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,423 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:56,459 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,498 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,560 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,591 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,654 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,717 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:56,782 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,857 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,889 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,951 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:56,997 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,059 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:57,096 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,170 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,170 - INFO - Step 160: Health=100 Ammo=60 Kills=4 Enemies=0 Labels=['ArmorBonus', 'DoomPlayer']
+2026-02-02 13:46:57,219 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,246 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,315 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,639 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:57,677 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,720 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,752 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,822 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,863 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,894 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:57,894 - INFO - Step 180: Health=100 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:46:57,961 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:57,997 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,026 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,052 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,084 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,131 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:58,167 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,241 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,272 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,304 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,333 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,363 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:58,431 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,491 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,552 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,614 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,645 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,706 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:58,743 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,818 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,818 - INFO - Step 200: Health=100 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:46:58,867 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,926 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:58,958 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,209 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:59,229 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,257 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,293 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,319 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,352 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,384 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:59,384 - INFO - Step 220: Health=100 Ammo=54 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 13:46:59,419 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,490 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,523 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,571 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,602 - INFO - AUTOMAP MOVE: forward+turn right
+2026-02-02 13:46:59,634 - INFO - AUTOMAP MOVE: forcing forward (turn streak)
+2026-02-02 13:46:59,687 - INFO - ============================================================
+2026-02-02 13:46:59,687 - INFO - Episode finished
+2026-02-02 13:46:59,687 - INFO - Total reward: -908.00
+2026-02-02 13:46:59,688 - INFO - Kills: 4
+2026-02-02 13:46:59,688 - INFO - Health lost: 0.00
+2026-02-02 13:46:59,688 - INFO - Actions taken: 227
+2026-02-02 13:46:59,688 - INFO - Episode time: 10.01s
+2026-02-02 13:46:59,688 - INFO - ============================================================

@@ -1,0 +1,41 @@
+2026-02-02 15:01:33,238 - INFO - Starting Doom Agent with WAD: DOOM\wads\doom2.wad
+2026-02-02 15:01:33,828 - INFO - Game initialized with WAD: DOOM\wads\doom2.wad
+2026-02-02 15:01:33,828 - INFO - ============================================================
+2026-02-02 15:01:33,828 - INFO - Starting new episode
+2026-02-02 15:01:33,828 - INFO - ============================================================
+2026-02-02 15:01:33,842 - INFO - Episode started successfully
+2026-02-02 15:01:33,845 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 15:01:34,047 - INFO - Step 20: Health=100 Ammo=45 Kills=1 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 15:01:34,239 - INFO - Step 40: Health=100 Ammo=46 Kills=-27 Enemies=2 Labels=['Blood', 'DoomPlayer', 'Zombieman']
+2026-02-02 15:01:34,440 - INFO - Step 60: Health=100 Ammo=47 Kills=14 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 15:01:38,807 - INFO - Step 80: Health=100 Ammo=57 Kills=357 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 15:01:39,084 - INFO - Step 100: Health=103 Ammo=57 Kills=797 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 15:01:39,357 - INFO - Step 120: Health=105 Ammo=57 Kills=639 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 15:01:39,674 - INFO - Step 140: Health=108 Ammo=56 Kills=759 Enemies=3 Labels=['BulletPuff', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 15:01:39,885 - INFO - Step 160: Health=93 Ammo=60 Kills=567 Enemies=3 Labels=['Blood', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 15:01:40,243 - INFO - Step 180: Health=93 Ammo=64 Kills=583 Enemies=1 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 15:01:40,720 - INFO - Step 200: Health=93 Ammo=64 Kills=592 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:41,112 - INFO - Step 220: Health=93 Ammo=64 Kills=626 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:41,537 - INFO - Step 240: Health=93 Ammo=64 Kills=727 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 15:01:41,929 - INFO - Step 260: Health=93 Ammo=64 Kills=805 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:42,322 - INFO - Step 280: Health=93 Ammo=64 Kills=707 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:42,697 - INFO - Step 300: Health=93 Ammo=64 Kills=605 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:43,081 - INFO - Step 320: Health=93 Ammo=64 Kills=662 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 15:01:43,516 - INFO - Step 340: Health=93 Ammo=64 Kills=783 Enemies=5 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 15:01:43,896 - INFO - Step 360: Health=93 Ammo=64 Kills=763 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:44,270 - INFO - Step 380: Health=93 Ammo=64 Kills=650 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:44,643 - INFO - Step 400: Health=93 Ammo=64 Kills=619 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:45,124 - INFO - Step 420: Health=93 Ammo=64 Kills=696 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 15:01:45,525 - INFO - Step 440: Health=93 Ammo=64 Kills=811 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:45,890 - INFO - Step 460: Health=93 Ammo=64 Kills=722 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:46,245 - INFO - Step 480: Health=93 Ammo=64 Kills=602 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 15:01:46,626 - INFO - Step 500: Health=93 Ammo=64 Kills=651 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 15:01:46,984 - INFO - Step 520: Health=93 Ammo=64 Kills=765 Enemies=5 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 15:01:47,079 - INFO - ============================================================
+2026-02-02 15:01:47,079 - INFO - Episode finished
+2026-02-02 15:01:47,079 - INFO - Total reward: 0.00
+2026-02-02 15:01:47,080 - INFO - Kills: 667
+2026-02-02 15:01:47,080 - INFO - Health lost: 7.00
+2026-02-02 15:01:47,080 - INFO - Actions taken: 525
+2026-02-02 15:01:47,080 - INFO - Episode time: 13.25s
+2026-02-02 15:01:47,080 - INFO - ============================================================

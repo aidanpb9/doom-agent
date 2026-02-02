@@ -1,0 +1,30 @@
+2026-02-02 03:08:17,842 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 03:08:18,484 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 03:08:18,484 - INFO - ============================================================
+2026-02-02 03:08:18,484 - INFO - Starting new episode
+2026-02-02 03:08:18,484 - INFO - ============================================================
+2026-02-02 03:08:18,547 - INFO - Episode started successfully
+2026-02-02 03:08:18,547 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:08:19,756 - INFO - Step 20: Health=100 Ammo=45 Kills=2 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:08:21,077 - INFO - Step 40: Health=100 Ammo=55 Kills=2 Enemies=3 Labels=['Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:21,779 - INFO - Step 60: Health=100 Ammo=61 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:08:22,691 - INFO - Step 80: Health=100 Ammo=58 Kills=3 Enemies=5 Labels=['ArmorBonus', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:08:23,523 - INFO - Step 100: Health=100 Ammo=53 Kills=5 Enemies=4 Labels=['Blood', 'Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 03:08:24,227 - INFO - Step 120: Health=100 Ammo=67 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:24,791 - INFO - Step 140: Health=100 Ammo=61 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:25,481 - INFO - Step 160: Health=100 Ammo=55 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:26,169 - INFO - Step 180: Health=100 Ammo=50 Kills=5 Enemies=1 Labels=['DoomPlayer', 'Stimpack']
+2026-02-02 03:08:27,031 - INFO - Step 200: Health=100 Ammo=44 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:27,993 - INFO - Step 220: Health=100 Ammo=38 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:29,057 - INFO - Step 240: Health=100 Ammo=32 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:29,795 - INFO - Step 260: Health=100 Ammo=27 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:30,141 - INFO - Step 280: Health=100 Ammo=21 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:30,279 - INFO - Step 300: Health=100 Ammo=15 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:30,411 - INFO - Step 320: Health=100 Ammo=10 Kills=5 Enemies=1 Labels=['DoomPlayer', 'Stimpack']
+2026-02-02 03:08:30,545 - INFO - Step 340: Health=91 Ammo=4 Kills=5 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:08:30,665 - INFO - DAMAGE TAKEN: -5.0 HP - enemy must be present!
+2026-02-02 03:08:30,703 - INFO - Step 360: Health=95 Ammo=0 Kills=5 Enemies=0 Labels=None
+2026-02-02 03:08:30,938 - INFO - Step 380: Health=95 Ammo=0 Kills=5 Enemies=5 Labels=['DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:08:30,995 - INFO - DAMAGE TAKEN: -15.0 HP - enemy must be present!
+2026-02-02 03:08:31,367 - INFO - Step 400: Health=80 Ammo=0 Kills=5 Enemies=5 Labels=['DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:08:31,521 - INFO - Step 420: Health=77 Ammo=0 Kills=5 Enemies=1 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']

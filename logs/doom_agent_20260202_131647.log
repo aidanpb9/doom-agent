@@ -1,0 +1,26 @@
+2026-02-02 13:16:47,712 - INFO - Starting Doom Agent with WAD: wads\doom2.wad
+2026-02-02 13:16:48,406 - INFO - Game initialized with WAD: wads\doom2.wad
+2026-02-02 13:16:48,406 - INFO - ============================================================
+2026-02-02 13:16:48,406 - INFO - Starting new episode
+2026-02-02 13:16:48,407 - INFO - ============================================================
+2026-02-02 13:16:48,546 - INFO - Episode started successfully
+2026-02-02 13:16:48,548 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 13:16:49,304 - INFO - Step 20: Health=100 Ammo=45 Kills=2 Enemies=0 Labels=['ArmorBonus', 'Clip', 'DoomPlayer']
+2026-02-02 13:16:50,319 - INFO - Step 40: Health=100 Ammo=41 Kills=2 Enemies=2 Labels=['ArmorBonus', 'Clip', 'DoomPlayer', 'Zombieman']
+2026-02-02 13:16:51,168 - INFO - Step 60: Health=100 Ammo=35 Kills=4 Enemies=1 Labels=['Clip', 'DoomPlayer', 'Zombieman']
+2026-02-02 13:16:52,016 - INFO - Step 80: Health=100 Ammo=31 Kills=5 Enemies=0 Labels=['Clip', 'DoomPlayer']
+2026-02-02 13:16:53,103 - INFO - Step 100: Health=100 Ammo=41 Kills=5 Enemies=1 Labels=['Clip', 'DoomPlayer', 'Stimpack']
+2026-02-02 13:16:53,910 - INFO - Step 120: Health=100 Ammo=35 Kills=5 Enemies=1 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DoomPlayer', 'Stimpack']
+2026-02-02 13:16:54,622 - INFO - Step 140: Health=100 Ammo=30 Kills=5 Enemies=1 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DoomPlayer', 'Stimpack']
+2026-02-02 13:16:55,253 - INFO - Step 160: Health=100 Ammo=24 Kills=5 Enemies=1 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DoomPlayer', 'Stimpack']
+2026-02-02 13:16:56,260 - INFO - Step 180: Health=100 Ammo=18 Kills=5 Enemies=1 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DoomPlayer', 'Stimpack']
+2026-02-02 13:16:57,030 - INFO - Step 200: Health=100 Ammo=13 Kills=5 Enemies=1 Labels=['ArmorBonus', 'Clip', 'DoomPlayer', 'Stimpack']
+2026-02-02 13:16:57,785 - INFO - Step 220: Health=100 Ammo=7 Kills=5 Enemies=1 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DoomPlayer', 'Stimpack']
+2026-02-02 13:16:58,454 - INFO - ============================================================
+2026-02-02 13:16:58,454 - INFO - Episode finished
+2026-02-02 13:16:58,454 - INFO - Total reward: -936.00
+2026-02-02 13:16:58,454 - INFO - Kills: 5
+2026-02-02 13:16:58,455 - INFO - Health lost: 0.00
+2026-02-02 13:16:58,455 - INFO - Actions taken: 234
+2026-02-02 13:16:58,455 - INFO - Episode time: 10.05s
+2026-02-02 13:16:58,456 - INFO - ============================================================

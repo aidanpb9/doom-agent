@@ -1,0 +1,27 @@
+2026-02-02 03:43:30,400 - INFO - Starting Doom Agent with WAD: DOOM\wads\doom2.wad
+2026-02-02 03:43:31,115 - INFO - Game initialized with WAD: DOOM\wads\doom2.wad
+2026-02-02 03:43:31,116 - INFO - ============================================================
+2026-02-02 03:43:31,116 - INFO - Starting new episode
+2026-02-02 03:43:31,116 - INFO - ============================================================
+2026-02-02 03:43:31,334 - INFO - Episode started successfully
+2026-02-02 03:43:31,335 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:43:32,302 - INFO - Step 20: Health=85 Ammo=44 Kills=1 Enemies=2 Labels=['ArmorBonus', 'Blood', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:43:33,147 - INFO - Step 40: Health=85 Ammo=39 Kills=2 Enemies=4 Labels=['ArmorBonus', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:43:33,977 - INFO - Step 60: Health=85 Ammo=33 Kills=3 Enemies=4 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 03:43:34,054 - INFO - DAMAGE TAKEN: -15.0 HP - enemy must be present!
+2026-02-02 03:43:35,254 - INFO - Step 80: Health=85 Ammo=42 Kills=4 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 03:43:36,016 - INFO - Step 100: Health=85 Ammo=39 Kills=4 Enemies=3 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:43:36,570 - INFO - Step 120: Health=82 Ammo=33 Kills=4 Enemies=3 Labels=['ArmorBonus', 'Blood', 'DeadZombieman', 'DoomPlayer', 'Stimpack', 'Zombieman']
+2026-02-02 03:43:37,272 - INFO - Step 140: Health=82 Ammo=33 Kills=5 Enemies=2 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:43:38,085 - INFO - Step 160: Health=82 Ammo=27 Kills=5 Enemies=2 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:43:38,949 - INFO - Step 180: Health=82 Ammo=21 Kills=5 Enemies=2 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:43:39,794 - INFO - Step 200: Health=82 Ammo=15 Kills=5 Enemies=2 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 03:43:40,755 - ERROR - Error during episode: Controlled ViZDoom instance exited unexpectedly.
+2026-02-02 03:43:40,755 - INFO - ============================================================
+2026-02-02 03:43:40,755 - INFO - Episode finished
+2026-02-02 03:43:40,755 - INFO - Total reward: 0.00
+2026-02-02 03:43:40,757 - INFO - Kills: 5
+2026-02-02 03:43:40,757 - INFO - Health lost: 18.00
+2026-02-02 03:43:40,757 - INFO - Actions taken: 215
+2026-02-02 03:43:40,757 - INFO - Episode time: 9.64s
+2026-02-02 03:43:40,757 - INFO - ============================================================

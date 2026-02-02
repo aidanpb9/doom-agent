@@ -477,6 +477,9 @@ class DoomAgent:
                 stats["actions_taken"] += 1
                 frame_count += 1
                 
+                # Slow down visualization for better viewing
+                time.sleep(0.05)
+                
                 elapsed = time.time() - start_time
                 if elapsed >= self.episode_timeout:
                     break
