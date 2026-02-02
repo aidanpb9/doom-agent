@@ -1,0 +1,227 @@
+2026-02-02 01:11:01,895 - INFO - Starting Doom Agent with WAD: wads/doom1.wad
+2026-02-02 01:11:01,895 - INFO - 
+============================================================
+2026-02-02 01:11:01,895 - INFO - ITERATION 1/5
+2026-02-02 01:11:01,895 - INFO - ============================================================
+
+2026-02-02 01:11:02,634 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:11:02,635 - INFO - ============================================================
+2026-02-02 01:11:02,635 - INFO - Starting new episode
+2026-02-02 01:11:02,635 - INFO - ============================================================
+2026-02-02 01:11:02,712 - INFO - Episode started successfully
+2026-02-02 01:11:02,722 - INFO - Step 0: Health=100, Ammo=50, Pos=(-192.0, -160.0), Actions=['MOVE_RIGHT'], Enemy at (319, 387) conf=0.58
+2026-02-02 01:11:03,228 - INFO - Step 20: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:03,796 - INFO - Step 40: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:04,347 - INFO - Step 60: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:04,898 - INFO - Step 80: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:05,483 - INFO - Step 100: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:06,100 - INFO - Step 120: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:06,682 - INFO - Step 140: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:07,265 - INFO - Step 160: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:07,883 - INFO - Step 180: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:08,371 - INFO - Step 200: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:08,693 - INFO - Step 220: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:09,021 - INFO - Step 240: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:09,345 - INFO - Step 260: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:09,649 - INFO - Step 280: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:09,969 - INFO - Step 300: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:10,306 - INFO - Step 320: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:10,604 - INFO - Step 340: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:10,921 - INFO - Step 360: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:11,245 - INFO - Step 380: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:11,552 - INFO - Step 400: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:11,851 - INFO - Step 420: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:12,152 - INFO - Step 440: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:12,463 - INFO - Step 460: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:12,775 - INFO - Step 480: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:13,096 - INFO - Step 500: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:13,402 - INFO - Step 520: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:13,465 - INFO - ============================================================
+2026-02-02 01:11:13,465 - INFO - Episode finished
+2026-02-02 01:11:13,465 - INFO - Total reward: 0.00
+2026-02-02 01:11:13,465 - INFO - Health lost: 0.00
+2026-02-02 01:11:13,465 - INFO - Actions taken: 525
+2026-02-02 01:11:13,465 - INFO - Episode time: 10.83s
+2026-02-02 01:11:13,465 - INFO - ============================================================
+2026-02-02 01:11:14,506 - INFO - 
+============================================================
+2026-02-02 01:11:14,506 - INFO - ITERATION 2/5
+2026-02-02 01:11:14,506 - INFO - ============================================================
+
+2026-02-02 01:11:15,085 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:11:15,085 - INFO - ============================================================
+2026-02-02 01:11:15,085 - INFO - Starting new episode
+2026-02-02 01:11:15,085 - INFO - ============================================================
+2026-02-02 01:11:15,147 - INFO - Episode started successfully
+2026-02-02 01:11:15,156 - INFO - Step 0: Health=100, Ammo=50, Pos=(-192.0, -160.0), Actions=['MOVE_RIGHT'], Enemy at (319, 387) conf=0.58
+2026-02-02 01:11:15,569 - INFO - Step 20: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:16,082 - INFO - Step 40: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:16,538 - INFO - Step 60: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:16,959 - INFO - Step 80: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:17,384 - INFO - Step 100: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:17,717 - INFO - Step 120: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:18,028 - INFO - Step 140: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:18,376 - INFO - Step 160: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:18,693 - INFO - Step 180: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:18,986 - INFO - Step 200: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:19,279 - INFO - Step 220: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:19,595 - INFO - Step 240: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:19,910 - INFO - Step 260: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:20,227 - INFO - Step 280: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:20,559 - INFO - Step 300: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:20,860 - INFO - Step 320: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:21,170 - INFO - Step 340: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:21,484 - INFO - Step 360: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:21,817 - INFO - Step 380: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:22,127 - INFO - Step 400: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:22,439 - INFO - Step 420: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:22,821 - INFO - Step 440: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:23,124 - INFO - Step 460: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:23,453 - INFO - Step 480: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:23,752 - INFO - Step 500: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:24,079 - INFO - Step 520: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:24,163 - INFO - ============================================================
+2026-02-02 01:11:24,163 - INFO - Episode finished
+2026-02-02 01:11:24,163 - INFO - Total reward: 0.00
+2026-02-02 01:11:24,163 - INFO - Health lost: 0.00
+2026-02-02 01:11:24,163 - INFO - Actions taken: 525
+2026-02-02 01:11:24,163 - INFO - Episode time: 9.08s
+2026-02-02 01:11:24,163 - INFO - ============================================================
+2026-02-02 01:11:25,214 - INFO - 
+============================================================
+2026-02-02 01:11:25,214 - INFO - ITERATION 3/5
+2026-02-02 01:11:25,214 - INFO - ============================================================
+
+2026-02-02 01:11:25,891 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:11:25,891 - INFO - ============================================================
+2026-02-02 01:11:25,891 - INFO - Starting new episode
+2026-02-02 01:11:25,891 - INFO - ============================================================
+2026-02-02 01:11:25,953 - INFO - Episode started successfully
+2026-02-02 01:11:25,963 - INFO - Step 0: Health=100, Ammo=50, Pos=(-192.0, -160.0), Actions=['MOVE_RIGHT'], Enemy at (319, 387) conf=0.58
+2026-02-02 01:11:26,464 - INFO - Step 20: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:26,995 - INFO - Step 40: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:27,498 - INFO - Step 60: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:28,079 - INFO - Step 80: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:28,525 - INFO - Step 100: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:28,894 - INFO - Step 120: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:29,223 - INFO - Step 140: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:29,582 - INFO - Step 160: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:29,881 - INFO - Step 180: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:30,189 - INFO - Step 200: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:30,536 - INFO - Step 220: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:30,889 - INFO - Step 240: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:31,213 - INFO - Step 260: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:31,546 - INFO - Step 280: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:31,892 - INFO - Step 300: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:32,203 - INFO - Step 320: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:32,502 - INFO - Step 340: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:32,820 - INFO - Step 360: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:33,159 - INFO - Step 380: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:33,469 - INFO - Step 400: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:33,787 - INFO - Step 420: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:34,083 - INFO - Step 440: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:34,475 - INFO - Step 460: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:34,785 - INFO - Step 480: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:35,115 - INFO - Step 500: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:35,453 - INFO - Step 520: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:35,535 - INFO - ============================================================
+2026-02-02 01:11:35,535 - INFO - Episode finished
+2026-02-02 01:11:35,535 - INFO - Total reward: 0.00
+2026-02-02 01:11:35,535 - INFO - Health lost: 0.00
+2026-02-02 01:11:35,536 - INFO - Actions taken: 525
+2026-02-02 01:11:35,536 - INFO - Episode time: 9.64s
+2026-02-02 01:11:35,536 - INFO - ============================================================
+2026-02-02 01:11:36,574 - INFO - 
+============================================================
+2026-02-02 01:11:36,574 - INFO - ITERATION 4/5
+2026-02-02 01:11:36,574 - INFO - ============================================================
+
+2026-02-02 01:11:37,145 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:11:37,145 - INFO - ============================================================
+2026-02-02 01:11:37,146 - INFO - Starting new episode
+2026-02-02 01:11:37,146 - INFO - ============================================================
+2026-02-02 01:11:37,207 - INFO - Episode started successfully
+2026-02-02 01:11:37,217 - INFO - Step 0: Health=100, Ammo=50, Pos=(-192.0, -160.0), Actions=['MOVE_RIGHT'], Enemy at (319, 387) conf=0.58
+2026-02-02 01:11:37,749 - INFO - Step 20: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:38,301 - INFO - Step 40: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:38,790 - INFO - Step 60: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:39,279 - INFO - Step 80: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:39,718 - INFO - Step 100: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:40,125 - INFO - Step 120: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:40,519 - INFO - Step 140: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:40,821 - INFO - Step 160: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:41,118 - INFO - Step 180: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:41,495 - INFO - Step 200: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:41,794 - INFO - Step 220: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:42,129 - INFO - Step 240: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:42,756 - INFO - Step 260: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:43,334 - INFO - Step 280: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:44,048 - INFO - Step 300: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:44,671 - INFO - Step 320: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:45,274 - INFO - Step 340: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:45,867 - INFO - Step 360: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:46,482 - INFO - Step 380: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:47,100 - INFO - Step 400: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:47,695 - INFO - Step 420: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:48,208 - INFO - Step 440: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:48,819 - INFO - Step 460: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:49,308 - INFO - Step 480: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:49,871 - INFO - Step 500: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:50,402 - INFO - Step 520: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:50,556 - INFO - ============================================================
+2026-02-02 01:11:50,556 - INFO - Episode finished
+2026-02-02 01:11:50,556 - INFO - Total reward: 0.00
+2026-02-02 01:11:50,556 - INFO - Health lost: 0.00
+2026-02-02 01:11:50,556 - INFO - Actions taken: 525
+2026-02-02 01:11:50,556 - INFO - Episode time: 13.41s
+2026-02-02 01:11:50,556 - INFO - ============================================================
+2026-02-02 01:11:51,608 - INFO - 
+============================================================
+2026-02-02 01:11:51,608 - INFO - ITERATION 5/5
+2026-02-02 01:11:51,608 - INFO - ============================================================
+
+2026-02-02 01:11:52,322 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:11:52,322 - INFO - ============================================================
+2026-02-02 01:11:52,322 - INFO - Starting new episode
+2026-02-02 01:11:52,322 - INFO - ============================================================
+2026-02-02 01:11:52,352 - INFO - Episode started successfully
+2026-02-02 01:11:52,371 - INFO - Step 0: Health=100, Ammo=50, Pos=(-192.0, -160.0), Actions=['MOVE_RIGHT'], Enemy at (319, 387) conf=0.58
+2026-02-02 01:11:52,973 - INFO - Step 20: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:53,579 - INFO - Step 40: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:54,207 - INFO - Step 60: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:54,829 - INFO - Step 80: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:55,415 - INFO - Step 100: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:56,040 - INFO - Step 120: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:56,646 - INFO - Step 140: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:57,208 - INFO - Step 160: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:57,891 - INFO - Step 180: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:11:58,389 - INFO - Step 200: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:58,929 - INFO - Step 220: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:11:59,500 - INFO - Step 240: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:12:00,116 - INFO - Step 260: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:12:00,743 - INFO - Step 280: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:12:01,359 - INFO - Step 300: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:12:01,993 - INFO - Step 320: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:12:02,567 - INFO - Step 340: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:12:03,214 - INFO - Step 360: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:12:03,706 - INFO - Step 380: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:12:04,171 - INFO - Step 400: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:12:04,814 - INFO - Step 420: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:12:05,442 - INFO - Step 440: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (316, 362) conf=1.00
+2026-02-02 01:12:06,014 - INFO - Step 460: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:12:06,309 - INFO - Step 480: Health=100, Ammo=50, Pos=(-192.0, -240.0), Actions=['MOVE_RIGHT'], Enemy at (315, 362) conf=1.00
+2026-02-02 01:12:06,835 - INFO - ============================================================
+2026-02-02 01:12:06,835 - INFO - Episode finished
+2026-02-02 01:12:06,835 - INFO - Total reward: 0.00
+2026-02-02 01:12:06,835 - INFO - Health lost: 0.00
+2026-02-02 01:12:06,835 - INFO - Actions taken: 499
+2026-02-02 01:12:06,835 - INFO - Episode time: 14.51s
+2026-02-02 01:12:06,835 - INFO - ============================================================
+2026-02-02 01:12:07,913 - INFO - 
+============================================================
+2026-02-02 01:12:07,913 - INFO - FINAL SUMMARY
+2026-02-02 01:12:07,913 - INFO - ============================================================
+2026-02-02 01:12:07,913 - INFO - Average reward: 0.00
+2026-02-02 01:12:07,913 - INFO - Average health lost: 0.00
+2026-02-02 01:12:07,914 - INFO - 
+Results saved to: logs

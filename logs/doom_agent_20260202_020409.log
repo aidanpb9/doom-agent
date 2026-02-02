@@ -1,0 +1,44 @@
+2026-02-02 02:04:09,705 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:04:10,422 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:04:10,422 - INFO - ============================================================
+2026-02-02 02:04:10,422 - INFO - Starting new episode
+2026-02-02 02:04:10,422 - INFO - ============================================================
+2026-02-02 02:04:10,516 - INFO - Episode started successfully
+2026-02-02 02:04:10,518 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['ATTACK'], Enemy: 304,254 conf=0.87
+2026-02-02 02:04:10,674 - INFO - ESCAPE MODE 1 (stuck_counter=4): pattern=1
+2026-02-02 02:04:10,735 - INFO - ESCAPE MODE 1 (stuck_counter=5): pattern=1
+2026-02-02 02:04:10,800 - INFO - ESCAPE MODE 1 (stuck_counter=6): pattern=1
+2026-02-02 02:04:10,816 - INFO - ESCAPE MODE 1 (stuck_counter=7): pattern=1
+2026-02-02 02:04:10,877 - INFO - ESCAPE MODE 2 PANIC (stuck_counter=8): panic_move=5
+2026-02-02 02:04:10,892 - INFO - ESCAPE MODE 2 PANIC (stuck_counter=11): panic_move=2
+2026-02-02 02:04:10,908 - INFO - ESCAPE MODE 2 PANIC (stuck_counter=10): panic_move=7
+2026-02-02 02:04:10,954 - INFO - ESCAPE MODE 2 PANIC (stuck_counter=9): panic_move=4
+2026-02-02 02:04:10,970 - INFO - ESCAPE MODE 2 PANIC (stuck_counter=8): panic_move=1
+2026-02-02 02:04:11,032 - INFO - ESCAPE MODE 1 (stuck_counter=7): pattern=7
+2026-02-02 02:04:11,049 - INFO - KILL! Total kills: 1
+2026-02-02 02:04:11,049 - INFO - ESCAPE MODE 1 (stuck_counter=6): pattern=9
+2026-02-02 02:04:11,064 - INFO - ESCAPE MODE 1 (stuck_counter=5): pattern=11
+2026-02-02 02:04:11,081 - INFO - ESCAPE MODE 1 (stuck_counter=4): pattern=1
+2026-02-02 02:04:11,191 - INFO - Step 20: Health=100 Ammo=49 Kills=1 Pos=(-28.3,868.4) Labels=5 EnemiesVisible=2 Actions=['MOVE_RIGHT'], Enemy: 159,183 conf=1.00
+2026-02-02 02:04:12,043 - INFO - Step 40: Health=100 Ammo=49 Kills=1 Pos=(-14.4,885.5) Labels=6 EnemiesVisible=3 Actions=['MOVE_RIGHT'], Enemy: 134,206 conf=1.00
+2026-02-02 02:04:12,575 - INFO - Step 60: Health=100 Ammo=49 Kills=1 Pos=(-14.4,885.5) Labels=7 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 121,187 conf=1.00
+2026-02-02 02:04:13,377 - INFO - Step 80: Health=91 Ammo=49 Kills=1 Pos=(-14.4,885.5) Labels=8 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 161,178 conf=1.00
+2026-02-02 02:04:14,255 - INFO - Step 100: Health=91 Ammo=49 Kills=1 Pos=(-13.3,873.5) Labels=7 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 72,206 conf=1.00
+2026-02-02 02:04:15,083 - INFO - Step 120: Health=91 Ammo=49 Kills=1 Pos=(-13.3,873.5) Labels=9 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 102,188 conf=1.00
+2026-02-02 02:04:15,805 - INFO - KILL! Total kills: 2
+2026-02-02 02:04:16,104 - INFO - Step 140: Health=91 Ammo=49 Kills=2 Pos=(-13.3,873.5) Labels=8 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 130,186 conf=1.00
+2026-02-02 02:04:16,876 - INFO - Step 160: Health=79 Ammo=49 Kills=2 Pos=(-14.1,857.6) Labels=8 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 75,202 conf=1.00
+2026-02-02 02:04:17,682 - INFO - Step 180: Health=64 Ammo=49 Kills=2 Pos=(-9.7,850.9) Labels=7 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 97,201 conf=1.00
+2026-02-02 02:04:17,841 - INFO - KILL! Total kills: 3
+2026-02-02 02:04:18,481 - INFO - Step 200: Health=64 Ammo=49 Kills=3 Pos=(-9.4,851.2) Labels=8 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 95,203 conf=1.00
+2026-02-02 02:04:19,166 - INFO - Step 220: Health=64 Ammo=49 Kills=3 Pos=(-9.4,851.2) Labels=8 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 65,207 conf=1.00
+2026-02-02 02:04:19,834 - INFO - Step 240: Health=64 Ammo=49 Kills=3 Pos=(-9.4,851.2) Labels=8 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 88,205 conf=1.00
+2026-02-02 02:04:20,531 - INFO - ============================================================
+2026-02-02 02:04:20,531 - INFO - Episode finished
+2026-02-02 02:04:20,531 - INFO - Total reward: 0.00
+2026-02-02 02:04:20,531 - INFO - Kills: 3
+2026-02-02 02:04:20,531 - INFO - Health lost: 36.00
+2026-02-02 02:04:20,531 - INFO - Ammo used: 1
+2026-02-02 02:04:20,532 - INFO - Actions taken: 256
+2026-02-02 02:04:20,532 - INFO - Episode time: 10.11s
+2026-02-02 02:04:20,532 - INFO - ============================================================

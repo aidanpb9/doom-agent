@@ -1,0 +1,113 @@
+2026-02-02 01:02:03,425 - INFO - Starting Doom Agent with WAD: wads/doom1.wad
+2026-02-02 01:02:03,425 - INFO - 
+============================================================
+2026-02-02 01:02:03,425 - INFO - ITERATION 1/3
+2026-02-02 01:02:03,425 - INFO - ============================================================
+
+2026-02-02 01:02:03,429 - INFO - Using Vizdoom built-in scenario: basic.cfg
+2026-02-02 01:02:03,429 - INFO - Using custom WAD: wads/doom1.wad
+2026-02-02 01:02:03,868 - INFO - Game initialized successfully
+2026-02-02 01:02:03,868 - INFO - ============================================================
+2026-02-02 01:02:03,869 - INFO - Starting new episode
+2026-02-02 01:02:03,869 - INFO - ============================================================
+2026-02-02 01:02:03,871 - INFO - Episode started successfully
+2026-02-02 01:02:03,878 - INFO - Step 0: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:03,884 - INFO - Step 1: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:03,901 - INFO - Step 2: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:03,915 - INFO - Step 3: Health=100, Ammo=50.0, Kills=0, Actions=['RIGHT_TURN']
+2026-02-02 01:02:03,932 - INFO - Step 4: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:03,947 - INFO - Step 5: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:03,962 - INFO - Step 6: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:03,978 - INFO - Step 7: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:03,994 - INFO - Step 8: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:04,010 - INFO - Step 9: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:04,025 - INFO - Step 10: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD', 'LEFT_TURN']
+2026-02-02 01:02:04,041 - INFO - Step 11: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:04,058 - INFO - Step 12: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:04,072 - INFO - Step 13: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:04,089 - INFO - Step 14: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD', 'LEFT_TURN']
+2026-02-02 01:02:04,104 - INFO - Step 15: Health=100, Ammo=49.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:04,120 - INFO - ============================================================
+2026-02-02 01:02:04,120 - INFO - Episode finished
+2026-02-02 01:02:04,120 - INFO - Total reward: 90.00
+2026-02-02 01:02:04,120 - INFO - Kills: 0
+2026-02-02 01:02:04,120 - INFO - Health lost: 0
+2026-02-02 01:02:04,120 - INFO - Actions taken: 16
+2026-02-02 01:02:04,120 - INFO - Episode time: 0.25s
+2026-02-02 01:02:04,120 - INFO - ============================================================
+2026-02-02 01:02:04,140 - INFO - Game closed
+2026-02-02 01:02:06,152 - INFO - 
+============================================================
+2026-02-02 01:02:06,152 - INFO - ITERATION 2/3
+2026-02-02 01:02:06,152 - INFO - ============================================================
+
+2026-02-02 01:02:06,152 - INFO - Using Vizdoom built-in scenario: basic.cfg
+2026-02-02 01:02:06,153 - INFO - Using custom WAD: wads/doom1.wad
+2026-02-02 01:02:06,648 - INFO - Game initialized successfully
+2026-02-02 01:02:06,648 - INFO - ============================================================
+2026-02-02 01:02:06,648 - INFO - Starting new episode
+2026-02-02 01:02:06,648 - INFO - ============================================================
+2026-02-02 01:02:06,664 - INFO - Episode started successfully
+2026-02-02 01:02:06,665 - INFO - Step 0: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD', 'RIGHT_TURN']
+2026-02-02 01:02:06,680 - INFO - Step 1: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD', 'RIGHT_TURN']
+2026-02-02 01:02:06,695 - INFO - Step 2: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:06,710 - INFO - Step 3: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:06,726 - INFO - Step 4: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:06,742 - INFO - Step 5: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD', 'LEFT_TURN']
+2026-02-02 01:02:06,758 - INFO - Step 6: Health=100, Ammo=50.0, Kills=0, Actions=['LEFT_TURN']
+2026-02-02 01:02:06,773 - INFO - Step 7: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:06,789 - INFO - Step 8: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:06,805 - INFO - Step 9: Health=100, Ammo=50.0, Kills=0, Actions=['LEFT_TURN']
+2026-02-02 01:02:06,821 - INFO - Step 10: Health=100, Ammo=49.0, Kills=0, Actions=['LEFT_TURN']
+2026-02-02 01:02:06,837 - INFO - ============================================================
+2026-02-02 01:02:06,837 - INFO - Episode finished
+2026-02-02 01:02:06,837 - INFO - Total reward: 95.00
+2026-02-02 01:02:06,837 - INFO - Kills: 0
+2026-02-02 01:02:06,837 - INFO - Health lost: 0
+2026-02-02 01:02:06,837 - INFO - Actions taken: 11
+2026-02-02 01:02:06,837 - INFO - Episode time: 0.19s
+2026-02-02 01:02:06,837 - INFO - ============================================================
+2026-02-02 01:02:06,874 - INFO - Game closed
+2026-02-02 01:02:08,875 - INFO - 
+============================================================
+2026-02-02 01:02:08,875 - INFO - ITERATION 3/3
+2026-02-02 01:02:08,875 - INFO - ============================================================
+
+2026-02-02 01:02:08,875 - INFO - Using Vizdoom built-in scenario: basic.cfg
+2026-02-02 01:02:08,876 - INFO - Using custom WAD: wads/doom1.wad
+2026-02-02 01:02:09,351 - INFO - Game initialized successfully
+2026-02-02 01:02:09,351 - INFO - ============================================================
+2026-02-02 01:02:09,351 - INFO - Starting new episode
+2026-02-02 01:02:09,351 - INFO - ============================================================
+2026-02-02 01:02:09,478 - INFO - Episode started successfully
+2026-02-02 01:02:09,479 - INFO - Step 0: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:09,494 - INFO - Step 1: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:09,511 - INFO - Step 2: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:09,527 - INFO - Step 3: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:09,542 - INFO - Step 4: Health=100, Ammo=50.0, Kills=0, Actions=['LEFT_TURN']
+2026-02-02 01:02:09,558 - INFO - Step 5: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD', 'LEFT_TURN']
+2026-02-02 01:02:09,573 - INFO - Step 6: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:09,589 - INFO - Step 7: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:09,605 - INFO - Step 8: Health=100, Ammo=50.0, Kills=0, Actions=['FORWARD']
+2026-02-02 01:02:09,621 - INFO - Step 9: Health=100, Ammo=49.0, Kills=0, Actions=['FORWARD', 'LEFT_TURN']
+2026-02-02 01:02:09,636 - INFO - ============================================================
+2026-02-02 01:02:09,636 - INFO - Episode finished
+2026-02-02 01:02:09,636 - INFO - Total reward: 96.00
+2026-02-02 01:02:09,636 - INFO - Kills: 0
+2026-02-02 01:02:09,636 - INFO - Health lost: 0
+2026-02-02 01:02:09,636 - INFO - Actions taken: 10
+2026-02-02 01:02:09,636 - INFO - Episode time: 0.28s
+2026-02-02 01:02:09,636 - INFO - ============================================================
+2026-02-02 01:02:09,670 - INFO - Game closed
+2026-02-02 01:02:11,671 - INFO - 
+============================================================
+2026-02-02 01:02:11,671 - INFO - FINAL SUMMARY
+2026-02-02 01:02:11,671 - INFO - ============================================================
+2026-02-02 01:02:11,671 - INFO - Average kills: 0.00
+2026-02-02 01:02:11,671 - INFO - Average reward: 93.67
+2026-02-02 01:02:11,671 - INFO - Average health lost: 0.00
+2026-02-02 01:02:11,671 - INFO - 
+Best iteration: 1 (Kills: 0)
+2026-02-02 01:02:11,672 - INFO - 
+Results saved to: logs
+2026-02-02 01:02:11,672 - INFO - Summary saved to: logs\summary.json

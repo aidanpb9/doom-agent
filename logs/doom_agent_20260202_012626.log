@@ -1,0 +1,59 @@
+2026-02-02 01:26:26,078 - INFO - Starting Doom Agent with WAD: wads\doom1.wad
+2026-02-02 01:26:26,838 - INFO - Game initialized with WAD: wads\doom1.wad
+2026-02-02 01:26:26,838 - INFO - ============================================================
+2026-02-02 01:26:26,839 - INFO - Starting new episode
+2026-02-02 01:26:26,839 - INFO - ============================================================
+2026-02-02 01:26:26,899 - INFO - Episode started successfully
+2026-02-02 01:26:26,903 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Pos=(1056.0,-3616.0) Labels=7 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:26:26,903 - INFO - Label sample (no enemies matched): ['DeadMarine', 'ExplosiveBarrel', 'ArmorBonus', 'ArmorBonus', 'GibbedMarine', 'ExplosiveBarrel', 'DoomPlayer']
+2026-02-02 01:26:27,481 - INFO - Step 20: Health=100 Ammo=50 Kills=0 Pos=(1090.0,-3031.1) Labels=2 EnemiesVisible=0 Actions=['FORWARD', 'MOVE_LEFT']
+2026-02-02 01:26:27,481 - INFO - Label sample (no enemies matched): ['ExplosiveBarrel', 'DoomPlayer']
+2026-02-02 01:26:28,285 - INFO - Step 40: Health=100 Ammo=50 Kills=0 Pos=(1349.6,-2708.7) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:26:28,285 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:29,074 - INFO - Step 60: Health=100 Ammo=50 Kills=0 Pos=(1520.0,-2448.1) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:26:29,074 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:29,690 - INFO - Step 80: Health=100 Ammo=50 Kills=0 Pos=(1502.6,-2448.0) Labels=1 EnemiesVisible=0 Actions=['RIGHT_TURN']
+2026-02-02 01:26:29,691 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:30,558 - INFO - Step 100: Health=100 Ammo=47 Kills=0 Pos=(1458.6,-2460.6) Labels=7 EnemiesVisible=2 Actions=['MOVE_LEFT', 'ATTACK'], Enemy: 484,212 conf=0.33
+2026-02-02 01:26:31,268 - INFO - Step 120: Health=100 Ammo=42 Kills=0 Pos=(1404.8,-2483.7) Labels=2 EnemiesVisible=0 Actions=['FORWARD', 'ATTACK']
+2026-02-02 01:26:31,268 - INFO - Label sample (no enemies matched): ['DeadMarine', 'DoomPlayer']
+2026-02-02 01:26:31,865 - INFO - Step 140: Health=100 Ammo=40 Kills=0 Pos=(1519.7,-2448.0) Labels=1 EnemiesVisible=0 Actions=['MOVE_LEFT']
+2026-02-02 01:26:31,866 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:32,414 - INFO - Step 160: Health=100 Ammo=40 Kills=0 Pos=(1520.0,-2448.0) Labels=1 EnemiesVisible=0 Actions=['FORWARD', 'RIGHT_TURN']
+2026-02-02 01:26:32,415 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:33,030 - INFO - Step 180: Health=100 Ammo=39 Kills=0 Pos=(1534.3,-2544.0) Labels=4 EnemiesVisible=0 Actions=['FORWARD', 'ATTACK']
+2026-02-02 01:26:33,031 - INFO - Label sample (no enemies matched): ['BulletPuff', 'ArmorBonus', 'ArmorBonus', 'DoomPlayer']
+2026-02-02 01:26:33,614 - INFO - Step 200: Health=82 Ammo=38 Kills=0 Pos=(1798.4,-2736.0) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:26:33,614 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:34,387 - INFO - Step 220: Health=82 Ammo=38 Kills=0 Pos=(2046.7,-2736.0) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:26:34,388 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:34,465 - INFO - KILL! Total kills: 1
+2026-02-02 01:26:34,953 - INFO - Step 240: Health=82 Ammo=38 Kills=1 Pos=(2252.0,-2736.0) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:26:34,954 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:35,693 - INFO - Step 260: Health=82 Ammo=38 Kills=1 Pos=(2242.6,-2693.0) Labels=1 EnemiesVisible=0 Actions=['RIGHT_TURN']
+2026-02-02 01:26:35,693 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:36,367 - INFO - Step 280: Health=82 Ammo=38 Kills=1 Pos=(2277.6,-2689.4) Labels=2 EnemiesVisible=0 Actions=['RIGHT_TURN']
+2026-02-02 01:26:36,368 - INFO - Label sample (no enemies matched): ['HealthBonus', 'DoomPlayer']
+2026-02-02 01:26:37,191 - INFO - Step 300: Health=82 Ammo=36 Kills=1 Pos=(2271.9,-2736.0) Labels=2 EnemiesVisible=0 Actions=['FORWARD', 'RIGHT_TURN']
+2026-02-02 01:26:37,191 - INFO - Label sample (no enemies matched): ['BulletPuff', 'DoomPlayer']
+2026-02-02 01:26:37,882 - INFO - Step 320: Health=70 Ammo=36 Kills=1 Pos=(1941.2,-2736.0) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:26:37,883 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:38,539 - INFO - Step 340: Health=70 Ammo=36 Kills=1 Pos=(1680.9,-2736.0) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:26:38,540 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:39,565 - INFO - Step 360: Health=61 Ammo=36 Kills=1 Pos=(1680.1,-2736.0) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:26:39,566 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:40,292 - INFO - Step 380: Health=58 Ammo=34 Kills=1 Pos=(1779.9,-2736.0) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:26:40,292 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:41,049 - INFO - Step 400: Health=52 Ammo=34 Kills=1 Pos=(1957.5,-2736.0) Labels=1 EnemiesVisible=0 Actions=['FORWARD', 'MOVE_LEFT']
+2026-02-02 01:26:41,050 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:41,695 - INFO - Step 420: Health=34 Ammo=34 Kills=1 Pos=(2000.1,-2736.0) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:26:41,695 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:26:41,896 - INFO - ============================================================
+2026-02-02 01:26:41,897 - INFO - Episode finished
+2026-02-02 01:26:41,897 - INFO - Total reward: 0.00
+2026-02-02 01:26:41,897 - INFO - Kills: 1
+2026-02-02 01:26:41,897 - INFO - Health lost: 66.00
+2026-02-02 01:26:41,898 - INFO - Ammo used: 16
+2026-02-02 01:26:41,898 - INFO - Actions taken: 427
+2026-02-02 01:26:41,898 - INFO - Episode time: 15.06s
+2026-02-02 01:26:41,898 - INFO - ============================================================

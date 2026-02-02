@@ -1,0 +1,594 @@
+2026-02-02 01:06:31,897 - INFO - Starting Doom Agent with WAD: wads/doom1.wad
+2026-02-02 01:06:31,897 - INFO - 
+============================================================
+2026-02-02 01:06:31,897 - INFO - ITERATION 1/5
+2026-02-02 01:06:31,897 - INFO - ============================================================
+
+2026-02-02 01:06:32,523 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:06:32,523 - INFO - ============================================================
+2026-02-02 01:06:32,523 - INFO - Starting new episode
+2026-02-02 01:06:32,524 - INFO - ============================================================
+2026-02-02 01:06:32,594 - INFO - Step 0: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (298, 341)
+2026-02-02 01:06:32,904 - INFO - Step 20: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (292, 125)
+2026-02-02 01:06:33,219 - INFO - Step 40: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (273, 68)
+2026-02-02 01:06:33,532 - INFO - Step 60: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (179, 334)
+2026-02-02 01:06:33,850 - INFO - Step 80: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (243, 333)
+2026-02-02 01:06:34,167 - INFO - Step 100: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (231, 344)
+2026-02-02 01:06:34,480 - INFO - Step 120: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:34,792 - INFO - Step 140: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:35,102 - INFO - Step 160: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:35,412 - INFO - Step 180: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:06:35,721 - INFO - Step 200: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:36,033 - INFO - Step 220: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:06:36,350 - INFO - Step 240: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:36,665 - INFO - Step 260: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:36,979 - INFO - Step 280: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:37,294 - INFO - Step 300: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:37,611 - INFO - Step 320: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:37,922 - INFO - Step 340: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:38,243 - INFO - Step 360: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:38,555 - INFO - Step 380: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:38,869 - INFO - Step 400: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:39,187 - INFO - Step 420: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:06:39,503 - INFO - Step 440: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:39,817 - INFO - Step 460: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:06:40,132 - INFO - Step 480: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:40,447 - INFO - Step 500: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:40,763 - INFO - Step 520: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:06:41,078 - INFO - Step 540: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:41,395 - INFO - Step 560: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:41,708 - INFO - Step 580: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:42,021 - INFO - Step 600: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:42,333 - INFO - Step 620: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:42,648 - INFO - Step 640: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:06:42,963 - INFO - Step 660: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:43,279 - INFO - Step 680: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:06:43,596 - INFO - Step 700: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:43,942 - INFO - Step 720: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (209, 332)
+2026-02-02 01:06:44,258 - INFO - Step 740: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:44,569 - INFO - Step 760: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:06:44,886 - INFO - Step 780: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:45,201 - INFO - Step 800: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:45,516 - INFO - Step 820: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:45,832 - INFO - Step 840: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:06:46,150 - INFO - Step 860: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:46,463 - INFO - Step 880: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:46,780 - INFO - Step 900: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:47,096 - INFO - Step 920: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:47,413 - INFO - Step 940: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:47,729 - INFO - Step 960: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:48,039 - INFO - Step 980: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:48,353 - INFO - Step 1000: Health=100, Ammo=50, Actions=['MOVE_RIGHT'], Enemy(L) at (303, 349)
+2026-02-02 01:06:48,672 - INFO - Step 1020: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:06:48,984 - INFO - Step 1040: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (121, 346)
+2026-02-02 01:06:49,300 - INFO - Step 1060: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (100, 310)
+2026-02-02 01:06:49,616 - INFO - Step 1080: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (126, 355)
+2026-02-02 01:06:49,933 - INFO - Step 1100: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (136, 324)
+2026-02-02 01:06:50,249 - INFO - Step 1120: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (143, 350)
+2026-02-02 01:06:50,562 - INFO - Step 1140: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (111, 377)
+2026-02-02 01:06:50,880 - INFO - Step 1160: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:51,195 - INFO - Step 1180: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (56, 227)
+2026-02-02 01:06:51,512 - INFO - Step 1200: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:51,822 - INFO - Step 1220: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:52,138 - INFO - Step 1240: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (55, 225)
+2026-02-02 01:06:52,453 - INFO - Step 1260: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:52,763 - INFO - Step 1280: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:53,074 - INFO - Step 1300: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:53,387 - INFO - Step 1320: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:53,699 - INFO - Step 1340: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:54,013 - INFO - Step 1360: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (56, 225)
+2026-02-02 01:06:54,324 - INFO - Step 1380: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:54,637 - INFO - Step 1400: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:54,948 - INFO - Step 1420: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (56, 225)
+2026-02-02 01:06:55,262 - INFO - Step 1440: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (57, 226)
+2026-02-02 01:06:55,577 - INFO - Step 1460: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:55,893 - INFO - Step 1480: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:56,206 - INFO - Step 1500: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (55, 227)
+2026-02-02 01:06:56,517 - INFO - Step 1520: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:56,833 - INFO - Step 1540: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:57,148 - INFO - Step 1560: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:57,463 - INFO - Step 1580: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:57,778 - INFO - Step 1600: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:58,091 - INFO - Step 1620: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (55, 226)
+2026-02-02 01:06:58,408 - INFO - Step 1640: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (57, 225)
+2026-02-02 01:06:58,725 - INFO - Step 1660: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:59,042 - INFO - Step 1680: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:59,358 - INFO - Step 1700: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:06:59,670 - INFO - Step 1720: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (57, 225)
+2026-02-02 01:06:59,984 - INFO - Step 1740: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:00,302 - INFO - Step 1760: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (58, 226)
+2026-02-02 01:07:00,615 - INFO - Step 1780: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (55, 227)
+2026-02-02 01:07:00,940 - INFO - Step 1800: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:01,256 - INFO - Step 1820: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (55, 227)
+2026-02-02 01:07:01,572 - INFO - Step 1840: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:01,886 - INFO - Step 1860: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:02,203 - INFO - Step 1880: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (55, 227)
+2026-02-02 01:07:02,516 - INFO - Step 1900: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:02,830 - INFO - Step 1920: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:03,147 - INFO - Step 1940: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (55, 225)
+2026-02-02 01:07:03,464 - INFO - Step 1960: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:03,782 - INFO - Step 1980: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:04,090 - INFO - Step 2000: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:04,402 - INFO - Step 2020: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:04,715 - INFO - Step 2040: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (55, 225)
+2026-02-02 01:07:05,030 - INFO - Step 2060: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:05,345 - INFO - Step 2080: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:07:05,569 - INFO - ============================================================
+2026-02-02 01:07:05,569 - INFO - Episode finished
+2026-02-02 01:07:05,569 - INFO - Total reward: 0.00
+2026-02-02 01:07:05,569 - INFO - Health lost: 0.00
+2026-02-02 01:07:05,569 - INFO - Actions taken: 2100
+2026-02-02 01:07:05,569 - INFO - Episode time: 33.05s
+2026-02-02 01:07:05,569 - INFO - ============================================================
+2026-02-02 01:07:06,615 - INFO - 
+============================================================
+2026-02-02 01:07:06,615 - INFO - ITERATION 2/5
+2026-02-02 01:07:06,615 - INFO - ============================================================
+
+2026-02-02 01:07:07,282 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:07:07,282 - INFO - ============================================================
+2026-02-02 01:07:07,282 - INFO - Starting new episode
+2026-02-02 01:07:07,282 - INFO - ============================================================
+2026-02-02 01:07:07,349 - INFO - Step 0: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (298, 341)
+2026-02-02 01:07:07,662 - INFO - Step 20: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (292, 125)
+2026-02-02 01:07:07,979 - INFO - Step 40: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (273, 68)
+2026-02-02 01:07:08,295 - INFO - Step 60: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (179, 334)
+2026-02-02 01:07:08,609 - INFO - Step 80: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (243, 333)
+2026-02-02 01:07:08,923 - INFO - Step 100: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (231, 344)
+2026-02-02 01:07:09,240 - INFO - Step 120: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:07:09,553 - INFO - Step 140: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:09,866 - INFO - Step 160: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:07:10,174 - INFO - Step 180: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:10,491 - INFO - Step 200: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:07:10,712 - INFO - Step 220: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:10,978 - INFO - Step 240: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:11,233 - INFO - Step 260: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:07:11,502 - INFO - Step 280: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:11,816 - INFO - Step 300: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:12,135 - INFO - Step 320: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:12,343 - INFO - Step 340: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:12,575 - INFO - Step 360: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:07:12,764 - INFO - Step 380: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:12,954 - INFO - Step 400: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:07:13,177 - INFO - Step 420: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:13,395 - INFO - Step 440: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:13,632 - INFO - Step 460: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:13,821 - INFO - Step 480: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:14,008 - INFO - Step 500: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:07:14,226 - INFO - Step 520: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:07:14,424 - INFO - Step 540: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:14,642 - INFO - Step 560: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(V) at (109, 310)
+2026-02-02 01:07:14,859 - INFO - Step 580: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:15,035 - INFO - Step 600: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:15,226 - INFO - Step 620: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:15,434 - INFO - Step 640: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:15,621 - INFO - Step 660: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:15,843 - INFO - Step 680: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:16,049 - INFO - Step 700: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:16,279 - INFO - Step 720: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:16,475 - INFO - Step 740: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:07:16,698 - INFO - Step 760: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:07:16,892 - INFO - Step 780: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:17,078 - INFO - Step 800: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:17,284 - INFO - Step 820: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:17,583 - INFO - Step 840: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:07:17,805 - INFO - Step 860: Health=100, Ammo=50, Actions=['RIGHT_TURN', 'MOVE_RIGHT'], Enemy(L) at (403, 338)
+2026-02-02 01:07:17,963 - INFO - Step 880: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (368, 333)
+2026-02-02 01:07:18,138 - INFO - Step 900: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:18,305 - INFO - Step 920: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:18,470 - INFO - Step 940: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:18,627 - INFO - Step 960: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:18,936 - INFO - Step 980: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:19,248 - INFO - Step 1000: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:19,564 - INFO - Step 1020: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:19,880 - INFO - Step 1040: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:20,196 - INFO - Step 1060: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:20,513 - INFO - Step 1080: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:20,825 - INFO - Step 1100: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:21,141 - INFO - Step 1120: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:21,460 - INFO - Step 1140: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:21,778 - INFO - Step 1160: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:22,216 - INFO - Step 1180: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:22,533 - INFO - Step 1200: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:22,848 - INFO - Step 1220: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:23,164 - INFO - Step 1240: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:23,480 - INFO - Step 1260: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:23,794 - INFO - Step 1280: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:24,108 - INFO - Step 1300: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:24,420 - INFO - Step 1320: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:24,734 - INFO - Step 1340: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:25,049 - INFO - Step 1360: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:25,366 - INFO - Step 1380: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:25,681 - INFO - Step 1400: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:25,997 - INFO - Step 1420: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:26,314 - INFO - Step 1440: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:26,627 - INFO - Step 1460: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:26,941 - INFO - Step 1480: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:27,253 - INFO - Step 1500: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:27,567 - INFO - Step 1520: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:27,887 - INFO - Step 1540: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:28,203 - INFO - Step 1560: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:28,519 - INFO - Step 1580: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:28,835 - INFO - Step 1600: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:29,149 - INFO - Step 1620: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:29,466 - INFO - Step 1640: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:29,785 - INFO - Step 1660: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:30,096 - INFO - Step 1680: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:30,413 - INFO - Step 1700: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:30,729 - INFO - Step 1720: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:31,043 - INFO - Step 1740: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:31,360 - INFO - Step 1760: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:31,676 - INFO - Step 1780: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:31,991 - INFO - Step 1800: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:32,307 - INFO - Step 1820: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:32,623 - INFO - Step 1840: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:32,941 - INFO - Step 1860: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:33,257 - INFO - Step 1880: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:33,569 - INFO - Step 1900: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:33,883 - INFO - Step 1920: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:34,197 - INFO - Step 1940: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:34,513 - INFO - Step 1960: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:34,830 - INFO - Step 1980: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:35,146 - INFO - Step 2000: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:35,460 - INFO - Step 2020: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:35,774 - INFO - Step 2040: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:36,090 - INFO - Step 2060: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:36,407 - INFO - Step 2080: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (365, 332)
+2026-02-02 01:07:36,719 - INFO - ============================================================
+2026-02-02 01:07:36,719 - INFO - Episode finished
+2026-02-02 01:07:36,719 - INFO - Total reward: 0.00
+2026-02-02 01:07:36,719 - INFO - Health lost: 0.00
+2026-02-02 01:07:36,719 - INFO - Actions taken: 2100
+2026-02-02 01:07:36,719 - INFO - Episode time: 29.44s
+2026-02-02 01:07:36,719 - INFO - ============================================================
+2026-02-02 01:07:37,755 - INFO - 
+============================================================
+2026-02-02 01:07:37,755 - INFO - ITERATION 3/5
+2026-02-02 01:07:37,755 - INFO - ============================================================
+
+2026-02-02 01:07:38,448 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:07:38,448 - INFO - ============================================================
+2026-02-02 01:07:38,448 - INFO - Starting new episode
+2026-02-02 01:07:38,448 - INFO - ============================================================
+2026-02-02 01:07:38,595 - INFO - Step 0: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (298, 341)
+2026-02-02 01:07:38,904 - INFO - Step 20: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (292, 125)
+2026-02-02 01:07:39,216 - INFO - Step 40: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (273, 68)
+2026-02-02 01:07:39,530 - INFO - Step 60: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (179, 334)
+2026-02-02 01:07:39,842 - INFO - Step 80: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (243, 333)
+2026-02-02 01:07:40,151 - INFO - Step 100: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (231, 344)
+2026-02-02 01:07:40,482 - INFO - Step 120: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:40,807 - INFO - Step 140: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:07:41,255 - INFO - Step 160: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:41,684 - INFO - Step 180: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:42,225 - INFO - Step 200: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:07:42,797 - INFO - Step 220: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:43,371 - INFO - Step 240: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:43,946 - INFO - Step 260: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:07:44,559 - INFO - Step 280: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:45,109 - INFO - Step 300: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:45,650 - INFO - Step 320: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:46,209 - INFO - Step 340: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:46,755 - INFO - Step 360: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:47,224 - INFO - Step 380: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:47,726 - INFO - Step 400: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:48,336 - INFO - Step 420: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:48,866 - INFO - Step 440: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:49,393 - INFO - Step 460: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:49,942 - INFO - Step 480: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:50,502 - INFO - Step 500: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:50,892 - INFO - Step 520: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:51,410 - INFO - Step 540: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:07:51,782 - INFO - Step 560: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:07:52,332 - INFO - Step 580: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:07:52,855 - INFO - Step 600: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:07:53,296 - INFO - Step 620: Health=100, Ammo=50, Actions=['RIGHT_TURN', 'MOVE_RIGHT'], Enemy(L) at (422, 347)
+2026-02-02 01:07:53,803 - INFO - Step 640: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (357, 346)
+2026-02-02 01:07:54,096 - INFO - Step 660: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:54,489 - INFO - Step 680: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:54,999 - INFO - Step 700: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:55,478 - INFO - Step 720: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:56,038 - INFO - Step 740: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:56,482 - INFO - Step 760: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:56,879 - INFO - Step 780: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:57,362 - INFO - Step 800: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:57,832 - INFO - Step 820: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:58,295 - INFO - Step 840: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:58,786 - INFO - Step 860: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:59,204 - INFO - Step 880: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:59,610 - INFO - Step 900: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:07:59,897 - INFO - Step 920: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:00,314 - INFO - Step 940: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:00,674 - INFO - Step 960: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:01,173 - INFO - Step 980: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:01,722 - INFO - Step 1000: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:02,220 - INFO - Step 1020: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:02,706 - INFO - Step 1040: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:02,940 - INFO - Step 1060: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:03,253 - INFO - Step 1080: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:03,455 - INFO - Step 1100: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:03,880 - INFO - Step 1120: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:04,380 - INFO - Step 1140: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:04,736 - INFO - Step 1160: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:05,029 - INFO - Step 1180: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:05,382 - INFO - Step 1200: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:05,816 - INFO - Step 1220: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:06,317 - INFO - Step 1240: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:06,862 - INFO - Step 1260: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:07,244 - INFO - Step 1280: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:07,687 - INFO - Step 1300: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:08,044 - INFO - Step 1320: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:08,383 - INFO - Step 1340: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:08,793 - INFO - Step 1360: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:09,296 - INFO - Step 1380: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:09,823 - INFO - Step 1400: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:10,339 - INFO - Step 1420: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:10,887 - INFO - Step 1440: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:11,488 - INFO - Step 1460: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:11,997 - INFO - Step 1480: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:12,408 - INFO - Step 1500: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:12,686 - INFO - Step 1520: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:13,140 - INFO - Step 1540: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:13,609 - INFO - Step 1560: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:14,143 - INFO - Step 1580: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:14,569 - INFO - Step 1600: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:15,047 - INFO - Step 1620: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:15,444 - INFO - Step 1640: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:15,758 - INFO - Step 1660: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:16,097 - INFO - Step 1680: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:16,464 - INFO - Step 1700: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:16,831 - INFO - Step 1720: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:17,059 - INFO - Step 1740: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:17,423 - INFO - Step 1760: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:17,950 - INFO - Step 1780: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:18,410 - INFO - Step 1800: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:18,926 - INFO - Step 1820: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:19,528 - INFO - Step 1840: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:19,988 - INFO - Step 1860: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:20,497 - INFO - Step 1880: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:20,948 - INFO - Step 1900: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:21,481 - INFO - Step 1920: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:21,853 - INFO - Step 1940: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:22,028 - INFO - Step 1960: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:22,331 - INFO - Step 1980: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:22,605 - INFO - Step 2000: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:22,912 - INFO - Step 2020: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:23,392 - INFO - Step 2040: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:23,853 - INFO - Step 2060: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:24,231 - INFO - Step 2080: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (351, 346)
+2026-02-02 01:08:24,781 - INFO - ============================================================
+2026-02-02 01:08:24,781 - INFO - Episode finished
+2026-02-02 01:08:24,781 - INFO - Total reward: 0.00
+2026-02-02 01:08:24,781 - INFO - Health lost: 0.00
+2026-02-02 01:08:24,781 - INFO - Actions taken: 2100
+2026-02-02 01:08:24,781 - INFO - Episode time: 46.33s
+2026-02-02 01:08:24,781 - INFO - ============================================================
+2026-02-02 01:08:25,832 - INFO - 
+============================================================
+2026-02-02 01:08:25,832 - INFO - ITERATION 4/5
+2026-02-02 01:08:25,832 - INFO - ============================================================
+
+2026-02-02 01:08:26,570 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:08:26,570 - INFO - ============================================================
+2026-02-02 01:08:26,571 - INFO - Starting new episode
+2026-02-02 01:08:26,571 - INFO - ============================================================
+2026-02-02 01:08:26,730 - INFO - Step 0: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (298, 341)
+2026-02-02 01:08:27,039 - INFO - Step 20: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (292, 125)
+2026-02-02 01:08:27,356 - INFO - Step 40: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (273, 68)
+2026-02-02 01:08:27,672 - INFO - Step 60: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (179, 334)
+2026-02-02 01:08:27,990 - INFO - Step 80: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (243, 333)
+2026-02-02 01:08:28,302 - INFO - Step 100: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (231, 344)
+2026-02-02 01:08:28,619 - INFO - Step 120: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:28,983 - INFO - Step 140: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:29,465 - INFO - Step 160: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:08:30,003 - INFO - Step 180: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:30,502 - INFO - Step 200: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:30,942 - INFO - Step 220: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:31,516 - INFO - Step 240: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:31,974 - INFO - Step 260: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:32,276 - INFO - Step 280: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:32,789 - INFO - Step 300: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:33,243 - INFO - Step 320: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:33,827 - INFO - Step 340: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:08:34,271 - INFO - Step 360: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:34,878 - INFO - Step 380: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:35,158 - INFO - Step 400: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:35,538 - INFO - Step 420: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:35,952 - INFO - Step 440: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:36,369 - INFO - Step 460: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:36,678 - INFO - Step 480: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:08:37,117 - INFO - Step 500: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:37,605 - INFO - Step 520: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:08:38,100 - INFO - Step 540: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:08:38,522 - INFO - Step 560: Health=100, Ammo=50, Actions=['RIGHT_TURN', 'MOVE_RIGHT'], Enemy(L) at (541, 64)
+2026-02-02 01:08:38,898 - INFO - Step 580: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (364, 340)
+2026-02-02 01:08:39,380 - INFO - Step 600: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (345, 338)
+2026-02-02 01:08:39,847 - INFO - Step 620: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:40,390 - INFO - Step 640: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:40,887 - INFO - Step 660: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:41,401 - INFO - Step 680: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:41,991 - INFO - Step 700: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:42,381 - INFO - Step 720: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:42,859 - INFO - Step 740: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:43,233 - INFO - Step 760: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:43,613 - INFO - Step 780: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:43,928 - INFO - Step 800: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:44,492 - INFO - Step 820: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:44,884 - INFO - Step 840: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:45,158 - INFO - Step 860: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:45,549 - INFO - Step 880: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:46,020 - INFO - Step 900: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:46,393 - INFO - Step 920: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:46,837 - INFO - Step 940: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:47,364 - INFO - Step 960: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:47,659 - INFO - Step 980: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:48,106 - INFO - Step 1000: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:48,681 - INFO - Step 1020: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:49,265 - INFO - Step 1040: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:49,705 - INFO - Step 1060: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:50,331 - INFO - Step 1080: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:50,811 - INFO - Step 1100: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:51,191 - INFO - Step 1120: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:51,805 - INFO - Step 1140: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:52,226 - INFO - Step 1160: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:52,775 - INFO - Step 1180: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:53,204 - INFO - Step 1200: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:53,540 - INFO - Step 1220: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:53,890 - INFO - Step 1240: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:54,222 - INFO - Step 1260: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:54,739 - INFO - Step 1280: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:55,262 - INFO - Step 1300: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:55,517 - INFO - Step 1320: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:55,795 - INFO - Step 1340: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:56,266 - INFO - Step 1360: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:56,748 - INFO - Step 1380: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:57,234 - INFO - Step 1400: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:57,500 - INFO - Step 1420: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:58,016 - INFO - Step 1440: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:58,474 - INFO - Step 1460: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:59,108 - INFO - Step 1480: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:59,467 - INFO - Step 1500: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:08:59,786 - INFO - Step 1520: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:00,114 - INFO - Step 1540: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:00,429 - INFO - Step 1560: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:00,746 - INFO - Step 1580: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:01,156 - INFO - Step 1600: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:01,473 - INFO - Step 1620: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:01,788 - INFO - Step 1640: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:02,104 - INFO - Step 1660: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:02,421 - INFO - Step 1680: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:02,735 - INFO - Step 1700: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:03,052 - INFO - Step 1720: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:03,478 - INFO - Step 1740: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:03,796 - INFO - Step 1760: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:04,111 - INFO - Step 1780: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:04,429 - INFO - Step 1800: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:04,705 - INFO - Step 1820: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:04,902 - INFO - Step 1840: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:05,084 - INFO - Step 1860: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:05,255 - INFO - Step 1880: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:05,434 - INFO - Step 1900: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:05,599 - INFO - Step 1920: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:05,772 - INFO - Step 1940: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:05,939 - INFO - Step 1960: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:06,105 - INFO - Step 1980: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:06,272 - INFO - Step 2000: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:06,444 - INFO - Step 2020: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:06,608 - INFO - Step 2040: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:06,783 - INFO - Step 2060: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:06,955 - INFO - Step 2080: Health=100, Ammo=50, Actions=['MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (343, 338)
+2026-02-02 01:09:07,130 - INFO - ============================================================
+2026-02-02 01:09:07,130 - INFO - Episode finished
+2026-02-02 01:09:07,130 - INFO - Total reward: 0.00
+2026-02-02 01:09:07,130 - INFO - Health lost: 0.00
+2026-02-02 01:09:07,130 - INFO - Actions taken: 2100
+2026-02-02 01:09:07,130 - INFO - Episode time: 40.56s
+2026-02-02 01:09:07,130 - INFO - ============================================================
+2026-02-02 01:09:08,180 - INFO - 
+============================================================
+2026-02-02 01:09:08,180 - INFO - ITERATION 5/5
+2026-02-02 01:09:08,180 - INFO - ============================================================
+
+2026-02-02 01:09:08,859 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:09:08,859 - INFO - ============================================================
+2026-02-02 01:09:08,859 - INFO - Starting new episode
+2026-02-02 01:09:08,859 - INFO - ============================================================
+2026-02-02 01:09:09,002 - INFO - Step 0: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (298, 341)
+2026-02-02 01:09:09,314 - INFO - Step 20: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (292, 125)
+2026-02-02 01:09:09,630 - INFO - Step 40: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_LEFT', 'MOVE_RIGHT'], Enemy(L) at (273, 68)
+2026-02-02 01:09:09,944 - INFO - Step 60: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (179, 334)
+2026-02-02 01:09:10,262 - INFO - Step 80: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (243, 333)
+2026-02-02 01:09:10,576 - INFO - Step 100: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (231, 344)
+2026-02-02 01:09:10,895 - INFO - Step 120: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:11,197 - INFO - Step 140: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:09:11,405 - INFO - Step 160: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:09:11,606 - INFO - Step 180: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:11,822 - INFO - Step 200: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:09:12,058 - INFO - Step 220: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:12,346 - INFO - Step 240: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:09:12,661 - INFO - Step 260: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:09:12,974 - INFO - Step 280: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:09:13,292 - INFO - Step 300: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:13,618 - INFO - Step 320: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:09:13,830 - INFO - Step 340: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:09:14,025 - INFO - Step 360: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:14,214 - INFO - Step 380: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:14,406 - INFO - Step 400: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:09:14,597 - INFO - Step 420: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:14,796 - INFO - Step 440: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:09:14,995 - INFO - Step 460: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:09:15,200 - INFO - Step 480: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:15,394 - INFO - Step 500: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:15,585 - INFO - Step 520: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:09:15,784 - INFO - Step 540: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:09:15,997 - INFO - Step 560: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:16,222 - INFO - Step 580: Health=100, Ammo=50, Actions=['RIGHT_TURN']
+2026-02-02 01:09:16,446 - INFO - Step 600: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:16,634 - INFO - Step 620: Health=100, Ammo=50, Actions=['RIGHT_TURN', 'MOVE_RIGHT'], Enemy(L) at (568, 54)
+2026-02-02 01:09:16,856 - INFO - Step 640: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:17,056 - INFO - Step 660: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:09:17,253 - INFO - Step 680: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:17,444 - INFO - Step 700: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:17,634 - INFO - Step 720: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:17,838 - INFO - Step 740: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:18,041 - INFO - Step 760: Health=100, Ammo=50, Actions=['MOVE_LEFT']
+2026-02-02 01:09:18,239 - INFO - Step 780: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:18,422 - INFO - Step 800: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:18,622 - INFO - Step 820: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:18,814 - INFO - Step 840: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:19,022 - INFO - Step 860: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:19,222 - INFO - Step 880: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:19,447 - INFO - Step 900: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:19,614 - INFO - Step 920: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (128, 372)
+2026-02-02 01:09:19,822 - INFO - Step 940: Health=100, Ammo=50, Actions=['FORWARD']
+2026-02-02 01:09:19,997 - INFO - Step 960: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (117, 349)
+2026-02-02 01:09:20,172 - INFO - Step 980: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (94, 306)
+2026-02-02 01:09:20,339 - INFO - Step 1000: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (118, 350)
+2026-02-02 01:09:20,505 - INFO - Step 1020: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (106, 303)
+2026-02-02 01:09:20,673 - INFO - Step 1040: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (146, 325)
+2026-02-02 01:09:20,839 - INFO - Step 1060: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (135, 360)
+2026-02-02 01:09:21,005 - INFO - Step 1080: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (109, 384)
+2026-02-02 01:09:21,197 - INFO - Step 1100: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:21,355 - INFO - Step 1120: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (207, 400)
+2026-02-02 01:09:21,522 - INFO - Step 1140: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:21,705 - INFO - Step 1160: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:21,939 - INFO - Step 1180: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:22,114 - INFO - Step 1200: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (207, 400)
+2026-02-02 01:09:22,289 - INFO - Step 1220: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:22,497 - INFO - Step 1240: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:22,681 - INFO - Step 1260: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:22,865 - INFO - Step 1280: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (207, 400)
+2026-02-02 01:09:23,076 - INFO - Step 1300: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:23,264 - INFO - Step 1320: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (207, 400)
+2026-02-02 01:09:23,439 - INFO - Step 1340: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:23,719 - INFO - Step 1360: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:23,928 - INFO - Step 1380: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (207, 399)
+2026-02-02 01:09:24,139 - INFO - Step 1400: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (207, 400)
+2026-02-02 01:09:24,364 - INFO - Step 1420: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (204, 399)
+2026-02-02 01:09:24,624 - INFO - Step 1440: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:24,933 - INFO - Step 1460: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (207, 400)
+2026-02-02 01:09:25,250 - INFO - Step 1480: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:25,562 - INFO - Step 1500: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:25,876 - INFO - Step 1520: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (205, 399)
+2026-02-02 01:09:26,191 - INFO - Step 1540: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (204, 399)
+2026-02-02 01:09:26,502 - INFO - Step 1560: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (205, 399)
+2026-02-02 01:09:26,810 - INFO - Step 1580: Health=100, Ammo=50, Actions=['FORWARD', 'MOVE_RIGHT'], Enemy(L) at (208, 400)
+2026-02-02 01:09:27,137 - INFO - Step 1600: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:27,445 - INFO - Step 1620: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:27,757 - INFO - Step 1640: Health=100, Ammo=50, Actions=['MOVE_RIGHT']
+2026-02-02 01:09:27,992 - ERROR - Error during game loop: Controlled ViZDoom instance exited unexpectedly.
+2026-02-02 01:09:27,993 - INFO - ============================================================
+2026-02-02 01:09:27,993 - INFO - Episode finished
+2026-02-02 01:09:27,993 - INFO - Total reward: 0.00
+2026-02-02 01:09:27,993 - INFO - Health lost: 0.00
+2026-02-02 01:09:27,993 - INFO - Actions taken: 1640
+2026-02-02 01:09:27,993 - INFO - Episode time: 19.13s
+2026-02-02 01:09:27,993 - INFO - ============================================================
+2026-02-02 01:09:28,996 - INFO - 
+============================================================
+2026-02-02 01:09:28,996 - INFO - FINAL SUMMARY
+2026-02-02 01:09:28,996 - INFO - ============================================================
+2026-02-02 01:09:28,996 - INFO - Average reward: 0.00
+2026-02-02 01:09:28,996 - INFO - Average health lost: 0.00
+2026-02-02 01:09:28,997 - INFO - 
+Results saved to: logs
+2026-02-02 01:09:28,998 - INFO - Summary saved to: logs\summary.json

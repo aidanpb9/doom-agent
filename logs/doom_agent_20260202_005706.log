@@ -1,0 +1,45 @@
+2026-02-02 00:57:06,649 - INFO - Starting Doom Agent with WAD: wads/doom1.wad
+2026-02-02 00:57:06,649 - INFO - 
+============================================================
+2026-02-02 00:57:06,649 - INFO - ITERATION 1/5
+2026-02-02 00:57:06,649 - INFO - ============================================================
+
+2026-02-02 00:57:07,398 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:00:24,478 - ERROR - Error in iteration 1: Controlled ViZDoom instance exited unexpectedly.
+2026-02-02 01:00:24,478 - INFO - Game closed
+2026-02-02 01:00:26,479 - INFO - 
+============================================================
+2026-02-02 01:00:26,479 - INFO - ITERATION 2/5
+2026-02-02 01:00:26,479 - INFO - ============================================================
+
+2026-02-02 01:00:27,150 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:00:50,032 - ERROR - Error in iteration 2: Controlled ViZDoom instance exited unexpectedly.
+2026-02-02 01:00:50,032 - INFO - Game closed
+2026-02-02 01:00:52,032 - INFO - 
+============================================================
+2026-02-02 01:00:52,032 - INFO - ITERATION 3/5
+2026-02-02 01:00:52,032 - INFO - ============================================================
+
+2026-02-02 01:00:52,529 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:01:27,084 - ERROR - Error in iteration 3: Controlled ViZDoom instance exited unexpectedly.
+2026-02-02 01:01:27,085 - INFO - Game closed
+2026-02-02 01:01:29,086 - INFO - 
+============================================================
+2026-02-02 01:01:29,086 - INFO - ITERATION 4/5
+2026-02-02 01:01:29,086 - INFO - ============================================================
+
+2026-02-02 01:01:29,684 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:01:44,896 - ERROR - Error in iteration 4: Controlled ViZDoom instance exited unexpectedly.
+2026-02-02 01:01:44,897 - INFO - Game closed
+2026-02-02 01:01:46,898 - INFO - 
+============================================================
+2026-02-02 01:01:46,898 - INFO - ITERATION 5/5
+2026-02-02 01:01:46,898 - INFO - ============================================================
+
+2026-02-02 01:01:47,412 - INFO - Game initialized with WAD: wads/doom1.wad
+2026-02-02 01:01:51,227 - ERROR - Error in iteration 5: Controlled ViZDoom instance exited unexpectedly.
+2026-02-02 01:01:51,227 - INFO - Game closed
+2026-02-02 01:01:53,230 - INFO - 
+============================================================
+2026-02-02 01:01:53,230 - INFO - FINAL SUMMARY
+2026-02-02 01:01:53,230 - INFO - ============================================================

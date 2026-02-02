@@ -1,0 +1,33 @@
+2026-02-02 02:01:00,489 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:01:01,084 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:01:01,084 - INFO - ============================================================
+2026-02-02 02:01:01,084 - INFO - Starting new episode
+2026-02-02 02:01:01,085 - INFO - ============================================================
+2026-02-02 02:01:01,114 - INFO - Episode started successfully
+2026-02-02 02:01:01,116 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['ATTACK'], Enemy: 304,254 conf=0.87
+2026-02-02 02:01:01,857 - INFO - Step 20: Health=100 Ammo=46 Kills=0 Pos=(3.1,808.4) Labels=5 EnemiesVisible=2 Actions=['MOVE_RIGHT'], Enemy: 366,258 conf=1.00
+2026-02-02 02:01:02,313 - INFO - KILL! Total kills: 1
+2026-02-02 02:01:02,598 - INFO - Step 40: Health=100 Ammo=45 Kills=1 Pos=(47.2,875.9) Labels=7 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 376,205 conf=1.00
+2026-02-02 02:01:03,323 - INFO - Step 60: Health=100 Ammo=45 Kills=1 Pos=(47.2,876.3) Labels=7 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 300,204 conf=1.00
+2026-02-02 02:01:04,219 - INFO - Step 80: Health=91 Ammo=45 Kills=1 Pos=(51.5,870.1) Labels=8 EnemiesVisible=5 Actions=['MOVE_RIGHT'], Enemy: 306,205 conf=1.00
+2026-02-02 02:01:05,010 - INFO - Step 100: Health=91 Ammo=45 Kills=1 Pos=(54.0,866.4) Labels=8 EnemiesVisible=5 Actions=['MOVE_RIGHT'], Enemy: 323,205 conf=1.00
+2026-02-02 02:01:05,370 - INFO - KILL! Total kills: 2
+2026-02-02 02:01:05,668 - INFO - Step 120: Health=91 Ammo=45 Kills=2 Pos=(54.0,866.4) Labels=9 EnemiesVisible=5 Actions=['MOVE_RIGHT'], Enemy: 341,202 conf=1.00
+2026-02-02 02:01:06,205 - INFO - KILL! Total kills: 3
+2026-02-02 02:01:06,395 - INFO - Step 140: Health=85 Ammo=45 Kills=3 Pos=(58.7,860.0) Labels=10 EnemiesVisible=5 Actions=['MOVE_RIGHT'], Enemy: 306,202 conf=1.00
+2026-02-02 02:01:06,948 - INFO - Step 160: Health=70 Ammo=45 Kills=3 Pos=(62.2,855.6) Labels=10 EnemiesVisible=5 Actions=['MOVE_RIGHT'], Enemy: 490,190 conf=1.00
+2026-02-02 02:01:07,689 - INFO - Step 180: Health=55 Ammo=45 Kills=3 Pos=(65.2,848.1) Labels=10 EnemiesVisible=5 Actions=['MOVE_RIGHT'], Enemy: 389,204 conf=1.00
+2026-02-02 02:01:08,116 - INFO - Step 200: Health=55 Ammo=45 Kills=3 Pos=(75.4,855.9) Labels=10 EnemiesVisible=5 Actions=['MOVE_RIGHT'], Enemy: 308,203 conf=1.00
+2026-02-02 02:01:08,622 - INFO - Step 220: Health=55 Ammo=45 Kills=3 Pos=(75.3,855.9) Labels=10 EnemiesVisible=5 Actions=['MOVE_RIGHT'], Enemy: 340,201 conf=1.00
+2026-02-02 02:01:09,175 - INFO - Step 240: Health=25 Ammo=45 Kills=3 Pos=(99.5,855.6) Labels=8 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 320,192 conf=1.00
+2026-02-02 02:01:09,945 - INFO - Step 260: Health=25 Ammo=45 Kills=3 Pos=(100.0,855.9) Labels=8 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 312,201 conf=1.00
+2026-02-02 02:01:10,675 - INFO - Step 280: Health=25 Ammo=45 Kills=3 Pos=(100.0,855.9) Labels=8 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 285,200 conf=1.00
+2026-02-02 02:01:11,100 - INFO - ============================================================
+2026-02-02 02:01:11,101 - INFO - Episode finished
+2026-02-02 02:01:11,101 - INFO - Total reward: 0.00
+2026-02-02 02:01:11,101 - INFO - Kills: 3
+2026-02-02 02:01:11,101 - INFO - Health lost: 84.00
+2026-02-02 02:01:11,101 - INFO - Ammo used: 5
+2026-02-02 02:01:11,101 - INFO - Actions taken: 292
+2026-02-02 02:01:11,101 - INFO - Episode time: 10.02s
+2026-02-02 02:01:11,101 - INFO - ============================================================

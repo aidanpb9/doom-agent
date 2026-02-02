@@ -1,0 +1,28 @@
+2026-02-02 02:15:41,536 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:15:42,184 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:15:42,184 - INFO - ============================================================
+2026-02-02 02:15:42,184 - INFO - Starting new episode
+2026-02-02 02:15:42,184 - INFO - ============================================================
+2026-02-02 02:15:42,231 - INFO - Episode started successfully
+2026-02-02 02:15:42,233 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Actions=['MOVE_LEFT', 'ATTACK']
+2026-02-02 02:15:42,516 - INFO - KILL #1! Resetting navigation
+2026-02-02 02:15:42,657 - INFO - KILL #2! Resetting navigation
+2026-02-02 02:15:42,801 - INFO - Step 20: Health=100 Ammo=44 Kills=2 Enemies=3 Actions=['FORWARD', 'RIGHT_TURN', 'MOVE_RIGHT', 'ATTACK']
+2026-02-02 02:15:43,507 - INFO - Step 40: Health=100 Ammo=39 Kills=2 Enemies=1 Actions=['MOVE_LEFT', 'ATTACK']
+2026-02-02 02:15:44,442 - INFO - Step 60: Health=100 Ammo=37 Kills=2 Enemies=0 Actions=['FORWARD']
+2026-02-02 02:15:45,430 - INFO - Step 80: Health=100 Ammo=37 Kills=2 Enemies=0 Actions=['FORWARD']
+2026-02-02 02:15:46,574 - INFO - Step 100: Health=100 Ammo=37 Kills=2 Enemies=0 Actions=['FORWARD']
+2026-02-02 02:15:47,736 - INFO - Step 120: Health=100 Ammo=37 Kills=2 Enemies=0 Actions=['FORWARD']
+2026-02-02 02:15:48,777 - INFO - Step 140: Health=100 Ammo=37 Kills=2 Enemies=0 Actions=['FORWARD']
+2026-02-02 02:15:49,596 - INFO - Step 160: Health=100 Ammo=37 Kills=2 Enemies=0 Actions=['FORWARD']
+2026-02-02 02:15:50,276 - INFO - Step 180: Health=100 Ammo=37 Kills=2 Enemies=0 Actions=['FORWARD']
+2026-02-02 02:15:51,078 - INFO - Step 200: Health=100 Ammo=37 Kills=2 Enemies=0 Actions=['FORWARD']
+2026-02-02 02:15:52,002 - INFO - Step 220: Health=100 Ammo=37 Kills=2 Enemies=0 Actions=['FORWARD']
+2026-02-02 02:15:52,185 - INFO - ============================================================
+2026-02-02 02:15:52,185 - INFO - Episode finished
+2026-02-02 02:15:52,185 - INFO - Total reward: 0.00
+2026-02-02 02:15:52,185 - INFO - Kills: 2
+2026-02-02 02:15:52,185 - INFO - Health lost: 0.00
+2026-02-02 02:15:52,185 - INFO - Actions taken: 225
+2026-02-02 02:15:52,185 - INFO - Episode time: 10.00s
+2026-02-02 02:15:52,186 - INFO - ============================================================

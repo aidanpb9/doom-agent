@@ -1,0 +1,52 @@
+2026-02-02 01:39:40,511 - INFO - Starting Doom Agent with WAD: wads\doom1.wad
+2026-02-02 01:39:41,126 - INFO - Game initialized with WAD: wads\doom1.wad
+2026-02-02 01:39:41,127 - INFO - ============================================================
+2026-02-02 01:39:41,127 - INFO - Starting new episode
+2026-02-02 01:39:41,127 - INFO - ============================================================
+2026-02-02 01:39:41,219 - INFO - Episode started successfully
+2026-02-02 01:39:41,246 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Pos=(1056.0,-3616.0) Labels=7 EnemiesVisible=0 Actions=['FORWARD', 'RIGHT_TURN']
+2026-02-02 01:39:41,246 - INFO - Label sample (no enemies matched): ['DeadMarine', 'ExplosiveBarrel', 'ArmorBonus', 'ArmorBonus', 'GibbedMarine', 'ExplosiveBarrel', 'DoomPlayer']
+2026-02-02 01:39:42,328 - INFO - Step 20: Health=100 Ammo=50 Kills=0 Pos=(1028.4,-3004.7) Labels=4 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:39:42,328 - INFO - Label sample (no enemies matched): ['DeadMarine', 'ExplosiveBarrel', 'ArmorBonus', 'DoomPlayer']
+2026-02-02 01:39:43,294 - INFO - Step 40: Health=100 Ammo=50 Kills=0 Pos=(1125.9,-2896.0) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:39:43,295 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:39:43,740 - INFO - Pathing: agent_cell=(76, 42) next_cell=None path_len=0
+2026-02-02 01:39:43,740 - INFO - Pathing: no frontier path available
+2026-02-02 01:39:44,080 - INFO - Step 60: Health=100 Ammo=50 Kills=0 Pos=(1125.6,-2896.0) Labels=2 EnemiesVisible=0 Actions=['FORWARD', 'MOVE_LEFT']
+2026-02-02 01:39:44,081 - INFO - Label sample (no enemies matched): ['ExplosiveBarrel', 'DoomPlayer']
+2026-02-02 01:39:45,015 - INFO - Step 80: Health=100 Ammo=50 Kills=0 Pos=(1294.5,-3109.6) Labels=5 EnemiesVisible=1 Actions=['FORWARD']
+2026-02-02 01:39:46,091 - INFO - Pathing: agent_cell=(76, 42) next_cell=None path_len=0
+2026-02-02 01:39:46,092 - INFO - Pathing: no frontier path available
+2026-02-02 01:39:46,123 - INFO - Step 100: Health=100 Ammo=50 Kills=0 Pos=(1328.0,-3237.9) Labels=2 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:39:46,123 - INFO - Label sample (no enemies matched): ['HealthBonus', 'DoomPlayer']
+2026-02-02 01:39:47,269 - INFO - Step 120: Health=100 Ammo=50 Kills=0 Pos=(1328.0,-3236.4) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:39:47,270 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:39:47,929 - INFO - Step 140: Health=100 Ammo=50 Kills=0 Pos=(1328.0,-3233.2) Labels=2 EnemiesVisible=0 Actions=['MOVE_LEFT']
+2026-02-02 01:39:47,929 - INFO - Label sample (no enemies matched): ['HealthBonus', 'DoomPlayer']
+2026-02-02 01:39:48,377 - INFO - Pathing: agent_cell=(76, 42) next_cell=None path_len=0
+2026-02-02 01:39:48,378 - INFO - Pathing: no frontier path available
+2026-02-02 01:39:48,860 - INFO - Step 160: Health=100 Ammo=50 Kills=0 Pos=(1327.9,-3237.8) Labels=4 EnemiesVisible=0 Actions=['MOVE_LEFT']
+2026-02-02 01:39:48,860 - INFO - Label sample (no enemies matched): ['ExplosiveBarrel', 'HealthBonus', 'HealthBonus', 'DoomPlayer']
+2026-02-02 01:39:49,903 - INFO - Step 180: Health=100 Ammo=50 Kills=0 Pos=(928.7,-3510.4) Labels=2 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:39:49,904 - INFO - Label sample (no enemies matched): ['HealthBonus', 'DoomPlayer']
+2026-02-02 01:39:50,820 - INFO - Pathing: agent_cell=(76, 42) next_cell=None path_len=0
+2026-02-02 01:39:50,820 - INFO - Pathing: no frontier path available
+2026-02-02 01:39:50,869 - INFO - Step 200: Health=101 Ammo=50 Kills=0 Pos=(720.4,-3536.0) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:39:50,870 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:39:51,876 - INFO - Step 220: Health=101 Ammo=50 Kills=0 Pos=(720.0,-3344.5) Labels=7 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:39:51,876 - INFO - Label sample (no enemies matched): ['ArmorBonus', 'Column', 'Column', 'HealthBonus', 'HealthBonus', 'TechPillar', 'DoomPlayer']
+2026-02-02 01:39:52,792 - INFO - Step 240: Health=101 Ammo=50 Kills=0 Pos=(589.9,-3140.2) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:39:52,792 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:39:53,355 - INFO - Pathing: agent_cell=(76, 42) next_cell=None path_len=0
+2026-02-02 01:39:53,355 - INFO - Pathing: no frontier path available
+2026-02-02 01:39:53,944 - INFO - Step 260: Health=101 Ammo=50 Kills=0 Pos=(560.2,-3149.6) Labels=1 EnemiesVisible=0 Actions=['FORWARD', 'LEFT_TURN']
+2026-02-02 01:39:53,944 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:39:54,504 - INFO - ============================================================
+2026-02-02 01:39:54,504 - INFO - Episode finished
+2026-02-02 01:39:54,504 - INFO - Total reward: 0.00
+2026-02-02 01:39:54,504 - INFO - Kills: 0
+2026-02-02 01:39:54,504 - INFO - Health lost: 0.00
+2026-02-02 01:39:54,504 - INFO - Ammo used: 0
+2026-02-02 01:39:54,504 - INFO - Actions taken: 266
+2026-02-02 01:39:54,504 - INFO - Episode time: 13.38s
+2026-02-02 01:39:54,504 - INFO - ============================================================

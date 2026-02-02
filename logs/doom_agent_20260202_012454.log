@@ -1,0 +1,61 @@
+2026-02-02 01:24:54,516 - INFO - Starting Doom Agent with WAD: wads\doom1.wad
+2026-02-02 01:24:55,187 - INFO - Game initialized with WAD: wads\doom1.wad
+2026-02-02 01:24:55,188 - INFO - ============================================================
+2026-02-02 01:24:55,188 - INFO - Starting new episode
+2026-02-02 01:24:55,188 - INFO - ============================================================
+2026-02-02 01:24:55,217 - INFO - Episode started successfully
+2026-02-02 01:24:55,222 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Pos=(1056.0,-3616.0) Labels=7 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:24:55,222 - INFO - Label sample (no enemies matched): ['DeadMarine', 'ExplosiveBarrel', 'ArmorBonus', 'ArmorBonus', 'GibbedMarine', 'ExplosiveBarrel', 'DoomPlayer']
+2026-02-02 01:24:55,914 - INFO - Step 20: Health=100 Ammo=50 Kills=0 Pos=(1070.1,-3012.6) Labels=3 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:24:55,915 - INFO - Label sample (no enemies matched): ['DeadMarine', 'ExplosiveBarrel', 'DoomPlayer']
+2026-02-02 01:24:56,433 - INFO - Step 40: Health=100 Ammo=50 Kills=0 Pos=(1087.7,-2896.0) Labels=1 EnemiesVisible=0 Actions=['RIGHT_TURN']
+2026-02-02 01:24:56,433 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:24:57,235 - INFO - Step 60: Health=100 Ammo=50 Kills=0 Pos=(1121.8,-2896.0) Labels=1 EnemiesVisible=0 Actions=['USE']
+2026-02-02 01:24:57,236 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:24:58,006 - INFO - Step 80: Health=100 Ammo=50 Kills=0 Pos=(1105.7,-2896.0) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:24:58,006 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:24:58,714 - INFO - Step 100: Health=100 Ammo=50 Kills=0 Pos=(1065.0,-2896.3) Labels=2 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:24:58,714 - INFO - Label sample (no enemies matched): ['ExplosiveBarrel', 'DoomPlayer']
+2026-02-02 01:24:59,341 - INFO - Step 120: Health=100 Ammo=50 Kills=0 Pos=(1125.5,-2899.9) Labels=3 EnemiesVisible=0 Actions=['MOVE_LEFT']
+2026-02-02 01:24:59,342 - INFO - Label sample (no enemies matched): ['ExplosiveBarrel', 'ExplosiveBarrel', 'DoomPlayer']
+2026-02-02 01:24:59,974 - INFO - Step 140: Health=100 Ammo=50 Kills=0 Pos=(1122.5,-2946.4) Labels=8 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:24:59,975 - INFO - Label sample (no enemies matched): ['ExplosiveBarrel', 'HealthBonus', 'GibbedMarine', 'Gibs', 'HealthBonus', 'HealthBonus', 'TechPillar', 'DoomPlayer']
+2026-02-02 01:25:00,689 - INFO - Step 160: Health=100 Ammo=50 Kills=0 Pos=(956.3,-3254.2) Labels=3 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:25:00,689 - INFO - Label sample (no enemies matched): ['ExplosiveBarrel', 'HealthBonus', 'DoomPlayer']
+2026-02-02 01:25:01,256 - INFO - Step 180: Health=100 Ammo=50 Kills=0 Pos=(938.8,-3286.8) Labels=9 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:25:01,257 - INFO - Label sample (no enemies matched): ['ExplosiveBarrel', 'Column', 'Column', 'Gibs', 'HealthBonus', 'TechPillar', 'ArmorBonus', 'GreenArmor', 'DoomPlayer']
+2026-02-02 01:25:01,963 - INFO - Step 200: Health=100 Ammo=50 Kills=0 Pos=(572.7,-3261.6) Labels=8 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:25:01,964 - INFO - Label sample (no enemies matched): ['Column', 'Gibs', 'HealthBonus', 'HealthBonus', 'HealthBonus', 'TechPillar', 'TechPillar', 'DoomPlayer']
+2026-02-02 01:25:02,626 - INFO - Step 220: Health=100 Ammo=50 Kills=0 Pos=(560.3,-3300.7) Labels=7 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:25:02,626 - INFO - Label sample (no enemies matched): ['Column', 'Gibs', 'ArmorBonus', 'HealthBonus', 'HealthBonus', 'TechPillar', 'DoomPlayer']
+2026-02-02 01:25:03,411 - INFO - Step 240: Health=100 Ammo=50 Kills=0 Pos=(390.5,-3168.0) Labels=3 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:25:03,411 - INFO - Label sample (no enemies matched): ['HealthBonus', 'TechPillar', 'DoomPlayer']
+2026-02-02 01:25:04,087 - INFO - Step 260: Health=100 Ammo=50 Kills=0 Pos=(354.2,-3207.3) Labels=4 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:25:04,088 - INFO - Label sample (no enemies matched): ['HealthBonus', 'HealthBonus', 'TechPillar', 'DoomPlayer']
+2026-02-02 01:25:04,829 - INFO - Step 280: Health=101 Ammo=50 Kills=0 Pos=(159.4,-3105.6) Labels=2 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:25:04,830 - INFO - Label sample (no enemies matched): ['HealthBonus', 'DoomPlayer']
+2026-02-02 01:25:05,573 - INFO - Step 300: Health=101 Ammo=50 Kills=0 Pos=(114.8,-3113.9) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:25:05,574 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:25:06,219 - INFO - Step 320: Health=102 Ammo=50 Kills=0 Pos=(155.5,-3024.1) Labels=1 EnemiesVisible=0 Actions=['FORWARD', 'MOVE_LEFT']
+2026-02-02 01:25:06,219 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:25:07,022 - INFO - Step 340: Health=102 Ammo=50 Kills=0 Pos=(114.3,-3053.7) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:25:07,022 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:25:07,445 - INFO - Step 360: Health=102 Ammo=50 Kills=0 Pos=(140.5,-3027.5) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:25:07,445 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:25:08,157 - INFO - Step 380: Health=102 Ammo=50 Kills=0 Pos=(123.4,-3044.6) Labels=1 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:25:08,157 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:25:08,742 - INFO - Step 400: Health=102 Ammo=50 Kills=0 Pos=(143.2,-3024.9) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:25:08,742 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 01:25:09,296 - INFO - Step 420: Health=102 Ammo=50 Kills=0 Pos=(133.1,-3049.0) Labels=3 EnemiesVisible=0 Actions=['FORWARD']
+2026-02-02 01:25:09,297 - INFO - Label sample (no enemies matched): ['ArmorBonus', 'TechPillar', 'DoomPlayer']
+2026-02-02 01:25:09,875 - INFO - Step 440: Health=102 Ammo=50 Kills=0 Pos=(331.2,-3024.0) Labels=2 EnemiesVisible=0 Actions=['LEFT_TURN']
+2026-02-02 01:25:09,875 - INFO - Label sample (no enemies matched): ['ArmorBonus', 'DoomPlayer']
+2026-02-02 01:25:10,236 - INFO - ============================================================
+2026-02-02 01:25:10,237 - INFO - Episode finished
+2026-02-02 01:25:10,237 - INFO - Total reward: 0.00
+2026-02-02 01:25:10,237 - INFO - Kills: 0
+2026-02-02 01:25:10,237 - INFO - Health lost: 0.00
+2026-02-02 01:25:10,237 - INFO - Ammo used: 0
+2026-02-02 01:25:10,238 - INFO - Actions taken: 450
+2026-02-02 01:25:10,238 - INFO - Episode time: 15.05s
+2026-02-02 01:25:10,238 - INFO - ============================================================

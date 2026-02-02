@@ -1,0 +1,21 @@
+2026-02-02 01:53:08,664 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 01:53:09,308 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 01:53:09,308 - INFO - ============================================================
+2026-02-02 01:53:09,308 - INFO - Starting new episode
+2026-02-02 01:53:09,308 - INFO - ============================================================
+2026-02-02 01:53:09,371 - INFO - Episode started successfully
+2026-02-02 01:53:09,373 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['ATTACK'], Enemy: 304,254 conf=0.87
+2026-02-02 01:53:09,655 - INFO - KILL! Total kills: 1
+2026-02-02 01:53:10,143 - INFO - KILL! Total kills: 2
+2026-02-02 01:53:10,190 - INFO - Step 20: Health=100 Ammo=44 Kills=2 Pos=(-93.5,816.7) Labels=9 EnemiesVisible=3 Actions=['ATTACK']
+2026-02-02 01:53:10,836 - INFO - Step 40: Health=100 Ammo=39 Kills=2 Pos=(-93.5,816.7) Labels=11 EnemiesVisible=5 Actions=['ATTACK'], Enemy: 299,209 conf=0.18
+2026-02-02 01:53:11,613 - INFO - Step 60: Health=100 Ammo=36 Kills=2 Pos=(-192.3,900.3) Labels=7 EnemiesVisible=4 Actions=['RIGHT_TURN'], Enemy: 450,175 conf=0.35
+2026-02-02 01:53:12,147 - INFO - Step 80: Health=100 Ammo=36 Kills=2 Pos=(-210.6,899.0) Labels=5 EnemiesVisible=2 Actions=['RIGHT_TURN']
+2026-02-02 01:53:12,807 - INFO - Step 100: Health=100 Ammo=36 Kills=2 Pos=(-210.6,899.0) Labels=6 EnemiesVisible=3 Actions=['RIGHT_TURN']
+2026-02-02 01:53:13,471 - INFO - Step 120: Health=100 Ammo=36 Kills=2 Pos=(-210.6,899.0) Labels=7 EnemiesVisible=4 Actions=['RIGHT_TURN'], Enemy: 572,187 conf=1.00
+2026-02-02 01:53:13,944 - INFO - Step 140: Health=91 Ammo=36 Kills=2 Pos=(-218.2,891.2) Labels=6 EnemiesVisible=3 Actions=['RIGHT_TURN'], Enemy: 579,192 conf=1.00
+2026-02-02 01:53:14,620 - INFO - Step 160: Health=91 Ammo=36 Kills=2 Pos=(-218.4,891.0) Labels=6 EnemiesVisible=3 Actions=['RIGHT_TURN'], Enemy: 603,206 conf=1.00
+2026-02-02 01:53:15,263 - INFO - Step 180: Health=91 Ammo=36 Kills=2 Pos=(-218.4,891.0) Labels=7 EnemiesVisible=4 Actions=['RIGHT_TURN'], Enemy: 589,187 conf=1.00
+2026-02-02 01:53:15,849 - INFO - Step 200: Health=82 Ammo=36 Kills=2 Pos=(-225.9,882.6) Labels=5 EnemiesVisible=2 Actions=['RIGHT_TURN']
+2026-02-02 01:53:16,288 - INFO - Step 220: Health=79 Ammo=36 Kills=2 Pos=(-228.0,880.2) Labels=6 EnemiesVisible=3 Actions=['RIGHT_TURN'], Enemy: 527,178 conf=0.89
+2026-02-02 01:53:16,669 - INFO - Step 240: Health=79 Ammo=36 Kills=2 Pos=(-228.0,880.2) Labels=6 EnemiesVisible=3 Actions=['RIGHT_TURN'], Enemy: 626,185 conf=1.00

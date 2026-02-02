@@ -1,0 +1,26 @@
+2026-02-02 01:17:14,610 - INFO - Starting Doom Agent with WAD: c:\Users\kabro\CompSci\DOOM-v2\wads\doom1.wad
+2026-02-02 01:17:15,283 - INFO - Game initialized with WAD: c:\Users\kabro\CompSci\DOOM-v2\wads\doom1.wad
+2026-02-02 01:17:15,283 - INFO - ============================================================
+2026-02-02 01:17:15,283 - INFO - Starting new episode
+2026-02-02 01:17:15,284 - INFO - ============================================================
+2026-02-02 01:17:15,455 - INFO - Episode started successfully
+2026-02-02 01:17:15,460 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Pos=(0.0,1056.0) Actions=['FORWARD']
+2026-02-02 01:17:16,167 - INFO - Step 20: Health=100 Ammo=50 Kills=0 Pos=(0.0,990.0) Actions=['FORWARD', 'MOVE_LEFT']
+2026-02-02 01:17:17,025 - INFO - Step 40: Health=100 Ammo=50 Kills=0 Pos=(0.0,1036.3) Actions=['FORWARD']
+2026-02-02 01:17:17,969 - INFO - Step 60: Health=100 Ammo=50 Kills=0 Pos=(0.0,1125.9) Actions=['LEFT_TURN']
+2026-02-02 01:17:18,583 - INFO - Step 80: Health=100 Ammo=50 Kills=0 Pos=(0.0,1098.9) Actions=['FORWARD']
+2026-02-02 01:17:19,256 - INFO - Step 100: Health=100 Ammo=50 Kills=0 Pos=(0.0,1118.6) Actions=['FORWARD']
+2026-02-02 01:17:19,912 - INFO - Step 120: Health=100 Ammo=50 Kills=0 Pos=(0.0,1126.0) Actions=['RIGHT_TURN']
+2026-02-02 01:17:20,508 - INFO - Step 140: Health=100 Ammo=50 Kills=0 Pos=(0.0,1125.9) Actions=['FORWARD', 'RIGHT_TURN']
+2026-02-02 01:17:21,255 - INFO - Step 160: Health=100 Ammo=50 Kills=0 Pos=(0.0,1125.6) Actions=['FORWARD']
+2026-02-02 01:17:22,100 - INFO - Step 180: Health=100 Ammo=50 Kills=0 Pos=(0.0,1126.0) Actions=['RIGHT_TURN']
+2026-02-02 01:17:22,884 - INFO - Step 200: Health=100 Ammo=50 Kills=0 Pos=(0.0,1161.0) Actions=['FORWARD']
+2026-02-02 01:17:23,307 - INFO - ============================================================
+2026-02-02 01:17:23,308 - INFO - Episode finished
+2026-02-02 01:17:23,308 - INFO - Total reward: 0.00
+2026-02-02 01:17:23,308 - INFO - Kills: 0
+2026-02-02 01:17:23,308 - INFO - Health lost: 0.00
+2026-02-02 01:17:23,308 - INFO - Ammo used: 0
+2026-02-02 01:17:23,308 - INFO - Actions taken: 210
+2026-02-02 01:17:23,308 - INFO - Episode time: 8.02s
+2026-02-02 01:17:23,308 - INFO - ============================================================

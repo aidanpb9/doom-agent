@@ -1,0 +1,294 @@
+2026-02-02 02:07:11,244 - INFO - Starting Doom Agent with WAD: DOOM\wads\doom2.wad
+2026-02-02 02:07:11,854 - INFO - Game initialized with WAD: DOOM\wads\doom2.wad
+2026-02-02 02:07:11,854 - INFO - ============================================================
+2026-02-02 02:07:11,854 - INFO - Starting new episode
+2026-02-02 02:07:11,855 - INFO - ============================================================
+2026-02-02 02:07:11,931 - INFO - Episode started successfully
+2026-02-02 02:07:11,933 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['ATTACK'], Enemy: 304,254 conf=0.87
+2026-02-02 02:07:12,073 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:12,121 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:12,137 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:12,153 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=3
+2026-02-02 02:07:12,183 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=4
+2026-02-02 02:07:12,199 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=0
+2026-02-02 02:07:12,215 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=1
+2026-02-02 02:07:12,278 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:12,310 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=3
+2026-02-02 02:07:12,371 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=4
+2026-02-02 02:07:12,387 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=0
+2026-02-02 02:07:12,403 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:12,419 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:12,435 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=3
+2026-02-02 02:07:12,451 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=4
+2026-02-02 02:07:12,466 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=0
+2026-02-02 02:07:12,482 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=1
+2026-02-02 02:07:12,482 - INFO - Step 20: Health=100 Ammo=49 Kills=0 Pos=(-102.4,784.5) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN', 'USE'], Enemy: 330,256 conf=1.00
+2026-02-02 02:07:12,546 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:12,562 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=3
+2026-02-02 02:07:12,578 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=4
+2026-02-02 02:07:12,626 - INFO - STUCK PANIC MODE (counter=10): type=3
+2026-02-02 02:07:12,642 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=1
+2026-02-02 02:07:12,674 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=2
+2026-02-02 02:07:12,721 - INFO - STUCK PANIC MODE (counter=10): type=0
+2026-02-02 02:07:12,769 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=4
+2026-02-02 02:07:12,785 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=0
+2026-02-02 02:07:12,801 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:12,833 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:12,894 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:12,912 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:12,943 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:13,005 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:13,054 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:13,070 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=3
+2026-02-02 02:07:13,118 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=4
+2026-02-02 02:07:13,149 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=0
+2026-02-02 02:07:13,180 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:13,180 - INFO - Step 40: Health=100 Ammo=49 Kills=0 Pos=(-63.1,811.9) Labels=7 EnemiesVisible=5 Actions=['LEFT_TURN', 'USE'], Enemy: 171,297 conf=1.00
+2026-02-02 02:07:13,244 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:13,259 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=3
+2026-02-02 02:07:13,275 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=4
+2026-02-02 02:07:13,291 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=0
+2026-02-02 02:07:13,307 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=1
+2026-02-02 02:07:13,323 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:13,339 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=3
+2026-02-02 02:07:13,354 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=4
+2026-02-02 02:07:13,417 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=0
+2026-02-02 02:07:13,465 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=1
+2026-02-02 02:07:13,528 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:13,589 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:13,605 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:13,621 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:13,636 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=1
+2026-02-02 02:07:13,668 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:13,683 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=3
+2026-02-02 02:07:13,699 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=4
+2026-02-02 02:07:13,715 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=0
+2026-02-02 02:07:13,731 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=1
+2026-02-02 02:07:13,731 - INFO - Step 60: Health=85 Ammo=49 Kills=0 Pos=(-60.2,793.2) Labels=7 EnemiesVisible=5 Actions=['LEFT_TURN', 'USE'], Enemy: 101,295 conf=1.00
+2026-02-02 02:07:13,763 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:13,779 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=3
+2026-02-02 02:07:13,827 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=4
+2026-02-02 02:07:13,889 - INFO - STUCK PANIC MODE (counter=10): type=3
+2026-02-02 02:07:13,955 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=1
+2026-02-02 02:07:13,971 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=2
+2026-02-02 02:07:14,035 - INFO - STUCK PANIC MODE (counter=10): type=0
+2026-02-02 02:07:14,083 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=4
+2026-02-02 02:07:14,115 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=0
+2026-02-02 02:07:14,163 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:14,211 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:14,273 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:14,305 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:14,337 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:14,353 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:14,385 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:14,402 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=3
+2026-02-02 02:07:14,432 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=4
+2026-02-02 02:07:14,449 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=0
+2026-02-02 02:07:14,478 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:14,478 - INFO - Step 80: Health=85 Ammo=49 Kills=0 Pos=(-13.2,799.0) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN', 'USE']
+2026-02-02 02:07:14,478 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:14,494 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:14,510 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=3
+2026-02-02 02:07:14,575 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=4
+2026-02-02 02:07:14,637 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=0
+2026-02-02 02:07:14,667 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=1
+2026-02-02 02:07:14,731 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:14,747 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=3
+2026-02-02 02:07:14,762 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=4
+2026-02-02 02:07:14,779 - INFO - STUCK PANIC MODE (counter=10): type=0
+2026-02-02 02:07:14,827 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=1
+2026-02-02 02:07:14,890 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=2
+2026-02-02 02:07:14,938 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=3
+2026-02-02 02:07:15,002 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=4
+2026-02-02 02:07:15,064 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:15,127 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:15,143 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:15,205 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:15,221 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:15,270 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=0
+2026-02-02 02:07:15,284 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:15,284 - INFO - Step 100: Health=85 Ammo=49 Kills=0 Pos=(19.5,810.1) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN', 'USE']
+2026-02-02 02:07:15,285 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:15,348 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=2
+2026-02-02 02:07:15,411 - INFO - STUCK PANIC MODE (counter=11): type=3
+2026-02-02 02:07:15,427 - INFO - STUCK PANIC MODE (counter=13): type=0
+2026-02-02 02:07:15,458 - INFO - STUCK PANIC MODE (counter=12): type=3
+2026-02-02 02:07:15,522 - INFO - STUCK PANIC MODE (counter=11): type=0
+2026-02-02 02:07:15,568 - INFO - STUCK PANIC MODE (counter=10): type=3
+2026-02-02 02:07:15,630 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=3
+2026-02-02 02:07:15,660 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=4
+2026-02-02 02:07:15,676 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=0
+2026-02-02 02:07:15,708 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=1
+2026-02-02 02:07:15,723 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:15,739 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=3
+2026-02-02 02:07:15,755 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=4
+2026-02-02 02:07:15,817 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=0
+2026-02-02 02:07:15,832 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:15,863 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:15,910 - INFO - KILL! Total kills: 1
+2026-02-02 02:07:15,911 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=3
+2026-02-02 02:07:15,974 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=4
+2026-02-02 02:07:16,039 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=0
+2026-02-02 02:07:16,099 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=1
+2026-02-02 02:07:16,099 - INFO - Step 120: Health=85 Ammo=49 Kills=1 Pos=(47.2,832.2) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN', 'USE']
+2026-02-02 02:07:16,099 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:16,131 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:16,146 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=3
+2026-02-02 02:07:16,179 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=4
+2026-02-02 02:07:16,194 - INFO - STUCK PANIC MODE (counter=10): type=3
+2026-02-02 02:07:16,210 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=1
+2026-02-02 02:07:16,273 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=2
+2026-02-02 02:07:16,289 - INFO - STUCK PANIC MODE (counter=10): type=0
+2026-02-02 02:07:16,353 - INFO - STUCK PANIC MODE (counter=12): type=3
+2026-02-02 02:07:16,418 - INFO - STUCK PANIC MODE (counter=14): type=0
+2026-02-02 02:07:16,433 - INFO - STUCK PANIC MODE (counter=13): type=3
+2026-02-02 02:07:16,449 - INFO - STUCK PANIC MODE (counter=12): type=0
+2026-02-02 02:07:16,511 - INFO - STUCK PANIC MODE (counter=11): type=3
+2026-02-02 02:07:16,558 - INFO - STUCK PANIC MODE (counter=12): type=0
+2026-02-02 02:07:16,620 - INFO - STUCK PANIC MODE (counter=13): type=3
+2026-02-02 02:07:16,685 - INFO - STUCK PANIC MODE (counter=14): type=0
+2026-02-02 02:07:16,700 - INFO - STUCK PANIC MODE (counter=15): type=3
+2026-02-02 02:07:16,762 - INFO - STUCK PANIC MODE (counter=16): type=0
+2026-02-02 02:07:16,771 - INFO - STUCK PANIC MODE (counter=18): type=3
+2026-02-02 02:07:16,804 - INFO - STUCK PANIC MODE (counter=20): type=0
+2026-02-02 02:07:16,827 - WARNING - Step 141: Escape mode persisting for 22 steps. Resetting to try new strategy.
+2026-02-02 02:07:16,827 - INFO - Step 140: Health=73 Ammo=49 Kills=1 Pos=(48.0,811.2) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:16,827 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:17,026 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,041 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,049 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,082 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,090 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:17,090 - INFO - Step 160: Health=67 Ammo=49 Kills=1 Pos=(48.0,799.2) Labels=1 EnemiesVisible=0 Actions=['USE']
+2026-02-02 02:07:17,090 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:17,098 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:17,111 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=3
+2026-02-02 02:07:17,111 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=4
+2026-02-02 02:07:17,127 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:17,127 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,127 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,149 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=3
+2026-02-02 02:07:17,161 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:17,161 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,177 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,177 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,177 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,197 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,226 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:17,226 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=1
+2026-02-02 02:07:17,245 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:17,257 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=3
+2026-02-02 02:07:17,271 - INFO - KILL! Total kills: 2
+2026-02-02 02:07:17,271 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=4
+2026-02-02 02:07:17,311 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=0
+2026-02-02 02:07:17,332 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:17,332 - INFO - Step 180: Health=67 Ammo=49 Kills=2 Pos=(44.4,834.8) Labels=1 EnemiesVisible=0 Actions=['USE']
+2026-02-02 02:07:17,332 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:17,338 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,346 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,354 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:17,377 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=0
+2026-02-02 02:07:17,377 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:17,396 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=2
+2026-02-02 02:07:17,455 - INFO - STUCK PANIC MODE (counter=11): type=0
+2026-02-02 02:07:17,510 - INFO - STUCK PANIC MODE (counter=10): type=3
+2026-02-02 02:07:17,517 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=0
+2026-02-02 02:07:17,523 - INFO - STUCK PANIC MODE (counter=10): type=3
+2026-02-02 02:07:17,529 - INFO - STUCK PANIC MODE (counter=11): type=0
+2026-02-02 02:07:17,534 - INFO - STUCK PANIC MODE (counter=10): type=3
+2026-02-02 02:07:17,540 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=4
+2026-02-02 02:07:17,547 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=0
+2026-02-02 02:07:17,592 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:17,599 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:17,629 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:17,636 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,642 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:17,648 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:17,648 - INFO - Step 200: Health=67 Ammo=49 Kills=2 Pos=(38.4,782.0) Labels=1 EnemiesVisible=0 Actions=['USE']
+2026-02-02 02:07:17,648 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:17,685 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:17,697 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=3
+2026-02-02 02:07:17,704 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=4
+2026-02-02 02:07:17,712 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=0
+2026-02-02 02:07:17,712 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:17,730 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:17,746 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=3
+2026-02-02 02:07:17,754 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=4
+2026-02-02 02:07:17,796 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=0
+2026-02-02 02:07:17,804 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=1
+2026-02-02 02:07:17,829 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:17,829 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=3
+2026-02-02 02:07:17,829 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=4
+2026-02-02 02:07:17,847 - INFO - STUCK PANIC MODE (counter=10): type=3
+2026-02-02 02:07:17,871 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=1
+2026-02-02 02:07:17,877 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=2
+2026-02-02 02:07:17,883 - INFO - STUCK PANIC MODE (counter=10): type=0
+2026-02-02 02:07:17,888 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=4
+2026-02-02 02:07:17,901 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=0
+2026-02-02 02:07:17,921 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=1
+2026-02-02 02:07:17,921 - INFO - Step 220: Health=67 Ammo=49 Kills=2 Pos=(29.8,774.9) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN', 'USE']
+2026-02-02 02:07:17,921 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:17,930 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=2
+2026-02-02 02:07:17,955 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:17,971 - INFO - STUCK ESCAPE LEVEL 1 (counter=4): trying backward
+2026-02-02 02:07:18,008 - INFO - STUCK ESCAPE LEVEL 1 (counter=5): trying backward
+2026-02-02 02:07:18,038 - INFO - STUCK ESCAPE LEVEL 2 (counter=6): type=1
+2026-02-02 02:07:18,054 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:18,079 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=3
+2026-02-02 02:07:18,086 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=4
+2026-02-02 02:07:18,097 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=0
+2026-02-02 02:07:18,103 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=1
+2026-02-02 02:07:18,112 - INFO - STUCK ESCAPE LEVEL 2 (counter=7): type=2
+2026-02-02 02:07:18,124 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=3
+2026-02-02 02:07:18,129 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=4
+2026-02-02 02:07:18,137 - INFO - STUCK PANIC MODE (counter=10): type=3
+2026-02-02 02:07:18,146 - INFO - STUCK ESCAPE LEVEL 2 (counter=9): type=1
+2026-02-02 02:07:18,162 - INFO - STUCK ESCAPE LEVEL 2 (counter=8): type=2
+2026-02-02 02:07:18,171 - INFO - STUCK PANIC MODE (counter=10): type=0
+2026-02-02 02:07:18,179 - INFO - STUCK PANIC MODE (counter=12): type=3
+2026-02-02 02:07:18,187 - INFO - STUCK PANIC MODE (counter=14): type=0
+2026-02-02 02:07:18,197 - INFO - STUCK PANIC MODE (counter=16): type=3
+2026-02-02 02:07:18,197 - INFO - Step 240: Health=67 Ammo=49 Kills=2 Pos=(19.6,769.8) Labels=1 EnemiesVisible=0 Actions=['LEFT_TURN', 'RIGHT_TURN']
+2026-02-02 02:07:18,197 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:18,204 - INFO - STUCK PANIC MODE (counter=18): type=0
+2026-02-02 02:07:18,212 - INFO - STUCK PANIC MODE (counter=20): type=3
+2026-02-02 02:07:18,229 - WARNING - Step 244: Escape mode persisting for 22 steps. Resetting to try new strategy.
+2026-02-02 02:07:18,295 - INFO - KILL! Total kills: 3
+2026-02-02 02:07:18,393 - INFO - Step 260: Health=67 Ammo=49 Kills=3 Pos=(35.2,778.4) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:18,393 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:18,654 - INFO - Step 280: Health=67 Ammo=49 Kills=3 Pos=(35.2,778.4) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:18,654 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:18,941 - INFO - Step 300: Health=67 Ammo=49 Kills=3 Pos=(35.2,778.4) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:18,941 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:19,204 - INFO - Step 320: Health=67 Ammo=49 Kills=3 Pos=(35.2,778.4) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:19,204 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:19,624 - INFO - Step 340: Health=67 Ammo=49 Kills=3 Pos=(35.2,778.4) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:19,624 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:20,077 - INFO - Step 360: Health=67 Ammo=49 Kills=3 Pos=(35.1,778.4) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:20,077 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:20,447 - INFO - Step 380: Health=67 Ammo=49 Kills=3 Pos=(35.1,778.3) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:20,447 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:20,630 - INFO - KILL! Total kills: 4
+2026-02-02 02:07:20,946 - INFO - Step 400: Health=61 Ammo=49 Kills=4 Pos=(32.9,777.2) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:20,946 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:21,247 - INFO - Step 420: Health=46 Ammo=49 Kills=4 Pos=(34.2,777.7) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:21,247 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:21,711 - INFO - Step 440: Health=46 Ammo=49 Kills=4 Pos=(34.8,778.2) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:21,711 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:22,027 - INFO - Step 460: Health=46 Ammo=49 Kills=4 Pos=(34.7,778.2) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:22,027 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:22,461 - INFO - Step 480: Health=31 Ammo=49 Kills=4 Pos=(40.4,780.9) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:22,461 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:22,897 - INFO - Step 500: Health=31 Ammo=49 Kills=4 Pos=(41.3,781.4) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:22,897 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:23,297 - INFO - Step 520: Health=31 Ammo=49 Kills=4 Pos=(41.3,781.4) Labels=1 EnemiesVisible=0 Actions=['MOVE_RIGHT']
+2026-02-02 02:07:23,297 - INFO - Label sample (no enemies matched): ['DoomPlayer']
+2026-02-02 02:07:23,503 - INFO - ============================================================
+2026-02-02 02:07:23,504 - INFO - Episode finished
+2026-02-02 02:07:23,504 - INFO - Total reward: 0.00
+2026-02-02 02:07:23,504 - INFO - Kills: 4
+2026-02-02 02:07:23,504 - INFO - Health lost: 69.00
+2026-02-02 02:07:23,504 - INFO - Ammo used: 1
+2026-02-02 02:07:23,504 - INFO - Actions taken: 525
+2026-02-02 02:07:23,504 - INFO - Episode time: 11.65s
+2026-02-02 02:07:23,504 - INFO - ============================================================

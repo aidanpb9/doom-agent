@@ -1,0 +1,21 @@
+2026-02-02 02:08:39,472 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:08:40,067 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:08:40,067 - INFO - ============================================================
+2026-02-02 02:08:40,067 - INFO - Starting new episode
+2026-02-02 02:08:40,067 - INFO - ============================================================
+2026-02-02 02:08:40,161 - INFO - Episode started successfully
+2026-02-02 02:08:40,163 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['ATTACK'], Enemy: 304,254 conf=0.87
+2026-02-02 02:08:40,805 - INFO - KILL! Total kills: 1
+2026-02-02 02:08:40,806 - INFO - Step 20: Health=85 Ammo=46 Kills=1 Pos=(-26.9,839.4) Labels=6 EnemiesVisible=2 Actions=['MOVE_RIGHT'], Enemy: 225,255 conf=0.92
+2026-02-02 02:08:41,518 - INFO - Step 40: Health=85 Ammo=46 Kills=1 Pos=(43.3,906.8) Labels=5 EnemiesVisible=3 Actions=['MOVE_RIGHT'], Enemy: 137,185 conf=1.00
+2026-02-02 02:08:42,240 - INFO - Step 60: Health=73 Ammo=46 Kills=1 Pos=(50.5,892.5) Labels=5 EnemiesVisible=3 Actions=['MOVE_RIGHT'], Enemy: 147,188 conf=1.00
+2026-02-02 02:08:43,011 - INFO - Step 80: Health=52 Ammo=46 Kills=1 Pos=(57.4,866.2) Labels=6 EnemiesVisible=4 Actions=['MOVE_RIGHT'], Enemy: 128,192 conf=1.00
+2026-02-02 02:08:43,290 - INFO - ============================================================
+2026-02-02 02:08:43,290 - INFO - Episode finished
+2026-02-02 02:08:43,290 - INFO - Total reward: 0.00
+2026-02-02 02:08:43,290 - INFO - Kills: 1
+2026-02-02 02:08:43,290 - INFO - Health lost: 48.00
+2026-02-02 02:08:43,290 - INFO - Ammo used: 4
+2026-02-02 02:08:43,290 - INFO - Actions taken: 82
+2026-02-02 02:08:43,290 - INFO - Episode time: 3.22s
+2026-02-02 02:08:43,290 - INFO - ============================================================

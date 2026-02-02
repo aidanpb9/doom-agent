@@ -1,0 +1,27 @@
+2026-02-02 01:50:21,907 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 01:50:22,534 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 01:50:22,535 - INFO - ============================================================
+2026-02-02 01:50:22,535 - INFO - Starting new episode
+2026-02-02 01:50:22,535 - INFO - ============================================================
+2026-02-02 01:50:22,565 - INFO - Episode started successfully
+2026-02-02 01:50:22,567 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 304,254 conf=0.87
+2026-02-02 01:50:23,194 - INFO - Step 20: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:23,828 - INFO - Step 40: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:24,522 - INFO - Step 60: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:25,232 - INFO - Step 80: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:25,833 - INFO - Step 100: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:26,457 - INFO - Step 120: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:27,133 - INFO - Step 140: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:28,046 - INFO - Step 160: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:28,679 - INFO - Step 180: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:29,343 - INFO - Step 200: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:30,215 - INFO - Step 220: Health=100 Ammo=50 Kills=0 Pos=(-96.0,784.0) Labels=4 EnemiesVisible=2 Actions=['LEFT_TURN'], Enemy: 274,254 conf=0.91
+2026-02-02 01:50:30,580 - INFO - ============================================================
+2026-02-02 01:50:30,580 - INFO - Episode finished
+2026-02-02 01:50:30,580 - INFO - Total reward: 0.00
+2026-02-02 01:50:30,580 - INFO - Kills: 0
+2026-02-02 01:50:30,580 - INFO - Health lost: 0.00
+2026-02-02 01:50:30,580 - INFO - Ammo used: 0
+2026-02-02 01:50:30,580 - INFO - Actions taken: 233
+2026-02-02 01:50:30,580 - INFO - Episode time: 8.05s
+2026-02-02 01:50:30,580 - INFO - ============================================================
