@@ -15,7 +15,13 @@ AGENT_DIR = ROOT_DIR / "DOOM"
 if str(AGENT_DIR) not in sys.path:
     sys.path.append(str(AGENT_DIR))
 
-from agent.nav.mapper import AutomapMapper
+try:
+    from agent.nav.mapper import AutomapMapper
+except ImportError:
+    # Fallback: create a simple mapper class if import fails
+    class AutomapMapper:
+        def __init__(self):
+            pass
 
 log_dir = Path("logs")
 log_dir.mkdir(exist_ok=True)
