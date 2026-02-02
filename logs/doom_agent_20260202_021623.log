@@ -1,0 +1,31 @@
+2026-02-02 02:16:23,890 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:16:24,497 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:16:24,497 - INFO - ============================================================
+2026-02-02 02:16:24,497 - INFO - Starting new episode
+2026-02-02 02:16:24,497 - INFO - ============================================================
+2026-02-02 02:16:24,588 - INFO - Episode started successfully
+2026-02-02 02:16:24,590 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 02:16:24,984 - INFO - KILL #1! Resetting navigation
+2026-02-02 02:16:25,381 - INFO - Step 20: Health=100 Ammo=44 Kills=1 Enemies=3 Labels=['ArmorBonus', 'Blood', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack', 'Zombieman']
+2026-02-02 02:16:25,444 - INFO - Target found on screen: Clip at (415, 225)
+2026-02-02 02:16:25,932 - INFO - Target found on screen: Stimpack at (313, 237)
+2026-02-02 02:16:25,980 - INFO - Target found on screen: Stimpack at (310, 237)
+2026-02-02 02:16:26,059 - INFO - Step 40: Health=100 Ammo=39 Kills=1 Enemies=2 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack', 'Zombieman']
+2026-02-02 02:16:26,203 - INFO - KILL #2! Resetting navigation
+2026-02-02 02:16:26,786 - INFO - Step 60: Health=100 Ammo=38 Kills=2 Enemies=3 Labels=['BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 02:16:27,614 - INFO - Step 80: Health=100 Ammo=35 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:16:28,698 - INFO - Step 100: Health=73 Ammo=35 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:16:29,848 - INFO - Step 120: Health=73 Ammo=35 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:16:30,913 - INFO - Step 140: Health=73 Ammo=35 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:16:31,802 - INFO - Step 160: Health=61 Ammo=45 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:16:32,935 - INFO - Step 180: Health=61 Ammo=45 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:16:33,772 - INFO - Step 200: Health=58 Ammo=45 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:16:34,017 - INFO - KILL #3! Resetting navigation
+2026-02-02 02:16:34,503 - INFO - ============================================================
+2026-02-02 02:16:34,503 - INFO - Episode finished
+2026-02-02 02:16:34,503 - INFO - Total reward: 0.00
+2026-02-02 02:16:34,503 - INFO - Kills: 3
+2026-02-02 02:16:34,503 - INFO - Health lost: 42.00
+2026-02-02 02:16:34,503 - INFO - Actions taken: 216
+2026-02-02 02:16:34,503 - INFO - Episode time: 10.00s
+2026-02-02 02:16:34,503 - INFO - ============================================================

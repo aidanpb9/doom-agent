@@ -1,0 +1,19 @@
+2026-02-02 02:21:12,146 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:21:12,828 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:21:12,828 - INFO - ============================================================
+2026-02-02 02:21:12,829 - INFO - Starting new episode
+2026-02-02 02:21:12,829 - INFO - ============================================================
+2026-02-02 02:21:12,860 - INFO - Episode started successfully
+2026-02-02 02:21:12,862 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 02:21:13,456 - INFO - Step 20: Health=100 Ammo=44 Kills=1 Enemies=3 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack', 'Zombieman']
+2026-02-02 02:21:14,084 - INFO - Step 40: Health=100 Ammo=39 Kills=1 Enemies=6 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack', 'Zombieman']
+2026-02-02 02:21:14,788 - INFO - Step 60: Health=100 Ammo=33 Kills=1 Enemies=6 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack', 'Zombieman']
+2026-02-02 02:21:15,620 - ERROR - Error during episode: Controlled ViZDoom instance exited unexpectedly.
+2026-02-02 02:21:15,620 - INFO - ============================================================
+2026-02-02 02:21:15,620 - INFO - Episode finished
+2026-02-02 02:21:15,620 - INFO - Total reward: 0.00
+2026-02-02 02:21:15,620 - INFO - Kills: 1
+2026-02-02 02:21:15,620 - INFO - Health lost: 0.00
+2026-02-02 02:21:15,620 - INFO - Actions taken: 75
+2026-02-02 02:21:15,620 - INFO - Episode time: 2.79s
+2026-02-02 02:21:15,620 - INFO - ============================================================

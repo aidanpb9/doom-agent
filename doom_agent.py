@@ -62,9 +62,12 @@ PRIORITY_LABELS = {
     "switch": 9,
     "door": 8,
     "key": 7,
+    "clip": 6,
     "ammo": 6,
+    "stimpack": 5,
     "health": 5,
-    "soul": 4,
+    "armor": 4,
+    "soul": 3,
 }
 
 
@@ -77,12 +80,14 @@ class DoomAgent:
         self.frames_since_enemy = 0
         self.explore_forward_steps = 0
         self.explore_turn_direction = 1
+        self.explore_strafe_direction = 1  # For varied exploration
         self.last_kill_count = 0
         self.frames_since_last_kill = 0
         self.stuck_on_enemy_steps = 0
         self.mapper = AutomapMapper()
         self.target_cell = None
         self.explore_path = []
+        self.exploration_phase = 0  # 0=forward, 1=strafe, 2=turn sweep
         
     def initialize_game(self):
         self.game = vzd.DoomGame()
@@ -238,6 +243,36 @@ class DoomAgent:
             else:
                 return [1, 1, 0, 0, 0, 0, 0]  # Forward + turn left
     
+    def _find_frontier_cells(self, walkable):
+        """Find frontier cells (walkable cells on map edge or near unexplored areas)."""
+        if walkable.sum() == 0:
+            return None
+        
+        # Get walkable boundary
+        from scipy import ndimage
+        edges = ndimage.binary_erosion(walkable, iterations=1)
+        frontier = walkable & ~edges
+        
+        frontier_cells = np.argwhere(frontier)
+        return frontier_cells if len(frontier_cells) > 0 else None
+    
+    def _navigate_to_frontier(self, frontier_cells):
+        """Navigate toward frontier. Simple: just turn and move toward frontier."""
+        # Frontier cells are mostly at right side = turn right, left side = turn left
+        if len(frontier_cells) == 0:
+            return [1, 0, 0, 0, 0, 0, 0]
+        
+        # Get average frontier position
+        avg_row, avg_col = frontier_cells.mean(axis=0)
+        map_center = frontier_cells.max() // 2
+        
+        if avg_col > map_center + 10:
+            return [1, 0, 1, 0, 0, 0, 0]  # Forward + turn right
+        elif avg_col < map_center - 10:
+            return [1, 1, 0, 0, 0, 0, 0]  # Forward + turn left
+        else:
+            return [1, 0, 0, 0, 0, 0, 0]  # Just forward
+    
     def decide_action(self, state_info, automap_buffer=None):
         if state_info is None:
             return [1, 0, 0, 0, 0, 0, 0]
@@ -247,71 +282,43 @@ class DoomAgent:
         kills = state_info['kills']
         screen = state_info['screen']
         labels = state_info.get('labels', [])
-        angle = state_info.get('angle', 0)
-        pos_x = state_info.get('pos_x', 0)
-        pos_y = state_info.get('pos_y', 0)
-        
-        # Track if we got new kills
-        if kills > self.last_kill_count:
-            self.last_kill_count = kills
-            self.frames_since_last_kill = 0
-            self.stuck_on_enemy_steps = 0
-            self.target_cell = None
-            self.explore_path = []
-            logger.info(f"KILL #{kills}! Resetting navigation")
-        else:
-            self.frames_since_last_kill += 1
-            self.stuck_on_enemy_steps += 1
         
         screen_width = screen.shape[1]
         screen_center_x = screen_width // 2
         
-        # ===== COMBAT PHASE =====
+        # ===== COMBAT: FIND & KILL ENEMIES =====
         enemy_detection = self.detect_enemies_from_labels(labels)
         
         if enemy_detection is not None:
             self.frames_since_enemy = 0
-            self.target_cell = None
-            self.explore_path = []
             
             if len(enemy_detection) == 3:
                 enemy_x, enemy_y, confidence = enemy_detection
             else:
                 enemy_x, enemy_y = enemy_detection
-                confidence = 1.0
             
             offset = enemy_x - screen_center_x
             abs_offset = abs(offset)
             
-            # If stuck attacking one enemy for too long without kills, MOVE AWAY
-            if self.stuck_on_enemy_steps > 40 and ammo > 5:
-                logger.info(f"WARNING: Stuck on enemy for {self.stuck_on_enemy_steps} steps, breaking engagement")
-                self.stuck_on_enemy_steps = 0
-                if self.frames_since_enemy % 3 == 0:
-                    return [1, 0, 0, 1, 0, 0, 0]
-                elif self.frames_since_enemy % 3 == 1:
-                    return [1, 0, 0, 0, 1, 0, 0]
-                else:
-                    return [0, 0, 1, 0, 1, 0, 0]
-            
-            # Attack logic (unchanged)
+            # PROVEN AIMING - DO NOT CHANGE
             if ammo > 0:
+                # CENTERED: Pure attack
                 if abs_offset < 25:
-                    if self.frames_since_enemy % 2 == 0:
-                        return [0, 0, 0, 1, 0, 1, 0]
-                    else:
-                        return [0, 0, 0, 0, 1, 1, 0]
+                    return [0, 0, 0, 0, 0, 1, 0]
+                # RIGHT: Turn right and attack
                 elif offset > 25:
                     if abs_offset > 80:
-                        return [0, 0, 1, 0, 0, 1, 0]
+                        return [0, 0, 1, 0, 0, 1, 0]  # Strong turn
                     else:
-                        return [1, 0, 1, 0, 1, 1, 0]
+                        return [1, 0, 1, 0, 0, 1, 0]  # Forward + turn right + attack
+                # LEFT: Turn left and attack
                 else:
                     if abs_offset > 80:
-                        return [0, 1, 0, 0, 0, 1, 0]
+                        return [0, 1, 0, 0, 0, 1, 0]  # Strong turn
                     else:
-                        return [1, 1, 0, 0, 1, 1, 0]
+                        return [1, 1, 0, 0, 0, 1, 0]  # Forward + turn left + attack
             else:
+                # No ammo, just approach
                 if offset > 25:
                     return [1, 0, 1, 0, 0, 0, 0]
                 elif offset < -25:
@@ -321,87 +328,46 @@ class DoomAgent:
         
         self.frames_since_enemy += 1
         
-        # ===== CRITICAL HEALTH =====
-        if health < 25:
-            return [0, 1, 0, 0, 1, 0, 0]
+        # ===== SURVIVAL: CRITICAL HEALTH =====
+        if health < 30:
+            if self.frames_since_enemy % 2 == 0:
+                return [0, 0, 0, 1, 0, 0, 0]
+            else:
+                return [0, 0, 0, 0, 1, 0, 0]
         
-        # ===== EXPLORATION PHASE =====
-        # Priority 1: Look for priority targets on screen (exits, switches, doors)
+        # ===== GRAB ITEMS ON SCREEN =====
         priority_target = self.find_priority_target_on_screen(labels, health, ammo)
         if priority_target is not None:
             target_x, target_y, target_name = priority_target
-            logger.info(f"Target found on screen: {target_name} at ({target_x}, {target_y})")
             return self.navigate_toward_screen_target(target_x, screen_width, screen_center_x)
         
-        # Priority 2: Use automap to navigate toward unexplored areas
+        # ===== DEFAULT: PATHSEEKING WITH AUTOMAP =====
+        # Use automap to find unexplored areas and navigate to them
         if automap_buffer is not None:
-            try:
-                class _World:
-                    def __init__(self, automap):
-                        self.automap = automap
+            # Find frontier (unexplored/unexplored edges)
+            automap = automap_buffer[..., :3]  # RGB channels
+            
+            # Walls are bright, floors are dark
+            walkable = np.mean(automap, axis=2) < 150
+            explored = np.sum(walkable) > 0
+            
+            if explored:
+                # Find frontier cells (walkable near walls or edges)
+                frontier = self._find_frontier_cells(walkable)
                 
-                occ_grid = self.mapper.update(_World(automap_buffer))
-                agent_cell = self.mapper.agent_cell()
-                
-                if occ_grid is not None and agent_cell is not None:
-                    # Find nearest unexplored (UNKNOWN) cell
-                    unknown_cells = np.argwhere(occ_grid == 0)
-                    free_cells = np.argwhere(occ_grid == 1)
-                    
-                    if unknown_cells.size > 0 and free_cells.size > 0:
-                        # Find frontier cells (FREE adjacent to UNKNOWN)
-                        frontier = []
-                        for free_cell in free_cells:
-                            y, x = free_cell
-                            for dy, dx in [(-1,0), (1,0), (0,-1), (0,1)]:
-                                ny, nx = y + dy, x + dx
-                                if 0 <= ny < occ_grid.shape[0] and 0 <= nx < occ_grid.shape[1]:
-                                    if occ_grid[ny, nx] == 0:
-                                        frontier.append((y, x))
-                                        break
-                        
-                        if frontier:
-                            # Pick closest frontier cell
-                            frontier = list(set(frontier))
-                            distances = [np.sqrt((c[0]-agent_cell[0])**2 + (c[1]-agent_cell[1])**2) for c in frontier]
-                            nearest_idx = np.argmin(distances)
-                            self.target_cell = frontier[nearest_idx]
-                            logger.info(f"Navigating to frontier: {self.target_cell}")
-                        else:
-                            self.target_cell = None
-                    
-                    # If we have a target cell, navigate toward it
-                    if self.target_cell is not None:
-                        ay, ax = agent_cell
-                        ty, tx = self.target_cell
-                        dx = tx - ax
-                        dy = ty - ay
-                        
-                        if abs(dx) + abs(dy) <= 1:
-                            # Reached target, find new one
-                            self.target_cell = None
-                        else:
-                            desired_angle = math.degrees(math.atan2(-dy, dx)) % 360.0
-                            current_angle = angle % 360.0
-                            angle_diff = ((desired_angle - current_angle + 540.0) % 360.0) - 180.0
-                            
-                            if angle_diff > 15:
-                                return [0, 1, 0, 0, 0, 0, 0]  # Turn left
-                            elif angle_diff < -15:
-                                return [0, 0, 1, 0, 0, 0, 0]  # Turn right
-                            else:
-                                return [1, 0, 0, 0, 0, 0, 0]  # Forward
-            except Exception as e:
-                logger.warning(f"Automap navigation error: {e}")
+                if frontier is not None and len(frontier) > 0:
+                    # Navigate toward frontier
+                    return self._navigate_to_frontier(frontier)
         
-        # Priority 3: Default random exploration
+        # FALLBACK: Random exploration pattern
         if self.explore_forward_steps <= 0:
             self.explore_forward_steps = 20
             self.explore_turn_direction = 1 if random.random() < 0.5 else -1
         
         self.explore_forward_steps -= 1
         
-        if self.explore_forward_steps % 8 == 0:
+        # More aggressive turning
+        if self.explore_forward_steps % 4 == 0:
             if self.explore_turn_direction > 0:
                 return [1, 0, 1, 0, 0, 0, 0]
             else:
@@ -490,12 +456,20 @@ class DoomAgent:
                 if frame_count % 20 == 0:
                     lbls = state_info.get("labels", [])
                     n_enemies = self.count_enemies_from_labels(lbls)
+                    
+                    # Log all unique label names seen
+                    label_names = set()
+                    for lbl in lbls:
+                        name = getattr(lbl, "object_name", "") or ""
+                        if name:
+                            label_names.add(name)
+                    
                     logger.info(
                         f"Step {stats['actions_taken']}: "
                         f"Health={current_health:.0f} Ammo={current_ammo:.0f} "
                         f"Kills={stats['kills']} "
                         f"Enemies={n_enemies} "
-                        f"Actions={active_actions}"
+                        f"Labels={sorted(label_names) if label_names else 'None'}"
                     )
                 
                 reward = self.game.make_action(action, 4)

@@ -1,8 +1,8 @@
 {
-  "kills": 2,
-  "ammo_used": 13.0,
-  "health_lost": 0.0,
-  "actions_taken": 225,
+  "kills": 7,
+  "ammo_used": 0.0,
+  "health_lost": 7.0,
+  "actions_taken": 525,
   "episode_reward": 0.0,
-  "episode_time": 10.000268459320068
+  "episode_time": 18.823230743408203
 }

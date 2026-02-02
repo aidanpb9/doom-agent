@@ -1,0 +1,287 @@
+2026-02-02 02:19:25,964 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:19:26,683 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:19:26,684 - INFO - ============================================================
+2026-02-02 02:19:26,684 - INFO - Starting new episode
+2026-02-02 02:19:26,684 - INFO - ============================================================
+2026-02-02 02:19:26,713 - INFO - Episode started successfully
+2026-02-02 02:19:26,715 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 02:19:27,108 - INFO - KILL #1! Resetting navigation
+2026-02-02 02:19:27,187 - INFO - KILL #2! Resetting navigation
+2026-02-02 02:19:27,331 - INFO - Step 20: Health=100 Ammo=44 Kills=2 Enemies=3 Labels=['ArmorBonus', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 02:19:27,835 - INFO - Step 40: Health=100 Ammo=39 Kills=2 Enemies=1 Labels=['ArmorBonus', 'BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 02:19:27,882 - INFO - Target on screen: ArmorBonus at (29, 277)
+2026-02-02 02:19:28,138 - INFO - WARNING: Stuck on enemy for 31 steps, breaking engagement
+2026-02-02 02:19:28,153 - INFO - Target on screen: ArmorBonus at (181, 268)
+2026-02-02 02:19:28,169 - INFO - Target on screen: ArmorBonus at (242, 262)
+2026-02-02 02:19:28,185 - INFO - Target on screen: ArmorBonus at (323, 262)
+2026-02-02 02:19:28,250 - INFO - Target on screen: ArmorBonus at (332, 279)
+2026-02-02 02:19:28,312 - INFO - Target on screen: ArmorBonus at (340, 303)
+2026-02-02 02:19:28,343 - INFO - Target on screen: ArmorBonus at (349, 337)
+2026-02-02 02:19:28,375 - INFO - Target on screen: ArmorBonus at (362, 331)
+2026-02-02 02:19:28,390 - INFO - Target on screen: ArmorBonus at (344, 339)
+2026-02-02 02:19:28,454 - INFO - Target on screen: ArmorBonus at (385, 388)
+2026-02-02 02:19:28,569 - INFO - Step 60: Health=100 Ammo=36 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:29,564 - INFO - Step 80: Health=100 Ammo=36 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:30,555 - INFO - Step 100: Health=100 Ammo=36 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:31,534 - INFO - Step 120: Health=95 Ammo=36 Kills=2 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:31,577 - INFO - WARNING: Stuck on enemy for 74 steps, breaking engagement
+2026-02-02 02:19:31,736 - INFO - KILL #3! Resetting navigation
+2026-02-02 02:19:32,146 - INFO - KILL #4! Resetting navigation
+2026-02-02 02:19:32,162 - INFO - Step 140: Health=80 Ammo=36 Kills=4 Enemies=4 Labels=['Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 02:19:32,625 - INFO - Exploring frontier at (np.int64(37), np.int64(28)), distance=46.2
+2026-02-02 02:19:32,677 - INFO - Exploring frontier at (np.int64(38), np.int64(25)), distance=46.2
+2026-02-02 02:19:32,793 - INFO - Target on screen: Clip at (630, 255)
+2026-02-02 02:19:32,809 - INFO - Target on screen: Clip at (508, 246)
+2026-02-02 02:19:32,809 - INFO - Step 160: Health=90 Ammo=37 Kills=4 Enemies=1 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 02:19:32,873 - INFO - Target on screen: Clip at (541, 234)
+2026-02-02 02:19:32,935 - INFO - Target on screen: Clip at (442, 231)
+2026-02-02 02:19:33,311 - INFO - WARNING: Stuck on enemy for 31 steps, breaking engagement
+2026-02-02 02:19:33,388 - INFO - KILL #5! Resetting navigation
+2026-02-02 02:19:33,388 - INFO - Target on screen: Clip at (109, 271)
+2026-02-02 02:19:33,404 - INFO - Target on screen: Clip at (475, 207)
+2026-02-02 02:19:33,465 - INFO - Target on screen: Clip at (371, 143)
+2026-02-02 02:19:33,529 - INFO - Target on screen: Clip at (277, 138)
+2026-02-02 02:19:33,544 - INFO - Target on screen: Clip at (339, 278)
+2026-02-02 02:19:33,646 - INFO - Exploring frontier at (np.int64(41), np.int64(26)), distance=19.0
+2026-02-02 02:19:33,742 - INFO - Exploring frontier at (np.int64(40), np.int64(28)), distance=17.1
+2026-02-02 02:19:33,742 - INFO - Step 180: Health=90 Ammo=39 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:33,750 - INFO - Target on screen: Clip at (85, 335)
+2026-02-02 02:19:33,766 - INFO - Target on screen: Clip at (179, 331)
+2026-02-02 02:19:33,829 - INFO - Target on screen: Clip at (259, 326)
+2026-02-02 02:19:33,892 - INFO - Target on screen: Clip at (333, 332)
+2026-02-02 02:19:33,939 - INFO - Target on screen: Clip at (330, 341)
+2026-02-02 02:19:33,955 - INFO - Target on screen: Clip at (327, 348)
+2026-02-02 02:19:34,003 - INFO - Target on screen: Clip at (328, 365)
+2026-02-02 02:19:34,019 - INFO - Target on screen: Clip at (331, 365)
+2026-02-02 02:19:34,068 - INFO - Target on screen: Clip at (336, 366)
+2026-02-02 02:19:34,083 - INFO - Target on screen: Clip at (342, 366)
+2026-02-02 02:19:34,098 - INFO - Target on screen: Clip at (349, 366)
+2026-02-02 02:19:34,162 - INFO - Target on screen: Clip at (355, 368)
+2026-02-02 02:19:34,178 - INFO - Target on screen: Clip at (362, 358)
+2026-02-02 02:19:34,193 - INFO - Target on screen: Clip at (331, 375)
+2026-02-02 02:19:34,209 - INFO - Target on screen: Clip at (339, 379)
+2026-02-02 02:19:34,225 - INFO - Target on screen: Clip at (349, 387)
+2026-02-02 02:19:34,273 - INFO - Target on screen: Clip at (364, 392)
+2026-02-02 02:19:34,380 - INFO - Exploring frontier at (np.int64(40), np.int64(30)), distance=15.1
+2026-02-02 02:19:34,471 - INFO - Exploring frontier at (np.int64(41), np.int64(33)), distance=12.0
+2026-02-02 02:19:34,534 - INFO - Exploring frontier at (np.int64(40), np.int64(32)), distance=13.2
+2026-02-02 02:19:34,534 - INFO - Step 200: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:34,601 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:34,663 - INFO - Exploring frontier at (np.int64(41), np.int64(33)), distance=12.0
+2026-02-02 02:19:34,721 - INFO - Exploring frontier at (np.int64(38), np.int64(31)), distance=14.6
+2026-02-02 02:19:34,816 - INFO - Exploring frontier at (np.int64(38), np.int64(31)), distance=14.6
+2026-02-02 02:19:34,961 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:35,146 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:35,241 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:35,335 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:35,402 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:35,715 - INFO - Exploring frontier at (np.int64(38), np.int64(33)), distance=12.6
+2026-02-02 02:19:35,777 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:35,839 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:35,888 - INFO - Exploring frontier at (np.int64(38), np.int64(32)), distance=13.6
+2026-02-02 02:19:35,888 - INFO - Step 220: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:35,981 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:36,043 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:36,201 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:36,280 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:36,343 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:36,417 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:36,491 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:36,593 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:36,674 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:36,733 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:36,785 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:36,833 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:37,008 - INFO - Exploring frontier at (np.int64(39), np.int64(32)), distance=13.3
+2026-02-02 02:19:37,072 - INFO - Exploring frontier at (np.int64(39), np.int64(32)), distance=13.3
+2026-02-02 02:19:37,101 - INFO - Step 240: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:37,149 - INFO - Exploring frontier at (np.int64(38), np.int64(31)), distance=14.6
+2026-02-02 02:19:37,196 - INFO - Exploring frontier at (np.int64(38), np.int64(33)), distance=12.6
+2026-02-02 02:19:37,291 - INFO - Exploring frontier at (np.int64(38), np.int64(33)), distance=12.6
+2026-02-02 02:19:37,355 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:37,440 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:37,503 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:37,577 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:37,680 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:37,782 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:37,832 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:37,898 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:37,960 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:38,021 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:38,082 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:38,181 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:38,283 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:38,344 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:38,399 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:38,509 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:38,619 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:38,619 - INFO - Step 260: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:38,713 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:38,810 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:38,901 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:38,960 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:39,008 - INFO - Exploring frontier at (np.int64(39), np.int64(33)), distance=12.4
+2026-02-02 02:19:39,595 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:39,656 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:39,750 - INFO - Exploring frontier at (np.int64(38), np.int64(31)), distance=14.6
+2026-02-02 02:19:39,866 - INFO - Exploring frontier at (np.int64(38), np.int64(31)), distance=14.6
+2026-02-02 02:19:39,984 - INFO - Step 280: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:40,065 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:40,129 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,187 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,235 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,283 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,331 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,394 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,455 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,539 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,603 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,661 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,756 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:40,820 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:41,139 - INFO - Step 300: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:41,391 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:41,453 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:41,957 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:42,008 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:42,008 - INFO - Step 320: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:42,072 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:42,162 - INFO - Exploring frontier at (np.int64(39), np.int64(33)), distance=12.4
+2026-02-02 02:19:42,239 - INFO - Exploring frontier at (np.int64(39), np.int64(33)), distance=12.4
+2026-02-02 02:19:42,300 - INFO - Exploring frontier at (np.int64(39), np.int64(34)), distance=11.4
+2026-02-02 02:19:42,938 - INFO - Step 340: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:43,580 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:43,652 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:43,707 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:43,760 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:43,816 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:43,873 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:43,916 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:43,972 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:43,972 - INFO - Step 360: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:44,020 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:44,088 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:44,141 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:44,204 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:44,257 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:44,537 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:44,601 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:44,960 - INFO - Step 380: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:45,129 - INFO - Exploring frontier at (np.int64(37), np.int64(35)), distance=11.2
+2026-02-02 02:19:45,342 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:45,618 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:45,703 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:45,770 - INFO - Exploring frontier at (np.int64(38), np.int64(33)), distance=12.6
+2026-02-02 02:19:45,825 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:45,942 - INFO - Exploring frontier at (np.int64(38), np.int64(35)), distance=10.8
+2026-02-02 02:19:45,986 - INFO - Step 400: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:46,041 - INFO - Exploring frontier at (np.int64(38), np.int64(33)), distance=12.6
+2026-02-02 02:19:46,100 - INFO - Exploring frontier at (np.int64(38), np.int64(34)), distance=11.7
+2026-02-02 02:19:46,191 - INFO - Exploring frontier at (np.int64(40), np.int64(31)), distance=14.1
+2026-02-02 02:19:46,258 - INFO - Exploring frontier at (np.int64(40), np.int64(31)), distance=14.1
+2026-02-02 02:19:46,308 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:46,357 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:46,408 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:46,458 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:46,517 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:46,582 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:46,639 - INFO - Exploring frontier at (np.int64(39), np.int64(34)), distance=11.4
+2026-02-02 02:19:46,715 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:46,837 - INFO - Exploring frontier at (np.int64(39), np.int64(33)), distance=12.4
+2026-02-02 02:19:46,917 - INFO - Exploring frontier at (np.int64(42), np.int64(33)), distance=12.0
+2026-02-02 02:19:46,972 - INFO - Exploring frontier at (np.int64(42), np.int64(33)), distance=12.0
+2026-02-02 02:19:47,024 - INFO - Exploring frontier at (np.int64(42), np.int64(33)), distance=12.0
+2026-02-02 02:19:47,090 - INFO - Exploring frontier at (np.int64(42), np.int64(33)), distance=12.0
+2026-02-02 02:19:47,142 - INFO - Exploring frontier at (np.int64(42), np.int64(33)), distance=12.0
+2026-02-02 02:19:47,142 - INFO - Step 420: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:47,207 - INFO - Exploring frontier at (np.int64(42), np.int64(33)), distance=12.0
+2026-02-02 02:19:47,256 - INFO - Exploring frontier at (np.int64(42), np.int64(32)), distance=13.0
+2026-02-02 02:19:47,318 - INFO - Exploring frontier at (np.int64(42), np.int64(31)), distance=14.0
+2026-02-02 02:19:47,367 - INFO - Exploring frontier at (np.int64(39), np.int64(33)), distance=12.4
+2026-02-02 02:19:47,423 - INFO - Exploring frontier at (np.int64(39), np.int64(32)), distance=13.3
+2026-02-02 02:19:47,541 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:47,603 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:47,655 - INFO - Exploring frontier at (np.int64(39), np.int64(33)), distance=12.4
+2026-02-02 02:19:48,068 - INFO - Step 440: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:48,153 - INFO - Exploring frontier at (np.int64(39), np.int64(32)), distance=13.3
+2026-02-02 02:19:48,226 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:48,301 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:48,358 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:48,417 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:48,480 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:48,534 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:48,584 - INFO - Exploring frontier at (np.int64(39), np.int64(31)), distance=14.3
+2026-02-02 02:19:48,642 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:48,695 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:48,759 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:48,817 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:48,884 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:48,934 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:49,000 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:49,059 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:49,109 - INFO - Exploring frontier at (np.int64(39), np.int64(34)), distance=11.4
+2026-02-02 02:19:49,164 - INFO - Exploring frontier at (np.int64(39), np.int64(34)), distance=11.4
+2026-02-02 02:19:49,209 - INFO - Exploring frontier at (np.int64(39), np.int64(34)), distance=11.4
+2026-02-02 02:19:49,209 - INFO - Step 460: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:49,265 - INFO - Exploring frontier at (np.int64(39), np.int64(33)), distance=12.4
+2026-02-02 02:19:49,342 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:49,407 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:49,442 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:49,903 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:49,953 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:50,017 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:50,060 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:50,125 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:50,182 - INFO - Exploring frontier at (np.int64(39), np.int64(35)), distance=10.4
+2026-02-02 02:19:50,234 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:50,234 - INFO - Step 480: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:50,306 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:50,357 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:50,424 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:50,476 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:50,557 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:50,625 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:50,717 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:50,757 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:50,810 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:50,879 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:50,977 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:51,242 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:51,304 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:51,342 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:51,404 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:51,442 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:51,442 - INFO - Step 500: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:51,505 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:51,542 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:51,592 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:51,642 - INFO - Exploring frontier at (np.int64(40), np.int64(34)), distance=11.2
+2026-02-02 02:19:51,692 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:51,742 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:51,805 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:51,873 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:51,910 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:51,958 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:52,009 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:52,067 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:52,123 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:52,173 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:52,217 - INFO - Exploring frontier at (np.int64(41), np.int64(33)), distance=12.0
+2026-02-02 02:19:52,257 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:52,310 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:52,373 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:52,423 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:52,536 - INFO - Exploring frontier at (np.int64(40), np.int64(35)), distance=10.2
+2026-02-02 02:19:52,536 - INFO - Step 520: Health=90 Ammo=49 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:19:52,606 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:52,667 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:52,707 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:52,768 - INFO - Exploring frontier at (np.int64(40), np.int64(33)), distance=12.2
+2026-02-02 02:19:52,808 - INFO - ============================================================
+2026-02-02 02:19:52,808 - INFO - Episode finished
+2026-02-02 02:19:52,808 - INFO - Total reward: 0.00
+2026-02-02 02:19:52,808 - INFO - Kills: 5
+2026-02-02 02:19:52,808 - INFO - Health lost: 10.00
+2026-02-02 02:19:52,808 - INFO - Actions taken: 525
+2026-02-02 02:19:52,808 - INFO - Episode time: 26.12s
+2026-02-02 02:19:52,808 - INFO - ============================================================

@@ -1,0 +1,38 @@
+2026-02-02 02:25:23,067 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:25:23,690 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:25:23,690 - INFO - ============================================================
+2026-02-02 02:25:23,690 - INFO - Starting new episode
+2026-02-02 02:25:23,690 - INFO - ============================================================
+2026-02-02 02:25:23,769 - INFO - Episode started successfully
+2026-02-02 02:25:23,770 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 02:25:24,616 - INFO - Step 20: Health=100 Ammo=45 Kills=2 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 02:25:25,439 - INFO - Step 40: Health=100 Ammo=46 Kills=2 Enemies=2 Labels=['Blood', 'DoomPlayer', 'Zombieman']
+2026-02-02 02:25:25,959 - INFO - Step 60: Health=100 Ammo=47 Kills=4 Enemies=2 Labels=['Clip', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 02:25:29,304 - INFO - Step 80: Health=100 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 02:25:29,967 - INFO - Step 100: Health=103 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 02:25:30,802 - INFO - Step 120: Health=105 Ammo=57 Kills=4 Enemies=0 Labels=['DoomPlayer', 'HealthBonus']
+2026-02-02 02:25:31,701 - INFO - Step 140: Health=108 Ammo=56 Kills=4 Enemies=3 Labels=['BulletPuff', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 02:25:32,442 - INFO - Step 160: Health=93 Ammo=60 Kills=6 Enemies=3 Labels=['Blood', 'DeadZombieman', 'DoomPlayer', 'Zombieman']
+2026-02-02 02:25:33,253 - INFO - Step 180: Health=93 Ammo=64 Kills=7 Enemies=1 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 02:25:33,947 - INFO - Step 200: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:25:34,644 - INFO - Step 220: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:25:35,468 - INFO - Step 240: Health=93 Ammo=64 Kills=7 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 02:25:36,238 - INFO - Step 260: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:25:37,077 - INFO - Step 280: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:25:37,769 - INFO - Step 300: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:25:38,493 - INFO - Step 320: Health=93 Ammo=64 Kills=7 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 02:25:39,069 - INFO - Step 340: Health=93 Ammo=64 Kills=7 Enemies=5 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 02:25:39,694 - INFO - Step 360: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:25:40,546 - INFO - Step 380: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:25:41,130 - INFO - Step 400: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:25:41,711 - INFO - Step 420: Health=93 Ammo=64 Kills=7 Enemies=3 Labels=['DeadZombieman', 'DoomPlayer']
+2026-02-02 02:25:42,419 - INFO - Step 440: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:25:43,132 - INFO - Step 460: Health=93 Ammo=64 Kills=7 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:25:43,707 - INFO - ============================================================
+2026-02-02 02:25:43,707 - INFO - Episode finished
+2026-02-02 02:25:43,707 - INFO - Total reward: 0.00
+2026-02-02 02:25:43,708 - INFO - Kills: 7
+2026-02-02 02:25:43,708 - INFO - Health lost: 7.00
+2026-02-02 02:25:43,708 - INFO - Actions taken: 476
+2026-02-02 02:25:43,708 - INFO - Episode time: 20.02s
+2026-02-02 02:25:43,708 - INFO - ============================================================

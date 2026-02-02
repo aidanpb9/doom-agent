@@ -1,0 +1,68 @@
+2026-02-02 02:17:22,996 - INFO - Starting Doom Agent with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:17:23,587 - INFO - Game initialized with WAD: DOOM/wads/doom2.wad
+2026-02-02 02:17:23,587 - INFO - ============================================================
+2026-02-02 02:17:23,587 - INFO - Starting new episode
+2026-02-02 02:17:23,588 - INFO - ============================================================
+2026-02-02 02:17:23,648 - INFO - Episode started successfully
+2026-02-02 02:17:23,650 - INFO - Step 0: Health=100 Ammo=50 Kills=0 Enemies=2 Labels=['ArmorBonus', 'DoomPlayer', 'Zombieman']
+2026-02-02 02:17:24,073 - INFO - KILL #1! Resetting navigation
+2026-02-02 02:17:24,322 - INFO - Step 20: Health=100 Ammo=44 Kills=1 Enemies=3 Labels=['ArmorBonus', 'Blood', 'BulletPuff', 'Clip', 'DeadZombieman', 'DoomPlayer', 'Stimpack', 'Zombieman']
+2026-02-02 02:17:24,481 - INFO - KILL #2! Resetting navigation
+2026-02-02 02:17:24,608 - INFO - Target found on screen: Stimpack at (343, 238)
+2026-02-02 02:17:24,625 - INFO - Target found on screen: Stimpack at (342, 237)
+2026-02-02 02:17:24,811 - INFO - Target found on screen: Stimpack at (340, 236)
+2026-02-02 02:17:24,843 - INFO - Target found on screen: Stimpack at (340, 236)
+2026-02-02 02:17:24,939 - INFO - Step 40: Health=85 Ammo=39 Kills=2 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 02:17:25,301 - INFO - Target found on screen: Stimpack at (340, 237)
+2026-02-02 02:17:25,398 - INFO - Target found on screen: Stimpack at (339, 237)
+2026-02-02 02:17:25,603 - INFO - Target found on screen: Stimpack at (339, 236)
+2026-02-02 02:17:25,650 - INFO - Step 60: Health=85 Ammo=34 Kills=2 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 02:17:25,714 - INFO - Target found on screen: Stimpack at (343, 237)
+2026-02-02 02:17:25,776 - INFO - Target found on screen: Stimpack at (341, 236)
+2026-02-02 02:17:25,915 - INFO - WARNING: Stuck on enemy for 41 steps, breaking engagement
+2026-02-02 02:17:26,027 - INFO - Target found on screen: Stimpack at (339, 236)
+2026-02-02 02:17:26,041 - INFO - Target found on screen: Stimpack at (339, 236)
+2026-02-02 02:17:26,471 - INFO - Step 80: Health=85 Ammo=29 Kills=2 Enemies=0 Labels=['BulletPuff', 'DoomPlayer']
+2026-02-02 02:17:26,800 - INFO - Target found on screen: Stimpack at (341, 236)
+2026-02-02 02:17:26,862 - INFO - Target found on screen: Stimpack at (341, 236)
+2026-02-02 02:17:27,099 - INFO - Target found on screen: Stimpack at (340, 237)
+2026-02-02 02:17:27,163 - INFO - Target found on screen: Stimpack at (340, 237)
+2026-02-02 02:17:27,178 - INFO - Step 100: Health=85 Ammo=24 Kills=2 Enemies=1 Labels=['BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 02:17:27,398 - INFO - Target found on screen: Stimpack at (339, 237)
+2026-02-02 02:17:27,462 - INFO - WARNING: Stuck on enemy for 41 steps, breaking engagement
+2026-02-02 02:17:27,792 - INFO - KILL #3! Resetting navigation
+2026-02-02 02:17:27,906 - INFO - Step 120: Health=85 Ammo=18 Kills=3 Enemies=1 Labels=['BulletPuff', 'DeadZombieman', 'DoomPlayer']
+2026-02-02 02:17:28,441 - INFO - Target found on screen: Stimpack at (342, 237)
+2026-02-02 02:17:28,583 - INFO - KILL #4! Resetting navigation
+2026-02-02 02:17:28,742 - INFO - Target found on screen: Stimpack at (341, 237)
+2026-02-02 02:17:28,742 - INFO - Step 140: Health=85 Ammo=13 Kills=4 Enemies=2 Labels=['DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 02:17:28,804 - INFO - Target found on screen: Stimpack at (341, 236)
+2026-02-02 02:17:28,995 - INFO - Target found on screen: Stimpack at (340, 236)
+2026-02-02 02:17:29,025 - INFO - Target found on screen: Stimpack at (339, 237)
+2026-02-02 02:17:29,201 - INFO - Target found on screen: Stimpack at (338, 237)
+2026-02-02 02:17:29,248 - INFO - Target found on screen: Stimpack at (340, 236)
+2026-02-02 02:17:29,389 - INFO - Step 160: Health=85 Ammo=7 Kills=4 Enemies=3 Labels=['BulletPuff', 'DeadZombieman', 'DoomPlayer', 'Stimpack']
+2026-02-02 02:17:29,451 - INFO - Target found on screen: Stimpack at (341, 236)
+2026-02-02 02:17:29,467 - INFO - Target found on screen: Stimpack at (338, 236)
+2026-02-02 02:17:30,173 - INFO - KILL #5! Resetting navigation
+2026-02-02 02:17:30,300 - INFO - Step 180: Health=85 Ammo=1 Kills=5 Enemies=1 Labels=['ArmorBonus', 'BulletPuff', 'DoomPlayer', 'Stimpack']
+2026-02-02 02:17:30,601 - INFO - Target found on screen: ArmorBonus at (140, 268)
+2026-02-02 02:17:30,665 - INFO - Target found on screen: ArmorBonus at (204, 263)
+2026-02-02 02:17:30,681 - INFO - Target found on screen: ArmorBonus at (287, 263)
+2026-02-02 02:17:30,697 - INFO - Target found on screen: ArmorBonus at (294, 268)
+2026-02-02 02:17:30,729 - INFO - Target found on screen: ArmorBonus at (298, 281)
+2026-02-02 02:17:30,776 - INFO - Target found on screen: ArmorBonus at (299, 288)
+2026-02-02 02:17:30,793 - INFO - Target found on screen: ArmorBonus at (299, 287)
+2026-02-02 02:17:30,854 - INFO - Target found on screen: ArmorBonus at (297, 308)
+2026-02-02 02:17:30,886 - INFO - Target found on screen: ArmorBonus at (292, 377)
+2026-02-02 02:17:30,955 - INFO - Step 200: Health=85 Ammo=3 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:17:31,912 - INFO - Step 220: Health=85 Ammo=3 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:17:32,975 - INFO - Step 240: Health=85 Ammo=3 Kills=5 Enemies=0 Labels=['DoomPlayer']
+2026-02-02 02:17:33,683 - INFO - ============================================================
+2026-02-02 02:17:33,683 - INFO - Episode finished
+2026-02-02 02:17:33,683 - INFO - Total reward: 0.00
+2026-02-02 02:17:33,683 - INFO - Kills: 5
+2026-02-02 02:17:33,684 - INFO - Health lost: 15.00
+2026-02-02 02:17:33,684 - INFO - Actions taken: 254
+2026-02-02 02:17:33,684 - INFO - Episode time: 10.10s
+2026-02-02 02:17:33,684 - INFO - ============================================================
