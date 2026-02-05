@@ -15,7 +15,6 @@ class PerceptionManager:
             
         game_vars = state.game_variables
         screen = state.screen_buffer
-        depth = state.depth_buffer
         labels = state.labels if hasattr(state, 'labels') else []
         
         if game_vars is None or len(game_vars) == 0:
@@ -40,7 +39,6 @@ class PerceptionManager:
             "pos_y": pos_y,
             "angle": angle,
             "screen": screen,
-            "depth": depth,
             "labels": labels,
             "sectors": getattr(state, "sectors", None),
             "lines": getattr(state, "lines", None),
@@ -95,17 +93,3 @@ class PerceptionManager:
                 count += 1
         return count
     
-    def count_dead_enemies_from_labels(self, labels):
-        """Count dead enemies (kills) from labels."""
-        if not labels:
-            return 0
-        count = 0
-        for lbl in labels:
-            name = getattr(lbl, "object_name", "") or ""
-            name_lower = name.lower()
-            # Check if it's an enemy AND is dead
-            is_enemy = any(k in name_lower for k in ENEMY_KEYWORDS)
-            is_dead = "dead" in name_lower or "gibbe" in name_lower or "bloodpool" in name_lower
-            if is_enemy and is_dead:
-                count += 1
-        return count

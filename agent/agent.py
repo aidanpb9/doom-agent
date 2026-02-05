@@ -8,58 +8,23 @@ import numpy as np
 import time
 import logging
 from pathlib import Path
-import json
 try:
     from PIL import Image
 except ImportError:
     Image = None
 
-try:
-    from agent.nav.mapper import HybridMapper  # type: ignore[import-not-found]
-    from agent.nav.navigator import Navigator  # type: ignore[import-not-found]
-    from agent.nav.heading_controller import HeadingController  # type: ignore[import-not-found]
-    from agent.nav import planner  # type: ignore[import-not-found]
-    from agent.utils.progress_tracker import ProgressTracker  # type: ignore[import-not-found]
-except ImportError:
-    # Fallback: create simple stubs if imports fail
-    class HybridMapper:
-        def __init__(self):
-            self.grid_size = 64
-        def update(self, world):
-            return None
-        def agent_cell(self):
-            return None
-    class Navigator:
-        def __init__(self, grid_size=64):
-            self.current_path = None
-        def update_path(self, occupancy_grid, agent_pos):
-            pass
-        def get_next_waypoint(self):
-            return None
-        def advance_path(self, agent_pos, threshold=2):
-            pass
-        def clear_path(self):
-            pass
-    class HeadingController:
-        def __init__(self):
-            pass
-        def set_target(self, dy, dx):
-            pass
-        def act(self, angle):
-            return None
-    class ProgressTracker:
-        def __init__(self, window=12):
-            pass
-        def update(self, pos):
-            pass
-        def is_stuck(self):
-            return False
-    class planner:
-        @staticmethod
-        def find_nearest_frontier(grid, start_pos, max_frontiers=10):
-            return None
-
 from agent.control.behavior_selector import BehaviorSelector
+from agent.config import ACTION_NAMES
+
+ACTION_VECTORS = [
+    [1, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0],
+    [0, 0, 0, 0, 0, 0, 1],
+]
 
 logger = logging.getLogger(__name__)
 
@@ -112,20 +77,9 @@ class DoomAgent:
         self.last_pos = None
         self.nav_debug_log = []  # Store navigation debug overlays
         
-        # Initialize navigation components
-        self.mapper = HybridMapper()
-        self.navigator = Navigator(grid_size=getattr(self.mapper, "grid_size", 64))
-        self.heading_controller = HeadingController()
-        self.progress = ProgressTracker(window=12)
-        
         # Initialize modular behavior system
         self.behavior_selector = BehaviorSelector(
-            mapper=self.mapper,
-            navigator=self.navigator,
-            heading_controller=self.heading_controller,
-            progress_tracker=self.progress,
             combat_enabled=True,
-            items_enabled=False,
         )
 
     def _apply_fast_settings(self):
@@ -343,8 +297,8 @@ class DoomAgent:
                 pos_y = state_info.get('pos_y', 0)
                 self.last_pos = (pos_x, pos_y)
                 
-                # Use modular behavior selector with full state for sector navigator
-                action = self.behavior_selector.decide_action(state_info, automap_buffer, angle, state=state)
+                # Use modular behavior selector
+                action = self.behavior_selector.decide_action(state_info, angle)
                 
                 # Log automap every 20 steps
                 if self.save_debug and frame_count % 20 == 0 and automap_buffer is not None:
@@ -371,21 +325,16 @@ class DoomAgent:
 
                 action_name = "Unknown"
                 if do_log or do_action_log:
-                    from agent.config import ACTION_NAMES
-                    try:
-                        action_idx = None
-                        for i, a in enumerate([
-                            [1,0,0,0,0,0,0], [0,1,0,0,0,0,0], [0,0,1,0,0,0,0],
-                            [0,0,0,1,0,0,0], [0,0,0,0,1,0,0], [0,0,0,0,0,1,0],
-                            [0,0,0,0,0,0,1]
-                        ]):
-                            if action == a:
-                                action_idx = i
-                                break
-                        if action_idx is not None:
-                            action_name = ACTION_NAMES.get(action_idx, f"Action_{action_idx}")
-                    except Exception:
-                        pass
+                    action_idx = None
+                    for i, a in enumerate(ACTION_VECTORS):
+                        if action == a:
+                            action_idx = i
+                            break
+                    if action_idx is not None:
+                        if 0 <= action_idx < len(ACTION_NAMES):
+                            action_name = ACTION_NAMES[action_idx]
+                        else:
+                            action_name = f"Action_{action_idx}"
                 
                 # Store action log entry
                 if do_action_log:  # Log every 10 actions

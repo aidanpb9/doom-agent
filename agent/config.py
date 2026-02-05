@@ -27,20 +27,6 @@ ENEMY_KEYWORDS = (
     "spectre",
 )
 
-# Item priority for targeting (higher = more important)
-PRIORITY_LABELS = {
-    "exit": 10,
-    "switch": 9,
-    "door": 8,
-    "key": 7,
-    "clip": 6,
-    "ammo": 6,
-    "stimpack": 5,
-    "health": 5,
-    "armor": 4,
-    "soul": 3,
-}
-
 # Action button indices
 ACTION_NAMES = ["FORWARD", "LEFT_TURN", "RIGHT_TURN", "MOVE_LEFT", "MOVE_RIGHT", "ATTACK", "USE"]
 
