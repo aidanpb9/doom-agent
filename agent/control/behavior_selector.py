@@ -72,6 +72,20 @@ class BehaviorSelector:
         
         pos_x = state_info.get('pos_x', 0)
         pos_y = state_info.get('pos_y', 0)
+        screen = state_info.get("screen")
+
+        if self.combat_enabled:
+            enemy = self.perception.detect_enemies_from_labels(state_info.get("labels", []))
+            if enemy is not None:
+                ex, _, _ = enemy
+                if screen is not None and hasattr(screen, "shape"):
+                    width = screen.shape[1]
+                    center_x = width / 2.0
+                    dx = ex - center_x
+                    if abs(dx) > width * 0.08:
+                        return ActionDecoder.left_turn() if dx < 0 else ActionDecoder.right_turn()
+                if not self.is_aiming_at_wall(screen):
+                    return ActionDecoder.forward_attack()
 
         # Navigation only: Sector-based pathfinding
         current_angle = state_info.get('angle', 0)

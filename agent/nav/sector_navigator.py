@@ -503,6 +503,20 @@ class SectorNavigator:
         ):
             self.sector_path_idx += 1
 
+        # If we reached the current target sector, advance the route.
+        if (
+            current_sector is not None
+            and self.current_target is not None
+            and current_sector == self.current_target
+            and self.sector_path_idx >= len(self.sector_path) - 1
+        ):
+            self.path_idx += 1
+            self.sector_path = []
+            self.sector_path_idx = 0
+            self.current_target = None
+            if not self._compute_sector_path(current_sector):
+                return ActionDecoder.forward()
+
         target_sector = self.sector_path[self.sector_path_idx]
         next_sector = None
         if self.sector_path_idx + 1 < len(self.sector_path):
@@ -538,6 +552,14 @@ class SectorNavigator:
             if best_hit is not None and best_dist < 256:
                 portal_point = best_hit
                 desired_point = portal_point
+
+        portal_distance = None
+        if current_sector is not None:
+            portal_segments = self.portal_by_edge.get((current_sector, target_sector), [])
+            if portal_segments:
+                portal_distance = min(
+                    _segment_distance(pos, seg[0], seg[1]) for (seg, _) in portal_segments
+                )
 
         distance = _dist(pos, desired_point)
         if self.current_target != target_sector:
@@ -580,11 +602,20 @@ class SectorNavigator:
         if self.door_nudge_ticks > 0:
             self.door_nudge_ticks -= 1
             return ActionDecoder.forward()
-        if portal_point is not None and distance < 48.0:
+        if portal_distance is not None and portal_distance < 48.0:
             self.door_use_ticks = 4
             self.door_nudge_ticks = 3
             return ActionDecoder.use()
-        if self.no_progress > 6 and abs(angle_diff) < 15 and distance > 64.0:
+        if portal_point is not None and distance < 64.0:
+            self.door_use_ticks = 4
+            self.door_nudge_ticks = 3
+            return ActionDecoder.use()
+        if (
+            self.no_progress > 6
+            and abs(angle_diff) < 15
+            and (portal_distance is not None or portal_point is not None)
+            and distance < 128.0
+        ):
             self.door_use_ticks = 4
             self.door_nudge_ticks = 3
             return ActionDecoder.use()

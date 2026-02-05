@@ -81,10 +81,32 @@ logger = logging.getLogger(__name__)
 
 
 class DoomAgent:
-    def __init__(self, wad_path, config_path="vizdoom_config.cfg", episode_timeout=10):
+    def __init__(
+        self,
+        wad_path,
+        config_path="vizdoom_config.cfg",
+        episode_timeout=10,
+        step_delay=0.05,
+        action_frame_skip=4,
+        fast_mode=False,
+        log_interval=20,
+        save_debug=True,
+    ):
         self.wad_path = wad_path
         self.config_path = config_path
         self.episode_timeout = episode_timeout
+        self.action_frame_skip = int(action_frame_skip)
+        self.step_delay = float(step_delay)
+        self.fast_mode = bool(fast_mode)
+        self.log_interval = int(log_interval)
+        self.save_debug = bool(save_debug)
+        self.use_wall_clock = True
+        if self.fast_mode:
+            self.step_delay = 0.0
+            self.action_frame_skip = max(self.action_frame_skip, 8)
+            self.log_interval = max(self.log_interval, 100)
+            self.save_debug = False
+            self.use_wall_clock = False
         self.game = None
         self.frames_since_enemy = 0
         self.explore_forward_steps = 0
@@ -108,10 +130,42 @@ class DoomAgent:
             combat_enabled=False,
             items_enabled=False,
         )
+
+    def _apply_fast_settings(self):
+        if not self.fast_mode or self.game is None:
+            return
+        def safe_call(fn, *args):
+            try:
+                fn(*args)
+            except Exception:
+                pass
+        safe_call(self.game.set_window_visible, False)
+        safe_call(self.game.set_audio_buffer_enabled, False)
+        safe_call(self.game.set_render_all_frames, False)
+        safe_call(self.game.set_render_hud, False)
+        safe_call(self.game.set_render_weapon, False)
+        safe_call(self.game.set_render_crosshair, False)
+        safe_call(self.game.set_render_decals, False)
+        safe_call(self.game.set_render_particles, False)
+        safe_call(self.game.set_render_messages, False)
+        safe_call(self.game.set_render_corpses, False)
+        safe_call(self.game.set_render_screen_flashes, False)
+        safe_call(self.game.set_render_effects_sprites, False)
+        safe_call(self.game.set_render_minimal_hud, False)
+        if hasattr(vzd.ScreenResolution, "RES_320X240"):
+            safe_call(self.game.set_screen_resolution, vzd.ScreenResolution.RES_320X240)
+        safe_call(self.game.set_screen_format, vzd.ScreenFormat.GRAY8)
+        safe_call(self.game.set_depth_buffer_enabled, False)
+        safe_call(self.game.set_automap_buffer_enabled, False)
+        safe_call(self.game.set_automap_render_textures, False)
+        logger.info(
+            "Fast mode enabled: headless render, reduced buffers, minimal logging."
+        )
         
     def initialize_game(self):
         self.game = vzd.DoomGame()
         self.game.load_config(self.config_path)
+        self._apply_fast_settings()
 
         # Enable world geometry info when available
         try:
@@ -169,7 +223,7 @@ class DoomAgent:
         
         start_time = time.time()
         frame_count = 0
-        max_steps = int(self.episode_timeout * 35)
+        max_steps = max(1, int(self.episode_timeout * 35 / max(1, self.action_frame_skip)))
         
         logger.info("=" * 60)
         logger.info("Starting new episode")
@@ -223,7 +277,7 @@ class DoomAgent:
                 # Use modular behavior selector
                 action = self.behavior_selector.decide_action(state_info, automap_buffer, angle)
                 
-                if frame_count % 20 == 0:
+                if self.log_interval > 0 and frame_count % self.log_interval == 0:
                     lbls = state_info.get("labels", [])
                     n_enemies = self.behavior_selector.perception.count_enemies_from_labels(lbls)
                     
@@ -243,16 +297,18 @@ class DoomAgent:
                         f"Labels={sorted(label_names) if label_names else 'None'}"
                     )
                 
-                reward = self.game.make_action(action, 4)
+                reward = self.game.make_action(action, self.action_frame_skip)
                 stats["episode_reward"] += float(reward)
                 stats["actions_taken"] += 1
                 frame_count += 1
                 
-                time.sleep(0.05)
+                if self.step_delay > 0:
+                    time.sleep(self.step_delay)
                 
-                elapsed = time.time() - start_time
-                if elapsed >= self.episode_timeout:
-                    break
+                if self.use_wall_clock:
+                    elapsed = time.time() - start_time
+                    if elapsed >= self.episode_timeout:
+                        break
                 
                 if frame_count >= max_steps:
                     break
@@ -263,14 +319,15 @@ class DoomAgent:
         
         stats["episode_time"] = time.time() - start_time
 
-        try:
-            debug_path = log_dir / "sector_map.png"
-            self.behavior_selector.sector_navigator.render_debug_map(
-                str(debug_path), self.last_pos
-            )
-            logger.info(f"Sector debug map saved to {debug_path}")
-        except Exception:
-            pass
+        if self.save_debug:
+            try:
+                debug_path = log_dir / "sector_map.png"
+                self.behavior_selector.sector_navigator.render_debug_map(
+                    str(debug_path), self.last_pos
+                )
+                logger.info(f"Sector debug map saved to {debug_path}")
+            except Exception:
+                pass
         
         logger.info("=" * 60)
         logger.info("Episode finished")
@@ -292,7 +349,20 @@ if __name__ == "__main__":
     import sys
     
     wad_file = "wads/doom1.wad"
-    seconds = 10
+    seconds = 30
+    fast_mode = "--fast" in sys.argv
+    slow_mode = "--slow" in sys.argv
+    if "--fast" in sys.argv:
+        sys.argv.remove("--fast")
+    if "--slow" in sys.argv:
+        sys.argv.remove("--slow")
+
+    step_delay = 0.0
+    action_frame_skip = 6
+    if slow_mode:
+        step_delay = 0.05
+        action_frame_skip = 4
+        fast_mode = False
 
     if len(sys.argv) > 1:
         wad_file = sys.argv[1]
@@ -307,7 +377,19 @@ if __name__ == "__main__":
         sys.exit(1)
     
     logger.info(f"Starting Doom Agent with WAD: {wad_file}")
-    agent = DoomAgent(wad_file, episode_timeout=seconds)
+    if fast_mode:
+        logger.info("Fast mode: headless render + reduced buffers")
+    else:
+        logger.info(
+            f"Screen mode: frame_skip={action_frame_skip} step_delay={step_delay:.2f}s"
+        )
+    agent = DoomAgent(
+        wad_file,
+        episode_timeout=seconds,
+        fast_mode=fast_mode,
+        step_delay=step_delay,
+        action_frame_skip=action_frame_skip,
+    )
     agent.initialize_game()
     stats = agent.run_episode()
     agent.close()

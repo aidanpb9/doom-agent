@@ -67,17 +67,44 @@ logger = logging.getLogger(__name__)
 class DoomAgent:
     """Main agent class that orchestrates the Doom game simulation."""
     
-    def __init__(self, wad_path, config_path="vizdoom_config.cfg", episode_timeout=10):
+    def __init__(
+        self,
+        wad_path,
+        config_path="vizdoom_config.cfg",
+        episode_timeout=10,
+        step_delay=0.12,
+        action_frame_skip=4,
+        fast_mode=False,
+        log_interval=20,
+        save_debug=True,
+    ):
         """Initialize the Doom agent.
         
         Args:
             wad_path: Path to the WAD file
             config_path: Path to vizdoom config file
             episode_timeout: Time limit for episode in seconds
+            step_delay: Sleep time between actions (slows real-time playback)
+            action_frame_skip: Frames to skip per action
+            fast_mode: Disable rendering/buffers + reduce logging for speed
+            log_interval: Steps between info logs (0 disables)
+            save_debug: Save debug logs/images to disk
         """
         self.wad_path = wad_path
         self.config_path = config_path
         self.episode_timeout = episode_timeout
+        self.action_frame_skip = int(action_frame_skip)
+        self.step_delay = float(step_delay)
+        self.fast_mode = bool(fast_mode)
+        self.log_interval = int(log_interval)
+        self.save_debug = bool(save_debug)
+        self.use_wall_clock = True
+        if self.fast_mode:
+            self.step_delay = 0.0
+            self.action_frame_skip = max(self.action_frame_skip, 8)
+            self.log_interval = max(self.log_interval, 100)
+            self.save_debug = False
+            self.use_wall_clock = False
         self.game = None
         self.episode_step = 0
         self.automap_log = []  # Store automap frames
@@ -97,14 +124,46 @@ class DoomAgent:
             navigator=self.navigator,
             heading_controller=self.heading_controller,
             progress_tracker=self.progress,
-            combat_enabled=False,
+            combat_enabled=True,
             items_enabled=False,
+        )
+
+    def _apply_fast_settings(self):
+        if not self.fast_mode or self.game is None:
+            return
+        def safe_call(fn, *args):
+            try:
+                fn(*args)
+            except Exception:
+                pass
+        safe_call(self.game.set_window_visible, False)
+        safe_call(self.game.set_audio_buffer_enabled, False)
+        safe_call(self.game.set_render_all_frames, False)
+        safe_call(self.game.set_render_hud, False)
+        safe_call(self.game.set_render_weapon, False)
+        safe_call(self.game.set_render_crosshair, False)
+        safe_call(self.game.set_render_decals, False)
+        safe_call(self.game.set_render_particles, False)
+        safe_call(self.game.set_render_messages, False)
+        safe_call(self.game.set_render_corpses, False)
+        safe_call(self.game.set_render_screen_flashes, False)
+        safe_call(self.game.set_render_effects_sprites, False)
+        safe_call(self.game.set_render_minimal_hud, False)
+        if hasattr(vzd.ScreenResolution, "RES_320X240"):
+            safe_call(self.game.set_screen_resolution, vzd.ScreenResolution.RES_320X240)
+        safe_call(self.game.set_screen_format, vzd.ScreenFormat.GRAY8)
+        safe_call(self.game.set_depth_buffer_enabled, False)
+        safe_call(self.game.set_automap_buffer_enabled, False)
+        safe_call(self.game.set_automap_render_textures, False)
+        logger.info(
+            "Fast mode enabled: headless render, reduced buffers, minimal logging."
         )
         
     def initialize_game(self):
         """Initialize the Doom game environment."""
         self.game = vzd.DoomGame()
         self.game.load_config(self.config_path)
+        self._apply_fast_settings()
 
         # Enable world geometry info when available
         try:
@@ -156,6 +215,8 @@ class DoomAgent:
     
     def save_automap_log(self):
         """Save automap frames and action log to files."""
+        if not self.save_debug:
+            return
         logs_dir = Path("logs")
         logs_dir.mkdir(exist_ok=True)
         
@@ -202,7 +263,7 @@ class DoomAgent:
                         f"{entry['labels']}\n"
                     )
             logger.info(f"Action log saved to {action_log_path}")
-    
+
     def run_episode(self):
         """Run a single episode and return statistics."""
         if self.game is None:
@@ -226,7 +287,7 @@ class DoomAgent:
         
         start_time = time.time()
         frame_count = 0
-        max_steps = int(self.episode_timeout * 35)
+        max_steps = max(1, int(self.episode_timeout * 35 / max(1, self.action_frame_skip)))
         
         logger.info("=" * 60)
         logger.info("Starting new episode")
@@ -262,7 +323,9 @@ class DoomAgent:
                 state_info = self.get_state_info(state)
                 if state_info is None:
                     # Skip frames where state info isn't ready yet
-                    reward = self.game.make_action([1, 0, 0, 0, 0, 0, 0], 8)  # Neutral action, 8 frame skip
+                    reward = self.game.make_action(
+                        [1, 0, 0, 0, 0, 0, 0], self.action_frame_skip
+                    )
                     frame_count += 1
                     continue
                 
@@ -284,41 +347,48 @@ class DoomAgent:
                 action = self.behavior_selector.decide_action(state_info, automap_buffer, angle, state=state)
                 
                 # Log automap every 20 steps
-                if frame_count % 20 == 0 and automap_buffer is not None:
+                if self.save_debug and frame_count % 20 == 0 and automap_buffer is not None:
                     self.automap_log.append((self.episode_step, automap_buffer.copy()))
                     debug_frame = self.behavior_selector.get_navigation_debug_frame(automap_buffer)
                     if debug_frame is not None:
                         self.nav_debug_log.append((self.episode_step, debug_frame))
                 
-                # Log action details
-                lbls = state_info.get("labels", [])
-                n_enemies = self.behavior_selector.perception.count_enemies_from_labels(lbls)
-                label_names = set()
-                for lbl in lbls:
-                    name = getattr(lbl, "object_name", "") or ""
-                    if name:
-                        label_names.add(name)
-                
-                # Get action name
-                from agent.config import ACTION_NAMES
+                do_log = self.log_interval > 0 and frame_count % self.log_interval == 0
+                do_action_log = self.save_debug and frame_count % 10 == 0
+                need_labels = do_log or do_action_log
+                if need_labels:
+                    lbls = state_info.get("labels", [])
+                    n_enemies = self.behavior_selector.perception.count_enemies_from_labels(lbls)
+                    label_names = set()
+                    for lbl in lbls:
+                        name = getattr(lbl, "object_name", "") or ""
+                        if name:
+                            label_names.add(name)
+                else:
+                    lbls = []
+                    n_enemies = 0
+                    label_names = set()
+
                 action_name = "Unknown"
-                try:
-                    action_idx = None
-                    for i, a in enumerate([
-                        [1,0,0,0,0,0,0], [0,1,0,0,0,0,0], [0,0,1,0,0,0,0],
-                        [0,0,0,1,0,0,0], [0,0,0,0,1,0,0], [0,0,0,0,0,1,0],
-                        [0,0,0,0,0,0,1]
-                    ]):
-                        if action == a:
-                            action_idx = i
-                            break
-                    if action_idx is not None:
-                        action_name = ACTION_NAMES.get(action_idx, f"Action_{action_idx}")
-                except Exception:
-                    pass
+                if do_log or do_action_log:
+                    from agent.config import ACTION_NAMES
+                    try:
+                        action_idx = None
+                        for i, a in enumerate([
+                            [1,0,0,0,0,0,0], [0,1,0,0,0,0,0], [0,0,1,0,0,0,0],
+                            [0,0,0,1,0,0,0], [0,0,0,0,1,0,0], [0,0,0,0,0,1,0],
+                            [0,0,0,0,0,0,1]
+                        ]):
+                            if action == a:
+                                action_idx = i
+                                break
+                        if action_idx is not None:
+                            action_name = ACTION_NAMES.get(action_idx, f"Action_{action_idx}")
+                    except Exception:
+                        pass
                 
                 # Store action log entry
-                if frame_count % 10 == 0:  # Log every 10 actions
+                if do_action_log:  # Log every 10 actions
                     self.action_log.append({
                         'step': self.episode_step,
                         'health': current_health,
@@ -331,7 +401,7 @@ class DoomAgent:
                         'labels': ', '.join(sorted(label_names)) if label_names else 'None'
                     })
                 
-                if frame_count % 20 == 0:
+                if do_log:
                     logger.info(
                         f"Step {stats['actions_taken']}: "
                         f"Health={current_health:.0f} Ammo={current_ammo:.0f} "
@@ -340,17 +410,19 @@ class DoomAgent:
                         f"Labels={sorted(label_names) if label_names else 'None'}"
                     )
                 
-                reward = self.game.make_action(action, 4)
+                reward = self.game.make_action(action, self.action_frame_skip)
                 stats["episode_reward"] += float(reward)
                 stats["actions_taken"] += 1
                 frame_count += 1
                 self.episode_step += 1
                 
-                time.sleep(0.02)
+                if self.step_delay > 0:
+                    time.sleep(self.step_delay)
                 
-                elapsed = time.time() - start_time
-                if elapsed >= self.episode_timeout:
-                    break
+                if self.use_wall_clock:
+                    elapsed = time.time() - start_time
+                    if elapsed >= self.episode_timeout:
+                        break
                 
                 if frame_count >= max_steps:
                     break
@@ -362,15 +434,16 @@ class DoomAgent:
         stats["episode_time"] = time.time() - start_time
         
         # Save logs
-        self.save_automap_log()
-        try:
-            debug_path = Path("logs") / "sector_map.png"
-            self.behavior_selector.sector_navigator.render_debug_map(
-                str(debug_path), self.last_pos
-            )
-            logger.info(f"Sector debug map saved to {debug_path}")
-        except Exception:
-            pass
+        if self.save_debug:
+            self.save_automap_log()
+            try:
+                debug_path = Path("logs") / "sector_map.png"
+                self.behavior_selector.sector_navigator.render_debug_map(
+                    str(debug_path), self.last_pos
+                )
+                logger.info(f"Sector debug map saved to {debug_path}")
+            except Exception:
+                pass
         
         logger.info("=" * 60)
         logger.info("Episode finished")

@@ -38,7 +38,21 @@ from agent.agent import DoomAgent
 def main():
     """Main entry point for the agent."""
     wad_file = "wads/doom1.wad"
-    seconds = 10
+    seconds = 30
+    fast_mode = "--fast" in sys.argv
+    slow_mode = "--slow" in sys.argv
+    if "--fast" in sys.argv:
+        sys.argv.remove("--fast")
+    if "--slow" in sys.argv:
+        sys.argv.remove("--slow")
+
+    # Visible + faster defaults
+    step_delay = 0.0
+    action_frame_skip = 6
+    if slow_mode:
+        step_delay = 0.05
+        action_frame_skip = 4
+        fast_mode = False
 
     if len(sys.argv) > 1:
         wad_file = sys.argv[1]
@@ -55,7 +69,19 @@ def main():
     logger.info(f"Starting Doom Agent with WAD: {wad_file}")
     logger.info(f"Episode timeout: {seconds} seconds")
     
-    agent = DoomAgent(wad_file, episode_timeout=seconds)
+    if fast_mode:
+        logger.info("Fast mode: headless render + reduced buffers")
+    else:
+        logger.info(
+            f"Screen mode: frame_skip={action_frame_skip} step_delay={step_delay:.2f}s"
+        )
+    agent = DoomAgent(
+        wad_file,
+        episode_timeout=seconds,
+        fast_mode=fast_mode,
+        step_delay=step_delay,
+        action_frame_skip=action_frame_skip,
+    )
     
     try:
         agent.initialize_game()

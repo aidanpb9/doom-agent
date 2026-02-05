@@ -29,7 +29,7 @@ def test_pathfinding(wad_path="wads/doom2.wad", episodes=3, timeout=25):
         logger.info(f"EPISODE {ep}/{episodes}")
         logger.info(f"{'='*70}")
         
-        agent = DoomAgent(wad_path, episode_timeout=timeout)
+        agent = DoomAgent(wad_path, episode_timeout=timeout, fast_mode=True)
         agent.initialize_game()
         
         try:
