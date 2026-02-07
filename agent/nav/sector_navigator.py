@@ -301,6 +301,42 @@ class SectorNavigator:
         dfs(start_id)
         return route
 
+    def _simple_path_to_end(self, start_id: int, end_id: int, allowed: Optional[set]) -> List[int]:
+        if self.mesh is None:
+            return []
+        node_count = len(self.mesh.nodes)
+        if not (0 <= start_id < node_count and 0 <= end_id < node_count):
+            return []
+        if allowed is not None and (start_id not in allowed or end_id not in allowed):
+            return []
+
+        visited = set()
+        path: List[int] = []
+        found = False
+
+        def dfs(u: int) -> None:
+            nonlocal found
+            if found:
+                return
+            visited.add(u)
+            path.append(u)
+            if u == end_id:
+                found = True
+                return
+            neighbors = sorted(self.mesh.nodes[u].neighbor_ids)
+            for v in neighbors:
+                if allowed is not None and v not in allowed:
+                    continue
+                if v in visited:
+                    continue
+                dfs(v)
+                if found:
+                    return
+            path.pop()
+
+        dfs(start_id)
+        return path if found else []
+
     def _segment_distance(self, p: Tuple[float, float], a: Tuple[float, float], b: Tuple[float, float]) -> float:
         ax, ay = a
         bx, by = b
@@ -601,9 +637,9 @@ class SectorNavigator:
             pruned = self._prune_to_simple_st_paths(start_id, end_id)
         self.pruned_nodes = pruned
         allowed = set(pruned) if pruned else None
-        route = self._dfs_route_nodes(start_id, allowed)
+        route = self._simple_path_to_end(start_id, end_id, allowed) if end_id is not None else []
         if not route and end_id is not None:
-            logger.warning("[NAV] No pruned route found from %s", start_id)
+            logger.warning("[NAV] No pruned path found from %s to %s", start_id, end_id)
         self._write_route_debug(route)
         return route
 
