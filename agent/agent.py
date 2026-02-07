@@ -69,7 +69,8 @@ class DoomAgent:
             self.action_frame_skip = max(self.action_frame_skip, 8)
             self.log_interval = max(self.log_interval, 100)
             self.save_debug = False
-            self.use_wall_clock = False
+            # Keep wall-clock timeout even in fast mode to avoid hangs.
+            self.use_wall_clock = True
         self.game = None
         self.episode_step = 0
         self.automap_log = []  # Store automap frames
