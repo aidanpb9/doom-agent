@@ -32,6 +32,9 @@ class SectorNavigator:
         self.route_nodes: List[int] = []
         self.route_idx = 0
         self.route_built = False
+        self.start_node_id: Optional[int] = None
+        self.end_node_id: Optional[int] = None
+        self.pruned_nodes: Optional[List[int]] = None
 
         self.path_points: List[Vec3] = []
         self.path_idx = 0
@@ -56,6 +59,9 @@ class SectorNavigator:
             self.route_built = False
             self.route_nodes = []
             self.route_idx = 0
+            self.start_node_id = None
+            self.end_node_id = None
+            self.pruned_nodes = None
             self.path_points = []
             self.path_idx = 0
             self.current_target = None
@@ -70,6 +76,9 @@ class SectorNavigator:
         self.route_nodes = []
         self.route_idx = 0
         self.route_built = False
+        self.start_node_id = None
+        self.end_node_id = None
+        self.pruned_nodes = None
         self.path_points = []
         self.path_idx = 0
         self.current_target = None
@@ -83,6 +92,214 @@ class SectorNavigator:
         self.special_segments = []
         self.special_line_info = []
         self.special_lines_built = False
+
+    @staticmethod
+    def _is_exit_special(special: int) -> bool:
+        # Common DOOM exit specials (exit/secret exit variants).
+        return special in {11, 51, 52, 124, 197}
+
+    def _find_exit_node(self) -> Optional[int]:
+        if self.mesh is None or not self.special_line_info:
+            return None
+
+        best_node = None
+        best_dist = float("inf")
+        for info in self.special_line_info:
+            try:
+                special = int(info.get("special", 0))
+            except Exception:
+                continue
+            if not self._is_exit_special(special):
+                continue
+            seg = info.get("segment")
+            if not seg or len(seg) != 2:
+                continue
+            (x1, y1), (x2, y2) = seg
+            mid = (float(x1 + x2) * 0.5, float(y1 + y2) * 0.5, 0.0)
+            node = self.mesh.get_closest_node_in(mid, self.mesh.nodes, use_poly=False)
+            if node is None:
+                continue
+            dx = node.centroid[0] - mid[0]
+            dy = node.centroid[1] - mid[1]
+            d = dx * dx + dy * dy
+            if d < best_dist:
+                best_dist = d
+                best_node = node.node_id
+
+        return best_node
+
+    def _prune_to_simple_st_paths(self, start_id: int, end_id: int) -> Optional[List[int]]:
+        if self.mesh is None:
+            return None
+        node_count = len(self.mesh.nodes)
+        if not (0 <= start_id < node_count and 0 <= end_id < node_count):
+            return None
+
+        adjacency = {i: set() for i in range(node_count)}
+        for node in self.mesh.nodes:
+            for n_id in node.neighbor_ids:
+                if 0 <= n_id < node_count:
+                    adjacency[node.node_id].add(n_id)
+                    adjacency[n_id].add(node.node_id)
+
+        # Reachability check
+        reachable = set()
+        stack = [start_id]
+        while stack:
+            u = stack.pop()
+            if u in reachable:
+                continue
+            reachable.add(u)
+            for v in adjacency.get(u, ()):
+                if v not in reachable:
+                    stack.append(v)
+        if end_id not in reachable:
+            logger.warning("[NAV] End node %s not reachable from start %s", end_id, start_id)
+            return sorted(reachable)
+
+        # Tarjan biconnected components
+        disc = [-1] * node_count
+        low = [0] * node_count
+        parent = [-1] * node_count
+        time = 0
+        edge_stack: List[Tuple[int, int]] = []
+        bccs: List[set] = []
+        articulation = set()
+
+        def dfs(u: int) -> None:
+            nonlocal time
+            disc[u] = time
+            low[u] = time
+            time += 1
+            child_count = 0
+            for v in adjacency[u]:
+                if disc[v] == -1:
+                    parent[v] = u
+                    child_count += 1
+                    edge_stack.append((u, v))
+                    dfs(v)
+                    low[u] = min(low[u], low[v])
+                    if low[v] >= disc[u]:
+                        if parent[u] != -1 or child_count > 1:
+                            articulation.add(u)
+                        bcc = set()
+                        while edge_stack:
+                            e = edge_stack.pop()
+                            bcc.add(e[0])
+                            bcc.add(e[1])
+                            if e == (u, v):
+                                break
+                        if bcc:
+                            bccs.append(bcc)
+                elif v != parent[u] and disc[v] < disc[u]:
+                    low[u] = min(low[u], disc[v])
+                    edge_stack.append((u, v))
+
+        for i in range(node_count):
+            if i in reachable and disc[i] == -1:
+                dfs(i)
+                if edge_stack:
+                    bcc = set()
+                    while edge_stack:
+                        e = edge_stack.pop()
+                        bcc.add(e[0])
+                        bcc.add(e[1])
+                    if bcc:
+                        bccs.append(bcc)
+
+        if not bccs:
+            return sorted(reachable)
+
+        # Build block-cut tree
+        bcc_of_vertex: List[List[int]] = [[] for _ in range(node_count)]
+        for idx, bcc in enumerate(bccs):
+            for v in bcc:
+                bcc_of_vertex[v].append(idx)
+
+        tree_adj: Dict[Tuple[str, int], set] = {}
+
+        def add_tree_edge(a: Tuple[str, int], b: Tuple[str, int]) -> None:
+            tree_adj.setdefault(a, set()).add(b)
+            tree_adj.setdefault(b, set()).add(a)
+
+        for idx, bcc in enumerate(bccs):
+            b_node = ("B", idx)
+            for v in bcc:
+                if v in articulation:
+                    a_node = ("A", v)
+                    add_tree_edge(b_node, a_node)
+
+        def tree_node_for_vertex(v: int) -> Optional[Tuple[str, int]]:
+            if v in articulation:
+                return ("A", v)
+            comps = bcc_of_vertex[v]
+            if not comps:
+                return None
+            return ("B", comps[0])
+
+        s_node = tree_node_for_vertex(start_id)
+        t_node = tree_node_for_vertex(end_id)
+        if s_node is None or t_node is None:
+            return sorted(reachable)
+
+        # BFS on block-cut tree to get path
+        queue = [s_node]
+        parent_tree: Dict[Tuple[str, int], Optional[Tuple[str, int]]] = {s_node: None}
+        idx = 0
+        while idx < len(queue):
+            cur = queue[idx]
+            idx += 1
+            if cur == t_node:
+                break
+            for nxt in tree_adj.get(cur, ()):
+                if nxt not in parent_tree:
+                    parent_tree[nxt] = cur
+                    queue.append(nxt)
+
+        if t_node not in parent_tree:
+            return sorted(reachable)
+
+        path_nodes = set()
+        cur = t_node
+        while cur is not None:
+            path_nodes.add(cur)
+            cur = parent_tree[cur]
+
+        keep = set()
+        for node in path_nodes:
+            if node[0] == "A":
+                keep.add(node[1])
+            else:
+                keep.update(bccs[node[1]])
+
+        return sorted(keep)
+
+    def _dfs_route_nodes(self, start_id: int, allowed: Optional[set]) -> List[int]:
+        if self.mesh is None:
+            return []
+        node_count = len(self.mesh.nodes)
+        if not (0 <= start_id < node_count):
+            return []
+        if allowed is not None and start_id not in allowed:
+            return []
+
+        visited = set()
+        route = [start_id]
+
+        def dfs(u: int) -> None:
+            visited.add(u)
+            neighbors = sorted(self.mesh.nodes[u].neighbor_ids)
+            for v in neighbors:
+                if allowed is not None and v not in allowed:
+                    continue
+                if v in visited:
+                    continue
+                route.append(v)
+                dfs(v)
+                route.append(u)
+
+        dfs(start_id)
+        return route
 
     def _segment_distance(self, p: Tuple[float, float], a: Tuple[float, float], b: Tuple[float, float]) -> float:
         ax, ay = a
@@ -361,20 +578,32 @@ class SectorNavigator:
     def _build_node_route(self, start_id: Optional[int]) -> List[int]:
         if start_id is None or self.mesh is None:
             return []
-        visited = set()
-        route: List[int] = [start_id]
+        self.start_node_id = start_id
+        end_id = self._find_exit_node()
+        if end_id is None:
+            # Fallback: pick the farthest reachable node if no exit is detected.
+            best = None
+            best_dist = -1.0
+            start_pos = self.mesh.nodes[start_id].centroid
+            for node in self.mesh.nodes:
+                dx = node.centroid[0] - start_pos[0]
+                dy = node.centroid[1] - start_pos[1]
+                d = dx * dx + dy * dy
+                if d > best_dist:
+                    best_dist = d
+                    best = node.node_id
+            end_id = best
+            logger.warning("[NAV] No exit special found; using farthest node %s", end_id)
+        self.end_node_id = end_id
 
-        def dfs(u: int) -> None:
-            visited.add(u)
-            neighbors = sorted(self.mesh.nodes[u].neighbor_ids)
-            for v in neighbors:
-                if v in visited:
-                    continue
-                route.append(v)
-                dfs(v)
-                route.append(u)
-
-        dfs(start_id)
+        pruned = None
+        if end_id is not None:
+            pruned = self._prune_to_simple_st_paths(start_id, end_id)
+        self.pruned_nodes = pruned
+        allowed = set(pruned) if pruned else None
+        route = self._dfs_route_nodes(start_id, allowed)
+        if not route and end_id is not None:
+            logger.warning("[NAV] No pruned route found from %s", start_id)
         self._write_route_debug(route)
         return route
 
@@ -399,6 +628,9 @@ class SectorNavigator:
                 "mesh": str(self.mesh_path) if self.mesh_path else None,
                 "route_nodes": route,
                 "route": route_nodes,
+                "start_node": self.start_node_id,
+                "end_node": self.end_node_id,
+                "pruned_nodes": self.pruned_nodes,
             }
             (logs_dir / "navmesh_route.json").write_text(
                 json.dumps(payload, indent=2)
@@ -632,7 +864,10 @@ class SectorNavigator:
                 cv2.line(img, to_px(a), to_px(b), (120, 120, 120), 1)
 
         # Draw node centroids (all nodes)
+        allowed = set(self.pruned_nodes) if self.pruned_nodes else None
         for node in self.mesh.nodes:
+            if allowed is not None and node.node_id not in allowed:
+                continue
             c = (node.centroid[0], node.centroid[1])
             cv2.circle(img, to_px(c), 3, (0, 220, 0), -1)
             cv2.putText(
@@ -661,6 +896,36 @@ class SectorNavigator:
                         (0, 180, 255),
                         1,
                     )
+
+        # Label start/end nodes
+        if self.start_node_id is not None and 0 <= self.start_node_id < len(self.mesh.nodes):
+            s = self.mesh.nodes[self.start_node_id].centroid
+            sp = to_px((s[0], s[1]))
+            cv2.circle(img, sp, 6, (0, 255, 0), -1)
+            cv2.putText(
+                img,
+                f"S:{self.start_node_id}",
+                (sp[0] + 6, sp[1] - 6),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (0, 255, 0),
+                2,
+                cv2.LINE_AA,
+            )
+        if self.end_node_id is not None and 0 <= self.end_node_id < len(self.mesh.nodes):
+            e = self.mesh.nodes[self.end_node_id].centroid
+            ep = to_px((e[0], e[1]))
+            cv2.circle(img, ep, 6, (0, 0, 255), -1)
+            cv2.putText(
+                img,
+                f"E:{self.end_node_id}",
+                (ep[0] + 6, ep[1] - 6),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (0, 0, 255),
+                2,
+                cv2.LINE_AA,
+            )
 
         # Draw special linedefs
         for seg in self.special_segments:
