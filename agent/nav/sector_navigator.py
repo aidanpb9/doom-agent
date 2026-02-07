@@ -1,466 +1,477 @@
 """
-Sector-graph navigation using VizDoom sector geometry.
-Builds a node per sector and plans routes through adjacent sectors.
+Navmesh-based navigation using zdoom-navmesh-generator output and
+zdoom-pathfinding algorithms (A* + funnel).
 """
 
 from __future__ import annotations
 
 import logging
 import math
-from dataclasses import dataclass
-from typing import Dict, List, Optional, Sequence, Tuple
 import json
 from pathlib import Path
+from typing import List, Optional, Tuple, Any
 
 import numpy as np
 
 from agent.utils.action_decoder import ActionDecoder
+from agent.nav.zdoom_navmesh import NavMesh, Vec3
 
 logger = logging.getLogger(__name__)
 
-Point = Tuple[float, float]
-Segment = Tuple[Point, Point]
-
-
-@dataclass
-class SectorNode:
-    idx: int
-    node: Point
-    bbox: Tuple[float, float, float, float]
-    polygon: Optional[List[Point]]
-    neighbors: List[int]
-    segments: List[Segment]
-    floor_height: float
-    ceiling_height: float
-    visited: bool = False
-
-
-def _dist(a: Point, b: Point) -> float:
-    return math.hypot(a[0] - b[0], a[1] - b[1])
-
-
-def _segment_distance(p: Point, a: Point, b: Point) -> float:
-    ax, ay = a
-    bx, by = b
-    px, py = p
-    abx, aby = bx - ax, by - ay
-    apx, apy = px - ax, py - ay
-    denom = abx * abx + aby * aby
-    if denom <= 1e-6:
-        return _dist(p, a)
-    t = max(0.0, min(1.0, (apx * abx + apy * aby) / denom))
-    cx = ax + abx * t
-    cy = ay + aby * t
-    return math.hypot(px - cx, py - cy)
-
-
-def _point_in_polygon(point: Point, polygon: Sequence[Point]) -> bool:
-    x, y = point
-    inside = False
-    n = len(polygon)
-    if n < 3:
-        return False
-    j = n - 1
-    for i in range(n):
-        xi, yi = polygon[i]
-        xj, yj = polygon[j]
-        intersects = ((yi > y) != (yj > y)) and (
-            x < (xj - xi) * (y - yi) / (yj - yi + 1e-9) + xi
-        )
-        if intersects:
-            inside = not inside
-        j = i
-    return inside
-
-
-def _normalize_point(p: Point, ndigits: int = 1) -> Point:
-    return (round(p[0], ndigits), round(p[1], ndigits))
-
-
-def _normalize_segment(a: Point, b: Point) -> Tuple[Point, Point]:
-    na = _normalize_point(a)
-    nb = _normalize_point(b)
-    return (na, nb) if na <= nb else (nb, na)
-
-
-def _order_polygon(segments: Sequence[Segment]) -> Optional[List[Point]]:
-    adjacency: Dict[Point, List[Point]] = {}
-    for a, b in segments:
-        na = _normalize_point(a)
-        nb = _normalize_point(b)
-        adjacency.setdefault(na, []).append(nb)
-        adjacency.setdefault(nb, []).append(na)
-
-    if not adjacency:
-        return None
-
-    start = next(iter(adjacency))
-    polygon = [start]
-    prev = None
-    current = start
-
-    for _ in range(len(adjacency) + 2):
-        neighbors = adjacency.get(current, [])
-        if not neighbors:
-            break
-        nxt = neighbors[0] if neighbors[0] != prev else (neighbors[1] if len(neighbors) > 1 else None)
-        if nxt is None:
-            break
-        if nxt == start:
-            polygon.append(start)
-            return polygon[:-1]
-        polygon.append(nxt)
-        prev, current = current, nxt
-
-    return None
-
-
-def _segment_intersection(p1: Point, p2: Point, q1: Point, q2: Point) -> Optional[Point]:
-    x1, y1 = p1
-    x2, y2 = p2
-    x3, y3 = q1
-    x4, y4 = q2
-
-    denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
-    if abs(denom) < 1e-9:
-        return None
-    px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denom
-    py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denom
-
-    def on_segment(a, b, c):
-        return (
-            min(a[0], b[0]) - 1e-6 <= c[0] <= max(a[0], b[0]) + 1e-6
-            and min(a[1], b[1]) - 1e-6 <= c[1] <= max(a[1], b[1]) + 1e-6
-        )
-
-    p = (px, py)
-    if on_segment(p1, p2, p) and on_segment(q1, q2, p):
-        return p
-    return None
-
 
 class SectorNavigator:
-    """Node-based navigation across sectors using geometry info."""
+    """Navmesh navigation across nodes using zdoom-pathfinding logic."""
 
-    def __init__(self):
-        self.sectors: Dict[int, SectorNode] = {}
-        self.path: List[int] = []
-        self.path_idx = 0
-        self.sector_path: List[int] = []
-        self.sector_path_idx = 0
-        self.last_pos: Optional[Point] = None
-        self.stuck_counter = 0
-        self.built = False
+    def __init__(self, map_name: Optional[str] = None, navmesh_dir: str = "models/nav"):
+        self.map_name = map_name
+        self.navmesh_dir = Path(navmesh_dir)
+        self.mesh: Optional[NavMesh] = None
+        self.mesh_path: Optional[Path] = None
+        self.wad_path: Optional[Path] = None
+
+        self.route_nodes: List[int] = []
+        self.route_idx = 0
         self.route_built = False
-        self.bounds: Optional[Tuple[float, float, float, float]] = None
-        self.step = 0
-        self.current_target: Optional[int] = None
-        self.last_distance: Optional[float] = None
-        self.no_progress = 0
-        self.y_inverted = False
-        self.blocked_edges: set[Tuple[int, int]] = set()
-        self.portal_segments: Dict[Tuple[Point, Point], Tuple[bool, bool]] = {}
-        self.door_use_ticks = 0
-        self.door_nudge_ticks = 0
-        self.portal_by_edge: Dict[Tuple[int, int], List[Tuple[Segment, bool]]] = {}
-        self.route_plan: List[int] = []
-        self.secret_sectors: set[int] = set()
-        self.skip_sectors: set[int] = set()
 
-    def reset_episode(self):
-        self.sectors.clear()
-        self.path = []
+        self.path_points: List[Vec3] = []
         self.path_idx = 0
-        self.sector_path = []
-        self.sector_path_idx = 0
+        self.current_target: Optional[int] = None
+
+        self.last_pos: Optional[Tuple[float, float]] = None
+        self.stuck_counter = 0
+        self.step = 0
+        self.no_progress = 0
+        self.last_distance: Optional[float] = None
+        self.y_inverted = False
+        self.use_ticks = 0
+        self.special_segments: List[Tuple[Tuple[float, float], Tuple[float, float]]] = []
+        self.special_line_info: List[dict] = []
+        self.special_lines_built = False
+
+    def set_map_name(self, map_name: str) -> None:
+        if map_name and map_name != self.map_name:
+            self.map_name = map_name
+            self.mesh = None
+            self.mesh_path = None
+            self.route_built = False
+            self.route_nodes = []
+            self.route_idx = 0
+            self.path_points = []
+            self.path_idx = 0
+            self.current_target = None
+            self.special_lines_built = False
+
+    def set_wad_path(self, wad_path: str) -> None:
+        if wad_path:
+            self.wad_path = Path(wad_path)
+            self.special_lines_built = False
+
+    def reset_episode(self) -> None:
+        self.route_nodes = []
+        self.route_idx = 0
+        self.route_built = False
+        self.path_points = []
+        self.path_idx = 0
+        self.current_target = None
         self.last_pos = None
         self.stuck_counter = 0
-        self.built = False
-        self.route_built = False
-        self.bounds = None
         self.step = 0
-        self.current_target = None
-        self.last_distance = None
         self.no_progress = 0
+        self.last_distance = None
         self.y_inverted = False
-        self.blocked_edges.clear()
-        self.portal_segments.clear()
-        self.door_use_ticks = 0
-        self.door_nudge_ticks = 0
-        self.portal_by_edge.clear()
-        self.route_plan = []
-        self.secret_sectors = set()
-        self.skip_sectors = set()
+        self.use_ticks = 0
+        self.special_segments = []
+        self.special_line_info = []
+        self.special_lines_built = False
 
-    def _load_route_plan(self) -> None:
-        candidates = [Path("route_plan.json"), Path("agent/nav/route_plan.json")]
-        for path in candidates:
-            if not path.exists():
-                continue
-            try:
-                data = json.loads(path.read_text())
-                self.route_plan = [int(v) for v in data.get("route_sectors", [])]
-                self.secret_sectors = set(int(v) for v in data.get("secret_sectors", []))
-                self.skip_sectors = set(int(v) for v in data.get("skip_sectors", []))
-                logger.info(
-                    f"[ROUTE_PLAN] route={self.route_plan} "
-                    f"secrets={sorted(self.secret_sectors)} skip={sorted(self.skip_sectors)}"
-                )
-                return
-            except Exception as e:
-                logger.warning(f"[ROUTE_PLAN] Failed to read {path}: {e}")
+    def _segment_distance(self, p: Tuple[float, float], a: Tuple[float, float], b: Tuple[float, float]) -> float:
+        ax, ay = a
+        bx, by = b
+        px, py = p
+        abx, aby = bx - ax, by - ay
+        apx, apy = px - ax, py - ay
+        denom = abx * abx + aby * aby
+        if denom <= 1e-6:
+            return math.hypot(px - ax, py - ay)
+        t = max(0.0, min(1.0, (apx * abx + apy * aby) / denom))
+        cx = ax + abx * t
+        cy = ay + aby * t
+        return math.hypot(px - cx, py - cy)
 
-    def _save_sector_nodes(self) -> None:
-        try:
-            data = []
-            for idx, sec in self.sectors.items():
-                min_x, min_y, max_x, max_y = sec.bbox
-                data.append(
-                    {
-                        "id": idx,
-                        "node": [sec.node[0], sec.node[1]],
-                        "bbox": [min_x, min_y, max_x, max_y],
-                        "neighbors": sec.neighbors,
-                        "area": (max_x - min_x) * (max_y - min_y),
-                    }
-                )
-            Path("logs").mkdir(exist_ok=True)
-            Path("logs/sector_nodes.json").write_text(json.dumps(data, indent=2))
-        except Exception:
-            pass
+    def _segment_intersection(
+        self,
+        p1: Tuple[float, float],
+        p2: Tuple[float, float],
+        q1: Tuple[float, float],
+        q2: Tuple[float, float],
+    ) -> Optional[Tuple[float, float]]:
+        x1, y1 = p1
+        x2, y2 = p2
+        x3, y3 = q1
+        x4, y4 = q2
 
-    def update_from_state(self, sectors) -> None:
-        if self.built or not sectors:
-            return
+        denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+        if abs(denom) < 1e-9:
+            return None
+        px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denom
+        py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denom
 
-        sector_nodes: Dict[int, SectorNode] = {}
-        segment_to_sectors: Dict[Tuple[Point, Point], List[int]] = {}
-        segment_blocking: Dict[Tuple[Point, Point], bool] = {}
-        segment_geom: Dict[Tuple[Point, Point], Segment] = {}
-
-        all_x: List[float] = []
-        all_y: List[float] = []
-
-        for idx, sec in enumerate(sectors):
-            lines = getattr(sec, "lines", [])
-            segments: List[Segment] = []
-            xs: List[float] = []
-            ys: List[float] = []
-
-            for line in lines:
-                a = (float(line.x1), float(line.y1))
-                b = (float(line.x2), float(line.y2))
-                segments.append((a, b))
-                xs.extend([a[0], b[0]])
-                ys.extend([a[1], b[1]])
-                all_x.extend([a[0], b[0]])
-                all_y.extend([a[1], b[1]])
-
-                norm_seg = _normalize_segment(a, b)
-                segment_to_sectors.setdefault(norm_seg, []).append(idx)
-                blocking = bool(getattr(line, "is_blocking", False))
-                if blocking:
-                    segment_blocking[norm_seg] = True
-                segment_geom[norm_seg] = (a, b)
-
-            if not xs or not ys:
-                continue
-
-            min_x, max_x = min(xs), max(xs)
-            min_y, max_y = min(ys), max(ys)
-            polygon = _order_polygon(segments)
-
-            node = self._pick_node(segments, (min_x, min_y, max_x, max_y), polygon)
-            sector_nodes[idx] = SectorNode(
-                idx=idx,
-                node=node,
-                bbox=(min_x, min_y, max_x, max_y),
-                polygon=polygon,
-                neighbors=[],
-                segments=segments,
-                floor_height=float(getattr(sec, "floor_height", 0.0)),
-                ceiling_height=float(getattr(sec, "ceiling_height", 0.0)),
+        def on_segment(a, b, c):
+            return (
+                min(a[0], b[0]) - 1e-6 <= c[0] <= max(a[0], b[0]) + 1e-6
+                and min(a[1], b[1]) - 1e-6 <= c[1] <= max(a[1], b[1]) + 1e-6
             )
 
-        # Build adjacency
-        for seg, ids in segment_to_sectors.items():
-            if len(ids) < 2:
+        p = (px, py)
+        if on_segment(p1, p2, p) and on_segment(q1, q2, p):
+            return p
+        return None
+
+    def _line_special_value(self, line: Any) -> int:
+        for name in (
+            "special",
+            "line_special",
+            "special_type",
+            "line_action",
+            "action",
+        ):
+            val = getattr(line, name, None)
+            if isinstance(val, bool):
+                if val:
+                    return 1
                 continue
-            a, b = ids[0], ids[1]
-            if a in sector_nodes and b in sector_nodes:
-                sec_a = sector_nodes[a]
-                sec_b = sector_nodes[b]
-                height_delta = abs(sec_a.ceiling_height - sec_b.ceiling_height)
-                floor_delta = abs(sec_a.floor_height - sec_b.floor_height)
-                door_candidate = height_delta > 8.0 or floor_delta > 24.0
-                if b not in sector_nodes[a].neighbors:
-                    sector_nodes[a].neighbors.append(b)
-                if a not in sector_nodes[b].neighbors:
-                    sector_nodes[b].neighbors.append(a)
-                is_blocking = segment_blocking.get(seg, False)
-                self.portal_segments[seg] = (is_blocking, door_candidate)
-                geom = segment_geom.get(seg)
-                if geom is not None:
-                    self.portal_by_edge.setdefault((a, b), []).append((geom, is_blocking or door_candidate))
-                    self.portal_by_edge.setdefault((b, a), []).append((geom, is_blocking or door_candidate))
+            if isinstance(val, (int, float)) and int(val) != 0:
+                return int(val)
+        return 0
 
-        self.sectors = sector_nodes
-        if all_x and all_y:
-            self.bounds = (min(all_x), min(all_y), max(all_x), max(all_y))
-        self.built = True
-        self._load_route_plan()
-        self._save_sector_nodes()
-        for idx in self.secret_sectors.union(self.skip_sectors):
-            if idx in self.sectors:
-                self.sectors[idx].visited = True
-        logger.info(
-            f"[SECTORS] Built {len(self.sectors)} sector nodes "
-            f"with {sum(len(s.neighbors) for s in self.sectors.values())} links"
-        )
+    def _ingest_special_lines(self, lines: Optional[List[Any]], sectors: Optional[List[Any]]) -> None:
+        if self.special_lines_built:
+            return
 
-    def _pick_node(
-        self,
-        segments: Sequence[Segment],
-        bbox: Tuple[float, float, float, float],
-        polygon: Optional[Sequence[Point]],
-    ) -> Point:
-        min_x, min_y, max_x, max_y = bbox
-        if max_x - min_x < 1 or max_y - min_y < 1:
-            return ((min_x + max_x) / 2.0, (min_y + max_y) / 2.0)
+        candidates: List[Any] = []
+        if lines:
+            candidates = list(lines)
+        elif sectors:
+            for sec in sectors:
+                for line in getattr(sec, "lines", []) or []:
+                    candidates.append(line)
 
-        grid_x = np.linspace(min_x + 16, max_x - 16, num=6)
-        grid_y = np.linspace(min_y + 16, max_y - 16, num=6)
+        if not candidates:
+            return
 
-        best_point = ((min_x + max_x) / 2.0, (min_y + max_y) / 2.0)
-        best_score = -1.0
+        if lines:
+            logger.info("[NAV] Using lines info for special linedefs")
+        else:
+            logger.info("[NAV] Using sectors' lines for special linedefs")
 
-        for gx in grid_x:
-            for gy in grid_y:
-                p = (float(gx), float(gy))
-                if polygon is not None and not _point_in_polygon(p, polygon):
-                    continue
-                clearance = min(_segment_distance(p, a, b) for a, b in segments)
-                if clearance > best_score:
-                    best_score = clearance
-                    best_point = p
+        specials = []
+        info = []
+        sample = None
+        for idx, line in enumerate(candidates):
+            if sample is None:
+                sample = line
+            try:
+                x1 = float(getattr(line, "x1"))
+                y1 = float(getattr(line, "y1"))
+                x2 = float(getattr(line, "x2"))
+                y2 = float(getattr(line, "y2"))
+            except Exception:
+                continue
+            special_val = self._line_special_value(line)
+            if special_val <= 0:
+                continue
+            seg = ((x1, y1), (x2, y2))
+            specials.append(seg)
+            info.append(
+                {
+                    "id": idx,
+                    "special": special_val,
+                    "segment": seg,
+                }
+            )
 
-        return best_point
+        if not specials:
+            wad_specials, wad_info = self._load_special_linedefs_from_wad()
+            if wad_specials:
+                specials = wad_specials
+                info = wad_info
+                logger.info("[NAV] Loaded special linedefs from WAD: %s", len(specials))
 
-    def _current_sector(self, pos: Point) -> Optional[int]:
-        for idx, sec in self.sectors.items():
-            if sec.polygon is not None and _point_in_polygon(pos, sec.polygon):
-                return idx
-        # Fallback to closest node
-        closest = None
-        closest_dist = float("inf")
-        for idx, sec in self.sectors.items():
-            d = _dist(pos, sec.node)
-            if d < closest_dist:
-                closest_dist = d
-                closest = idx
-        return closest
+        self.special_segments = specials
+        self.special_line_info = info
+        self.special_lines_built = True
+        logger.info("[NAV] Lines info: total=%s special=%s", len(candidates), len(self.special_segments))
+        if sample is not None:
+            fields = {}
+            for name in (
+                "special",
+                "line_special",
+                "special_type",
+                "line_action",
+                "action",
+                "flags",
+                "is_blocking",
+                "is_two_sided",
+                "is_switch",
+                "is_secret",
+            ):
+                if hasattr(sample, name):
+                    fields[name] = getattr(sample, name)
+            logger.info("[NAV] Line sample fields: %s", fields)
 
-    def _build_full_route(self, start_idx: int) -> List[int]:
-        if start_idx is None:
+    def _load_special_linedefs_from_wad(self) -> Tuple[List[Tuple[Tuple[float, float], Tuple[float, float]]], List[dict]]:
+        if not self.wad_path or not self.wad_path.exists() or not self.map_name:
+            return [], []
+
+        try:
+            with self.wad_path.open("rb") as f:
+                header = f.read(12)
+                if len(header) < 12:
+                    return [], []
+                num_lumps = int.from_bytes(header[4:8], "little")
+                dir_offset = int.from_bytes(header[8:12], "little")
+                f.seek(dir_offset)
+                directory = []
+                for _ in range(num_lumps):
+                    offset = int.from_bytes(f.read(4), "little")
+                    size = int.from_bytes(f.read(4), "little")
+                    name = f.read(8).rstrip(b"\0").decode("ascii", errors="ignore")
+                    directory.append((name, offset, size))
+
+            def is_map_marker(name: str) -> bool:
+                if len(name) == 4 and name[0] == "E" and name[2] == "M":
+                    return name[1].isdigit() and name[3].isdigit()
+                if len(name) == 5 and name.startswith("MAP"):
+                    return name[3].isdigit() and name[4].isdigit()
+                return False
+
+            map_name = self.map_name.upper()
+            start_idx = None
+            for i, (name, _, _) in enumerate(directory):
+                if name.upper() == map_name:
+                    start_idx = i
+                    break
+            if start_idx is None:
+                return [], []
+
+            end_idx = len(directory)
+            for i in range(start_idx + 1, len(directory)):
+                if is_map_marker(directory[i][0]):
+                    end_idx = i
+                    break
+
+            vertex_lump = None
+            linedef_lump = None
+            for name, offset, size in directory[start_idx:end_idx]:
+                if name.upper() == "VERTEXES":
+                    vertex_lump = (offset, size)
+                elif name.upper() == "LINEDEFS":
+                    linedef_lump = (offset, size)
+
+            if vertex_lump is None or linedef_lump is None:
+                return [], []
+
+            vertices: List[Tuple[float, float]] = []
+            with self.wad_path.open("rb") as f:
+                f.seek(vertex_lump[0])
+                raw = f.read(vertex_lump[1])
+                for i in range(0, len(raw), 4):
+                    if i + 4 > len(raw):
+                        break
+                    x = int.from_bytes(raw[i:i+2], "little", signed=True)
+                    y = int.from_bytes(raw[i+2:i+4], "little", signed=True)
+                    vertices.append((float(x), float(y)))
+
+            specials: List[Tuple[Tuple[float, float], Tuple[float, float]]] = []
+            info: List[dict] = []
+            with self.wad_path.open("rb") as f:
+                f.seek(linedef_lump[0])
+                raw = f.read(linedef_lump[1])
+                for i in range(0, len(raw), 14):
+                    if i + 14 > len(raw):
+                        break
+                    v1 = int.from_bytes(raw[i:i+2], "little", signed=False)
+                    v2 = int.from_bytes(raw[i+2:i+4], "little", signed=False)
+                    flags = int.from_bytes(raw[i+4:i+6], "little", signed=False)
+                    special = int.from_bytes(raw[i+6:i+8], "little", signed=False)
+                    tag = int.from_bytes(raw[i+8:i+10], "little", signed=False)
+                    if special == 0:
+                        continue
+                    if v1 >= len(vertices) or v2 >= len(vertices):
+                        continue
+                    seg = (vertices[v1], vertices[v2])
+                    specials.append(seg)
+                    info.append(
+                        {
+                            "v1": v1,
+                            "v2": v2,
+                            "flags": flags,
+                            "special": special,
+                            "tag": tag,
+                            "segment": seg,
+                        }
+                    )
+
+            return specials, info
+        except Exception as exc:
+            logger.warning("[NAV] WAD special linedefs failed: %s", exc)
+            return [], []
+
+    def _pick_mesh_path(self) -> Optional[Path]:
+        candidates: List[Path] = []
+        if self.map_name:
+            candidates.append(self.navmesh_dir / f"{self.map_name}.json")
+            candidates.append(self.navmesh_dir / f"{self.map_name.lower()}.json")
+        for name in ("E1M1.json", "MAP01.json", "e1m1.json", "map01.json"):
+            candidates.append(self.navmesh_dir / name)
+
+        for path in candidates:
+            if path.exists():
+                return path
+
+        if self.navmesh_dir.exists():
+            for path in sorted(self.navmesh_dir.glob("*.json")):
+                return path
+        return None
+
+    def _ensure_mesh_loaded(self) -> bool:
+        if self.mesh is not None:
+            return True
+
+        path = self._pick_mesh_path()
+        if path is None:
+            if self.mesh_path is None:
+                logger.warning("[NAV] No navmesh JSON found in models/nav")
+            self.mesh_path = None
+            return False
+
+        try:
+            self.mesh = NavMesh.from_json(path)
+            self.mesh.debug_astar = True
+            self.mesh.debug_astar_interval = 10
+            self.mesh_path = path
+            logger.info(f"[NAV] Loaded navmesh: {path}")
+            return True
+        except Exception as exc:
+            logger.warning(f"[NAV] Failed to load navmesh {path}: {exc}")
+            self.mesh = None
+            self.mesh_path = None
+            return False
+
+    def _build_node_route(self, start_id: Optional[int]) -> List[int]:
+        if start_id is None or self.mesh is None:
             return []
         visited = set()
-        route: List[int] = [start_idx]
+        route: List[int] = [start_id]
 
-        def dfs(u: int):
+        def dfs(u: int) -> None:
             visited.add(u)
-            for v in sorted(self.sectors[u].neighbors):
-                if v in self.secret_sectors or v in self.skip_sectors:
-                    continue
+            neighbors = sorted(self.mesh.nodes[u].neighbor_ids)
+            for v in neighbors:
                 if v in visited:
                     continue
                 route.append(v)
                 dfs(v)
                 route.append(u)
 
-        dfs(start_idx)
+        dfs(start_id)
+        self._write_route_debug(route)
         return route
 
-    def _bfs_path(self, start_idx: int, goal_idx: int) -> List[int]:
-        if start_idx is None or goal_idx is None:
-            return []
-        if start_idx == goal_idx:
-            return [start_idx]
-        queue = [start_idx]
-        prev: Dict[int, Optional[int]] = {start_idx: None}
-        while queue:
-            cur = queue.pop(0)
-            for nxt in self.sectors[cur].neighbors:
-                if (cur, nxt) in self.blocked_edges:
-                    continue
-                if nxt in self.secret_sectors or nxt in self.skip_sectors:
-                    continue
-                if nxt in prev:
-                    continue
-                prev[nxt] = cur
-                if nxt == goal_idx:
-                    queue = []
-                    break
-                queue.append(nxt)
-        if goal_idx not in prev:
-            return []
-        path: List[int] = []
-        node = goal_idx
-        while node is not None:
-            path.append(node)
-            node = prev[node]
-        path.reverse()
-        return path
+    def _write_route_debug(self, route: List[int]) -> None:
+        if self.mesh is None:
+            return
+        try:
+            logs_dir = Path("logs")
+            logs_dir.mkdir(exist_ok=True)
+            route_nodes = []
+            for node_id in route:
+                if 0 <= node_id < len(self.mesh.nodes):
+                    node = self.mesh.nodes[node_id]
+                    route_nodes.append(
+                        {
+                            "id": node.node_id,
+                            "centroid": node.centroid,
+                            "neighbors": node.neighbor_ids,
+                        }
+                    )
+            payload = {
+                "mesh": str(self.mesh_path) if self.mesh_path else None,
+                "route_nodes": route,
+                "route": route_nodes,
+            }
+            (logs_dir / "navmesh_route.json").write_text(
+                json.dumps(payload, indent=2)
+            )
+        except Exception as exc:
+            logger.warning("[NAV] Failed to write route debug: %s", exc)
 
-    def _compute_sector_path(self, current_sector: Optional[int]) -> bool:
-        if current_sector is None or not self.path:
-            self.sector_path = []
+    def _compute_path_to_next_target(self, pos: Vec3, current_node_id: Optional[int]) -> bool:
+        if self.mesh is None or current_node_id is None:
             return False
 
-        while self.path_idx < len(self.path):
-            target = self.path[self.path_idx]
-            if target in self.secret_sectors or target in self.skip_sectors:
-                self.path_idx += 1
+        group_id = self.mesh.get_nearest_group_id(pos, use_poly=True)
+        if group_id < 0:
+            return False
+
+        while self.route_idx < len(self.route_nodes):
+            target_id = self.route_nodes[self.route_idx]
+            if target_id == current_node_id:
+                self.route_idx += 1
                 continue
-            if self.sectors[target].visited and target != current_sector:
-                self.path_idx += 1
-                continue
-            if target == current_sector:
-                self.path_idx += 1
-                continue
-            path = self._bfs_path(current_sector, target)
+            target_pos = self.mesh.nodes[target_id].centroid
+            path = self.mesh.find_path(group_id, pos, target_pos)
             if path:
-                self.sector_path = path
-                self.sector_path_idx = 0
-                self.current_target = target
+                self.path_points = path
+                self.path_idx = 0
+                self.current_target = target_id
                 self.last_distance = None
                 self.no_progress = 0
+                self._write_path_debug(path, current_node_id, target_id)
                 return True
-            self.path_idx += 1
+            self.route_idx += 1
 
-        self.sector_path = []
+        self.path_points = []
         return False
 
-    def decide_action(self, pos_x, pos_y, sectors, current_angle=0.0):
+    def _write_path_debug(self, path: List[Vec3], start_id: int, target_id: int) -> None:
+        try:
+            logs_dir = Path("logs")
+            logs_dir.mkdir(exist_ok=True)
+            payload = {
+                "mesh": str(self.mesh_path) if self.mesh_path else None,
+                "start_node": start_id,
+                "target_node": target_id,
+                "points": path,
+            }
+            (logs_dir / "navmesh_path.json").write_text(
+                json.dumps(payload, indent=2)
+            )
+        except Exception as exc:
+            logger.warning("[NAV] Failed to write path debug: %s", exc)
+
+    def decide_action(self, pos_x, pos_y, sectors=None, current_angle=0.0, lines=None):
         self.step += 1
-        if sectors is None:
+
+        if not self._ensure_mesh_loaded():
             return ActionDecoder.forward()
 
-        self.update_from_state(sectors)
-        if not self.sectors:
-            return ActionDecoder.forward()
+        if not self.special_lines_built:
+            self._ingest_special_lines(lines, sectors)
 
-        pos = (float(pos_x), float(pos_y))
-        current_sector = self._current_sector(pos)
-        if current_sector is not None:
-            self.sectors[current_sector].visited = True
+        pos = (float(pos_x), float(pos_y), 0.0)
+        current_node = self.mesh.get_closest_node_in(pos, self.mesh.nodes, use_poly=True)
+        current_node_id = current_node.node_id if current_node is not None else None
 
         # Stuck detection
         if self.last_pos is not None:
-            if _dist(pos, self.last_pos) < 8.0:
+            dx = pos[0] - self.last_pos[0]
+            dy = pos[1] - self.last_pos[1]
+            if (dx * dx + dy * dy) < 8.0 * 8.0:
                 self.stuck_counter += 1
             else:
                 self.stuck_counter = 0
-        self.last_pos = pos
+        self.last_pos = (pos[0], pos[1])
 
         if self.stuck_counter > 10:
             escape = (self.stuck_counter // 3) % 4
@@ -475,95 +486,40 @@ class SectorNavigator:
             return ActionDecoder.right_turn()
 
         if not self.route_built:
-            if self.route_plan:
-                self.path = [p for p in self.route_plan if p in self.sectors and p not in self.skip_sectors]
-                if current_sector is not None and current_sector in self.path:
-                    self.path_idx = self.path.index(current_sector)
-                else:
-                    self.path_idx = 0
-                logger.info(f"[ROUTE] Using route plan: {self.path}")
-            else:
-                self.path = self._build_full_route(current_sector)
-            self.path_idx = 0
+            self.route_nodes = self._build_node_route(current_node_id)
+            self.route_idx = 0
             self.route_built = True
-            if self.path:
-                logger.info(f"[ROUTE] Full route length: {len(self.path)}")
+            if self.route_nodes:
+                logger.info(f"[NAV] Route nodes: {len(self.route_nodes)}")
 
-        if not self.path:
+        if not self.route_nodes:
             return ActionDecoder.forward()
 
-        if not self.sector_path or self.sector_path_idx >= len(self.sector_path):
-            if not self._compute_sector_path(current_sector):
+        if not self.path_points or self.path_idx >= len(self.path_points):
+            if not self._compute_path_to_next_target(pos, current_node_id):
                 return ActionDecoder.forward()
 
-        # Advance sector path if we're already in the next sector
-        if (
-            self.sector_path_idx + 1 < len(self.sector_path)
-            and current_sector == self.sector_path[self.sector_path_idx + 1]
-        ):
-            self.sector_path_idx += 1
+        # Advance to next path point when close enough
+        while self.path_idx < len(self.path_points):
+            target_pt = self.path_points[self.path_idx]
+            dist = math.hypot(target_pt[0] - pos[0], target_pt[1] - pos[1])
+            if dist < 32.0:
+                self.path_idx += 1
+                if self.path_idx >= len(self.path_points):
+                    break
+                continue
+            break
 
-        # If we reached the current target sector, advance the route.
-        if (
-            current_sector is not None
-            and self.current_target is not None
-            and current_sector == self.current_target
-            and self.sector_path_idx >= len(self.sector_path) - 1
-        ):
-            self.path_idx += 1
-            self.sector_path = []
-            self.sector_path_idx = 0
+        if self.path_idx >= len(self.path_points):
+            self.path_points = []
+            self.path_idx = 0
             self.current_target = None
-            if not self._compute_sector_path(current_sector):
-                return ActionDecoder.forward()
+            return ActionDecoder.forward()
 
-        target_sector = self.sector_path[self.sector_path_idx]
-        next_sector = None
-        if self.sector_path_idx + 1 < len(self.sector_path):
-            next_sector = self.sector_path[self.sector_path_idx + 1]
-            target_sector = next_sector
+        target = self.path_points[self.path_idx]
+        distance = math.hypot(target[0] - pos[0], target[1] - pos[1])
 
-        target_node = self.sectors[target_sector].node
-        desired_point = target_node
-        portal_point = None
-        if next_sector is not None and current_sector is not None:
-            portals = self.portal_by_edge.get((current_sector, next_sector), [])
-            if portals:
-                # Prefer blocking segments (doors)
-                portals = sorted(portals, key=lambda p: (not p[1]))
-                seg = portals[0][0]
-                portal_point = ((seg[0][0] + seg[1][0]) / 2.0, (seg[0][1] + seg[1][1]) / 2.0)
-                desired_point = portal_point
-
-        # Ray-cast along path to detect blocking portal segments
-        if current_sector is not None:
-            best_hit = None
-            best_dist = float("inf")
-            for (seg, blocking) in self.portal_by_edge.get((current_sector, target_sector), []):
-                if not blocking:
-                    continue
-                hit = _segment_intersection(pos, desired_point, seg[0], seg[1])
-                if hit is None:
-                    continue
-                d = _dist(pos, hit)
-                if d < best_dist:
-                    best_dist = d
-                    best_hit = hit
-            if best_hit is not None and best_dist < 256:
-                portal_point = best_hit
-                desired_point = portal_point
-
-        portal_distance = None
-        if current_sector is not None:
-            portal_segments = self.portal_by_edge.get((current_sector, target_sector), [])
-            if portal_segments:
-                portal_distance = min(
-                    _segment_distance(pos, seg[0], seg[1]) for (seg, _) in portal_segments
-                )
-
-        distance = _dist(pos, desired_point)
-        if self.current_target != target_sector:
-            self.current_target = target_sector
+        if self.current_target is None:
             self.last_distance = distance
             self.no_progress = 0
         else:
@@ -576,12 +532,13 @@ class SectorNavigator:
         if self.no_progress > 12:
             self.y_inverted = not self.y_inverted
             self.no_progress = 0
-            logger.info(f"[CALIBRATE] Flipped Y axis to {self.y_inverted}")
+            logger.info(f"[NAV] Flipped Y axis to {self.y_inverted}")
 
-        dx = desired_point[0] - pos[0]
-        dy = desired_point[1] - pos[1]
+        dx = target[0] - pos[0]
+        dy = target[1] - pos[1]
         if self.y_inverted:
             dy = -dy
+
         target_angle = math.degrees(math.atan2(dy, dx))
         angle_diff = target_angle - float(current_angle)
         while angle_diff > 180:
@@ -591,45 +548,42 @@ class SectorNavigator:
 
         if self.step % 20 == 0:
             logger.info(
-                f"[NAV] sector={current_sector} target={target_sector} "
+                f"[NAV] node={current_node_id} target={self.current_target} "
                 f"dist={distance:.1f} ang={current_angle:.1f} diff={angle_diff:.1f}"
             )
 
-        # Door interaction heuristic: if we're facing the target but not getting closer, try USE
-        if self.door_use_ticks > 0:
-            self.door_use_ticks -= 1
-            return ActionDecoder.use()
-        if self.door_nudge_ticks > 0:
-            self.door_nudge_ticks -= 1
-            return ActionDecoder.forward()
-        if portal_distance is not None and portal_distance < 48.0:
-            self.door_use_ticks = 4
-            self.door_nudge_ticks = 3
-            return ActionDecoder.use()
-        if portal_point is not None and distance < 64.0:
-            self.door_use_ticks = 4
-            self.door_nudge_ticks = 3
-            return ActionDecoder.use()
-        if (
-            self.no_progress > 6
-            and abs(angle_diff) < 15
-            and (portal_distance is not None or portal_point is not None)
-            and distance < 128.0
-        ):
-            self.door_use_ticks = 4
-            self.door_nudge_ticks = 3
-            return ActionDecoder.use()
+        # Check for nearby special linedefs (doors, lifts, switches)
+        special_dist = None
+        special_hit = None
+        if self.special_segments:
+            p2d = (pos[0], pos[1])
+            t2d = (target[0], target[1])
+            best_dist = float("inf")
+            for seg in self.special_segments:
+                d = self._segment_distance(p2d, seg[0], seg[1])
+                if d < best_dist:
+                    best_dist = d
+                    best_seg = seg
+            if best_dist < float("inf"):
+                special_dist = best_dist
+                special_hit = best_seg
 
-        # If still no progress, mark edge blocked and recompute path
-        if self.no_progress > 8 and self.sector_path_idx + 1 < len(self.sector_path):
-            cur = self.sector_path[self.sector_path_idx]
-            nxt = self.sector_path[self.sector_path_idx + 1]
-            self.blocked_edges.add((cur, nxt))
-            self.blocked_edges.add((nxt, cur))
-            logger.info(f"[BLOCK] Edge blocked between sectors {cur} and {nxt}")
-            self.sector_path = []
-            self.sector_path_idx = 0
-            self.no_progress = 0
+            if special_hit is not None:
+                inter = self._segment_intersection(p2d, t2d, special_hit[0], special_hit[1])
+                if inter is not None:
+                    inter_dist = math.hypot(inter[0] - p2d[0], inter[1] - p2d[1])
+                    special_dist = min(special_dist, inter_dist)
+
+        if special_dist is not None and special_dist < 48.0:
+            self.use_ticks = 4
+            logger.info("[NAV] Using special linedef dist=%.1f", special_dist)
+
+        if self.use_ticks > 0:
+            self.use_ticks -= 1
+            return ActionDecoder.use()
+        if self.no_progress > 8 and distance < 128.0:
+            self.use_ticks = 3
+            return ActionDecoder.use()
 
         if abs(angle_diff) < 10:
             return ActionDecoder.forward()
@@ -639,13 +593,22 @@ class SectorNavigator:
             return ActionDecoder.forward_left_turn()
         return ActionDecoder.forward_right_turn()
 
-    def render_debug_map(self, path: str, player_pos: Optional[Point] = None) -> None:
-        if not self.sectors or self.bounds is None:
+    def render_debug_map(self, path: str, player_pos: Optional[Tuple[float, float]] = None) -> None:
+        if self.mesh is None or not self.mesh.vertices:
             return
 
-        import cv2
+        try:
+            import cv2
+        except Exception:
+            return
 
-        min_x, min_y, max_x, max_y = self.bounds
+        xs = self.mesh.vertices[0::3]
+        ys = self.mesh.vertices[1::3]
+        if not xs or not ys:
+            return
+
+        min_x, max_x = min(xs), max(xs)
+        min_y, max_y = min(ys), max(ys)
         width = 800
         height = 800
         pad = 20
@@ -654,68 +617,67 @@ class SectorNavigator:
         scale_x = (width - 2 * pad) / (max_x - min_x + 1e-6)
         scale_y = (height - 2 * pad) / (max_y - min_y + 1e-6)
 
-        def to_px(p: Point) -> Tuple[int, int]:
+        def to_px(p: Tuple[float, float]) -> Tuple[int, int]:
             x = int((p[0] - min_x) * scale_x + pad)
             y = int((p[1] - min_y) * scale_y + pad)
             return (x, height - y)
 
-        # Draw sector lines
-        for sec in self.sectors.values():
-            for a, b in sec.segments:
-                pa = to_px(a)
-                pb = to_px(b)
-                color = (120, 120, 120)
-                norm_seg = _normalize_segment(a, b)
-                if norm_seg in self.portal_segments:
-                    is_blocking, door_candidate = self.portal_segments[norm_seg]
-                    if is_blocking:
-                        color = (0, 0, 255)
-                    elif door_candidate:
-                        color = (0, 140, 255)
-                    else:
-                        color = (0, 200, 0)
-                cv2.line(img, pa, pb, color, 1)
+        # Draw polygons
+        for node in self.mesh.nodes:
+            if len(node.polygon) < 2:
+                continue
+            for i in range(len(node.polygon)):
+                a = node.polygon[i]
+                b = node.polygon[(i + 1) % len(node.polygon)]
+                cv2.line(img, to_px(a), to_px(b), (120, 120, 120), 1)
 
-        # Draw planned route
-        if self.path:
-            for i in range(1, len(self.path)):
-                a = self.sectors[self.path[i - 1]].node
-                b = self.sectors[self.path[i]].node
-                cv2.line(img, to_px(a), to_px(b), (255, 220, 80), 2)
-
-        # Draw current sector path (active route segment)
-        if self.sector_path and len(self.sector_path) > 1:
-            for i in range(1, len(self.sector_path)):
-                a = self.sectors[self.sector_path[i - 1]].node
-                b = self.sectors[self.sector_path[i]].node
-                cv2.line(img, to_px(a), to_px(b), (255, 255, 255), 2)
-
-        # Draw nodes
-        for sec in self.sectors.values():
-            if sec.idx in self.secret_sectors:
-                color = (180, 0, 180)
-            else:
-                color = (0, 255, 0) if sec.visited else (0, 140, 255)
-            cv2.circle(img, to_px(sec.node), 3, color, -1)
-
-        # Draw sector ids (small, optional)
-        for sec in self.sectors.values():
-            pos = to_px(sec.node)
+        # Draw node centroids (all nodes)
+        for node in self.mesh.nodes:
+            c = (node.centroid[0], node.centroid[1])
+            cv2.circle(img, to_px(c), 3, (0, 220, 0), -1)
             cv2.putText(
                 img,
-                str(sec.idx),
-                (pos[0] + 4, pos[1] - 4),
+                str(node.node_id),
+                (to_px(c)[0] + 3, to_px(c)[1] - 3),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.35,
-                (200, 200, 200),
+                (180, 180, 180),
                 1,
                 cv2.LINE_AA,
             )
 
-        # Draw current target
-        if self.path and 0 <= self.path_idx < len(self.path):
-            target_node = self.sectors[self.path[self.path_idx]].node
-            cv2.circle(img, to_px(target_node), 5, (255, 255, 255), 1)
+        # Draw planned node route
+        if self.route_nodes and len(self.route_nodes) > 1:
+            for i in range(1, len(self.route_nodes)):
+                a_id = self.route_nodes[i - 1]
+                b_id = self.route_nodes[i]
+                if 0 <= a_id < len(self.mesh.nodes) and 0 <= b_id < len(self.mesh.nodes):
+                    a = self.mesh.nodes[a_id].centroid
+                    b = self.mesh.nodes[b_id].centroid
+                    cv2.line(
+                        img,
+                        to_px((a[0], a[1])),
+                        to_px((b[0], b[1])),
+                        (0, 180, 255),
+                        1,
+                    )
+
+        # Draw special linedefs
+        for seg in self.special_segments:
+            cv2.line(
+                img,
+                to_px(seg[0]),
+                to_px(seg[1]),
+                (255, 0, 0),
+                2,
+            )
+
+        # Draw current path
+        if self.path_points and len(self.path_points) > 1:
+            for i in range(1, len(self.path_points)):
+                a = (self.path_points[i - 1][0], self.path_points[i - 1][1])
+                b = (self.path_points[i][0], self.path_points[i][1])
+                cv2.line(img, to_px(a), to_px(b), (255, 255, 255), 2)
 
         # Draw player
         if player_pos is not None:

@@ -34,3 +34,7 @@ env/
 # Logs (keep only last_run.json)
 logs/*
 !logs/last_run.json
+
+# Vendored github repos
+zdoom-navmesh-generator-master/
+zdoom-pathfinding-master/

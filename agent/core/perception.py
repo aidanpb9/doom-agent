@@ -2,11 +2,15 @@
 Perception system for parsing game state and detecting enemies/items.
 """
 
+import logging
+
 from agent.config import ENEMY_KEYWORDS
 
 
 class PerceptionManager:
     """Manages state parsing and object detection from game state."""
+
+    _logged_line_attrs = False
     
     def get_state_info(self, state):
         """Parse vizdoom state into structured info."""
@@ -31,6 +35,16 @@ class PerceptionManager:
         # Use actual KILLCOUNT variable from game state
         kills = int(game_vars[5]) if len(game_vars) > 5 else 0
 
+        lines = getattr(state, "lines", None)
+        if not self._logged_line_attrs:
+            self._logged_line_attrs = True
+            attrs = [a for a in dir(state) if "line" in a.lower()]
+            logging.getLogger(__name__).info("[NAV] State line attrs: %s", attrs)
+            if lines is None:
+                logging.getLogger(__name__).info("[NAV] State lines: None")
+            else:
+                logging.getLogger(__name__).info("[NAV] State lines count: %s", len(lines))
+
         info = {
             "health": health,
             "ammo": ammo,
@@ -41,7 +55,7 @@ class PerceptionManager:
             "screen": screen,
             "labels": labels,
             "sectors": getattr(state, "sectors", None),
-            "lines": getattr(state, "lines", None),
+            "lines": lines,
         }
         
         return info

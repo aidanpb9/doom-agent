@@ -17,6 +17,14 @@ class BehaviorSelector:
         self.perception = PerceptionManager()
         self.sector_navigator = SectorNavigator()
         self.combat_enabled = combat_enabled
+
+    def set_map_name(self, map_name: str) -> None:
+        if map_name:
+            self.sector_navigator.set_map_name(map_name)
+
+    def set_wad_path(self, wad_path: str) -> None:
+        if wad_path:
+            self.sector_navigator.set_wad_path(wad_path)
     
     def reset_episode(self):
         """Reset all behavior states for new episode."""
@@ -81,7 +89,8 @@ class BehaviorSelector:
         # Navigation only: Sector-based pathfinding
         current_angle = state_info.get('angle', 0)
         sectors = state_info.get("sectors")
-        return self.sector_navigator.decide_action(pos_x, pos_y, sectors, current_angle)
+        lines = state_info.get("lines")
+        return self.sector_navigator.decide_action(pos_x, pos_y, sectors, current_angle, lines=lines)
     
     def get_navigation_debug_frame(self, automap_buffer):
         """Return a debug overlay image for navigation, if available."""

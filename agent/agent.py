@@ -138,6 +138,8 @@ class DoomAgent:
             self.game.set_doom_map(doom_map)
         except Exception:
             pass
+        self.behavior_selector.set_map_name(doom_map)
+        self.behavior_selector.set_wad_path(wad_path)
 
         timeout_ticks = max(int(self.episode_timeout * 35), 2100)
         self.game.set_episode_timeout(timeout_ticks)
