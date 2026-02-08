@@ -7,6 +7,10 @@ import vizdoom as vzd
 import numpy as np
 import time
 import logging
+import threading
+import os
+import faulthandler
+from datetime import datetime
 from pathlib import Path
 try:
     from PIL import Image
@@ -77,6 +81,14 @@ class DoomAgent:
         self.action_log = []   # Store actions taken
         self.last_pos = None
         self.nav_debug_log = []  # Store navigation debug overlays
+        self.hang_timeout = 8.0
+        self.hang_action_timeout = 6.0
+        self._hang_event = None
+        self._last_action_time = None
+        self._hang_stage = None
+        self._hang_stage_time = None
+        self._last_action_name = None
+        self._frame_count = 0
         
         # Initialize modular behavior system
         self.behavior_selector = BehaviorSelector(
@@ -243,8 +255,61 @@ class DoomAgent:
         self.episode_step = 0
         
         start_time = time.time()
+        last_move_time = start_time
+        last_move_pos = None
         frame_count = 0
         max_steps = max(1, int(self.episode_timeout * 35 / max(1, self.action_frame_skip)))
+        hang_detected = False
+        timeout_hit = False
+        max_steps_hit = False
+        state_none = False
+        error_during_episode = None
+        last_state_info = None
+        self._hang_event = threading.Event()
+        self._last_action_time = time.time()
+        self._hang_stage = "start"
+        self._hang_stage_time = time.time()
+        self._frame_count = 0
+
+        def hang_watchdog():
+            while self._hang_event is not None and not self._hang_event.is_set():
+                time.sleep(0.5)
+                last_ts = self._last_action_time
+                if last_ts is None:
+                    continue
+                if time.time() - last_ts > self.hang_action_timeout:
+                    stage = self._hang_stage or "unknown"
+                    stage_age = 0.0
+                    if self._hang_stage_time is not None:
+                        stage_age = time.time() - self._hang_stage_time
+                    dump_name = datetime.now().strftime("logs/hang_dump_%Y%m%d_%H%M%S.txt")
+                    try:
+                        with open(dump_name, "w") as f:
+                            f.write(
+                                f"stage={stage} stage_age={stage_age:.2f}s "
+                                f"last_action_age={(time.time() - last_ts):.2f}s "
+                                f"episode_step={self.episode_step} frame_count={self._frame_count} "
+                                f"last_pos={self.last_pos} last_action={self._last_action_name}\n"
+                            )
+                            faulthandler.dump_traceback(file=f, all_threads=True)
+                    except Exception:
+                        pass
+                    logger.error(
+                        "Hang detected: no action completed for %.1fs, forcing shutdown.",
+                        self.hang_action_timeout,
+                    )
+                    try:
+                        if self.game is not None:
+                            self.game.close()
+                    except Exception:
+                        pass
+                    try:
+                        logging.shutdown()
+                    except Exception:
+                        pass
+                    os._exit(2)
+
+        threading.Thread(target=hang_watchdog, daemon=True).start()
         
         logger.info("=" * 60)
         logger.info("Starting new episode")
@@ -255,6 +320,9 @@ class DoomAgent:
             logger.info("Episode started successfully")
         except Exception as e:
             logger.error(f"Failed to start episode: {e}")
+            stats["end_reason"] = "start_failed"
+            if self._hang_event is not None:
+                self._hang_event.set()
             return stats
         
         initial_state = self.game.get_state()
@@ -272,9 +340,14 @@ class DoomAgent:
         
         while not self.game.is_episode_finished():
             try:
+                self._hang_stage = "get_state"
+                self._hang_stage_time = time.time()
                 state = self.game.get_state()
+                self._hang_stage = "get_state_done"
+                self._hang_stage_time = time.time()
                 
                 if state is None:
+                    state_none = True
                     break
                 
                 state_info = self.get_state_info(state)
@@ -283,8 +356,14 @@ class DoomAgent:
                     reward = self.game.make_action(
                         [1, 0, 0, 0, 0, 0, 0], self.action_frame_skip
                     )
+                    self._last_action_time = time.time()
+                    self._hang_stage = "make_action_done"
+                    self._hang_stage_time = time.time()
                     frame_count += 1
+                    self._frame_count = frame_count
                     continue
+
+                last_state_info = state_info
                 
                 current_health = state_info['health']
                 current_ammo = state_info['ammo']
@@ -299,9 +378,22 @@ class DoomAgent:
                 pos_x = state_info.get('pos_x', 0)
                 pos_y = state_info.get('pos_y', 0)
                 self.last_pos = (pos_x, pos_y)
+                if last_move_pos is None:
+                    last_move_pos = (pos_x, pos_y)
+                    last_move_time = time.time()
+                else:
+                    dxm = pos_x - last_move_pos[0]
+                    dym = pos_y - last_move_pos[1]
+                    if (dxm * dxm + dym * dym) > 16.0:
+                        last_move_pos = (pos_x, pos_y)
+                        last_move_time = time.time()
                 
                 # Use modular behavior selector
+                self._hang_stage = "decide_action"
+                self._hang_stage_time = time.time()
                 action = self.behavior_selector.decide_action(state_info, angle)
+                self._hang_stage = "decide_action_done"
+                self._hang_stage_time = time.time()
                 
                 # Log automap every 20 steps
                 if self.save_debug and frame_count % 20 == 0 and automap_buffer is not None:
@@ -338,6 +430,7 @@ class DoomAgent:
                             action_name = ACTION_NAMES[action_idx]
                         else:
                             action_name = f"Action_{action_idx}"
+                self._last_action_name = action_name
                 
                 # Store action log entry
                 if do_action_log:  # Log every 10 actions
@@ -362,11 +455,24 @@ class DoomAgent:
                         f"Labels={sorted(label_names) if label_names else 'None'}"
                     )
                 
+                self._hang_stage = "make_action"
+                self._hang_stage_time = time.time()
                 reward = self.game.make_action(action, self.action_frame_skip)
+                self._last_action_time = time.time()
+                self._hang_stage = "make_action_done"
+                self._hang_stage_time = time.time()
                 stats["episode_reward"] += float(reward)
                 stats["actions_taken"] += 1
                 frame_count += 1
+                self._frame_count = frame_count
                 self.episode_step += 1
+
+                if time.time() - last_move_time > self.hang_timeout:
+                    nav = getattr(self.behavior_selector, "sector_navigator", None)
+                    if not getattr(nav, "exit_focus_active", False):
+                        logger.error("Hang detected: no movement for %.1fs, ending episode.", self.hang_timeout)
+                        hang_detected = True
+                        break
                 
                 if self.step_delay > 0:
                     time.sleep(self.step_delay)
@@ -374,16 +480,21 @@ class DoomAgent:
                 if self.use_wall_clock:
                     elapsed = time.time() - start_time
                     if elapsed >= self.episode_timeout:
+                        timeout_hit = True
                         break
                 
                 if frame_count >= max_steps:
+                    max_steps_hit = True
                     break
                     
             except Exception as e:
                 logger.error(f"Error during episode: {e}")
+                error_during_episode = str(e)
                 break
         
         stats["episode_time"] = time.time() - start_time
+        if self._hang_event is not None:
+            self._hang_event.set()
         
         # Save logs
         if self.save_debug:
@@ -397,8 +508,97 @@ class DoomAgent:
             except Exception:
                 pass
         
+        def safe_is_player_dead():
+            try:
+                return bool(self.game.is_player_dead())
+            except Exception:
+                return False
+
+        def safe_is_episode_finished():
+            try:
+                return bool(self.game.is_episode_finished())
+            except Exception:
+                return False
+
+        end_reason = "unknown"
+        if error_during_episode:
+            end_reason = f"error:{error_during_episode}"
+        elif hang_detected:
+            end_reason = "hang_no_movement"
+        elif safe_is_player_dead():
+            end_reason = "player_dead"
+        elif timeout_hit:
+            end_reason = "timeout"
+        elif max_steps_hit:
+            end_reason = "max_steps"
+        elif safe_is_episode_finished():
+            end_reason = "exit"
+        elif state_none:
+            end_reason = "state_none"
+
+        end_pos = None
+        end_nav_node_id = None
+        end_sector_ids = []
+        if last_state_info is not None:
+            try:
+                end_pos = (float(last_state_info.get("pos_x", 0.0)), float(last_state_info.get("pos_y", 0.0)))
+            except Exception:
+                end_pos = None
+            sectors = last_state_info.get("sectors") if isinstance(last_state_info, dict) else None
+            if sectors:
+                for sec in sectors:
+                    inside = False
+                    sec_id = None
+                    try:
+                        if isinstance(sec, dict):
+                            sec_id = sec.get("id", None) or sec.get("sector_id", None)
+                            inside = bool(
+                                sec.get("is_inside", False)
+                                or sec.get("inside", False)
+                                or sec.get("is_inside_player", False)
+                                or sec.get("contains_player", False)
+                            )
+                        else:
+                            for attr in ("id", "sector_id"):
+                                if hasattr(sec, attr):
+                                    sec_id = getattr(sec, attr)
+                                    break
+                            for attr in ("is_inside", "inside", "is_inside_player", "contains_player"):
+                                if hasattr(sec, attr):
+                                    try:
+                                        inside = bool(getattr(sec, attr))
+                                    except Exception:
+                                        inside = False
+                                    break
+                    except Exception:
+                        inside = False
+                    if inside:
+                        end_sector_ids.append(sec_id if sec_id is not None else "unknown")
+            nav = getattr(self.behavior_selector, "sector_navigator", None)
+            if nav is not None and getattr(nav, "mesh", None) is not None and end_pos is not None:
+                try:
+                    node = nav.mesh.get_closest_node_in((end_pos[0], end_pos[1], 0.0), nav.mesh.nodes, use_poly=True)
+                    if node is not None:
+                        end_nav_node_id = node.node_id
+                except Exception:
+                    end_nav_node_id = None
+
+        stats["end_reason"] = end_reason
+        stats["end_pos"] = end_pos
+        stats["end_nav_node_id"] = end_nav_node_id
+        stats["end_sector_ids"] = end_sector_ids
+
         logger.info("=" * 60)
         logger.info("Episode finished")
+        logger.info(f"Episode end reason: {end_reason}")
+        if end_pos is not None:
+            logger.info(
+                "Episode end location: pos=(%.1f,%.1f) nav_node=%s sectors=%s",
+                end_pos[0],
+                end_pos[1],
+                end_nav_node_id,
+                end_sector_ids if end_sector_ids else "unknown",
+            )
         logger.info(f"Total reward: {stats['episode_reward']:.2f}")
         logger.info(f"Kills: {stats['kills']}")
         logger.info(f"Health lost: {stats['health_lost']:.2f}")

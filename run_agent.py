@@ -111,7 +111,8 @@ def main():
         return
 
     # Watchdog: run in a subprocess and hard-stop if the engine hangs.
-    timeout = max(seconds + 5, 10)
+    # Keep watchdog tighter so hung runs terminate quickly.
+    timeout = max(seconds + 2, 8)
     proc = mp.Process(
         target=_run_episode,
         args=(wad_file, seconds, fast_mode, step_delay, action_frame_skip),

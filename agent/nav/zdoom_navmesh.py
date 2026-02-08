@@ -160,7 +160,15 @@ class NavChannel:
         pts.append(portal_apex)
 
         i = 1
+        max_iters = max(10, self.length * 8)
+        iters = 0
+        last_reset_index = -1
+        reset_streak = 0
         while i < self.length:
+            iters += 1
+            if iters > max_iters:
+                logger.warning("Funnel guard: exceeded max iters=%s length=%s", max_iters, self.length)
+                break
             left = self._get_left(i)
             right = self._get_right(i)
 
@@ -179,7 +187,12 @@ class NavChannel:
                     portal_right = portal_apex
                     left_index = apex_index
                     right_index = apex_index
-                    i = apex_index
+                    if last_reset_index == apex_index:
+                        reset_streak += 1
+                    else:
+                        reset_streak = 0
+                        last_reset_index = apex_index
+                    i = apex_index if reset_streak == 0 else apex_index + 1
                     continue
 
             # Update left portal
@@ -197,7 +210,12 @@ class NavChannel:
                     portal_right = portal_apex
                     left_index = apex_index
                     right_index = apex_index
-                    i = apex_index
+                    if last_reset_index == apex_index:
+                        reset_streak += 1
+                    else:
+                        reset_streak = 0
+                        last_reset_index = apex_index
+                    i = apex_index if reset_streak == 0 else apex_index + 1
                     continue
 
             i += 1
