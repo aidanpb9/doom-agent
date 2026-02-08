@@ -50,6 +50,16 @@ class SectorNavigator:
         self.special_segments: List[Tuple[Tuple[float, float], Tuple[float, float]]] = []
         self.special_line_info: List[dict] = []
         self.special_lines_built = False
+        self.node_visit_radius = 64.0
+        self.door_specials = {
+            1, 26, 27, 28, 31, 32, 33, 34, 35, 46,
+            61, 62, 63, 90, 103, 105, 109, 111, 117, 118,
+            133, 134, 135, 136, 137, 138, 139, 140, 141, 142,
+            143, 145, 146, 147, 148, 149, 150, 151, 152, 153,
+            156, 157, 158, 159, 160, 162, 163, 166, 169, 170,
+            171, 175, 176, 177, 179, 180, 181, 182, 183, 184,
+            185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195,
+        }
 
     def set_map_name(self, map_name: str) -> None:
         if map_name and map_name != self.map_name:
@@ -97,6 +107,9 @@ class SectorNavigator:
     def _is_exit_special(special: int) -> bool:
         # Common DOOM exit specials (exit/secret exit variants).
         return special in {11, 51, 52, 124, 197}
+
+    def _is_door_special(self, special: int) -> bool:
+        return special in self.door_specials
 
     def _find_exit_node(self) -> Optional[int]:
         if self.mesh is None or not self.special_line_info:
@@ -379,6 +392,58 @@ class SectorNavigator:
         if on_segment(p1, p2, p) and on_segment(q1, q2, p):
             return p
         return None
+
+    def _segment_intersects_polygon(
+        self,
+        p1: Tuple[float, float],
+        p2: Tuple[float, float],
+        poly: List[Tuple[float, float]],
+    ) -> bool:
+        if len(poly) < 3:
+            return False
+        if self._point_in_poly_2d(p1, poly) or self._point_in_poly_2d(p2, poly):
+            return True
+        for i in range(len(poly)):
+            a = poly[i]
+            b = poly[(i + 1) % len(poly)]
+            if self._segment_intersection(p1, p2, a, b) is not None:
+                return True
+        return False
+
+    @staticmethod
+    def _point_in_poly_2d(pt: Tuple[float, float], poly: List[Tuple[float, float]]) -> bool:
+        x, y = pt
+        inside = False
+        j = len(poly) - 1
+        for i in range(len(poly)):
+            xi, yi = poly[i]
+            xj, yj = poly[j]
+            intersects = ((yi > y) != (yj > y)) and (
+                x < (xj - xi) * (y - yi) / (yj - yi + 1e-9) + xi
+            )
+            if intersects:
+                inside = not inside
+            j = i
+        return inside
+
+    def _crossed_door_linedef(self, last_pos: Tuple[float, float], pos: Tuple[float, float]) -> bool:
+        if not self.special_line_info:
+            return False
+        p1 = (float(last_pos[0]), float(last_pos[1]))
+        p2 = (float(pos[0]), float(pos[1]))
+        for info in self.special_line_info:
+            try:
+                special = int(info.get("special", 0))
+            except Exception:
+                continue
+            if not self._is_door_special(special):
+                continue
+            seg = info.get("segment")
+            if not seg or len(seg) != 2:
+                continue
+            if self._segment_intersection(p1, p2, seg[0], seg[1]) is not None:
+                return True
+        return False
 
     def _line_special_value(self, line: Any) -> int:
         for name in (
@@ -675,7 +740,7 @@ class SectorNavigator:
             logger.warning("[NAV] Failed to write route debug: %s", exc)
 
     def _compute_path_to_next_target(self, pos: Vec3, current_node_id: Optional[int]) -> bool:
-        if self.mesh is None or current_node_id is None:
+        if self.mesh is None:
             return False
 
         group_id = self.mesh.get_nearest_group_id(pos, use_poly=True)
@@ -684,9 +749,6 @@ class SectorNavigator:
 
         while self.route_idx < len(self.route_nodes):
             target_id = self.route_nodes[self.route_idx]
-            if target_id == current_node_id:
-                self.route_idx += 1
-                continue
             target_pos = self.mesh.nodes[target_id].centroid
             path = self.mesh.find_path(group_id, pos, target_pos)
             if path:
@@ -695,7 +757,7 @@ class SectorNavigator:
                 self.current_target = target_id
                 self.last_distance = None
                 self.no_progress = 0
-                self._write_path_debug(path, current_node_id, target_id)
+                self._write_path_debug(path, current_node_id if current_node_id is not None else -1, target_id)
                 return True
             self.route_idx += 1
 
@@ -762,6 +824,35 @@ class SectorNavigator:
 
         if not self.route_nodes:
             return ActionDecoder.forward()
+
+        # Follow route nodes in order; mark visited when close to centroid,
+        # passing through the polygon, or crossing a door linedef.
+        while self.route_idx < len(self.route_nodes):
+            target_id = self.route_nodes[self.route_idx]
+            if 0 <= target_id < len(self.mesh.nodes):
+                tgt = self.mesh.nodes[target_id].centroid
+                dist = math.hypot(tgt[0] - pos[0], tgt[1] - pos[1])
+                passed = False
+                if self.last_pos is not None:
+                    poly = self.mesh.nodes[target_id].polygon
+                    passed = self._segment_intersects_polygon(self.last_pos, (pos[0], pos[1]), poly)
+                crossed_door = False
+                if self.last_pos is not None:
+                    crossed_door = self._crossed_door_linedef(self.last_pos, (pos[0], pos[1]))
+                if dist <= self.node_visit_radius or passed or crossed_door:
+                    logger.info(
+                        "[NAV] Visit node=%s dist=%.1f passed=%s door=%s",
+                        target_id,
+                        dist,
+                        passed,
+                        crossed_door,
+                    )
+                    self.route_idx += 1
+                    self.path_points = []
+                    self.path_idx = 0
+                    self.current_target = None
+                    continue
+            break
 
         if not self.path_points or self.path_idx >= len(self.path_points):
             if not self._compute_path_to_next_target(pos, current_node_id):
