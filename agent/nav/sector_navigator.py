@@ -8,8 +8,9 @@ from __future__ import annotations
 import logging
 import math
 import json
+import time
 from pathlib import Path
-from typing import List, Optional, Tuple, Any
+from typing import List, Optional, Tuple, Any, Dict
 
 import numpy as np
 
@@ -60,6 +61,25 @@ class SectorNavigator:
             171, 175, 176, 177, 179, 180, 181, 182, 183, 184,
             185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195,
         }
+        self.last_visited_route_node: Optional[int] = None
+        self.angle_sign_history: List[int] = []
+        self.subroute_active = False
+        self.subroute_stage: Optional[str] = None
+        self.subroute_points: List[Vec3] = []
+        self.subroute_end_id: Optional[int] = None
+        self.subroute_start_id: Optional[int] = None
+        self.helper_points: List[Tuple[float, float]] = []
+        self.stuck_node_id: Optional[int] = None
+        self.pos_history: List[Tuple[float, float, float]] = []
+        self.dist_history: List[Tuple[float, float]] = []
+        self.stuck_window_s = 3.0
+        self.stuck_radius = 96.0
+        self.stuck_dist_delta = 16.0
+        self.stuck_min_progress = 16.0
+        self.stuck_time_s = 5.0
+        self.use_cooldown = 0
+        self.episode_start_time = None
+        self.dist_target_id: Optional[int] = None
 
     def set_map_name(self, map_name: str) -> None:
         if map_name and map_name != self.map_name:
@@ -76,6 +96,20 @@ class SectorNavigator:
             self.path_idx = 0
             self.current_target = None
             self.special_lines_built = False
+            self.last_visited_route_node = None
+            self.angle_sign_history = []
+            self.subroute_active = False
+            self.subroute_stage = None
+            self.subroute_points = []
+            self.subroute_end_id = None
+            self.subroute_start_id = None
+            self.helper_points = []
+            self.stuck_node_id = None
+            self.pos_history = []
+            self.dist_history = []
+            self.use_cooldown = 0
+            self.episode_start_time = None
+            self.dist_target_id = None
 
     def set_wad_path(self, wad_path: str) -> None:
         if wad_path:
@@ -102,6 +136,20 @@ class SectorNavigator:
         self.special_segments = []
         self.special_line_info = []
         self.special_lines_built = False
+        self.last_visited_route_node = None
+        self.angle_sign_history = []
+        self.subroute_active = False
+        self.subroute_stage = None
+        self.subroute_points = []
+        self.subroute_end_id = None
+        self.subroute_start_id = None
+        self.helper_points = []
+        self.stuck_node_id = None
+        self.pos_history = []
+        self.dist_history = []
+        self.use_cooldown = 0
+        self.episode_start_time = None
+        self.dist_target_id = None
 
     @staticmethod
     def _is_exit_special(special: int) -> bool:
@@ -110,6 +158,285 @@ class SectorNavigator:
 
     def _is_door_special(self, special: int) -> bool:
         return special in self.door_specials
+
+    @staticmethod
+    def _polygon_centroid(poly: List[Tuple[float, float]]) -> Tuple[float, float]:
+        if not poly:
+            return (0.0, 0.0)
+        sx = 0.0
+        sy = 0.0
+        for x, y in poly:
+            sx += x
+            sy += y
+        inv = 1.0 / float(len(poly))
+        return (sx * inv, sy * inv)
+
+    def _build_helper_points(
+        self,
+        poly: List[Tuple[float, float]],
+        obstacles: List[List[Tuple[float, float]]],
+        target_pt: Tuple[float, float],
+        offset_in: float = 48.0,
+        bias: float = 32.0,
+        max_helpers: int = 12,
+    ) -> List[Tuple[float, float]]:
+        if len(poly) < 3:
+            return []
+        cx, cy = self._polygon_centroid(poly)
+        dirx = target_pt[0] - cx
+        diry = target_pt[1] - cy
+        dir_mag = math.hypot(dirx, diry)
+        if dir_mag > 1e-6:
+            dirx /= dir_mag
+            diry /= dir_mag
+        else:
+            dirx = 0.0
+            diry = 0.0
+
+        edge_info: List[Tuple[float, float, float]] = []
+        radial_sum = 0.0
+        for i in range(len(poly)):
+            a = poly[i]
+            b = poly[(i + 1) % len(poly)]
+            mx = (a[0] + b[0]) * 0.5
+            my = (a[1] + b[1]) * 0.5
+            vx = mx - cx
+            vy = my - cy
+            radial = math.hypot(vx, vy)
+            radial_sum += radial
+            dot = vx * dirx + vy * diry
+            edge_info.append((dot, mx, my))
+
+        edge_info.sort(key=lambda x: x[0], reverse=True)
+        avg_radial = radial_sum / max(1, len(edge_info))
+        min_sep = max(32.0, avg_radial * 0.12)
+
+        helpers: List[Tuple[float, float]] = []
+        def add_candidate(candidate: Tuple[float, float]) -> None:
+            if not self._point_in_poly_2d(candidate, poly):
+                return
+            for obs in obstacles:
+                if self._point_in_poly_2d(candidate, obs):
+                    return
+            if any(math.hypot(candidate[0] - h[0], candidate[1] - h[1]) < min_sep for h in helpers):
+                return
+            helpers.append(candidate)
+
+        # First pass: edges facing the target.
+        for dot, mx, my in edge_info:
+            if len(helpers) >= max_helpers:
+                break
+            if dot < 0.0:
+                continue
+            dx = mx - cx
+            dy = my - cy
+            mag = math.hypot(dx, dy)
+            if mag < 1e-6:
+                continue
+            # Move inward from edge toward centroid, then bias toward target.
+            ox = mx - (dx / mag) * offset_in
+            oy = my - (dy / mag) * offset_in
+            ox += dirx * bias
+            oy += diry * bias
+            candidate = (ox, oy)
+            # Try without bias if it pushed outside.
+            if not self._point_in_poly_2d(candidate, poly):
+                ox = mx - (dx / mag) * offset_in
+                oy = my - (dy / mag) * offset_in
+                candidate = (ox, oy)
+            add_candidate(candidate)
+
+        # Second pass: remaining edges if we still need helpers.
+        if len(helpers) < max_helpers // 2:
+            for dot, mx, my in edge_info:
+                if len(helpers) >= max_helpers:
+                    break
+                if dot >= 0.0:
+                    continue
+                dx = mx - cx
+                dy = my - cy
+                mag = math.hypot(dx, dy)
+                if mag < 1e-6:
+                    continue
+                ox = mx - (dx / mag) * offset_in
+                oy = my - (dy / mag) * offset_in
+                candidate = (ox, oy)
+                add_candidate(candidate)
+
+        # Add a couple of interior points in the direction of the next sector.
+        if dir_mag > 1e-6:
+            for t in (0.35, 0.65):
+                cx2 = cx + dirx * avg_radial * t
+                cy2 = cy + diry * avg_radial * t
+                candidate = (cx2, cy2)
+                add_candidate(candidate)
+                if len(helpers) >= max_helpers:
+                    break
+
+        # Final fallback: small ring around centroid to ensure helpers inside base sector.
+        if not helpers:
+            ring_r = max(16.0, avg_radial * 0.4)
+            for k in range(8):
+                ang = (math.pi * 2.0 * k) / 8.0
+                candidate = (cx + math.cos(ang) * ring_r, cy + math.sin(ang) * ring_r)
+                add_candidate(candidate)
+                if len(helpers) >= max_helpers:
+                    break
+        return helpers
+
+    def _segment_clear(
+        self,
+        p1: Tuple[float, float],
+        p2: Tuple[float, float],
+        obstacles: List[List[Tuple[float, float]]],
+    ) -> bool:
+        for obs in obstacles:
+            if self._segment_intersects_polygon(p1, p2, obs):
+                return False
+        return True
+
+    def _compute_subroute_points(
+        self,
+        start_pt: Tuple[float, float],
+        end_pt: Tuple[float, float],
+        helper_pts: List[Tuple[float, float]],
+        obstacles: List[List[Tuple[float, float]]],
+    ) -> List[Vec3]:
+        points = [start_pt] + helper_pts + [end_pt]
+        n = len(points)
+        if n < 2:
+            return []
+
+        # Build visibility graph
+        neighbors: List[List[int]] = [[] for _ in range(n)]
+        for i in range(n):
+            for j in range(i + 1, n):
+                if self._segment_clear(points[i], points[j], obstacles):
+                    neighbors[i].append(j)
+                    neighbors[j].append(i)
+
+        start_idx = 0
+        end_idx = n - 1
+        # A* search
+        open_heap: List[Tuple[float, int]] = []
+        g = [float("inf")] * n
+        parent = [-1] * n
+        g[start_idx] = 0.0
+        def h(i: int) -> float:
+            dx = points[i][0] - points[end_idx][0]
+            dy = points[i][1] - points[end_idx][1]
+            return math.hypot(dx, dy)
+
+        open_heap.append((h(start_idx), start_idx))
+        visited = set()
+        while open_heap:
+            open_heap.sort(key=lambda x: x[0])
+            _, u = open_heap.pop(0)
+            if u in visited:
+                continue
+            visited.add(u)
+            if u == end_idx:
+                break
+            for v in neighbors[u]:
+                dx = points[u][0] - points[v][0]
+                dy = points[u][1] - points[v][1]
+                cand = g[u] + math.hypot(dx, dy)
+                if cand < g[v]:
+                    g[v] = cand
+                    parent[v] = u
+                    open_heap.append((cand + h(v), v))
+
+        if parent[end_idx] == -1:
+            return []
+        # Reconstruct path
+        path_idx = []
+        cur = end_idx
+        while cur != -1:
+            path_idx.append(cur)
+            cur = parent[cur]
+        path_idx.reverse()
+        return [(points[i][0], points[i][1], 0.0) for i in path_idx]
+
+    def _angle_oscillating(self) -> bool:
+        if len(self.angle_sign_history) < 4:
+            return False
+        flips = 0
+        for i in range(1, len(self.angle_sign_history)):
+            if self.angle_sign_history[i] != self.angle_sign_history[i - 1]:
+                flips += 1
+        return flips >= 3
+
+    def _start_subroute(self, current_node_id: Optional[int]) -> bool:
+        if self.mesh is None:
+            return False
+        if self.last_visited_route_node is None:
+            return False
+        if self.route_idx >= len(self.route_nodes):
+            return False
+        if current_node_id is None:
+            return False
+
+        start_id = self.last_visited_route_node
+        end_id = self.route_nodes[self.route_idx]
+        if not (0 <= start_id < len(self.mesh.nodes) and 0 <= end_id < len(self.mesh.nodes)):
+            return False
+
+        base_id = start_id
+        base_poly = self.mesh.nodes[base_id].polygon
+        if len(base_poly) < 3:
+            return False
+
+        obstacles: List[List[Tuple[float, float]]] = []
+        for node in self.mesh.nodes:
+            if node.node_id == base_id:
+                continue
+            centroid = (node.centroid[0], node.centroid[1])
+            if self._point_in_poly_2d(centroid, base_poly):
+                obstacles.append(node.polygon)
+
+        end_pt = (self.mesh.nodes[end_id].centroid[0], self.mesh.nodes[end_id].centroid[1])
+        start_pt = (self.mesh.nodes[start_id].centroid[0], self.mesh.nodes[start_id].centroid[1])
+        helper_pts = self._build_helper_points(base_poly, obstacles, end_pt)
+        subroute = self._compute_subroute_points(start_pt, end_pt, helper_pts, obstacles)
+        if not subroute:
+            return False
+
+        self.subroute_active = True
+        self.subroute_stage = "return"
+        self.subroute_points = subroute
+        self.subroute_start_id = start_id
+        self.subroute_end_id = end_id
+        self.helper_points = helper_pts
+        self.stuck_node_id = current_node_id
+        # Force a fresh return path so we don't keep following the old main path.
+        self.path_points = []
+        self.path_idx = 0
+        self.current_target = None
+        self.last_distance = None
+        self.no_progress = 0
+        logger.info(
+            "[NAV] Subroute start=%s end=%s helpers=%s",
+            start_id,
+            end_id,
+            len(helper_pts),
+        )
+        return True
+
+    def _compute_path_to_point(self, pos: Vec3, target_pos: Vec3) -> bool:
+        if self.mesh is None:
+            return False
+        group_id = self.mesh.get_nearest_group_id(pos, use_poly=True)
+        if group_id < 0:
+            return False
+        path = self.mesh.find_path(group_id, pos, target_pos)
+        if path:
+            self.path_points = path
+            self.path_idx = 0
+            self.current_target = None
+            self.last_distance = None
+            self.no_progress = 0
+            return True
+        return False
 
     def _find_exit_node(self) -> Optional[int]:
         if self.mesh is None or not self.special_line_info:
@@ -444,6 +771,48 @@ class SectorNavigator:
             if self._segment_intersection(p1, p2, seg[0], seg[1]) is not None:
                 return True
         return False
+
+    def _nearest_special(self, p2d: Tuple[float, float]) -> Tuple[Optional[float], Optional[Tuple[Tuple[float, float], Tuple[float, float]]]]:
+        if not self.special_segments:
+            return None, None
+        best_dist = float("inf")
+        best_seg = None
+        for seg in self.special_segments:
+            d = self._segment_distance(p2d, seg[0], seg[1])
+            if d < best_dist:
+                best_dist = d
+                best_seg = seg
+        if best_seg is None:
+            return None, None
+        return best_dist, best_seg
+
+    def _update_pos_history(self, pos: Tuple[float, float]) -> Tuple[bool, float]:
+        now = time.perf_counter()
+        self.pos_history.append((now, pos[0], pos[1]))
+        cutoff = now - self.stuck_window_s
+        while self.pos_history and self.pos_history[0][0] < cutoff:
+            self.pos_history.pop(0)
+        if len(self.pos_history) < 2:
+            return False, 0.0
+        xs = [p[1] for p in self.pos_history]
+        ys = [p[2] for p in self.pos_history]
+        dx = max(xs) - min(xs)
+        dy = max(ys) - min(ys)
+        diag = math.hypot(dx, dy)
+        return diag < self.stuck_radius, diag
+
+    def _update_dist_history(self, distance: float) -> Tuple[bool, float]:
+        now = time.perf_counter()
+        self.dist_history.append((now, distance))
+        cutoff = now - self.stuck_window_s
+        while self.dist_history and self.dist_history[0][0] < cutoff:
+            self.dist_history.pop(0)
+        if len(self.dist_history) < 2:
+            return False, 0.0
+        start = self.dist_history[0][1]
+        end = self.dist_history[-1][1]
+        progress = start - end
+        return progress < self.stuck_dist_delta, progress
 
     def _line_special_value(self, line: Any) -> int:
         for name in (
@@ -789,9 +1158,16 @@ class SectorNavigator:
         if not self.special_lines_built:
             self._ingest_special_lines(lines, sectors)
 
+        if self.episode_start_time is None:
+            self.episode_start_time = time.perf_counter()
+
         pos = (float(pos_x), float(pos_y), 0.0)
         current_node = self.mesh.get_closest_node_in(pos, self.mesh.nodes, use_poly=True)
         current_node_id = current_node.node_id if current_node is not None else None
+        p2d = (pos[0], pos[1])
+        nearest_special_dist, nearest_special_seg = self._nearest_special(p2d)
+        near_special = nearest_special_dist is not None and nearest_special_dist < 48.0
+        near_special_stuck = nearest_special_dist is not None and nearest_special_dist < 12.0
 
         # Stuck detection
         if self.last_pos is not None:
@@ -803,17 +1179,14 @@ class SectorNavigator:
                 self.stuck_counter = 0
         self.last_pos = (pos[0], pos[1])
 
-        if self.stuck_counter > 10:
-            escape = (self.stuck_counter // 3) % 4
-            if self.stuck_counter % 5 == 0:
-                return ActionDecoder.use()
-            if escape == 0:
-                return ActionDecoder.strafe_left()
-            if escape == 1:
-                return ActionDecoder.strafe_right()
-            if escape == 2:
-                return ActionDecoder.left_turn()
-            return ActionDecoder.right_turn()
+        pos_stuck, pos_spread = self._update_pos_history((pos[0], pos[1]))
+        if near_special_stuck:
+            pos_stuck = False
+        min_elapsed = False
+        if self.episode_start_time is not None:
+            min_elapsed = (time.perf_counter() - self.episode_start_time) >= 3.0
+        has_progress = self.last_visited_route_node is not None and self.route_idx > 0
+        pos_stuck = pos_stuck and min_elapsed and has_progress
 
         if not self.route_built:
             self.route_nodes = self._build_node_route(current_node_id)
@@ -825,38 +1198,66 @@ class SectorNavigator:
         if not self.route_nodes:
             return ActionDecoder.forward()
 
-        # Follow route nodes in order; mark visited when close to centroid,
-        # passing through the polygon, or crossing a door linedef.
-        while self.route_idx < len(self.route_nodes):
-            target_id = self.route_nodes[self.route_idx]
-            if 0 <= target_id < len(self.mesh.nodes):
-                tgt = self.mesh.nodes[target_id].centroid
-                dist = math.hypot(tgt[0] - pos[0], tgt[1] - pos[1])
-                passed = False
-                if self.last_pos is not None:
-                    poly = self.mesh.nodes[target_id].polygon
-                    passed = self._segment_intersects_polygon(self.last_pos, (pos[0], pos[1]), poly)
-                crossed_door = False
-                if self.last_pos is not None:
-                    crossed_door = self._crossed_door_linedef(self.last_pos, (pos[0], pos[1]))
-                if dist <= self.node_visit_radius or passed or crossed_door:
-                    logger.info(
-                        "[NAV] Visit node=%s dist=%.1f passed=%s door=%s",
-                        target_id,
-                        dist,
-                        passed,
-                        crossed_door,
-                    )
-                    self.route_idx += 1
-                    self.path_points = []
-                    self.path_idx = 0
-                    self.current_target = None
-                    continue
-            break
+        if not self.subroute_active:
+            # Follow route nodes in order; mark visited when close to centroid,
+            # passing through the polygon, or crossing a door linedef.
+            while self.route_idx < len(self.route_nodes):
+                target_id = self.route_nodes[self.route_idx]
+                if 0 <= target_id < len(self.mesh.nodes):
+                    tgt = self.mesh.nodes[target_id].centroid
+                    dist = math.hypot(tgt[0] - pos[0], tgt[1] - pos[1])
+                    passed = False
+                    if self.last_pos is not None:
+                        poly = self.mesh.nodes[target_id].polygon
+                        passed = self._segment_intersects_polygon(self.last_pos, (pos[0], pos[1]), poly)
+                    crossed_door = False
+                    if self.last_pos is not None:
+                        crossed_door = self._crossed_door_linedef(self.last_pos, (pos[0], pos[1]))
+                    entered = current_node_id == target_id if current_node_id is not None else False
+                    if entered or dist <= self.node_visit_radius or passed or crossed_door:
+                        logger.info(
+                            "[NAV] Visit node=%s dist=%.1f passed=%s door=%s entered=%s",
+                            target_id,
+                            dist,
+                            passed,
+                            crossed_door,
+                            entered,
+                        )
+                        self.last_visited_route_node = target_id
+                        self.route_idx += 1
+                        self.path_points = []
+                        self.path_idx = 0
+                        self.current_target = None
+                        continue
+                break
 
-        if not self.path_points or self.path_idx >= len(self.path_points):
-            if not self._compute_path_to_next_target(pos, current_node_id):
-                return ActionDecoder.forward()
+        if self.subroute_active:
+            if self.subroute_stage == "return":
+                if self.subroute_start_id is None or not (0 <= self.subroute_start_id < len(self.mesh.nodes)):
+                    self.subroute_active = False
+                else:
+                    start_pos = self.mesh.nodes[self.subroute_start_id].centroid
+                    entered_start = current_node_id == self.subroute_start_id if current_node_id is not None else False
+                    # If we're back in the start node, switch to subroute.
+                    if entered_start or math.hypot(start_pos[0] - pos[0], start_pos[1] - pos[1]) <= self.node_visit_radius:
+                        self.subroute_stage = "route"
+                        route_points = list(self.subroute_points)
+                        if route_points:
+                            # Start from the current position so we don't force a detour to the centroid.
+                            route_points[0] = (pos[0], pos[1], 0.0)
+                        self.path_points = route_points
+                        self.path_idx = 0
+                    else:
+                        if not self.path_points or self.path_idx >= len(self.path_points):
+                            self._compute_path_to_point(pos, start_pos)
+            elif self.subroute_stage == "route":
+                if not self.path_points:
+                    self.path_points = list(self.subroute_points)
+                    self.path_idx = 0
+        else:
+            if not self.path_points or self.path_idx >= len(self.path_points):
+                if not self._compute_path_to_next_target(pos, current_node_id):
+                    return ActionDecoder.forward()
 
         # Advance to next path point when close enough
         while self.path_idx < len(self.path_points):
@@ -870,6 +1271,22 @@ class SectorNavigator:
             break
 
         if self.path_idx >= len(self.path_points):
+            if self.subroute_active and self.subroute_stage == "route":
+                # Finished subroute: mark end node visited and resume main route.
+                if self.subroute_end_id is not None:
+                    logger.info(
+                        "[NAV] Subroute complete start=%s end=%s",
+                        self.subroute_start_id,
+                        self.subroute_end_id,
+                    )
+                    self.last_visited_route_node = self.subroute_end_id
+                    if self.route_idx < len(self.route_nodes) and self.route_nodes[self.route_idx] == self.subroute_end_id:
+                        self.route_idx += 1
+                self.subroute_active = False
+                self.subroute_stage = None
+                self.subroute_points = []
+                self.helper_points = []
+                self.stuck_node_id = None
             self.path_points = []
             self.path_idx = 0
             self.current_target = None
@@ -905,6 +1322,19 @@ class SectorNavigator:
         while angle_diff < -180:
             angle_diff += 360
 
+        # Track angle oscillation for corner-stuck detection.
+        sign = 0
+        if angle_diff > 5.0:
+            sign = 1
+        elif angle_diff < -5.0:
+            sign = -1
+        if sign != 0:
+            self.angle_sign_history.append(sign)
+            if len(self.angle_sign_history) > 8:
+                self.angle_sign_history.pop(0)
+
+        corner_stuck = False
+
         if self.step % 20 == 0:
             logger.info(
                 f"[NAV] node={current_node_id} target={self.current_target} "
@@ -914,18 +1344,10 @@ class SectorNavigator:
         # Check for nearby special linedefs (doors, lifts, switches)
         special_dist = None
         special_hit = None
-        if self.special_segments:
-            p2d = (pos[0], pos[1])
+        if nearest_special_seg is not None and nearest_special_dist is not None:
             t2d = (target[0], target[1])
-            best_dist = float("inf")
-            for seg in self.special_segments:
-                d = self._segment_distance(p2d, seg[0], seg[1])
-                if d < best_dist:
-                    best_dist = d
-                    best_seg = seg
-            if best_dist < float("inf"):
-                special_dist = best_dist
-                special_hit = best_seg
+            special_dist = nearest_special_dist
+            special_hit = nearest_special_seg
 
             if special_hit is not None:
                 inter = self._segment_intersection(p2d, t2d, special_hit[0], special_hit[1])
@@ -933,16 +1355,78 @@ class SectorNavigator:
                     inter_dist = math.hypot(inter[0] - p2d[0], inter[1] - p2d[1])
                     special_dist = min(special_dist, inter_dist)
 
-        if special_dist is not None and special_dist < 48.0:
-            self.use_ticks = 4
+        if self.use_cooldown > 0:
+            self.use_cooldown -= 1
+        if special_dist is not None and special_dist < 48.0 and self.use_cooldown == 0:
+            self.use_ticks = 2
+            self.use_cooldown = 20
             logger.info("[NAV] Using special linedef dist=%.1f", special_dist)
 
         if self.use_ticks > 0:
             self.use_ticks -= 1
             return ActionDecoder.use()
-        if self.no_progress > 8 and distance < 128.0:
-            self.use_ticks = 3
-            return ActionDecoder.use()
+
+        dist_stuck = False
+        progress = -1.0
+        if self.current_target is not None:
+            if self.current_target != self.dist_target_id:
+                self.dist_history = []
+                self.dist_target_id = self.current_target
+            dist_stuck, progress = self._update_dist_history(distance)
+
+        target_dist = distance
+        hard_stuck = (
+            min_elapsed
+            and has_progress
+            and self.no_progress > 20
+            and target_dist > 128.0
+            and not near_special_stuck
+        )
+        dist_only_stuck = (
+            min_elapsed
+            and has_progress
+            and dist_stuck
+            and target_dist > 128.0
+            and not near_special_stuck
+        )
+        corner_stuck = (
+            (pos_stuck and (self.no_progress > 12 or dist_stuck) and not near_special_stuck)
+            or hard_stuck
+            or (min_elapsed and has_progress and (pos_spread < 128.0) and self.no_progress > 40 and not near_special_stuck)
+            or dist_only_stuck
+        )
+        if self.step % 20 == 0 and has_progress:
+            logger.info(
+                "[NAV] StuckCheck spread=%.1f no_prog=%s dist_prog=%.1f near_special=%s tgt_dist=%.1f",
+                pos_spread,
+                self.no_progress,
+                progress,
+                near_special_stuck,
+                target_dist,
+            )
+        if corner_stuck:
+            if not self.subroute_active:
+                if self._start_subroute(current_node_id):
+                    logger.info("[NAV] Corner-stuck: activating subroute")
+                    return ActionDecoder.forward()
+                escape = (self.stuck_counter // 3) % 4
+                if escape == 0:
+                    return ActionDecoder.strafe_left()
+                if escape == 1:
+                    return ActionDecoder.strafe_right()
+                if escape == 2:
+                    return ActionDecoder.left_turn()
+                return ActionDecoder.right_turn()
+            # Nudge while subrouting to prevent getting stuck in return/route legs.
+            logger.info("[NAV] Corner-stuck during subroute: nudging")
+            escape = (self.stuck_counter // 3) % 4
+            if escape == 0:
+                return ActionDecoder.strafe_left()
+            if escape == 1:
+                return ActionDecoder.strafe_right()
+            if escape == 2:
+                return ActionDecoder.left_turn()
+            return ActionDecoder.right_turn()
 
         if abs(angle_diff) < 10:
             return ActionDecoder.forward()
@@ -1063,6 +1547,28 @@ class SectorNavigator:
                 (255, 0, 0),
                 2,
             )
+
+        # Draw helper nodes (subroute)
+        if self.helper_points:
+            for i, hp in enumerate(self.helper_points):
+                cv2.circle(img, to_px(hp), 4, (255, 0, 255), -1)
+                cv2.putText(
+                    img,
+                    f"H{i}",
+                    (to_px(hp)[0] + 4, to_px(hp)[1] - 4),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.35,
+                    (255, 0, 255),
+                    1,
+                    cv2.LINE_AA,
+                )
+
+        # Draw subroute traversal
+        if self.subroute_points and len(self.subroute_points) > 1:
+            for i in range(1, len(self.subroute_points)):
+                a = (self.subroute_points[i - 1][0], self.subroute_points[i - 1][1])
+                b = (self.subroute_points[i][0], self.subroute_points[i][1])
+                cv2.line(img, to_px(a), to_px(b), (255, 255, 0), 2)
 
         # Draw current path
         if self.path_points and len(self.path_points) > 1:
