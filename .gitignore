@@ -38,3 +38,6 @@ logs/*
 # Vendored github repos
 zdoom-navmesh-generator-master/
 zdoom-pathfinding-master/
+
+# WADS
+wads/

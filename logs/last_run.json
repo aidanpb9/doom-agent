@@ -1,14 +1,14 @@
 {
-  "kills": 5,
-  "ammo_used": 44.0,
-  "health_lost": 0.0,
-  "actions_taken": 1468,
-  "episode_reward": -1468.0,
-  "episode_time": 23.555707216262817,
+  "kills": 4,
+  "ammo_used": 38.0,
+  "health_lost": 40.0,
+  "actions_taken": 1413,
+  "episode_reward": -1413.0,
+  "episode_time": 26.277005434036255,
   "end_reason": "exit",
   "end_pos": [
-    2928.2097778320312,
-    -4802.369079589844
+    2928.1754760742188,
+    -4793.625228881836
   ],
   "end_nav_node_id": 82,
   "end_sector_ids": []
