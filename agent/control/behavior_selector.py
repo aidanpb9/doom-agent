@@ -96,6 +96,7 @@ class BehaviorSelector:
         
         pos_x = state_info.get('pos_x', 0)
         pos_y = state_info.get('pos_y', 0)
+        pos_z = state_info.get('pos_z', 0.0)
         ammo = state_info.get('ammo', 0)
         health = state_info.get('health', 0)
         screen = state_info.get("screen")
@@ -107,7 +108,12 @@ class BehaviorSelector:
         nav_action = None
 
         if self.combat_enabled:
-            enemy = self.perception.detect_enemies_from_labels(state_info.get("labels", []))
+            screen_h = screen.shape[0] if screen is not None and hasattr(screen, "shape") else None
+            enemy = self.perception.detect_enemies_from_labels(
+                state_info.get("labels", []),
+                pos_z=pos_z,
+                screen_height=screen_h,
+            )
             if enemy is not None:
                 ex, _, conf = enemy
                 if screen is not None and hasattr(screen, "shape"):
@@ -148,10 +154,16 @@ class BehaviorSelector:
             lines = state_info.get("lines")
             nav_action = self.sector_navigator.decide_action(pos_x, pos_y, sectors, current_angle, lines=lines)
             if nav.exit_combat_override:
-                combat_active = False
-                self.combat_cooldown = 0
-                self.combat_ticks = 0
-                self.combat_active_ticks = 0
+                force_exit = (
+                    isinstance(nav_action, list)
+                    and len(nav_action) >= 7
+                    and nav_action[6] == 1
+                )
+                if force_exit or (enemy is None and not took_damage):
+                    combat_active = False
+                    self.combat_cooldown = 0
+                    self.combat_ticks = 0
+                    self.combat_active_ticks = 0
             if combat_active:
                 self.combat_active_ticks += 1
                 if ammo <= 0:

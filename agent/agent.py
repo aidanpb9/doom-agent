@@ -41,8 +41,8 @@ class DoomAgent:
         wad_path,
         config_path="vizdoom_config.cfg",
         episode_timeout=10,
-        step_delay=0.12,
-        action_frame_skip=4,
+        step_delay=0.0,
+        action_frame_skip=1,
         fast_mode=False,
         log_interval=20,
         save_debug=True,
@@ -125,12 +125,38 @@ class DoomAgent:
         logger.info(
             "Fast mode enabled: headless render, reduced buffers, minimal logging."
         )
+
+    def _apply_native_settings(self):
+        if self.fast_mode or self.game is None:
+            return
+        def safe_call(fn, *args):
+            try:
+                fn(*args)
+            except Exception:
+                pass
+        # Match classic Doom timing and presentation.
+        safe_call(self.game.set_ticrate, 35)
+        safe_call(self.game.set_render_all_frames, True)
+        safe_call(self.game.set_window_visible, True)
+        if hasattr(vzd.ScreenResolution, "RES_640X480"):
+            safe_call(self.game.set_screen_resolution, vzd.ScreenResolution.RES_640X480)
+        safe_call(self.game.set_render_hud, True)
+        safe_call(self.game.set_render_weapon, True)
+        safe_call(self.game.set_render_crosshair, True)
+        safe_call(self.game.set_render_decals, True)
+        safe_call(self.game.set_render_particles, True)
+        safe_call(self.game.set_render_messages, True)
+        safe_call(self.game.set_render_corpses, True)
+        safe_call(self.game.set_render_screen_flashes, True)
+        safe_call(self.game.set_render_effects_sprites, True)
+        safe_call(self.game.set_render_minimal_hud, False)
         
     def initialize_game(self):
         """Initialize the Doom game environment."""
         self.game = vzd.DoomGame()
         self.game.load_config(self.config_path)
         self._apply_fast_settings()
+        self._apply_native_settings()
 
         # Enable world geometry info when available
         try:

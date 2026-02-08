@@ -76,13 +76,12 @@ def main():
     if "--no-watchdog" in sys.argv:
         sys.argv.remove("--no-watchdog")
 
-    # Visible + faster defaults
-    # Small delay keeps the VizDoom window responsive on some Windows setups.
-    step_delay = 0.01
-    action_frame_skip = 6
+    # Visible + native-speed defaults (35 tics/sec).
+    step_delay = 0.0
+    action_frame_skip = 1
     if slow_mode:
         step_delay = 0.05
-        action_frame_skip = 4
+        action_frame_skip = 1
         fast_mode = False
 
     if len(sys.argv) > 1:

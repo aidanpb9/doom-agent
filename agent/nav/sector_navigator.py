@@ -86,11 +86,13 @@ class SectorNavigator:
         self.stuck_min_progress = 16.0
         self.stuck_time_s = 5.0
         self.use_cooldown = 0
+        self.last_special_use_seg = None
+        self.last_special_use_step = -999
         self.episode_start_time = None
         self.dist_target_id: Optional[int] = None
         self.combat_active = False
         self.exit_combat_override = False
-        self.end_subroute_block_dist = 640.0
+        self.end_subroute_block_dist = 1536.0
         self.exit_focus_active = False
         self.exit_focus_stage: Optional[str] = None
         self.exit_focus_turn_dir = 1
@@ -98,7 +100,18 @@ class SectorNavigator:
         self.exit_focus_push_ticks = 0
         self.exit_target_point: Optional[Tuple[float, float]] = None
         self.exit_target_line_point: Optional[Tuple[float, float]] = None
-        self.end_subroute_block_dist = 640.0
+        self.exit_no_progress = 0
+        self.exit_last_dist: Optional[float] = None
+        self.exit_strafe_dir = 1
+        self.exit_strafe_ticks = 0
+        self.exit_force_dist = 512.0
+        self.end_subroute_block_dist = 1536.0
+        self.exit_node_id: Optional[int] = None
+        self.explore_mode_steps = 0
+        self.explore_end_id: Optional[int] = None
+        self.explore_cooldown = 0
+        self.exit_use_burst_ticks = 0
+        self.exit_side_swap_cooldown = 0
 
     def set_map_name(self, map_name: str) -> None:
         if map_name and map_name != self.map_name:
@@ -134,6 +147,8 @@ class SectorNavigator:
             self.pos_history = []
             self.dist_history = []
             self.use_cooldown = 0
+            self.last_special_use_seg = None
+            self.last_special_use_step = -999
             self.episode_start_time = None
             self.dist_target_id = None
             self.combat_active = False
@@ -145,6 +160,23 @@ class SectorNavigator:
             self.exit_focus_push_ticks = 0
             self.exit_target_point = None
             self.exit_target_line_point = None
+            self.exit_no_progress = 0
+            self.exit_last_dist = None
+            self.exit_strafe_dir = 1
+            self.exit_strafe_ticks = 0
+            self.exit_node_id = None
+            self.explore_mode_steps = 0
+            self.explore_end_id = None
+            self.explore_cooldown = 0
+            self.exit_use_burst_ticks = 0
+            self.exit_side_swap_cooldown = 0
+            self.exit_force_dist = 512.0
+            self.exit_target_point = None
+            self.exit_target_line_point = None
+            self.exit_no_progress = 0
+            self.exit_last_dist = None
+            self.exit_strafe_dir = 1
+            self.exit_strafe_ticks = 0
 
     def set_wad_path(self, wad_path: str) -> None:
         if wad_path:
@@ -190,6 +222,8 @@ class SectorNavigator:
         self.pos_history = []
         self.dist_history = []
         self.use_cooldown = 0
+        self.last_special_use_seg = None
+        self.last_special_use_step = -999
         self.episode_start_time = None
         self.dist_target_id = None
         self.combat_active = False
@@ -201,6 +235,47 @@ class SectorNavigator:
         self.exit_focus_push_ticks = 0
         self.exit_target_point = None
         self.exit_target_line_point = None
+        self.exit_no_progress = 0
+        self.exit_last_dist = None
+        self.exit_strafe_dir = 1
+        self.exit_strafe_ticks = 0
+        self.exit_node_id = None
+        self.explore_mode_steps = 0
+        self.explore_end_id = None
+        self.explore_cooldown = 0
+        self.exit_use_burst_ticks = 0
+        self.exit_side_swap_cooldown = 0
+
+    def _clear_route(self) -> None:
+        self.route_nodes = []
+        self.route_idx = 0
+        self.route_built = False
+        self.path_points = []
+        self.path_idx = 0
+        self.current_target = None
+        self.last_distance = None
+        self.no_progress = 0
+
+    def _pick_farthest_node_from(self, pos: Tuple[float, float]) -> Optional[int]:
+        if self.mesh is None or not self.mesh.nodes:
+            return None
+        best_id = None
+        best_dist = -1.0
+        for node in self.mesh.nodes:
+            dx = node.centroid[0] - pos[0]
+            dy = node.centroid[1] - pos[1]
+            d = dx * dx + dy * dy
+            if d > best_dist:
+                best_dist = d
+                best_id = node.node_id
+        return best_id
+        self.exit_force_dist = 512.0
+        self.exit_target_point = None
+        self.exit_target_line_point = None
+        self.exit_no_progress = 0
+        self.exit_last_dist = None
+        self.exit_strafe_dir = 1
+        self.exit_strafe_ticks = 0
 
     def set_combat_active(self, active: bool) -> None:
         if active and not self.combat_active:
@@ -1005,16 +1080,92 @@ class SectorNavigator:
             return None, None
         return best_dist, best_info
 
-    def _handle_exit(self, pos: Vec3) -> Optional[List[int]]:
+    def _handle_exit(self, pos: Vec3, current_angle: float = 0.0) -> Optional[List[int]]:
         dist, seg = self._nearest_exit((pos[0], pos[1]))
         if dist is None or seg is None:
             self.exit_target_point = None
             self.exit_target_line_point = None
+            self.exit_no_progress = 0
+            self.exit_last_dist = None
             return None
         if self.step % 40 == 0:
             logger.info("[NAV] Exit mode dist=%.1f", dist)
-        target_line = self._closest_point_on_segment((pos[0], pos[1]), seg[0], seg[1])
+
+        # If there's a nearby door between us and the exit, prioritize opening it.
+        door_dist, door_info = self._nearest_door((pos[0], pos[1]))
+        if door_info is not None and door_dist is not None and door_dist < 128.0 and door_dist <= dist + 32.0:
+            door_seg = door_info.get("segment") if isinstance(door_info, dict) else None
+            if door_seg and len(door_seg) == 2:
+                door_pt = self._closest_point_on_segment((pos[0], pos[1]), door_seg[0], door_seg[1])
+                dx_door = door_pt[0] - pos[0]
+                dy_door = door_pt[1] - pos[1]
+                door_angle = math.degrees(math.atan2(dy_door, dx_door))
+                door_diff = door_angle - float(current_angle)
+                while door_diff > 180:
+                    door_diff -= 360
+                while door_diff < -180:
+                    door_diff += 360
+                if abs(door_diff) > 20.0:
+                    action = (
+                        ActionDecoder.forward_left_turn()
+                        if door_diff > 0
+                        else ActionDecoder.forward_right_turn()
+                    )
+                else:
+                    action = ActionDecoder.forward()
+                if len(action) >= 7:
+                    action[6] = 1
+                return action
+        ax, ay = seg[0]
+        bx, by = seg[1]
+        abx = bx - ax
+        aby = by - ay
+        denom = abx * abx + aby * aby
+        t = 0.5
+        if denom > 1e-6:
+            t_raw = ((pos[0] - ax) * abx + (pos[1] - ay) * aby) / denom
+            t_clamped = max(0.0, min(1.0, t_raw))
+            # If we're hugging an endpoint, bias toward the midpoint to hit the switch face.
+            if 0.15 <= t_clamped <= 0.85:
+                t = t_clamped
+        target_line = (ax + abx * t, ay + aby * t)
         self.exit_target_line_point = target_line
+        dx_line = target_line[0] - pos[0]
+        dy_line = target_line[1] - pos[1]
+        target_angle = math.degrees(math.atan2(dy_line, dx_line))
+        angle_diff = target_angle - float(current_angle)
+        while angle_diff > 180:
+            angle_diff -= 360
+        while angle_diff < -180:
+            angle_diff += 360
+        if self.exit_last_dist is not None:
+            if dist > self.exit_last_dist - 1.0:
+                self.exit_no_progress += 1
+            else:
+                self.exit_no_progress = 0
+        self.exit_last_dist = dist
+        if dist < 256.0 and self.exit_no_progress > 10 and self.exit_side_swap_cooldown == 0:
+            # Try approaching the exit line from the opposite side.
+            vx = seg[1][0] - seg[0][0]
+            vy = seg[1][1] - seg[0][1]
+            vmag = math.hypot(vx, vy)
+            if vmag > 1e-6:
+                nx = vy / vmag
+                ny = -vx / vmag
+                side = 1.0 if ((pos[0] - target_line[0]) * nx + (pos[1] - target_line[1]) * ny) >= 0 else -1.0
+                offset = 64.0
+                swap_pt = (
+                    target_line[0] - side * nx * offset,
+                    target_line[1] - side * ny * offset,
+                    0.0,
+                )
+                if self._compute_path_to_point(pos, swap_pt):
+                    self.current_target = self.end_node_id
+                    self.exit_no_progress = 0
+                    self.exit_last_dist = None
+                    self.exit_side_swap_cooldown = 60
+                    logger.info("[NAV] Exit side-swap: offset=%.1f", offset)
+                    return None
         dx = pos[0] - target_line[0]
         dy = pos[1] - target_line[1]
         target_x = target_line[0]
@@ -1025,9 +1176,116 @@ class SectorNavigator:
             target_x = target_line[0] + (dx / dist_to_line) * inset
             target_y = target_line[1] + (dy / dist_to_line) * inset
         self.exit_target_point = (target_x, target_y)
-        if dist < 64.0:
-            # Push into the exit line while spamming use.
-            action = ActionDecoder.forward()
+        if dist_to_line < 48.0:
+            if self.exit_use_burst_ticks <= 0:
+                self.exit_use_burst_ticks = 20
+            if self.exit_use_burst_ticks > 0:
+                self.exit_use_burst_ticks -= 1
+                if abs(angle_diff) > 8.0:
+                    return ActionDecoder.left_turn() if angle_diff > 0 else ActionDecoder.right_turn()
+                else:
+                    action = ActionDecoder.use()
+                if len(action) >= 7:
+                    action[6] = 1
+                return action
+        if dist < 200.0 and self.exit_no_progress > 6:
+            target = (target_line[0], target_line[1], 0.0)
+            if self._compute_path_to_point(pos, target):
+                self.current_target = self.end_node_id
+                self.last_distance = None
+                self.no_progress = 0
+                return None
+        if dist < 256.0 and self.exit_no_progress > 6:
+            # Stall shimmy: face the exit line, strafe along it, and use.
+            self.exit_target_point = (target_line[0], target_line[1])
+            self.exit_strafe_ticks += 1
+            if self.exit_strafe_ticks >= 10:
+                self.exit_strafe_ticks = 0
+                self.exit_strafe_dir *= -1
+            if abs(angle_diff) > 25.0:
+                action = (
+                    ActionDecoder.forward_left_turn()
+                    if angle_diff > 0
+                    else ActionDecoder.forward_right_turn()
+                )
+            else:
+                action = (
+                    ActionDecoder.forward_strafe_left()
+                    if self.exit_strafe_dir > 0
+                    else ActionDecoder.forward_strafe_right()
+                )
+            if len(action) >= 7:
+                action[6] = 1
+            return action
+        if dist < 180.0 and self.exit_no_progress > 6:
+            # Use-only burst while facing the exit line to ensure activation.
+            if self.exit_use_burst_ticks <= 0:
+                self.exit_use_burst_ticks = 20
+            if self.exit_use_burst_ticks > 0:
+                self.exit_use_burst_ticks -= 1
+                if abs(angle_diff) > 10.0:
+                    action = ActionDecoder.left_turn() if angle_diff > 0 else ActionDecoder.right_turn()
+                else:
+                    action = ActionDecoder.use()
+                if len(action) >= 7:
+                    action[6] = 1
+                return action
+        if dist_to_line < 64.0:
+            if abs(angle_diff) > 12.0:
+                action = (
+                    ActionDecoder.forward_left_turn()
+                    if angle_diff > 0
+                    else ActionDecoder.forward_right_turn()
+                )
+            else:
+                action = ActionDecoder.use()
+            if len(action) >= 7:
+                action[6] = 1
+            return action
+        if dist < 192.0:
+            # Close to the exit: keep moving, use, and strafe if we aren't closing the gap.
+            if self.exit_no_progress > 8:
+                self.exit_strafe_ticks += 1
+                if self.exit_strafe_ticks >= 12:
+                    self.exit_strafe_ticks = 0
+                    self.exit_strafe_dir *= -1
+                action = (
+                    ActionDecoder.forward_strafe_left()
+                    if self.exit_strafe_dir > 0
+                    else ActionDecoder.forward_strafe_right()
+                )
+            else:
+                if abs(angle_diff) > 20.0:
+                    action = (
+                        ActionDecoder.forward_left_turn()
+                        if angle_diff > 0
+                        else ActionDecoder.forward_right_turn()
+                    )
+                else:
+                    action = ActionDecoder.forward()
+            if len(action) >= 7:
+                action[6] = 1
+            return action
+        if dist < 320.0:
+            # Close enough: steer directly at the exit line and keep using.
+            self.exit_strafe_ticks += 1
+            if self.exit_strafe_ticks >= 12:
+                self.exit_strafe_ticks = 0
+                self.exit_strafe_dir *= -1
+            if abs(angle_diff) > 30.0:
+                action = (
+                    ActionDecoder.forward_left_turn()
+                    if angle_diff > 0
+                    else ActionDecoder.forward_right_turn()
+                )
+            elif self.exit_no_progress > 4:
+                action = (
+                    ActionDecoder.forward_strafe_left()
+                    if self.exit_strafe_dir > 0
+                    else ActionDecoder.forward_strafe_right()
+                )
+            else:
+                action = ActionDecoder.forward()
             if len(action) >= 7:
                 action[6] = 1
             return action
@@ -1366,11 +1624,20 @@ class SectorNavigator:
             self.mesh_path = None
             return False
 
-    def _build_node_route(self, start_id: Optional[int]) -> List[int]:
+    def _build_node_route(
+        self,
+        start_id: Optional[int],
+        end_id_override: Optional[int] = None,
+    ) -> List[int]:
         if start_id is None or self.mesh is None:
             return []
         self.start_node_id = start_id
-        end_id = self._find_exit_node()
+        if end_id_override is not None:
+            end_id = end_id_override
+        else:
+            if self.exit_node_id is None:
+                self.exit_node_id = self._find_exit_node()
+            end_id = self.exit_node_id
         if end_id is None:
             # Fallback: pick the farthest reachable node if no exit is detected.
             best = None
@@ -1474,6 +1741,16 @@ class SectorNavigator:
         self.step += 1
         if self.subroute_cooldown > 0:
             self.subroute_cooldown -= 1
+        if self.explore_cooldown > 0:
+            self.explore_cooldown -= 1
+        if self.exit_side_swap_cooldown > 0:
+            self.exit_side_swap_cooldown -= 1
+        if self.explore_mode_steps > 0:
+            self.explore_mode_steps -= 1
+            if self.explore_mode_steps == 0 and self.explore_end_id is not None:
+                logger.info("[NAV] Explore complete; returning to exit route")
+                self.explore_end_id = None
+                self._clear_route()
 
         if not self._ensure_mesh_loaded():
             return ActionDecoder.forward()
@@ -1488,9 +1765,10 @@ class SectorNavigator:
         current_node = self.mesh.get_closest_node_in(pos, self.mesh.nodes, use_poly=True)
         current_node_id = current_node.node_id if current_node is not None else None
         p2d = (pos[0], pos[1])
+        exploring = self.explore_mode_steps > 0 and self.explore_end_id is not None
         end_dist = None
-        if self.end_node_id is not None and 0 <= self.end_node_id < len(self.mesh.nodes):
-            end_centroid = self.mesh.nodes[self.end_node_id].centroid
+        if (not exploring) and self.exit_node_id is not None and 0 <= self.exit_node_id < len(self.mesh.nodes):
+            end_centroid = self.mesh.nodes[self.exit_node_id].centroid
             end_dist = math.hypot(end_centroid[0] - pos[0], end_centroid[1] - pos[1])
         nearest_special_dist, nearest_special_seg = self._nearest_special(p2d)
         near_special = nearest_special_dist is not None and nearest_special_dist < 48.0
@@ -1524,7 +1802,10 @@ class SectorNavigator:
             pos_stuck = pos_stuck and min_elapsed and has_progress
 
         if not self.route_built:
-            self.route_nodes = self._build_node_route(current_node_id)
+            self.route_nodes = self._build_node_route(
+                current_node_id,
+                end_id_override=self.explore_end_id if exploring else None,
+            )
             self.route_idx = 0
             self.route_built = True
             if self.route_nodes:
@@ -1535,11 +1816,11 @@ class SectorNavigator:
 
         in_end_sector = False
         # If we're already inside the end sector, stop everything and focus on the exit.
-        if self.end_node_id is not None and self.mesh is not None:
-            if 0 <= self.end_node_id < len(self.mesh.nodes):
-                end_poly = self.mesh.nodes[self.end_node_id].polygon
+        if (not exploring) and self.exit_node_id is not None and self.mesh is not None:
+            if 0 <= self.exit_node_id < len(self.mesh.nodes):
+                end_poly = self.mesh.nodes[self.exit_node_id].polygon
                 inside_end = self._point_in_poly_2d((pos[0], pos[1]), end_poly)
-                entered_end = current_node_id == self.end_node_id if current_node_id is not None else False
+                entered_end = current_node_id == self.exit_node_id if current_node_id is not None else False
                 if inside_end or entered_end:
                     in_end_sector = True
                     if self.subroute_active:
@@ -1557,28 +1838,23 @@ class SectorNavigator:
                     self.route_idx = len(self.route_nodes)
                     self.exit_combat_override = True
                     self._reset_exit_focus()
-                    logger.info("[NAV] Exit focus: inside end sector (node=%s)", self.end_node_id)
-                    exit_action = self._handle_exit(pos)
+                    logger.info("[NAV] Exit focus: inside end sector (node=%s)", self.exit_node_id)
+                    exit_action = self._handle_exit(pos, current_angle)
                     if exit_action is not None:
                         return exit_action
 
-        if not self.subroute_active and self.route_idx >= len(self.route_nodes) and not in_end_sector:
-            self.exit_combat_override = True
-            exit_action = self._handle_exit(pos)
-            if exit_action is not None:
-                return exit_action
+        # Do not bias to the exit until we actually reach the end sector.
+        if (
+            not exploring
+            and not self.subroute_active
+            and self.route_idx >= len(self.route_nodes)
+            and not in_end_sector
+        ):
+            # Route ended but we're not in the end sector; rebuild instead of forcing exit.
+            self.exit_combat_override = False
+            self._clear_route()
         elif not in_end_sector:
             self.exit_combat_override = False
-
-        # If we're close to an exit line, force exit mode early.
-        if not self.subroute_active and self.route_idx < len(self.route_nodes):
-            exit_dist, _ = self._nearest_exit((pos[0], pos[1]))
-            if exit_dist is not None and exit_dist < 192.0:
-                self.route_idx = len(self.route_nodes)
-                self.exit_combat_override = True
-                exit_action = self._handle_exit(pos)
-                if exit_action is not None:
-                    return exit_action
 
         if not self.subroute_active:
             crossed_door = False
@@ -1761,9 +2037,19 @@ class SectorNavigator:
             self.last_distance = distance
 
         if self.no_progress > 12 and not self.subroute_active and not self.combat_active and self.route_idx < len(self.route_nodes):
-            self.y_inverted = not self.y_inverted
-            self.no_progress = 0
-            logger.info(f"[NAV] Flipped Y axis to {self.y_inverted}")
+            if end_dist is not None and end_dist < self.end_subroute_block_dist:
+                # Near the end, avoid Y-flip oscillations; just force a fresh path.
+                self.y_inverted = False
+                self.no_progress = 0
+                self.path_points = []
+                self.path_idx = 0
+                self.current_target = None
+                self.last_distance = None
+                logger.info("[NAV] Near end: reset path instead of flipping Y")
+            else:
+                self.y_inverted = not self.y_inverted
+                self.no_progress = 0
+                logger.info(f"[NAV] Flipped Y axis to {self.y_inverted}")
 
         dx = target[0] - pos[0]
         dy = target[1] - pos[1]
@@ -1801,21 +2087,31 @@ class SectorNavigator:
         special_hit = None
         if nearest_special_seg is not None and nearest_special_dist is not None:
             t2d = (target[0], target[1])
-            special_dist = nearest_special_dist
-            special_hit = nearest_special_seg
-
-            if special_hit is not None:
-                inter = self._segment_intersection(p2d, t2d, special_hit[0], special_hit[1])
-                if inter is not None:
-                    inter_dist = math.hypot(inter[0] - p2d[0], inter[1] - p2d[1])
-                    special_dist = min(special_dist, inter_dist)
+            inter = self._segment_intersection(p2d, t2d, nearest_special_seg[0], nearest_special_seg[1])
+            if inter is not None:
+                inter_dist = math.hypot(inter[0] - p2d[0], inter[1] - p2d[1])
+                special_dist = min(nearest_special_dist, inter_dist)
+                special_hit = nearest_special_seg
+            elif near_special_stuck:
+                special_dist = nearest_special_dist
+                special_hit = nearest_special_seg
 
         if self.use_cooldown > 0:
             self.use_cooldown -= 1
-        if special_dist is not None and special_dist < 48.0 and self.use_cooldown == 0:
-            self.use_ticks = 2
-            self.use_cooldown = 20
-            logger.info("[NAV] Using special linedef dist=%.1f", special_dist)
+        if (
+            self.exit_target_line_point is None
+            and special_dist is not None
+            and special_dist < 48.0
+            and self.use_cooldown == 0
+        ):
+            same_seg = self.last_special_use_seg == special_hit
+            recent_use = (self.step - self.last_special_use_step) < 70
+            if not (same_seg and recent_use):
+                self.use_ticks = 1
+                self.use_cooldown = 35
+                self.last_special_use_seg = special_hit
+                self.last_special_use_step = self.step
+                logger.info("[NAV] Using special linedef dist=%.1f", special_dist)
 
         if self.use_ticks > 0:
             self.use_ticks -= 1
@@ -1852,6 +2148,8 @@ class SectorNavigator:
                 or (min_elapsed and has_progress and (pos_spread < 128.0) and self.no_progress > 40 and not near_special_stuck)
                 or dist_only_stuck
             )
+        if end_dist is not None and end_dist < self.end_subroute_block_dist:
+            corner_stuck = False
         if self.step % 20 == 0 and has_progress:
             logger.info(
                 "[NAV] StuckCheck spread=%.1f no_prog=%s dist_prog=%.1f near_special=%s tgt_dist=%.1f",
@@ -1876,7 +2174,7 @@ class SectorNavigator:
                     "[NAV] Corner-stuck near end (dist=%.1f): skipping subroute",
                     end_dist,
                 )
-                exit_action = self._handle_exit(pos)
+                exit_action = self._handle_exit(pos, current_angle)
                 if exit_action is not None:
                     return exit_action
             if not self.subroute_active:

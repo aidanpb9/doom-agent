@@ -25,15 +25,16 @@ class PerceptionManager:
             return None
 
         # doom/doom.cfg game var order:
-        # HEALTH, AMMO2, POSITION_X, POSITION_Y, ANGLE, KILLCOUNT
+        # HEALTH, AMMO2, POSITION_X, POSITION_Y, POSITION_Z, ANGLE, KILLCOUNT
         health = float(game_vars[0]) if len(game_vars) > 0 else 100.0
         ammo = float(game_vars[1]) if len(game_vars) > 1 else 0.0
         pos_x = float(game_vars[2]) if len(game_vars) > 2 else 0.0
         pos_y = float(game_vars[3]) if len(game_vars) > 3 else 0.0
-        angle = float(game_vars[4]) if len(game_vars) > 4 else 0.0
+        pos_z = float(game_vars[4]) if len(game_vars) > 4 else 0.0
+        angle = float(game_vars[5]) if len(game_vars) > 5 else 0.0
         
         # Use actual KILLCOUNT variable from game state
-        kills = int(game_vars[5]) if len(game_vars) > 5 else 0
+        kills = int(game_vars[6]) if len(game_vars) > 6 else 0
 
         lines = getattr(state, "lines", None)
         if not self._logged_line_attrs:
@@ -51,6 +52,7 @@ class PerceptionManager:
             "kills": kills,
             "pos_x": pos_x,
             "pos_y": pos_y,
+            "pos_z": pos_z,
             "angle": angle,
             "screen": screen,
             "labels": labels,
@@ -60,7 +62,7 @@ class PerceptionManager:
         
         return info
 
-    def detect_enemies_from_labels(self, labels):
+    def detect_enemies_from_labels(self, labels, pos_z=None, screen_height=None):
         """Detect enemy on screen from labels, return (x, y, confidence)."""
         if not labels:
             return None
@@ -78,6 +80,10 @@ class PerceptionManager:
             reasonable_size = 80 < area < 50000  # Must be substantial but not huge
             
             if is_enemy and is_not_dead and reasonable_size:
+                enemy_z = getattr(lbl, "object_position_z", None)
+                if enemy_z is not None and pos_z is not None:
+                    if (enemy_z - pos_z) > 48.0:
+                        continue
                 cx = lbl.x + lbl.width / 2
                 cy = lbl.y + lbl.height / 2
                 
