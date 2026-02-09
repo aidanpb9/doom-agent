@@ -235,4 +235,7 @@ class BehaviorSelector:
     
     def get_navigation_debug_frame(self, automap_buffer):
         """Return a debug overlay image for navigation, if available."""
-        return None
+        nav = self.sector_navigator
+        if nav is None:
+            return None
+        return nav.render_debug_overlay(automap_buffer)

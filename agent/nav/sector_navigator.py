@@ -2381,3 +2381,75 @@ class SectorNavigator:
             cv2.circle(img, to_px(player_pos), 5, (255, 0, 0), -1)
 
         cv2.imwrite(path, img)
+
+    def render_debug_overlay(self, automap_buffer: Optional[np.ndarray]) -> Optional[np.ndarray]:
+        if self.mesh is None or not self.mesh.vertices or automap_buffer is None:
+            return None
+
+        try:
+            import cv2
+        except Exception:
+            return None
+
+        img = np.array(automap_buffer, copy=True)
+        if img.ndim == 2:
+            img = np.stack([img, img, img], axis=2)
+        elif img.ndim == 3 and img.shape[2] > 3:
+            img = img[:, :, :3]
+
+        height, width = img.shape[:2]
+        if height <= 0 or width <= 0:
+            return None
+
+        xs = self.mesh.vertices[0::3]
+        ys = self.mesh.vertices[1::3]
+        if not xs or not ys:
+            return None
+
+        min_x, max_x = min(xs), max(xs)
+        min_y, max_y = min(ys), max(ys)
+        pad = 6
+        scale_x = (width - 2 * pad) / (max_x - min_x + 1e-6)
+        scale_y = (height - 2 * pad) / (max_y - min_y + 1e-6)
+
+        def to_px(p: Tuple[float, float]) -> Tuple[int, int]:
+            x = int((p[0] - min_x) * scale_x + pad)
+            y = int((p[1] - min_y) * scale_y + pad)
+            return (x, height - y)
+
+        allowed = set(self.pruned_nodes) if self.pruned_nodes else None
+        for node in self.mesh.nodes:
+            if allowed is not None and node.node_id not in allowed:
+                continue
+            c = (node.centroid[0], node.centroid[1])
+            cv2.circle(img, to_px(c), 2, (0, 220, 0), -1)
+
+        if self.route_nodes and len(self.route_nodes) > 1:
+            for i in range(1, len(self.route_nodes)):
+                a_id = self.route_nodes[i - 1]
+                b_id = self.route_nodes[i]
+                if 0 <= a_id < len(self.mesh.nodes) and 0 <= b_id < len(self.mesh.nodes):
+                    a = self.mesh.nodes[a_id].centroid
+                    b = self.mesh.nodes[b_id].centroid
+                    cv2.line(
+                        img,
+                        to_px((a[0], a[1])),
+                        to_px((b[0], b[1])),
+                        (0, 180, 255),
+                        2,
+                    )
+
+        if self.start_node_id is not None and 0 <= self.start_node_id < len(self.mesh.nodes):
+            s = self.mesh.nodes[self.start_node_id].centroid
+            cv2.circle(img, to_px((s[0], s[1])), 4, (0, 255, 0), -1)
+        if self.end_node_id is not None and 0 <= self.end_node_id < len(self.mesh.nodes):
+            e = self.mesh.nodes[self.end_node_id].centroid
+            cv2.circle(img, to_px((e[0], e[1])), 4, (0, 0, 255), -1)
+
+        if self.path_points and len(self.path_points) > 1:
+            for i in range(1, len(self.path_points)):
+                a = (self.path_points[i - 1][0], self.path_points[i - 1][1])
+                b = (self.path_points[i][0], self.path_points[i][1])
+                cv2.line(img, to_px(a), to_px(b), (255, 255, 255), 2)
+
+        return img
