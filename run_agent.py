@@ -42,6 +42,7 @@ def _run_episode(
     fast_mode: bool,
     step_delay: float,
     action_frame_skip: int,
+    map_name: str | None,
 ):
     agent = DoomAgent(
         wad_file,
@@ -49,6 +50,7 @@ def _run_episode(
         fast_mode=fast_mode,
         step_delay=step_delay,
         action_frame_skip=action_frame_skip,
+        map_name=map_name,
     )
     try:
         agent.initialize_game()
@@ -66,9 +68,16 @@ def main():
     """Main entry point for the agent."""
     wad_file = "wads/doom1.wad"
     seconds = 30
+    map_name = None
     fast_mode = "--fast" in sys.argv
     slow_mode = "--slow" in sys.argv
     watchdog_enabled = "--no-watchdog" not in sys.argv
+    map_arg = None
+    if "--map" in sys.argv:
+        idx = sys.argv.index("--map")
+        if idx + 1 < len(sys.argv):
+            map_arg = sys.argv[idx + 1]
+            del sys.argv[idx:idx + 2]
     if "--fast" in sys.argv:
         sys.argv.remove("--fast")
     if "--slow" in sys.argv:
@@ -91,6 +100,11 @@ def main():
             seconds = int(sys.argv[2])
         except ValueError:
             seconds = 10
+    if len(sys.argv) > 3:
+        map_arg = sys.argv[3]
+
+    if map_arg:
+        map_name = str(map_arg).strip().upper()
     
     if not Path(wad_file).exists():
         logger.error(f"WAD file not found: {wad_file}")
@@ -98,6 +112,8 @@ def main():
     
     logger.info(f"Starting Doom Agent with WAD: {wad_file}")
     logger.info(f"Episode timeout: {seconds} seconds")
+    if map_name:
+        logger.info(f"Map override: {map_name}")
     
     if fast_mode:
         logger.info("Fast mode: headless render + reduced buffers")
@@ -106,7 +122,7 @@ def main():
             f"Screen mode: frame_skip={action_frame_skip} step_delay={step_delay:.2f}s"
         )
     if not watchdog_enabled:
-        _run_episode(wad_file, seconds, fast_mode, step_delay, action_frame_skip)
+        _run_episode(wad_file, seconds, fast_mode, step_delay, action_frame_skip, map_name)
         return
 
     # Watchdog: run in a subprocess and hard-stop if the engine hangs.
@@ -114,7 +130,7 @@ def main():
     timeout = max(seconds + 2, 8)
     proc = mp.Process(
         target=_run_episode,
-        args=(wad_file, seconds, fast_mode, step_delay, action_frame_skip),
+        args=(wad_file, seconds, fast_mode, step_delay, action_frame_skip, map_name),
         daemon=True,
     )
     proc.start()

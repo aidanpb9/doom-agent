@@ -36,6 +36,7 @@ class SectorNavigator:
         self.start_node_id: Optional[int] = None
         self.end_node_id: Optional[int] = None
         self.pruned_nodes: Optional[List[int]] = None
+        self.last_route_nodes: List[int] = []
 
         self.path_points: List[Vec3] = []
         self.path_idx = 0
@@ -46,6 +47,8 @@ class SectorNavigator:
         self.step = 0
         self.no_progress = 0
         self.last_distance: Optional[float] = None
+        self.route_trace: List[Tuple[float, float]] = []
+        self.route_trace_max = 6000
         self.y_inverted = False
         self.use_ticks = 0
         self.special_segments: List[Tuple[Tuple[float, float], Tuple[float, float]]] = []
@@ -124,6 +127,7 @@ class SectorNavigator:
             self.start_node_id = None
             self.end_node_id = None
             self.pruned_nodes = None
+            self.last_route_nodes = []
             self.path_points = []
             self.path_idx = 0
             self.current_target = None
@@ -171,6 +175,7 @@ class SectorNavigator:
             self.exit_use_burst_ticks = 0
             self.exit_side_swap_cooldown = 0
             self.exit_force_dist = 512.0
+            self.route_trace = []
             self.exit_target_point = None
             self.exit_target_line_point = None
             self.exit_no_progress = 0
@@ -190,6 +195,7 @@ class SectorNavigator:
         self.start_node_id = None
         self.end_node_id = None
         self.pruned_nodes = None
+        self.last_route_nodes = []
         self.path_points = []
         self.path_idx = 0
         self.current_target = None
@@ -198,6 +204,7 @@ class SectorNavigator:
         self.step = 0
         self.no_progress = 0
         self.last_distance = None
+        self.route_trace = []
         self.y_inverted = False
         self.use_ticks = 0
         self.special_segments = []
@@ -255,6 +262,19 @@ class SectorNavigator:
         self.current_target = None
         self.last_distance = None
         self.no_progress = 0
+
+    def _record_route_trace(self, pos: Tuple[float, float]) -> None:
+        if not self.route_trace:
+            self.route_trace.append(pos)
+            return
+        last = self.route_trace[-1]
+        dx = pos[0] - last[0]
+        dy = pos[1] - last[1]
+        if (dx * dx + dy * dy) >= 4.0 * 4.0:
+            self.route_trace.append(pos)
+            if len(self.route_trace) > self.route_trace_max:
+                drop = len(self.route_trace) - self.route_trace_max
+                self.route_trace = self.route_trace[drop:]
 
     def _pick_farthest_node_from(self, pos: Tuple[float, float]) -> Optional[int]:
         if self.mesh is None or not self.mesh.nodes:
@@ -1588,14 +1608,15 @@ class SectorNavigator:
         if self.map_name:
             candidates.append(self.navmesh_dir / f"{self.map_name}.json")
             candidates.append(self.navmesh_dir / f"{self.map_name.lower()}.json")
-        for name in ("E1M1.json", "MAP01.json", "e1m1.json", "map01.json"):
-            candidates.append(self.navmesh_dir / name)
+        else:
+            for name in ("E1M1.json", "MAP01.json", "e1m1.json", "map01.json"):
+                candidates.append(self.navmesh_dir / name)
 
         for path in candidates:
             if path.exists():
                 return path
 
-        if self.navmesh_dir.exists():
+        if not self.map_name and self.navmesh_dir.exists():
             for path in sorted(self.navmesh_dir.glob("*.json")):
                 return path
         return None
@@ -1662,6 +1683,8 @@ class SectorNavigator:
         route = self._simple_path_to_end(start_id, end_id, allowed) if end_id is not None else []
         if not route and end_id is not None:
             logger.warning("[NAV] No pruned path found from %s to %s", start_id, end_id)
+        if route:
+            self.last_route_nodes = list(route)
         self._write_route_debug(route)
         return route
 
@@ -1762,6 +1785,7 @@ class SectorNavigator:
             self.episode_start_time = time.perf_counter()
 
         pos = (float(pos_x), float(pos_y), 0.0)
+        self._record_route_trace((pos[0], pos[1]))
         current_node = self.mesh.get_closest_node_in(pos, self.mesh.nodes, use_poly=True)
         current_node_id = current_node.node_id if current_node is not None else None
         p2d = (pos[0], pos[1])
@@ -2251,10 +2275,7 @@ class SectorNavigator:
                 cv2.line(img, to_px(a), to_px(b), (120, 120, 120), 1)
 
         # Draw node centroids (all nodes)
-        allowed = set(self.pruned_nodes) if self.pruned_nodes else None
         for node in self.mesh.nodes:
-            if allowed is not None and node.node_id not in allowed:
-                continue
             c = (node.centroid[0], node.centroid[1])
             cv2.circle(img, to_px(c), 3, (0, 220, 0), -1)
             cv2.putText(
@@ -2268,11 +2289,65 @@ class SectorNavigator:
                 cv2.LINE_AA,
             )
 
+        # Draw full planned path across the route nodes
+        route_draw = self.route_nodes if self.route_nodes else self.last_route_nodes
+        planned_points: List[Tuple[float, float]] = []
+        if route_draw:
+            if self.start_node_id is not None and 0 <= self.start_node_id < len(self.mesh.nodes):
+                prev_id = self.start_node_id
+            else:
+                prev_id = route_draw[0]
+
+            for target_id in route_draw:
+                if not (0 <= prev_id < len(self.mesh.nodes) and 0 <= target_id < len(self.mesh.nodes)):
+                    prev_id = target_id
+                    continue
+                start = self.mesh.nodes[prev_id].centroid
+                target = self.mesh.nodes[target_id].centroid
+                group_ids = [
+                    self.mesh.nodes[prev_id].group_id,
+                    self.mesh.nodes[target_id].group_id,
+                ]
+                seg = []
+                for gid in dict.fromkeys(group_ids):
+                    if gid < 0:
+                        continue
+                    seg = self.mesh.find_path(gid, start, target)
+                    if seg:
+                        break
+                if not seg:
+                    # Only fallback to a straight segment if nodes are neighbors and not far apart.
+                    if target_id in self.mesh.nodes[prev_id].neighbor_ids:
+                        dist = math.hypot(target[0] - start[0], target[1] - start[1])
+                        if dist <= 1024.0:
+                            seg = [start, target]
+                if not seg:
+                    prev_id = target_id
+                    continue
+                for i, pt in enumerate(seg):
+                    if planned_points and i == 0:
+                        continue
+                    planned_points.append((pt[0], pt[1]))
+                prev_id = target_id
+
+        if planned_points and len(planned_points) > 1:
+            for i in range(1, len(planned_points)):
+                a = planned_points[i - 1]
+                b = planned_points[i]
+                cv2.line(img, to_px(a), to_px(b), (255, 200, 80), 2)
+
+        # Draw actual route trace
+        if self.route_trace and len(self.route_trace) > 1:
+            for i in range(1, len(self.route_trace)):
+                a = self.route_trace[i - 1]
+                b = self.route_trace[i]
+                cv2.line(img, to_px(a), to_px(b), (0, 255, 255), 2)
+
         # Draw planned node route
-        if self.route_nodes and len(self.route_nodes) > 1:
-            for i in range(1, len(self.route_nodes)):
-                a_id = self.route_nodes[i - 1]
-                b_id = self.route_nodes[i]
+        if route_draw and len(route_draw) > 1:
+            for i in range(1, len(route_draw)):
+                a_id = route_draw[i - 1]
+                b_id = route_draw[i]
                 if 0 <= a_id < len(self.mesh.nodes) and 0 <= b_id < len(self.mesh.nodes):
                     a = self.mesh.nodes[a_id].centroid
                     b = self.mesh.nodes[b_id].centroid
@@ -2417,10 +2492,7 @@ class SectorNavigator:
             y = int((p[1] - min_y) * scale_y + pad)
             return (x, height - y)
 
-        allowed = set(self.pruned_nodes) if self.pruned_nodes else None
         for node in self.mesh.nodes:
-            if allowed is not None and node.node_id not in allowed:
-                continue
             c = (node.centroid[0], node.centroid[1])
             cv2.circle(img, to_px(c), 2, (0, 220, 0), -1)
 

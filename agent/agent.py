@@ -46,6 +46,7 @@ class DoomAgent:
         fast_mode=False,
         log_interval=20,
         save_debug=True,
+        map_name=None,
     ):
         """Initialize the Doom agent.
         
@@ -67,6 +68,7 @@ class DoomAgent:
         self.fast_mode = bool(fast_mode)
         self.log_interval = int(log_interval)
         self.save_debug = bool(save_debug)
+        self.map_name = map_name
         self.use_wall_clock = True
         if self.fast_mode:
             self.step_delay = 0.0
@@ -172,7 +174,10 @@ class DoomAgent:
         self.game.set_doom_scenario_path(wad_path)
 
         wad_name = Path(wad_path).name.lower()
-        doom_map = "E1M1" if "doom1" in wad_name else "MAP01"
+        if self.map_name:
+            doom_map = str(self.map_name).upper()
+        else:
+            doom_map = "E1M1" if "doom1" in wad_name else "MAP01"
         try:
             self.game.set_doom_map(doom_map)
         except Exception:
