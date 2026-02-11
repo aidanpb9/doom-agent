@@ -17,8 +17,8 @@ try:
 except ImportError:
     Image = None
 
-from agent.control.behavior_selector import BehaviorSelector
-from agent.config import ACTION_NAMES
+from agent.behavior.behavior_selector import BehaviorSelector
+from config import ACTION_NAMES
 
 ACTION_VECTORS = [
     [1, 0, 0, 0, 0, 0, 0],

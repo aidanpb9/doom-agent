@@ -41,3 +41,6 @@ zdoom-pathfinding-master/
 
 # WADS
 wads/
+
+_vizdoom.ini
+vizdoom-crash.log

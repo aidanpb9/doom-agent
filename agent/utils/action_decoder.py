@@ -3,7 +3,7 @@ Action encoder/decoder for Doom agent actions.
 Provides utilities to construct action vectors and decode them.
 """
 
-from agent.config import (
+from config.defaults import (
     ACTION_FORWARD, ACTION_LEFT_TURN, ACTION_RIGHT_TURN,
     ACTION_MOVE_LEFT, ACTION_MOVE_RIGHT, ACTION_ATTACK, ACTION_USE,
     ACTION_COUNT, ACTION_NAMES

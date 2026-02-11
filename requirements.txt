@@ -1,0 +1,16 @@
+# DoomSat Dependencies
+# Core game engine
+vizdoom>=1.1.13
+
+# Scientific computing
+numpy>=1.21.0
+scipy>=1.7.0
+
+# Computer vision (for navigation visualization)
+opencv-python>=4.5.0
+
+# Data visualization
+matplotlib>=3.4.0
+
+# Image processing (optional, for debug output)
+Pillow>=9.0.0

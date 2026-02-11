@@ -10,7 +10,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 # Import the actual agent
-from agent.agent import DoomAgent
+from agent import DoomAgent
 
 logger = logging.getLogger(__name__)
 

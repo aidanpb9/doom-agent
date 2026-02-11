@@ -14,7 +14,7 @@ from typing import Dict, Tuple
 from dataclasses import dataclass, asdict
 from copy import deepcopy
 
-from agent.agent import DoomAgent
+from agent import DoomAgent
 
 logger = logging.getLogger(__name__)
 

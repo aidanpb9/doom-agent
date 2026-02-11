@@ -4,7 +4,7 @@ Perception system for parsing game state and detecting enemies/items.
 
 import logging
 
-from agent.config import ENEMY_KEYWORDS
+from config import ENEMY_KEYWORDS
 
 
 class PerceptionManager:

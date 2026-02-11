@@ -8,8 +8,8 @@ import logging
 from pathlib import Path
 from datetime import datetime
 
-from agent.agent import DoomAgent
-from genetic_algo import AgentGenome
+from agent import DoomAgent
+from evolution.genetic_algo import AgentGenome
 
 logger = logging.getLogger(__name__)
 

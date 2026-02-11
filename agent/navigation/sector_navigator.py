@@ -15,7 +15,7 @@ from typing import List, Optional, Tuple, Any, Dict
 import numpy as np
 
 from agent.utils.action_decoder import ActionDecoder
-from agent.nav.zdoom_navmesh import NavMesh, Vec3
+from agent.navigation.navmesh import NavMesh, Vec3
 
 logger = logging.getLogger(__name__)
 

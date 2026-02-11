@@ -1,8 +1,8 @@
 import numpy as np
 import logging
 from agent.utils.action_decoder import ActionDecoder
-from agent.core.perception import PerceptionManager
-from agent.nav.sector_navigator import SectorNavigator
+from agent.perception.perception import PerceptionManager
+from agent.navigation.sector_navigator import SectorNavigator
 
 logger = logging.getLogger(__name__)
 
