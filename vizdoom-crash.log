@@ -1,8 +1,0 @@
-*** Fatal Error ***
-Address not mapped to object (signal 11)
-Address: 0x75dcbeafef28
-
-System: Linux LAPTOP-RU5JPUKN 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
-
-
-Executing: gdb --quiet --batch --command=gdb-respfile-VSfQ13
