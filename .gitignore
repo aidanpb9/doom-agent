@@ -46,3 +46,5 @@ wads/
 # make sure vizdoom_config.cfg IS NOT HERE: it needs to be tracked
 _vizdoom.ini
 vizdoom-crash.log
+gdb-*
+
