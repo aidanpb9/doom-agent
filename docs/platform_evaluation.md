@@ -192,5 +192,3 @@ VizDoom successfully integrated with:
 ✅ Active research community for support  
 
 Platform limitations are manageable and do not block mission objectives.
-
-
