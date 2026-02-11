@@ -4,11 +4,11 @@ Spacecraft flight software and Doom payload development using VizDoom. This proj
 
 ## Project Overview
 
-DoomSat is a research platform for developing autonomous navigation and decision-making systems in complex 3D environments. The agent uses:
+DoomSat autonomously plays and completes Doom levels using navmesh pathfinding and genetic algorithm parameter optimization. The agent uses:
 
 - **Navmesh-based pathfinding**: A* algorithm with funnel algorithm for smooth paths
 - **Sector-aware navigation**: Leverages Doom's sector geometry for spatial reasoning
-- **Adaptive combat system**: Dynamic enemy engagement with strategic positioning
+- **Combat system**: Enemy detection, burst firing, strafe dodging
 - **Stuck detection & recovery**: Subroute planning to escape local minima
 - **Genetic algorithm evolution**: 2-agent µGA for parameter optimization
 
@@ -75,11 +75,6 @@ cp /path/to/doom.wad wads/
 ```
 
 ### Basic Usage
-
-**Run a single episode**:
-```bash
-python main.py run --map E1M1 --timeout 60
-```
 
 **Run with visualization (slower)**:
 ```bash
