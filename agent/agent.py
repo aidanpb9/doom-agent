@@ -552,6 +552,7 @@ class DoomAgent:
                 return False
 
         end_reason = "unknown"
+        episode_finished = safe_is_episode_finished()
         if error_during_episode:
             end_reason = f"error:{error_during_episode}"
         elif hang_detected:
@@ -560,10 +561,10 @@ class DoomAgent:
             end_reason = "player_dead"
         elif timeout_hit:
             end_reason = "timeout"
+        elif episode_finished:
+            end_reason = "exit"
         elif max_steps_hit:
             end_reason = "max_steps"
-        elif safe_is_episode_finished():
-            end_reason = "exit"
         elif state_none:
             end_reason = "state_none"
 

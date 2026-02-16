@@ -95,22 +95,23 @@ def _write_master_config(generator_root: Path, wad_dir: Path, config_dir: Path, 
     return config_path
 
 
-def _write_map_config(config_dir: Path, map_name: str) -> Path:
+def _write_map_config(config_dir: Path, map_name: str, triangulation: str) -> Path:
     config_dir.mkdir(parents=True, exist_ok=True)
     cfg = {
         "triangulation_algorithms": ["libtess", "earcut", "delaunay", "smallest"],
-        "triangulation": "earcut",
+        "triangulation": triangulation,
         "options": {
-            "cellSize": 2.0,
-            "cellHeight": 1.0,
+            # Coarser defaults are more robust across large/complex maps.
+            "cellSize": 8.0,
+            "cellHeight": 2.0,
             "agentHeight": 1.0,
             "agentRadius": 0.5,
             "agentMaxClimb": 0.3,
             "agentMaxSlope": 40.0,
-            "regionMinSize": 4.0,
-            "regionMergeSize": 10.0,
-            "edgeMaxLen": 48.0,
-            "edgeMaxError": 4.0,
+            "regionMinSize": 2.0,
+            "regionMergeSize": 6.0,
+            "edgeMaxLen": 64.0,
+            "edgeMaxError": 6.0,
         },
         "merge_distance": 1.0,
         "solo": True,
@@ -141,7 +142,7 @@ def _run_generator(generator_root: Path, map_name: str) -> None:
     )
     try:
         env = os.environ.copy()
-        env.setdefault("NODE_OPTIONS", "--max-old-space-size=4096")
+        env.setdefault("NODE_OPTIONS", "--max-old-space-size=8192")
         subprocess.run(
             ["node", str(runner)],
             cwd=str(generator_root),
@@ -153,17 +154,6 @@ def _run_generator(generator_root: Path, map_name: str) -> None:
             runner.unlink()
         except OSError:
             pass
-
-
-def _run_zshapes_generator(generator_root: Path, wad_path: Path, map_name: str, out_path: Path) -> None:
-    script = generator_root / "tools" / "build_navmesh_zshapes.js"
-    if not script.exists():
-        raise WadError(f"ZShapes builder not found: {script}")
-    subprocess.run(
-        ["node", str(script), str(wad_path), map_name, str(out_path)],
-        cwd=str(generator_root),
-        check=True,
-    )
 
 
 def _extract_textmap(wad_path: Path) -> str:
@@ -303,8 +293,6 @@ def main() -> int:
     mesh_dir = (repo_root / args.output_dir).resolve()
     mesh_dir.mkdir(parents=True, exist_ok=True)
     _write_master_config(generator_root, work_wads, config_dir, mesh_dir)
-    _write_map_config(config_dir, args.map)
-
     node_modules = generator_root / "node_modules"
     if not node_modules.exists():
         raise WadError(
@@ -312,12 +300,40 @@ def main() -> int:
             f"{generator_root} before running this script."
         )
 
-    try:
-        _run_generator(generator_root, args.map)
-    except Exception as exc:
-        print(f"warn: recastjs generator failed ({exc}); using ZShapes fallback", file=sys.stderr)
-        mesh_path = mesh_dir / f"{args.map.upper()}.json"
-        _run_zshapes_generator(generator_root, out_wad, args.map, mesh_path)
+    mesh_path = mesh_dir / f"{args.map.upper()}.json"
+    triangulations = ("earcut", "libtess", "delaunay", "smallest")
+    last_error: Exception | None = None
+
+    for triangulation in triangulations:
+        _write_map_config(config_dir, args.map, triangulation)
+        try:
+            _run_generator(generator_root, args.map)
+        except Exception as exc:
+            last_error = exc
+            continue
+
+        if mesh_path.exists() and mesh_path.stat().st_size > 0:
+            return 0
+
+    # Last-resort fallback: synthesize a coarse grid navmesh from UDMF bounds.
+    textmap = _extract_textmap(out_wad)
+    verts = _parse_udmf_vertices(textmap)
+    if not verts:
+        if last_error is not None:
+            raise WadError(
+                f"Navmesh build failed for {args.map.upper()} with all triangulations "
+                f"({', '.join(triangulations)}): {last_error}"
+            )
+        raise WadError(f"No UDMF vertices found for {args.map.upper()} in {out_wad}")
+
+    xs = [v[0] for v in verts]
+    ys = [v[1] for v in verts]
+    bounds = (min(xs), min(ys), max(xs), max(ys))
+    _write_simple_navmesh(mesh_path, bounds, cell_size=256.0)
+    print(
+        f"warn: used coarse fallback navmesh for {args.map.upper()} -> {mesh_path}",
+        file=sys.stderr,
+    )
     return 0
 
 
