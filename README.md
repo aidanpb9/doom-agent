@@ -73,6 +73,7 @@ cp /path/to/doom1.wad wads/
 # Or for full Doom
 cp /path/to/doom.wad wads/
 ```
+RENAME the wad file to: doom1.wad
 
 ### Basic Usage
 
