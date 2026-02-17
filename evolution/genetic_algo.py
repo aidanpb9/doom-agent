@@ -161,6 +161,7 @@ class TwoAgentGA:
         map_name: str = "E1M1",
         episode_timeout: int = 120,
         fast_mode: bool = True,
+        no_enemies: bool = False,
     ):
         """
         Initialize the 2-agent GA.
@@ -170,11 +171,13 @@ class TwoAgentGA:
             map_name: Map to evolve on (e.g., "E1M1")
             episode_timeout: Timeout per episode in seconds
             fast_mode: Run headless for speed
+            no_enemies: Disable monster spawning (-nomonsters)
         """
         self.wad_path = wad_path
         self.map_name = map_name
         self.episode_timeout = episode_timeout
         self.fast_mode = fast_mode
+        self.no_enemies = no_enemies
         
         # Agent population (exactly 2)
         self.agent_a: AgentGenome = None  # Elite
@@ -243,6 +246,7 @@ class TwoAgentGA:
             fast_mode=self.fast_mode,
             map_name=self.map_name,
             save_debug=False,
+            no_enemies=self.no_enemies,
         )
         
         # Apply genome parameters

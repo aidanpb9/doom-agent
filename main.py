@@ -60,6 +60,7 @@ def cmd_run(args):
     logger.info(f"Map: {args.map}")
     logger.info(f"Timeout: {args.timeout}s")
     logger.info(f"Fast mode: {args.fast}")
+    logger.info(f"No enemies: {args.no_enemies}")
     logger.info("="*60)
     
     agent = DoomAgent(
@@ -68,6 +69,7 @@ def cmd_run(args):
         fast_mode=args.fast,
         map_name=args.map,
         save_debug=not args.no_debug,
+        no_enemies=args.no_enemies,
     )
     
     try:
@@ -106,7 +108,8 @@ def cmd_test(args):
     tester.run_test_suite(
         num_episodes=args.episodes,
         episode_timeout=args.timeout,
-        fast_mode=args.fast
+        fast_mode=args.fast,
+        no_enemies=args.no_enemies,
     )
     
     return 0
@@ -126,6 +129,7 @@ def cmd_evolve(args):
         map_name=args.map,
         episode_timeout=args.timeout,
         fast_mode=args.fast,
+        no_enemies=args.no_enemies,
     )
     
     final_elite = ga.run(num_generations=args.generations)
@@ -252,6 +256,8 @@ Examples:
                            help='Run in fast mode (headless, reduced logging)')
     run_parser.add_argument('--no-debug', action='store_true',
                            help='Disable debug output (no automap/nav images)')
+    run_parser.add_argument('--no-enemies', action='store_true',
+                           help='Disable monster spawning (-nomonsters)')
     run_parser.set_defaults(func=cmd_run)
     
     # Test command
@@ -266,6 +272,8 @@ Examples:
                             help='Episode timeout in seconds (default: 60)')
     test_parser.add_argument('--fast', action='store_true',
                             help='Run in fast mode (headless)')
+    test_parser.add_argument('--no-enemies', action='store_true',
+                            help='Disable monster spawning (-nomonsters)')
     test_parser.set_defaults(func=cmd_test)
     
     # Evolve command
@@ -280,6 +288,8 @@ Examples:
                               help='Episode timeout in seconds (default: 120)')
     evolve_parser.add_argument('--fast', action='store_true', default=True,
                               help='Run in fast mode (default: True)')
+    evolve_parser.add_argument('--no-enemies', action='store_true',
+                              help='Disable monster spawning (-nomonsters)')
     evolve_parser.set_defaults(func=cmd_evolve)
     
     # Validate command

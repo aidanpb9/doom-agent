@@ -33,7 +33,7 @@ class DoomTester:
         # Create logs directory if it doesn't exist
         Path("logs").mkdir(exist_ok=True)
     
-    def run_episode(self, episode_num, episode_timeout=60, fast_mode=True):
+    def run_episode(self, episode_num, episode_timeout=60, fast_mode=True, no_enemies=False):
         """
         Run a single episode and collect metrics.
         
@@ -41,6 +41,7 @@ class DoomTester:
             episode_num: Episode number for tracking
             episode_timeout: Time limit in seconds
             fast_mode: Run headless for speed
+            no_enemies: Disable monster spawning (-nomonsters)
             
         Returns:
             dict: Episode statistics
@@ -55,6 +56,7 @@ class DoomTester:
             fast_mode=fast_mode,
             map_name=self.map_name,
             save_debug=False,  # Disable debug saves during testing
+            no_enemies=no_enemies,
         )
         
         try:
@@ -83,7 +85,7 @@ class DoomTester:
         finally:
             agent.close()
     
-    def run_test_suite(self, num_episodes=20, episode_timeout=60, fast_mode=True):
+    def run_test_suite(self, num_episodes=20, episode_timeout=60, fast_mode=True, no_enemies=False):
         """
         Run multiple episodes and collect results.
         
@@ -91,6 +93,7 @@ class DoomTester:
             num_episodes: Number of episodes to run
             episode_timeout: Time limit per episode in seconds
             fast_mode: Run headless for speed
+            no_enemies: Disable monster spawning (-nomonsters)
         """
         print(f"\n{'='*60}")
         print(f"Testing {self.map_name} for {num_episodes} episodes")
@@ -98,7 +101,7 @@ class DoomTester:
         print(f"{'='*60}\n")
         
         for i in range(num_episodes):
-            result = self.run_episode(i+1, episode_timeout, fast_mode)
+            result = self.run_episode(i+1, episode_timeout, fast_mode, no_enemies)
             self.results.append(result)
             
             # Print progress

@@ -2813,8 +2813,7 @@ class SectorNavigator:
                 or (min_elapsed and has_progress and (pos_spread < 128.0) and self.no_progress > 40 and not near_special_stuck)
                 or dist_only_stuck
             )
-        if end_dist is not None and end_dist < self.end_subroute_block_dist:
-            corner_stuck = False
+        near_end = end_dist is not None and end_dist < self.end_subroute_block_dist
         if self.step % 20 == 0 and has_progress:
             logger.info(
                 "[NAV] StuckCheck spread=%.1f no_prog=%s dist_prog=%.1f near_special=%s tgt_dist=%.1f",
@@ -2842,8 +2841,14 @@ class SectorNavigator:
             self.stuck_node_id = None
             self.subroute_cooldown = 30
         
-        # Backtrack detector - when frozen, go back to last visited node and retry path
-        if self.current_target is None and not self.key_detour_active:
+        # Backtrack detector - when frozen, go back to a previously visited node and retry.
+        if (
+            not self.key_detour_active
+            and not self.combat_active
+            and self.route_idx < len(self.route_nodes)
+            and self.route_idx > 0
+            and self.last_visited_route_node is not None
+        ):
             current_time = time.time()
             if self.frozen_start_time is None:
                 self.frozen_start_time = current_time
@@ -2851,14 +2856,21 @@ class SectorNavigator:
             else:
                 dist_moved = math.hypot(pos[0] - self.frozen_pos[0], pos[1] - self.frozen_pos[1])
                 time_frozen = current_time - self.frozen_start_time
-                
-                if dist_moved < 32.0 and time_frozen >= 3.0:
-                    if self.route_idx > 0 and self.last_visited_route_node is not None:
-                        logger.info("[NAV] Frozen at node=%s, backtracking to node=%s", current_node_id, self.last_visited_route_node)
-                        backtrack_node = self.route_nodes[self.route_idx - 1]
-                        if 0 <= backtrack_node < len(self.mesh.nodes):
-                            target_centroid = self.mesh.nodes[backtrack_node].centroid
-                            self._compute_path_to_point(pos, (target_centroid[0], target_centroid[1], 0.0))
+                severe_stall = corner_stuck or self.no_progress > 18 or (
+                    dist_stuck and target_dist > 64.0
+                )
+
+                if dist_moved < 32.0 and time_frozen >= 3.0 and severe_stall:
+                    backtrack_node = self.route_nodes[self.route_idx - 1]
+                    if 0 <= backtrack_node < len(self.mesh.nodes):
+                        logger.info(
+                            "[NAV] Frozen at node=%s target=%s no_prog=%s, backtracking to node=%s",
+                            current_node_id,
+                            self.current_target,
+                            self.no_progress,
+                            backtrack_node,
+                        )
+                        if self._compute_path_to_node(pos, backtrack_node):
                             self.frozen_start_time = None
                             self.frozen_pos = None
                             return ActionDecoder.forward()
@@ -2895,7 +2907,7 @@ class SectorNavigator:
                     return ActionDecoder.left_turn()
                 return ActionDecoder.right_turn()
             allow_subroute = True
-            if end_dist is not None and end_dist < self.end_subroute_block_dist:
+            if near_end:
                 allow_subroute = False
                 logger.info(
                     "[NAV] Corner-stuck near end (dist=%.1f): skipping subroute",

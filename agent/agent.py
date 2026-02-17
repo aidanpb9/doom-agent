@@ -47,6 +47,7 @@ class DoomAgent:
         log_interval=20,
         save_debug=True,
         map_name=None,
+        no_enemies=False,
     ):
         """Initialize the Doom agent.
         
@@ -59,6 +60,7 @@ class DoomAgent:
             fast_mode: Disable rendering/buffers + reduce logging for speed
             log_interval: Steps between info logs (0 disables)
             save_debug: Save debug logs/images to disk
+            no_enemies: Disable monster spawning using Doom's -nomonsters flag
         """
         self.wad_path = wad_path
         self.config_path = config_path
@@ -69,6 +71,7 @@ class DoomAgent:
         self.log_interval = int(log_interval)
         self.save_debug = bool(save_debug)
         self.map_name = map_name
+        self.no_enemies = bool(no_enemies)
         self.use_wall_clock = True
         if self.fast_mode:
             self.step_delay = 0.0
@@ -176,6 +179,11 @@ class DoomAgent:
 
         wad_path = str(Path(self.wad_path).resolve())
         self.game.set_doom_scenario_path(wad_path)
+        if self.no_enemies:
+            try:
+                self.game.add_game_args("-nomonsters")
+            except Exception:
+                pass
 
         wad_name = Path(wad_path).name.lower()
         if self.map_name:
@@ -200,7 +208,11 @@ class DoomAgent:
             except Exception:
                 pass
 
-        logger.info(f"Game initialized with WAD: {self.wad_path}")
+        logger.info(
+            "Game initialized with WAD: %s (no_enemies=%s)",
+            self.wad_path,
+            self.no_enemies,
+        )
 
         # Enable cheats for navigation focus
         try:
