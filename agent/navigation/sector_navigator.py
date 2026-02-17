@@ -337,6 +337,16 @@ class SectorNavigator:
                 drop = len(self.route_trace) - self.route_trace_max
                 self.route_trace = self.route_trace[drop:]
 
+    def _valid_neighbors(self, node_id: int, allowed: Optional[set] = None) -> List[int]:
+        if self.mesh is None or not (0 <= node_id < len(self.mesh.nodes)):
+            return []
+        out: List[int] = []
+        for v in sorted(self.mesh.nodes[node_id].neighbor_ids):
+            if allowed is not None and v not in allowed:
+                continue
+            out.append(v)
+        return out
+
     def _pick_farthest_node_from(self, pos: Tuple[float, float]) -> Optional[int]:
         if self.mesh is None or not self.mesh.nodes:
             return None
@@ -899,10 +909,9 @@ class SectorNavigator:
 
         adjacency = {i: set() for i in range(node_count)}
         for node in self.mesh.nodes:
-            for n_id in node.neighbor_ids:
-                if 0 <= n_id < node_count:
-                    adjacency[node.node_id].add(n_id)
-                    adjacency[n_id].add(node.node_id)
+            for n_id in self._valid_neighbors(node.node_id):
+                adjacency[node.node_id].add(n_id)
+                adjacency[n_id].add(node.node_id)
 
         # Reachability check
         reachable = set()
@@ -1050,10 +1059,7 @@ class SectorNavigator:
 
         def dfs(u: int) -> None:
             visited.add(u)
-            neighbors = sorted(self.mesh.nodes[u].neighbor_ids)
-            for v in neighbors:
-                if allowed is not None and v not in allowed:
-                    continue
+            for v in self._valid_neighbors(u, allowed):
                 if v in visited:
                     continue
                 route.append(v)
@@ -1085,10 +1091,7 @@ class SectorNavigator:
             if u == end_id:
                 found = True
                 return
-            neighbors = sorted(self.mesh.nodes[u].neighbor_ids)
-            for v in neighbors:
-                if allowed is not None and v not in allowed:
-                    continue
+            for v in self._valid_neighbors(u, allowed):
                 if v in visited:
                     continue
                 dfs(v)
@@ -1278,26 +1281,103 @@ class SectorNavigator:
                 best_id = node.node_id
         return best_id
 
-    def _shortest_node_path(self, start_id: int, end_id: int) -> List[int]:
+    def _route_geometry_cost(self, route: List[int]) -> float:
+        if self.mesh is None or len(route) < 2:
+            return 0.0
+        total = 0.0
+        for i in range(1, len(route)):
+            a = route[i - 1]
+            b = route[i]
+            if not (0 <= a < len(self.mesh.nodes) and 0 <= b < len(self.mesh.nodes)):
+                continue
+            ca = self.mesh.nodes[a].centroid
+            cb = self.mesh.nodes[b].centroid
+            total += math.hypot(cb[0] - ca[0], cb[1] - ca[1])
+        return total
+
+    def _edge_traversal_cost(self, a_id: int, b_id: int) -> float:
+        if self.mesh is None:
+            return 1e9
+        if not (0 <= a_id < len(self.mesh.nodes) and 0 <= b_id < len(self.mesh.nodes)):
+            return 1e9
+        a = self.mesh.nodes[a_id]
+        b = self.mesh.nodes[b_id]
+        dist = math.hypot(b.centroid[0] - a.centroid[0], b.centroid[1] - a.centroid[1])
+        penalty = 0.0
+        portal = a.portal_by_neighbor.get(b_id)
+        if portal is None:
+            portal = b.portal_by_neighbor.get(a_id)
+        if portal is None:
+            return dist + 2000.0
+
+        va, vb = portal.vertex_ids
+        pa = self.mesh.get_vertex(va)
+        pb = self.mesh.get_vertex(vb)
+        mid = ((pa[0] + pb[0]) * 0.5, (pa[1] + pb[1]) * 0.5)
+
+        for node_id, node in ((a_id, a), (b_id, b)):
+            start = (node.centroid[0], node.centroid[1])
+            direct_ok = self._segment_inside_polygon(start, mid, node.polygon)
+            if direct_ok:
+                _, obstacles = self._node_obstacles(node_id)
+                direct_ok = self._segment_clear(start, mid, obstacles)
+            if direct_ok:
+                continue
+            helper = self._build_local_helper_path(start, mid, node_id)
+            if len(helper) < 2:
+                penalty += 1200.0
+            else:
+                penalty += 180.0
+        return dist + penalty
+
+    def _prefer_shortest_route(self, primary: List[int], shortest: List[int]) -> List[int]:
+        # Keep the existing DFS route unless the shortest route is materially better.
+        if not shortest:
+            return primary
+        if not primary:
+            return shortest
+        primary_cost = self._route_geometry_cost(primary)
+        shortest_cost = self._route_geometry_cost(shortest)
+        # Require clear improvement to avoid churning routes that are effectively equivalent.
+        if shortest_cost + 192.0 < primary_cost:
+            return shortest
+        return primary
+
+    def _shortest_node_path(self, start_id: int, end_id: int, allowed: Optional[set] = None) -> List[int]:
         if self.mesh is None:
             return []
         if not (0 <= start_id < len(self.mesh.nodes) and 0 <= end_id < len(self.mesh.nodes)):
             return []
+        if allowed is not None and (start_id not in allowed or end_id not in allowed):
+            return []
         if start_id == end_id:
             return [start_id]
-        q = [start_id]
+        import heapq
+
+        g: Dict[int, float] = {start_id: 0.0}
         parent: Dict[int, Optional[int]] = {start_id: None}
-        i = 0
-        while i < len(q):
-            u = q[i]
-            i += 1
+        heap: List[Tuple[float, int]] = [(0.0, start_id)]
+        seen: Set[int] = set()
+
+        while heap:
+            cur_g, u = heapq.heappop(heap)
+            if u in seen:
+                continue
+            seen.add(u)
             if u == end_id:
                 break
-            for v in self.mesh.nodes[u].neighbor_ids:
-                if not (0 <= v < len(self.mesh.nodes)) or v in parent:
+            if cur_g > g.get(u, float("inf")) + 1e-6:
+                continue
+            for v in self._valid_neighbors(u, allowed):
+                if not (0 <= v < len(self.mesh.nodes)):
                     continue
-                parent[v] = u
-                q.append(v)
+                step = self._edge_traversal_cost(u, v)
+                cand = cur_g + step
+                if cand + 1e-6 < g.get(v, float("inf")):
+                    g[v] = cand
+                    parent[v] = u
+                    heapq.heappush(heap, (cand, v))
+
         if end_id not in parent:
             return []
         out: List[int] = []
@@ -1312,9 +1392,14 @@ class SectorNavigator:
         if self.mesh is None:
             return []
         allowed = self._prune_to_simple_st_paths(start_id, end_id)
-        route = self._simple_path_to_end(start_id, end_id, set(allowed) if allowed else None)
+        allowed_set = set(allowed) if allowed else None
+        route = self._simple_path_to_end(start_id, end_id, allowed_set)
+        shortest = self._shortest_node_path(start_id, end_id, allowed_set)
+        route = self._prefer_shortest_route(route, shortest)
         if not route:
             route = self._simple_path_to_end(start_id, end_id, None)
+            shortest = self._shortest_node_path(start_id, end_id, None)
+            route = self._prefer_shortest_route(route, shortest)
         if not route:
             route = self._shortest_node_path(start_id, end_id)
         return route
@@ -2061,7 +2146,7 @@ class SectorNavigator:
                 if cur in reachable:
                     continue
                 reachable.add(cur)
-                for nxt in self.mesh.nodes[cur].neighbor_ids:
+                for nxt in self._valid_neighbors(cur):
                     if 0 <= nxt < len(self.mesh.nodes) and nxt not in reachable:
                         stack.append(nxt)
             for node_id in sorted(reachable):
@@ -2087,8 +2172,15 @@ class SectorNavigator:
         self.pruned_nodes = pruned
         allowed = set(pruned) if pruned else None
         route = self._simple_path_to_end(start_id, end_id, allowed) if end_id is not None else []
+        if end_id is not None:
+            shortest = self._shortest_node_path(start_id, end_id, allowed)
+            route = self._prefer_shortest_route(route, shortest)
         if not route and end_id is not None:
-            logger.warning("[NAV] No pruned path found from %s to %s", start_id, end_id)
+            route = self._simple_path_to_end(start_id, end_id, None)
+            shortest = self._shortest_node_path(start_id, end_id, None)
+            route = self._prefer_shortest_route(route, shortest)
+        if not route and end_id is not None:
+            logger.warning("[NAV] No path found from %s to %s", start_id, end_id)
         if route:
             self.last_route_nodes = list(route)
         self._write_route_debug(route)
