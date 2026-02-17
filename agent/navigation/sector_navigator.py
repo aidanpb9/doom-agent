@@ -82,6 +82,9 @@ class SectorNavigator:
         self.subroute_pause_duration = 10
         self.subroute_cooldown = 0
         self.stuck_node_id: Optional[int] = None
+        self.failed_subroute_nodes = set()
+        self.frozen_start_time = None
+        self.frozen_pos = None
         self.pos_history: List[Tuple[float, float, float]] = []
         self.dist_history: List[Tuple[float, float]] = []
         self.stuck_window_s = 3.0
@@ -272,6 +275,9 @@ class SectorNavigator:
         self.subroute_pause_ticks = 0
         self.subroute_cooldown = 0
         self.stuck_node_id = None
+        self.failed_subroute_nodes = set()
+        self.frozen_start_time = None
+        self.frozen_pos = None
         self.pos_history = []
         self.dist_history = []
         self.use_cooldown = 0
@@ -2818,6 +2824,51 @@ class SectorNavigator:
                 near_special_stuck,
                 target_dist,
             )
+
+        # Abort broken subroutes that never set a target
+        if (
+            self.subroute_active
+            and self.current_target is None
+            and min_elapsed
+            and pos_spread < 64.0
+        ):
+            logger.info("[NAV] Aborting broken subroute at node=%s, blacklisting it", current_node_id)
+            self.failed_subroute_nodes.add(current_node_id)
+            self.subroute_active = False
+            self.subroute_stage = None
+            self.subroute_points = []
+            self.helper_points = []
+            self.subroute_trace = []
+            self.stuck_node_id = None
+            self.subroute_cooldown = 30
+        
+        # Backtrack detector - when frozen, go back to last visited node and retry path
+        if self.current_target is None and not self.key_detour_active:
+            current_time = time.time()
+            if self.frozen_start_time is None:
+                self.frozen_start_time = current_time
+                self.frozen_pos = (pos[0], pos[1])
+            else:
+                dist_moved = math.hypot(pos[0] - self.frozen_pos[0], pos[1] - self.frozen_pos[1])
+                time_frozen = current_time - self.frozen_start_time
+                
+                if dist_moved < 32.0 and time_frozen >= 3.0:
+                    if self.route_idx > 0 and self.last_visited_route_node is not None:
+                        logger.info("[NAV] Frozen at node=%s, backtracking to node=%s", current_node_id, self.last_visited_route_node)
+                        backtrack_node = self.route_nodes[self.route_idx - 1]
+                        if 0 <= backtrack_node < len(self.mesh.nodes):
+                            target_centroid = self.mesh.nodes[backtrack_node].centroid
+                            self._compute_path_to_point(pos, (target_centroid[0], target_centroid[1], 0.0))
+                            self.frozen_start_time = None
+                            self.frozen_pos = None
+                            return ActionDecoder.forward()
+                elif dist_moved >= 32.0:
+                    self.frozen_start_time = current_time
+                    self.frozen_pos = (pos[0], pos[1])
+        else:
+            self.frozen_start_time = None
+            self.frozen_pos = None
+
         if corner_stuck:
             if near_door_stuck and not self.key_detour_active:
                 if (
@@ -2857,6 +2908,7 @@ class SectorNavigator:
                 if (
                     allow_subroute
                     and self.subroute_cooldown == 0
+                    and current_node_id not in self.failed_subroute_nodes
                     and self._start_subroute(current_node_id, (pos[0], pos[1]))
                 ):
                     logger.info("[NAV] Corner-stuck: activating subroute")
