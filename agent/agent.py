@@ -77,6 +77,10 @@ class DoomAgent:
             self.save_debug = False
             # Keep wall-clock timeout even in fast mode to avoid hangs.
             self.use_wall_clock = True
+            # Fast mode should avoid high-frequency nav/perception info logs.
+            logging.getLogger("agent.navigation.navmesh").setLevel(logging.WARNING)
+            logging.getLogger("agent.navigation.sector_navigator").setLevel(logging.WARNING)
+            logging.getLogger("agent.perception.perception").setLevel(logging.WARNING)
         self.game = None
         self.episode_step = 0
         self.automap_log = []  # Store automap frames

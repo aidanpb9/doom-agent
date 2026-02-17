@@ -9,6 +9,7 @@ import logging
 import math
 import json
 import time
+import os
 from pathlib import Path
 from typing import List, Optional, Tuple, Any, Dict
 
@@ -1634,8 +1635,8 @@ class SectorNavigator:
 
         try:
             self.mesh = NavMesh.from_json(path)
-            self.mesh.debug_astar = True
-            self.mesh.debug_astar_interval = 10
+            self.mesh.debug_astar = os.getenv("DOOMSAT_NAV_DEBUG_ASTAR", "0") == "1"
+            self.mesh.debug_astar_interval = 20
             self.mesh_path = path
             logger.info(f"[NAV] Loaded navmesh: {path}")
             return True
@@ -1660,11 +1661,22 @@ class SectorNavigator:
                 self.exit_node_id = self._find_exit_node()
             end_id = self.exit_node_id
         if end_id is None:
-            # Fallback: pick the farthest reachable node if no exit is detected.
+            # Fallback: pick the farthest node reachable from the current start node.
             best = None
             best_dist = -1.0
             start_pos = self.mesh.nodes[start_id].centroid
-            for node in self.mesh.nodes:
+            reachable = set()
+            stack = [start_id]
+            while stack:
+                cur = stack.pop()
+                if cur in reachable:
+                    continue
+                reachable.add(cur)
+                for nxt in self.mesh.nodes[cur].neighbor_ids:
+                    if 0 <= nxt < len(self.mesh.nodes) and nxt not in reachable:
+                        stack.append(nxt)
+            for node_id in sorted(reachable):
+                node = self.mesh.nodes[node_id]
                 dx = node.centroid[0] - start_pos[0]
                 dy = node.centroid[1] - start_pos[1]
                 d = dx * dx + dy * dy
@@ -1672,7 +1684,12 @@ class SectorNavigator:
                     best_dist = d
                     best = node.node_id
             end_id = best
-            logger.warning("[NAV] No exit special found; using farthest node %s", end_id)
+            logger.warning(
+                "[NAV] No exit special found; using farthest reachable node %s (%s/%s reachable)",
+                end_id,
+                len(reachable),
+                len(self.mesh.nodes),
+            )
         self.end_node_id = end_id
 
         pruned = None

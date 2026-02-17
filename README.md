@@ -269,7 +269,7 @@ All tunable parameters are centralized in `config/`:
 
 1. **Generate navmesh**:
 ```bash
-python tools/build_navmesh.py --wad wads/doom1.wad --map E1M3
+python tools/build_navmesh.py --map E1M3
 ```
 
 2. **Navmesh will be saved** to `models/nav/E1M3.json`

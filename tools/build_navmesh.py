@@ -1,26 +1,29 @@
 """
-Build a navmesh JSON for a specific UDMF map using the local
-zdoom-navmesh-generator source.
+Build navmesh JSON files using the sector-topology generator.
+
+This is the single supported build path:
+  zdoom-navmesh-generator-master/tools/build_navmesh_sector.js
 """
 
 from __future__ import annotations
 
 import argparse
-import json
-import os
+import re
 import struct
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Tuple
-import re
+from typing import Iterable, List, Sequence, Tuple
+
+
+MAP_NAME_RE = re.compile(r"^(E[1-9]M[1-9]|MAP[0-9][0-9])$", re.IGNORECASE)
 
 
 class WadError(RuntimeError):
     pass
 
 
-def _read_wad_directory(path: Path) -> Tuple[bytes, List[Tuple[str, int, int, int]]]:
+def _read_wad_directory(path: Path) -> Tuple[bytes, List[Tuple[str, int, int]]]:
     data = path.read_bytes()
     if len(data) < 12:
         raise WadError(f"Invalid WAD header: {path}")
@@ -30,16 +33,27 @@ def _read_wad_directory(path: Path) -> Tuple[bytes, List[Tuple[str, int, int, in
     if dir_offset < 12 or dir_offset + num_lumps * 16 > len(data):
         raise WadError(f"Invalid directory offset in {path}")
 
-    lumps: List[Tuple[str, int, int, int]] = []
+    lumps: List[Tuple[str, int, int]] = []
     for i in range(num_lumps):
         off = dir_offset + i * 16
         lump_offset, lump_size = struct.unpack_from("<ii", data, off)
-        name_raw = data[off + 8: off + 16]
-        name = name_raw.split(b"\x00", 1)[0].decode("ascii", errors="replace")
+        name_raw = data[off + 8 : off + 16]
+        name = name_raw.split(b"\x00", 1)[0].decode("ascii", errors="replace").upper()
         if lump_offset + lump_size > len(data):
             raise WadError(f"Invalid lump bounds for {name} in {path}")
-        lumps.append((name, lump_offset, lump_size, off))
+        lumps.append((name, lump_offset, lump_size))
     return data, lumps
+
+
+def _discover_maps(source_wad: Path) -> List[str]:
+    _, lumps = _read_wad_directory(source_wad)
+    maps: List[str] = []
+    for name, _, _ in lumps:
+        if MAP_NAME_RE.match(name):
+            maps.append(name)
+    if not maps:
+        raise WadError(f"No map markers found in {source_wad}")
+    return maps
 
 
 def _extract_udmf_map(source_wad: Path, map_name: str, out_wad: Path) -> None:
@@ -47,29 +61,29 @@ def _extract_udmf_map(source_wad: Path, map_name: str, out_wad: Path) -> None:
     map_upper = map_name.upper()
 
     start_idx = None
-    end_idx = None
-    for i, (name, _, _, _) in enumerate(lumps):
-        if name.upper() == map_upper:
+    for i, (name, _, _) in enumerate(lumps):
+        if name == map_upper:
             start_idx = i
             break
     if start_idx is None:
-        raise WadError(f"Map {map_name} not found in {source_wad}")
+        raise WadError(f"Map {map_upper} not found in {source_wad}")
 
+    end_idx = None
     for i in range(start_idx + 1, len(lumps)):
-        if lumps[i][0].upper() == "ENDMAP":
+        if lumps[i][0] == "ENDMAP":
             end_idx = i
             break
     if end_idx is None:
-        raise WadError(f"ENDMAP not found for {map_name} in {source_wad}")
+        raise WadError(f"ENDMAP not found for {map_upper} in {source_wad}")
 
-    subset = lumps[start_idx:end_idx + 1]
+    subset = lumps[start_idx : end_idx + 1]
     out_wad.parent.mkdir(parents=True, exist_ok=True)
 
     blob = bytearray()
-    dir_entries = []
+    dir_entries: List[Tuple[int, int, str]] = []
     offset = 12
-    for name, lump_offset, lump_size, _ in subset:
-        lump_data = data[lump_offset:lump_offset + lump_size]
+    for name, lump_offset, lump_size in subset:
+        lump_data = data[lump_offset : lump_offset + lump_size]
         blob.extend(lump_data)
         dir_entries.append((offset, lump_size, name))
         offset += lump_size
@@ -84,256 +98,93 @@ def _extract_udmf_map(source_wad: Path, map_name: str, out_wad: Path) -> None:
     out_wad.write_bytes(header + blob + dir_blob)
 
 
-def _write_master_config(generator_root: Path, wad_dir: Path, config_dir: Path, mesh_dir: Path) -> Path:
-    config_path = generator_root / "config.json"
-    payload = {
-        "wadspath": str(wad_dir),
-        "configspath": str(config_dir),
-        "meshpath": str(mesh_dir),
-    }
-    config_path.write_text(json.dumps(payload, indent=2))
-    return config_path
+def _run_sector_builder(generator_root: Path, map_wad: Path, map_name: str, out_json: Path) -> None:
+    builder = generator_root / "tools" / "build_navmesh_sector.js"
+    if not builder.exists():
+        raise WadError(f"Sector builder not found: {builder}")
 
-
-def _write_map_config(config_dir: Path, map_name: str, triangulation: str) -> Path:
-    config_dir.mkdir(parents=True, exist_ok=True)
-    cfg = {
-        "triangulation_algorithms": ["libtess", "earcut", "delaunay", "smallest"],
-        "triangulation": triangulation,
-        "options": {
-            # Coarser defaults are more robust across large/complex maps.
-            "cellSize": 8.0,
-            "cellHeight": 2.0,
-            "agentHeight": 1.0,
-            "agentRadius": 0.5,
-            "agentMaxClimb": 0.3,
-            "agentMaxSlope": 40.0,
-            "regionMinSize": 2.0,
-            "regionMergeSize": 6.0,
-            "edgeMaxLen": 64.0,
-            "edgeMaxError": 6.0,
-        },
-        "merge_distance": 1.0,
-        "solo": True,
-    }
-    cfg_path = config_dir / f"{map_name.upper()}.json"
-    cfg_path.write_text(json.dumps(cfg, indent=2))
-    return cfg_path
-
-
-def _run_generator(generator_root: Path, map_name: str) -> None:
-    runner = generator_root / "tools_run_build_navmesh.js"
-    runner.write_text(
-        "\n".join(
-            [
-                "const fs = require('fs');",
-                "const path = require('path');",
-                "const strip = require('strip-comments');",
-                "const build = require('./build');",
-                "const master = JSON.parse(fs.readFileSync('./config.json', 'utf8'));",
-                f"const mapName = '{map_name.upper()}';",
-                "const cfgPath = path.join(master.configspath, `${mapName}.json`);",
-                "const cfg = JSON.parse(strip(fs.readFileSync(cfgPath, 'utf8')));",
-                "build.buildNavMesh(mapName, cfg, master)",
-                "  .then(() => { console.log('navmesh:ok'); })",
-                "  .catch((err) => { console.error(err); process.exit(1); });",
-            ]
-        )
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        ["node", str(builder), str(map_wad), map_name.upper(), str(out_json)],
+        cwd=str(generator_root),
+        check=True,
     )
-    try:
-        env = os.environ.copy()
-        env.setdefault("NODE_OPTIONS", "--max-old-space-size=8192")
-        subprocess.run(
-            ["node", str(runner)],
-            cwd=str(generator_root),
-            env=env,
-            check=True,
-        )
-    finally:
-        try:
-            runner.unlink()
-        except OSError:
-            pass
 
 
-def _extract_textmap(wad_path: Path) -> str:
-    data, lumps = _read_wad_directory(wad_path)
-    for name, offset, size, _ in lumps:
-        if name.upper() == "TEXTMAP":
-            blob = data[offset:offset + size]
-            return blob.decode("utf-8", errors="replace")
-    raise WadError(f"TEXTMAP not found in {wad_path}")
+def _parse_map_targets(args: argparse.Namespace, source_wad: Path) -> Sequence[str]:
+    if args.map and args.all:
+        raise WadError("Use either --map or --all, not both.")
+    if not args.map and not args.all:
+        raise WadError("Specify --map <NAME> or --all.")
+    if args.map:
+        target = args.map.upper()
+        if not MAP_NAME_RE.match(target):
+            raise WadError(f"Invalid map name: {args.map}")
+        return [target]
+    return _discover_maps(source_wad)
 
 
-def _parse_udmf_vertices(textmap: str) -> List[Tuple[float, float]]:
-    vertices: List[Tuple[float, float]] = []
-    for block in re.finditer(r"vertex\b[^{]*\{.*?\}", textmap, re.DOTALL | re.IGNORECASE):
-        chunk = block.group(0)
-        mx = re.search(r"\bx\s*=\s*([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)", chunk)
-        my = re.search(r"\by\s*=\s*([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)", chunk)
-        if not mx or not my:
-            continue
-        try:
-            x = float(mx.group(1))
-            y = float(my.group(1))
-        except ValueError:
-            continue
-        vertices.append((x, y))
-    return vertices
-
-
-def _write_simple_navmesh(mesh_path: Path, bounds: Tuple[float, float, float, float], cell_size: float = 256.0) -> None:
-    min_x, min_y, max_x, max_y = bounds
-    pad = cell_size
-    min_x -= pad
-    min_y -= pad
-    max_x += pad
-    max_y += pad
-
-    cols = max(1, int((max_x - min_x) // cell_size))
-    rows = max(1, int((max_y - min_y) // cell_size))
-
-    vertices: List[float] = []
-    nodes = []
-
-    def add_vertex(x: float, y: float) -> int:
-        idx = len(vertices) // 3
-        vertices.extend([x, y, 0.0])
-        return idx
-
-    def node_index(r: int, c: int) -> int:
-        return r * cols + c
-
-    for r in range(rows):
-        for c in range(cols):
-            x0 = min_x + c * cell_size
-            y0 = min_y + r * cell_size
-            x1 = x0 + cell_size
-            y1 = y0 + cell_size
-            v0 = add_vertex(x0, y0)
-            v1 = add_vertex(x1, y0)
-            v2 = add_vertex(x1, y1)
-            v3 = add_vertex(x0, y1)
-            centroid = [(x0 + x1) * 0.5, (y0 + y1) * 0.5, 0.0]
-
-            neighbors = []
-            if r > 0:
-                neighbors.append(node_index(r - 1, c))
-            if r + 1 < rows:
-                neighbors.append(node_index(r + 1, c))
-            if c > 0:
-                neighbors.append(node_index(r, c - 1))
-            if c + 1 < cols:
-                neighbors.append(node_index(r, c + 1))
-
-            nodes.append(
-                {
-                    "c": centroid,
-                    "p": [],
-                    "v": [v0, v1, v2, v3],
-                    "n": neighbors,
-                    "g": 0,
-                    "b": [],
-                }
-            )
-
-    payload = {
-        "vertices": vertices,
-        "nodes": nodes,
-        "groups": 1,
-        "length": 0,
-        "sizex": 0,
-        "sizey": 0,
-        "originx": 0,
-        "originy": 0,
-        "res": int(cell_size),
-    }
-    mesh_path.write_text(json.dumps(payload))
+def _print_summary(done: Iterable[str]) -> None:
+    maps = list(done)
+    print(f"Built {len(maps)} navmeshes:")
+    print(" ".join(maps))
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build a navmesh JSON for a UDMF map.")
-    parser.add_argument("--map", required=True, help="Map name (e.g., E1M2)")
+    parser = argparse.ArgumentParser(description="Build navmesh JSON from a UDMF WAD.")
+    parser.add_argument("--map", help="Map name, e.g. E1M1")
+    parser.add_argument("--all", action="store_true", help="Build all maps found in --udmf-wad")
+    parser.add_argument("--udmf-wad", default="wads/doom1-udmf.wad", help="Source UDMF WAD")
     parser.add_argument(
-        "--udmf-wad",
-        default="wads/doom1-udmf.wad",
-        help="Source UDMF WAD containing the map",
+        "--maps-wad",
+        default="wads/DOOM.WAD",
+        help="WAD used to discover map names for --all",
     )
     parser.add_argument(
         "--generator-root",
         default="zdoom-navmesh-generator-master",
         help="Path to zdoom-navmesh-generator source",
     )
+    parser.add_argument("--output-dir", default="models/nav", help="Output navmesh directory")
+    parser.add_argument("--work-wads", default="logs/navmesh_wads", help="Per-map extracted WAD directory")
     parser.add_argument(
-        "--output-dir",
-        default="models/nav",
-        help="Directory for generated navmesh JSON",
-    )
-    parser.add_argument(
-        "--work-wads",
-        default="logs/navmesh_wads",
-        help="Directory for extracted per-map WADs",
+        "--refresh-extract",
+        action="store_true",
+        help="Force re-extraction from --udmf-wad even if a per-map work WAD exists",
     )
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[1]
+    source_wad = (repo_root / args.udmf_wad).resolve()
+    maps_wad = (repo_root / args.maps_wad).resolve()
     generator_root = (repo_root / args.generator_root).resolve()
+    output_dir = (repo_root / args.output_dir).resolve()
+    work_wads = (repo_root / args.work_wads).resolve()
+
+    if not source_wad.exists():
+        raise WadError(f"UDMF WAD not found: {source_wad}")
     if not generator_root.exists():
         raise WadError(f"Generator root not found: {generator_root}")
 
-    udmf_wad = (repo_root / args.udmf_wad).resolve()
-    if not udmf_wad.exists():
-        raise WadError(f"UDMF WAD not found: {udmf_wad}")
+    # For --all, prefer map discovery from DOOM.WAD (or user-provided maps wad).
+    # This keeps the target list stable even if the UDMF conversion WAD is partial.
+    discover_wad = maps_wad if maps_wad.exists() else source_wad
+    maps = list(_parse_map_targets(args, discover_wad))
+    built: List[str] = []
+    for map_name in maps:
+        map_wad = work_wads / f"{map_name}.wad"
+        out_json = output_dir / f"{map_name}.json"
+        should_extract = args.refresh_extract or not map_wad.exists()
+        if should_extract:
+            try:
+                _extract_udmf_map(source_wad, map_name, map_wad)
+            except WadError:
+                if not map_wad.exists():
+                    raise
+        _run_sector_builder(generator_root, map_wad, map_name, out_json)
+        built.append(map_name)
 
-    work_wads = (repo_root / args.work_wads).resolve()
-    out_wad = work_wads / f"{args.map.upper()}.wad"
-    _extract_udmf_map(udmf_wad, args.map, out_wad)
-
-    config_dir = generator_root / "configs"
-    mesh_dir = (repo_root / args.output_dir).resolve()
-    mesh_dir.mkdir(parents=True, exist_ok=True)
-    _write_master_config(generator_root, work_wads, config_dir, mesh_dir)
-    node_modules = generator_root / "node_modules"
-    if not node_modules.exists():
-        raise WadError(
-            "node_modules not found. Run `npm install` in "
-            f"{generator_root} before running this script."
-        )
-
-    mesh_path = mesh_dir / f"{args.map.upper()}.json"
-    triangulations = ("earcut", "libtess", "delaunay", "smallest")
-    last_error: Exception | None = None
-
-    for triangulation in triangulations:
-        _write_map_config(config_dir, args.map, triangulation)
-        try:
-            _run_generator(generator_root, args.map)
-        except Exception as exc:
-            last_error = exc
-            continue
-
-        if mesh_path.exists() and mesh_path.stat().st_size > 0:
-            return 0
-
-    # Last-resort fallback: synthesize a coarse grid navmesh from UDMF bounds.
-    textmap = _extract_textmap(out_wad)
-    verts = _parse_udmf_vertices(textmap)
-    if not verts:
-        if last_error is not None:
-            raise WadError(
-                f"Navmesh build failed for {args.map.upper()} with all triangulations "
-                f"({', '.join(triangulations)}): {last_error}"
-            )
-        raise WadError(f"No UDMF vertices found for {args.map.upper()} in {out_wad}")
-
-    xs = [v[0] for v in verts]
-    ys = [v[1] for v in verts]
-    bounds = (min(xs), min(ys), max(xs), max(ys))
-    _write_simple_navmesh(mesh_path, bounds, cell_size=256.0)
-    print(
-        f"warn: used coarse fallback navmesh for {args.map.upper()} -> {mesh_path}",
-        file=sys.stderr,
-    )
+    _print_summary(built)
     return 0
 
 
