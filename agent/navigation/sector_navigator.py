@@ -11,7 +11,7 @@ import json
 import time
 import os
 from pathlib import Path
-from typing import List, Optional, Tuple, Any, Dict
+from typing import List, Optional, Tuple, Any, Dict, Set
 
 import numpy as np
 
@@ -116,6 +116,36 @@ class SectorNavigator:
         self.explore_cooldown = 0
         self.exit_use_burst_ticks = 0
         self.exit_side_swap_cooldown = 0
+        self.key_door_specials: Dict[int, str] = {
+            26: "blue",
+            27: "yellow",
+            28: "red",
+            32: "blue",
+            33: "red",
+            34: "yellow",
+            99: "blue",
+            133: "blue",
+            134: "red",
+            135: "yellow",
+            136: "blue",
+            137: "red",
+            138: "yellow",
+        }
+        self.map_key_positions: Dict[str, List[Tuple[float, float]]] = {"blue": [], "red": [], "yellow": []}
+        self.map_keys_loaded = False
+        self.key_detour_active = False
+        self.key_detour_stage: Optional[str] = None
+        self.key_detour_color: Optional[str] = None
+        self.key_detour_door_seg: Optional[Tuple[Tuple[float, float], Tuple[float, float]]] = None
+        self.key_detour_resume_route_idx = 0
+        self.key_detour_to_key_nodes: List[int] = []
+        self.key_detour_to_key_idx = 0
+        self.key_detour_return_nodes: List[int] = []
+        self.key_detour_return_idx = 0
+        self.key_detour_completed_segments: Set[Tuple[Tuple[float, float], Tuple[float, float]]] = set()
+        self.key_detour_replan_cooldown = 0
+        self.key_detour_last_stall_target: Optional[int] = None
+        self.key_detour_stall_count = 0
 
     def set_map_name(self, map_name: str) -> None:
         if map_name and map_name != self.map_name:
@@ -169,6 +199,21 @@ class SectorNavigator:
             self.exit_last_dist = None
             self.exit_strafe_dir = 1
             self.exit_strafe_ticks = 0
+            self.map_key_positions = {"blue": [], "red": [], "yellow": []}
+            self.map_keys_loaded = False
+            self.key_detour_active = False
+            self.key_detour_stage = None
+            self.key_detour_color = None
+            self.key_detour_door_seg = None
+            self.key_detour_resume_route_idx = 0
+            self.key_detour_to_key_nodes = []
+            self.key_detour_to_key_idx = 0
+            self.key_detour_return_nodes = []
+            self.key_detour_return_idx = 0
+            self.key_detour_completed_segments = set()
+            self.key_detour_replan_cooldown = 0
+            self.key_detour_last_stall_target = None
+            self.key_detour_stall_count = 0
             self.exit_node_id = None
             self.explore_mode_steps = 0
             self.explore_end_id = None
@@ -253,6 +298,21 @@ class SectorNavigator:
         self.explore_cooldown = 0
         self.exit_use_burst_ticks = 0
         self.exit_side_swap_cooldown = 0
+        self.map_key_positions = {"blue": [], "red": [], "yellow": []}
+        self.map_keys_loaded = False
+        self.key_detour_active = False
+        self.key_detour_stage = None
+        self.key_detour_color = None
+        self.key_detour_door_seg = None
+        self.key_detour_resume_route_idx = 0
+        self.key_detour_to_key_nodes = []
+        self.key_detour_to_key_idx = 0
+        self.key_detour_return_nodes = []
+        self.key_detour_return_idx = 0
+        self.key_detour_completed_segments = set()
+        self.key_detour_replan_cooldown = 0
+        self.key_detour_last_stall_target = None
+        self.key_detour_stall_count = 0
 
     def _clear_route(self) -> None:
         self.route_nodes = []
@@ -573,6 +633,106 @@ class SectorNavigator:
         path_idx.reverse()
         return [(points[i][0], points[i][1], 0.0) for i in path_idx]
 
+    def _node_id_for_point(self, p2d: Tuple[float, float]) -> Optional[int]:
+        if self.mesh is None:
+            return None
+        p3d = (float(p2d[0]), float(p2d[1]), 0.0)
+        node = self.mesh.get_closest_node_in(p3d, self.mesh.nodes, use_poly=True)
+        if node is not None:
+            return node.node_id
+        return self._nearest_node_id_to_point(p2d)
+
+    def _node_obstacles(
+        self,
+        base_node_id: int,
+    ) -> Tuple[List[Tuple[float, float]], List[List[Tuple[float, float]]]]:
+        if self.mesh is None or not (0 <= base_node_id < len(self.mesh.nodes)):
+            return [], []
+        base_poly = self.mesh.nodes[base_node_id].polygon
+        if len(base_poly) < 3:
+            return [], []
+        obstacles: List[List[Tuple[float, float]]] = []
+        for node in self.mesh.nodes:
+            if node.node_id == base_node_id:
+                continue
+            centroid = (node.centroid[0], node.centroid[1])
+            if self._point_in_poly_2d(centroid, base_poly):
+                obstacles.append(node.polygon)
+        return base_poly, obstacles
+
+    def _build_local_helper_path(
+        self,
+        start_pt: Tuple[float, float],
+        end_pt: Tuple[float, float],
+        base_node_id: int,
+    ) -> List[Vec3]:
+        base_poly, obstacles = self._node_obstacles(base_node_id)
+        if len(base_poly) < 3:
+            return []
+
+        if self._segment_inside_polygon(start_pt, end_pt, base_poly) and self._segment_clear(start_pt, end_pt, obstacles):
+            return [(start_pt[0], start_pt[1], 0.0), (end_pt[0], end_pt[1], 0.0)]
+
+        helper_pts = self._build_helper_points(base_poly, obstacles, end_pt, max_helpers=14)
+        if not helper_pts:
+            return []
+
+        best_path: Optional[List[Vec3]] = None
+        best_len = None
+
+        def try_candidate(hps: List[Tuple[float, float]]) -> None:
+            nonlocal best_path, best_len
+            cand = self._compute_subroute_points(
+                start_pt,
+                end_pt,
+                hps,
+                obstacles,
+                base_poly,
+                min_helpers=len(hps),
+            )
+            if not cand:
+                return
+            total = 0.0
+            for i in range(1, len(cand)):
+                total += math.hypot(cand[i][0] - cand[i - 1][0], cand[i][1] - cand[i - 1][1])
+            if best_len is None or total < best_len:
+                best_len = total
+                best_path = cand
+
+        for hp in helper_pts[:10]:
+            try_candidate([hp])
+
+        if best_path is None and len(helper_pts) > 1:
+            pair_cap = min(6, len(helper_pts))
+            for i in range(pair_cap):
+                for j in range(i + 1, pair_cap):
+                    try_candidate([helper_pts[i], helper_pts[j]])
+
+        return best_path or []
+
+    def _sanitize_path_segments(self, path: List[Vec3]) -> List[Vec3]:
+        if self.mesh is None or len(path) < 2:
+            return path
+        fixed: List[Vec3] = [path[0]]
+        rewired = False
+        for i in range(1, len(path)):
+            start = (fixed[-1][0], fixed[-1][1])
+            end = (path[i][0], path[i][1])
+            start_node_id = self._node_id_for_point(start)
+            end_node_id = self._node_id_for_point(end)
+            if start_node_id is not None and start_node_id == end_node_id:
+                local = self._build_local_helper_path(start, end, start_node_id)
+                if len(local) > 1:
+                    for pt in local[1:]:
+                        fixed.append((float(pt[0]), float(pt[1]), 0.0))
+                    if len(local) > 2:
+                        rewired = True
+                    continue
+            fixed.append(path[i])
+        if rewired:
+            logger.info("[NAV] Local helper repair: %s -> %s path points", len(path), len(fixed))
+        return fixed
+
     def _angle_oscillating(self) -> bool:
         if len(self.angle_sign_history) < 4:
             return False
@@ -691,6 +851,7 @@ class SectorNavigator:
             return False
         path = self.mesh.find_path(group_id, pos, target_pos)
         if path:
+            path = self._sanitize_path_segments(path)
             self.path_points = path
             self.path_idx = 0
             self.current_target = None
@@ -1100,6 +1261,234 @@ class SectorNavigator:
         if best_info is None:
             return None, None
         return best_dist, best_info
+
+    def _required_key_for_special(self, special: int) -> Optional[str]:
+        return self.key_door_specials.get(int(special))
+
+    def _nearest_node_id_to_point(self, p2d: Tuple[float, float]) -> Optional[int]:
+        if self.mesh is None:
+            return None
+        best_id = None
+        best_d = None
+        for node in self.mesh.nodes:
+            cx, cy = node.centroid[0], node.centroid[1]
+            d = (cx - p2d[0]) * (cx - p2d[0]) + (cy - p2d[1]) * (cy - p2d[1])
+            if best_d is None or d < best_d:
+                best_d = d
+                best_id = node.node_id
+        return best_id
+
+    def _shortest_node_path(self, start_id: int, end_id: int) -> List[int]:
+        if self.mesh is None:
+            return []
+        if not (0 <= start_id < len(self.mesh.nodes) and 0 <= end_id < len(self.mesh.nodes)):
+            return []
+        if start_id == end_id:
+            return [start_id]
+        q = [start_id]
+        parent: Dict[int, Optional[int]] = {start_id: None}
+        i = 0
+        while i < len(q):
+            u = q[i]
+            i += 1
+            if u == end_id:
+                break
+            for v in self.mesh.nodes[u].neighbor_ids:
+                if not (0 <= v < len(self.mesh.nodes)) or v in parent:
+                    continue
+                parent[v] = u
+                q.append(v)
+        if end_id not in parent:
+            return []
+        out: List[int] = []
+        cur: Optional[int] = end_id
+        while cur is not None:
+            out.append(cur)
+            cur = parent.get(cur)
+        out.reverse()
+        return out
+
+    def _build_route_between_nodes(self, start_id: int, end_id: int) -> List[int]:
+        if self.mesh is None:
+            return []
+        allowed = self._prune_to_simple_st_paths(start_id, end_id)
+        route = self._simple_path_to_end(start_id, end_id, set(allowed) if allowed else None)
+        if not route:
+            route = self._simple_path_to_end(start_id, end_id, None)
+        if not route:
+            route = self._shortest_node_path(start_id, end_id)
+        return route
+
+    def _compute_path_to_node(self, pos: Vec3, target_node_id: int) -> bool:
+        if self.mesh is None:
+            return False
+        if not (0 <= target_node_id < len(self.mesh.nodes)):
+            return False
+        target = self.mesh.nodes[target_node_id].centroid
+        if self._compute_path_to_point(pos, (target[0], target[1], 0.0)):
+            self.current_target = target_node_id
+            return True
+        return False
+
+    def _current_key_detour_target_id(self) -> Optional[int]:
+        if not self.key_detour_active:
+            return None
+        if self.key_detour_stage == "to_key":
+            if 0 <= self.key_detour_to_key_idx < len(self.key_detour_to_key_nodes):
+                return self.key_detour_to_key_nodes[self.key_detour_to_key_idx]
+            return None
+        if self.key_detour_stage == "return_door":
+            if 0 <= self.key_detour_return_idx < len(self.key_detour_return_nodes):
+                return self.key_detour_return_nodes[self.key_detour_return_idx]
+            return None
+        return None
+
+    def _ensure_map_keys_loaded(self) -> None:
+        if self.map_keys_loaded:
+            return
+        self.map_keys_loaded = True
+        self.map_key_positions = {"blue": [], "red": [], "yellow": []}
+        if not self.wad_path or not self.wad_path.exists() or not self.map_name:
+            return
+        try:
+            with self.wad_path.open("rb") as f:
+                header = f.read(12)
+                if len(header) < 12:
+                    return
+                num_lumps = int.from_bytes(header[4:8], "little")
+                dir_offset = int.from_bytes(header[8:12], "little")
+                f.seek(dir_offset)
+                directory = []
+                for _ in range(num_lumps):
+                    offset = int.from_bytes(f.read(4), "little")
+                    size = int.from_bytes(f.read(4), "little")
+                    name = f.read(8).rstrip(b"\0").decode("ascii", errors="ignore")
+                    directory.append((name, offset, size))
+            map_name = self.map_name.upper()
+            start_idx = None
+            for i, (name, _, _) in enumerate(directory):
+                if name.upper() == map_name:
+                    start_idx = i
+                    break
+            if start_idx is None:
+                return
+            end_idx = len(directory)
+            for i in range(start_idx + 1, len(directory)):
+                n = directory[i][0].upper()
+                is_map = (len(n) == 4 and n.startswith("E") and n[2] == "M") or (len(n) == 5 and n.startswith("MAP"))
+                if is_map:
+                    end_idx = i
+                    break
+            things_lump = None
+            for name, offset, size in directory[start_idx:end_idx]:
+                if name.upper() == "THINGS":
+                    things_lump = (offset, size)
+                    break
+            if things_lump is None:
+                return
+            key_types = {
+                5: "blue", 38: "blue",
+                6: "yellow", 39: "yellow",
+                13: "red", 40: "red",
+            }
+            with self.wad_path.open("rb") as f:
+                f.seek(things_lump[0])
+                raw = f.read(things_lump[1])
+                for i in range(0, len(raw), 10):
+                    if i + 10 > len(raw):
+                        break
+                    x = int.from_bytes(raw[i:i+2], "little", signed=True)
+                    y = int.from_bytes(raw[i+2:i+4], "little", signed=True)
+                    t = int.from_bytes(raw[i+6:i+8], "little", signed=False)
+                    color = key_types.get(t)
+                    if color is not None:
+                        self.map_key_positions[color].append((float(x), float(y)))
+        except Exception as exc:
+            logger.warning("[NAV] Failed loading map keys: %s", exc)
+
+    def _nearest_locked_door_without_detour(
+        self,
+        p2d: Tuple[float, float],
+        max_dist: float = 24.0,
+    ) -> Tuple[Optional[dict], Optional[str]]:
+        if not self.special_line_info:
+            return None, None
+        best_info = None
+        best_color = None
+        best_dist = max_dist
+        for info in self.special_line_info:
+            try:
+                special = int(info.get("special", 0))
+            except Exception:
+                continue
+            key_color = self._required_key_for_special(special)
+            if key_color is None:
+                continue
+            seg = info.get("segment")
+            if not seg or len(seg) != 2:
+                continue
+            seg_key = ((float(seg[0][0]), float(seg[0][1])), (float(seg[1][0]), float(seg[1][1])))
+            if seg_key in self.key_detour_completed_segments:
+                continue
+            d = self._segment_distance(p2d, seg[0], seg[1])
+            if d <= best_dist:
+                best_dist = d
+                best_info = info
+                best_color = key_color
+        return best_info, best_color
+
+    def _activate_key_detour(self, door_info: dict, key_color: str, pos: Vec3) -> bool:
+        if self.mesh is None:
+            return False
+        self._ensure_map_keys_loaded()
+        candidates = self.map_key_positions.get(key_color, [])
+        if not candidates:
+            return False
+        px, py = pos[0], pos[1]
+        key_pos = min(candidates, key=lambda p: (p[0] - px) * (p[0] - px) + (p[1] - py) * (p[1] - py))
+        seg = door_info.get("segment")
+        if not seg or len(seg) != 2:
+            return False
+        current_node = self.mesh.get_closest_node_in(pos, self.mesh.nodes, use_poly=True)
+        current_node_id = current_node.node_id if current_node is not None else self._nearest_node_id_to_point((px, py))
+        key_node_id = self._nearest_node_id_to_point(key_pos)
+        door_mid = ((float(seg[0][0]) + float(seg[1][0])) * 0.5, (float(seg[0][1]) + float(seg[1][1])) * 0.5)
+        door_node_id = self._nearest_node_id_to_point(door_mid)
+        if current_node_id is None or key_node_id is None or door_node_id is None:
+            return False
+        to_key = self._build_route_between_nodes(current_node_id, key_node_id)
+        back_to_door = self._build_route_between_nodes(key_node_id, door_node_id)
+        if not to_key:
+            to_key = [key_node_id]
+        if not back_to_door:
+            back_to_door = [door_node_id]
+        self.key_detour_active = True
+        self.key_detour_stage = "to_key"
+        self.key_detour_color = key_color
+        self.key_detour_door_seg = ((float(seg[0][0]), float(seg[0][1])), (float(seg[1][0]), float(seg[1][1])))
+        self.key_detour_resume_route_idx = self.route_idx
+        self.key_detour_to_key_nodes = to_key
+        self.key_detour_to_key_idx = 0
+        self.key_detour_return_nodes = back_to_door
+        self.key_detour_return_idx = 0
+        self.key_detour_replan_cooldown = 0
+        self.key_detour_last_stall_target = None
+        self.key_detour_stall_count = 0
+        self.path_points = []
+        self.path_idx = 0
+        self.current_target = None
+        self.no_progress = 0
+        self.last_distance = None
+        logger.info(
+            "[NAV] Locked door detour: key=%s key_node=%s door_node=%s route_idx=%s to_key=%s return=%s",
+            key_color,
+            key_node_id,
+            door_node_id,
+            self.route_idx,
+            len(to_key),
+            len(back_to_door),
+        )
+        return True
 
     def _handle_exit(self, pos: Vec3, current_angle: float = 0.0) -> Optional[List[int]]:
         dist, seg = self._nearest_exit((pos[0], pos[1]))
@@ -1749,6 +2138,7 @@ class SectorNavigator:
             target_pos = self.mesh.nodes[target_id].centroid
             path = self.mesh.find_path(group_id, pos, target_pos)
             if path:
+                path = self._sanitize_path_segments(path)
                 self.path_points = path
                 self.path_idx = 0
                 self.current_target = target_id
@@ -1781,6 +2171,8 @@ class SectorNavigator:
         self.step += 1
         if self.subroute_cooldown > 0:
             self.subroute_cooldown -= 1
+        if self.key_detour_replan_cooldown > 0:
+            self.key_detour_replan_cooldown -= 1
         if self.explore_cooldown > 0:
             self.explore_cooldown -= 1
         if self.exit_side_swap_cooldown > 0:
@@ -1816,6 +2208,7 @@ class SectorNavigator:
         near_special_stuck = nearest_special_dist is not None and nearest_special_dist < 12.0
         door_dist, _ = self._nearest_door(p2d)
         near_door_stuck = door_dist is not None and door_dist < 24.0
+        locked_door_info, locked_key_color = self._nearest_locked_door_without_detour(p2d, max_dist=24.0)
 
         # Stuck detection
         prev_pos = self.last_pos
@@ -1897,7 +2290,7 @@ class SectorNavigator:
         elif not in_end_sector:
             self.exit_combat_override = False
 
-        if not self.subroute_active:
+        if not self.subroute_active and not self.key_detour_active:
             crossed_door = False
             if prev_pos is not None:
                 crossed_door = self._crossed_door_linedef(prev_pos, (pos[0], pos[1]))
@@ -1936,6 +2329,87 @@ class SectorNavigator:
                             door_consumed = True
                         continue
                 break
+
+        if self.key_detour_active:
+            if self.key_detour_stage == "to_key":
+                while self.key_detour_to_key_idx < len(self.key_detour_to_key_nodes):
+                    target_id = self.key_detour_to_key_nodes[self.key_detour_to_key_idx]
+                    if not (0 <= target_id < len(self.mesh.nodes)):
+                        self.key_detour_to_key_idx += 1
+                        continue
+                    c = self.mesh.nodes[target_id].centroid
+                    entered = current_node_id == target_id if current_node_id is not None else False
+                    if entered or math.hypot(c[0] - pos[0], c[1] - pos[1]) <= self.node_visit_radius:
+                        self.key_detour_to_key_idx += 1
+                        self.path_points = []
+                        self.path_idx = 0
+                        self.current_target = None
+                        continue
+                    break
+                if self.key_detour_to_key_idx >= len(self.key_detour_to_key_nodes):
+                    self.key_detour_stage = "return_door"
+                    self.key_detour_replan_cooldown = 0
+                    self.key_detour_last_stall_target = None
+                    self.key_detour_stall_count = 0
+                    self.path_points = []
+                    self.path_idx = 0
+                    self.current_target = None
+                    logger.info("[NAV] Key detour reached %s key; returning to door", self.key_detour_color)
+                elif not self.path_points or self.path_idx >= len(self.path_points):
+                    target_id = self.key_detour_to_key_nodes[self.key_detour_to_key_idx]
+                    self._compute_path_to_node(pos, target_id)
+
+            if self.key_detour_active and self.key_detour_stage == "return_door":
+                door_seg = self.key_detour_door_seg
+                if door_seg is None:
+                    self.key_detour_active = False
+                    self.key_detour_stage = None
+                    self.key_detour_replan_cooldown = 0
+                    self.key_detour_last_stall_target = None
+                    self.key_detour_stall_count = 0
+                    self.path_points = []
+                    self.path_idx = 0
+                    self.current_target = None
+                else:
+                    while self.key_detour_return_idx < len(self.key_detour_return_nodes):
+                        target_id = self.key_detour_return_nodes[self.key_detour_return_idx]
+                        if not (0 <= target_id < len(self.mesh.nodes)):
+                            self.key_detour_return_idx += 1
+                            continue
+                        c = self.mesh.nodes[target_id].centroid
+                        entered = current_node_id == target_id if current_node_id is not None else False
+                        if entered or math.hypot(c[0] - pos[0], c[1] - pos[1]) <= self.node_visit_radius:
+                            self.key_detour_return_idx += 1
+                            self.path_points = []
+                            self.path_idx = 0
+                            self.current_target = None
+                            continue
+                        break
+
+                    door_pt = self._closest_point_on_segment((pos[0], pos[1]), door_seg[0], door_seg[1])
+                    close_to_door = math.hypot(door_pt[0] - pos[0], door_pt[1] - pos[1]) <= 72.0
+                    if self.key_detour_return_idx >= len(self.key_detour_return_nodes) or close_to_door:
+                        self.key_detour_completed_segments.add(door_seg)
+                        self.key_detour_active = False
+                        self.key_detour_stage = None
+                        self.key_detour_color = None
+                        self.key_detour_door_seg = None
+                        self.key_detour_to_key_nodes = []
+                        self.key_detour_to_key_idx = 0
+                        self.key_detour_return_nodes = []
+                        self.key_detour_return_idx = 0
+                        self.key_detour_replan_cooldown = 0
+                        self.key_detour_last_stall_target = None
+                        self.key_detour_stall_count = 0
+                        self.route_idx = min(self.key_detour_resume_route_idx, len(self.route_nodes))
+                        self.path_points = []
+                        self.path_idx = 0
+                        self.current_target = None
+                        self.use_ticks = max(self.use_ticks, 1)
+                        logger.info("[NAV] Key detour complete; resumed route at idx=%s", self.route_idx)
+                    elif not self.path_points or self.path_idx >= len(self.path_points):
+                        target_id = self.key_detour_return_nodes[self.key_detour_return_idx]
+                        self._compute_path_to_node(pos, target_id)
 
         if self.subroute_active:
             if self.subroute_stage == "pause":
@@ -2016,7 +2490,7 @@ class SectorNavigator:
                     self.path_idx = 0
                     self.current_target = None
                     return ActionDecoder.forward()
-        else:
+        elif not self.key_detour_active:
             if not self.path_points or self.path_idx >= len(self.path_points):
                 if not self._compute_path_to_next_target(pos, current_node_id):
                     return ActionDecoder.forward()
@@ -2077,7 +2551,13 @@ class SectorNavigator:
             self.no_progress = 0
             self.last_distance = distance
 
-        if self.no_progress > 12 and not self.subroute_active and not self.combat_active and self.route_idx < len(self.route_nodes):
+        if (
+            self.no_progress > 12
+            and not self.subroute_active
+            and not self.key_detour_active
+            and not self.combat_active
+            and self.route_idx < len(self.route_nodes)
+        ):
             if end_dist is not None and end_dist < self.end_subroute_block_dist:
                 # Near the end, avoid Y-flip oscillations; just force a fresh path.
                 self.y_inverted = False
@@ -2091,6 +2571,52 @@ class SectorNavigator:
                 self.y_inverted = not self.y_inverted
                 self.no_progress = 0
                 logger.info(f"[NAV] Flipped Y axis to {self.y_inverted}")
+
+        if (
+            self.key_detour_active
+            and self.key_detour_replan_cooldown == 0
+            and not self.combat_active
+            and self.current_target is not None
+            and self.no_progress > 24
+        ):
+            detour_target_id = self._current_key_detour_target_id()
+            if detour_target_id is not None:
+                if detour_target_id == self.key_detour_last_stall_target:
+                    self.key_detour_stall_count += 1
+                else:
+                    self.key_detour_last_stall_target = detour_target_id
+                    self.key_detour_stall_count = 1
+                logger.info(
+                    "[NAV] Key detour stalled: replanning target=%s no_prog=%s",
+                    detour_target_id,
+                    self.no_progress,
+                )
+                self.path_points = []
+                self.path_idx = 0
+                self.current_target = None
+                self.last_distance = None
+                self.no_progress = 0
+                replanned = self._compute_path_to_node(pos, detour_target_id)
+                skip_stalled_node = self.key_detour_stall_count >= 4
+                if skip_stalled_node:
+                    logger.info(
+                        "[NAV] Key detour repeatedly stalled on node=%s stage=%s; skipping",
+                        detour_target_id,
+                        self.key_detour_stage,
+                    )
+                if not replanned or skip_stalled_node:
+                    if self.key_detour_stage == "to_key" and self.key_detour_to_key_idx + 1 < len(self.key_detour_to_key_nodes):
+                        self.key_detour_to_key_idx += 1
+                    elif self.key_detour_stage == "return_door" and self.key_detour_return_idx + 1 < len(self.key_detour_return_nodes):
+                        self.key_detour_return_idx += 1
+                    self.path_points = []
+                    self.path_idx = 0
+                    self.current_target = None
+                    self.last_distance = None
+                    self.no_progress = 0
+                    self.key_detour_last_stall_target = None
+                    self.key_detour_stall_count = 0
+                self.key_detour_replan_cooldown = 24
 
         dx = target[0] - pos[0]
         dy = target[1] - pos[1]
@@ -2182,7 +2708,7 @@ class SectorNavigator:
             and not near_special_stuck
         )
         corner_stuck = False
-        if not self.combat_active and self.route_idx < len(self.route_nodes):
+        if not self.combat_active and self.route_idx < len(self.route_nodes) and not self.key_detour_active:
             corner_stuck = (
                 (pos_stuck and (self.no_progress > 12 or dist_stuck) and not near_special_stuck)
                 or hard_stuck
@@ -2201,13 +2727,30 @@ class SectorNavigator:
                 target_dist,
             )
         if corner_stuck:
-            if near_door_stuck:
+            if near_door_stuck and not self.key_detour_active:
+                if (
+                    not self.key_detour_active
+                    and locked_door_info is not None
+                    and locked_key_color is not None
+                    and self._activate_key_detour(locked_door_info, locked_key_color, pos)
+                ):
+                    return ActionDecoder.forward()
                 # Don't subroute while stuck on a door; push/use to open it.
                 action = ActionDecoder.forward()
                 if len(action) >= 7:
                     action[6] = 1
                 logger.info("[NAV] Corner-stuck near door: forcing use")
                 return action
+            if self.key_detour_active:
+                logger.info("[NAV] Corner-stuck during key detour: nudging")
+                escape = (self.stuck_counter // 3) % 4
+                if escape == 0:
+                    return ActionDecoder.strafe_left()
+                if escape == 1:
+                    return ActionDecoder.strafe_right()
+                if escape == 2:
+                    return ActionDecoder.left_turn()
+                return ActionDecoder.right_turn()
             allow_subroute = True
             if end_dist is not None and end_dist < self.end_subroute_block_dist:
                 allow_subroute = False

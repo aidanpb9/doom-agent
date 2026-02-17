@@ -3,6 +3,7 @@ Perception system for parsing game state and detecting enemies/items.
 """
 
 import logging
+import re
 
 from config import ENEMY_KEYWORDS
 
@@ -11,6 +12,87 @@ class PerceptionManager:
     """Manages state parsing and object detection from game state."""
 
     _logged_line_attrs = False
+    _enemy_name_aliases = {
+        "zombie",
+        "zombieman",
+        "shotgunguy",
+        "chaingunguy",
+        "doomimp",
+        "imp",
+        "demon",
+        "spectre",
+        "cacodemon",
+        "baronofhell",
+        "hellknight",
+        "lostsoul",
+        "painelemental",
+        "arachnotron",
+        "revenant",
+        "mancubus",
+        "archvile",
+        "spidermastermind",
+        "cyberdemon",
+        "trooper",
+        "troop",
+    }
+    _pickup_name_aliases = {
+        "shotgun",
+        "chaingun",
+        "stimpack",
+        "medikit",
+        "healthbonus",
+        "armorbonus",
+        "clip",
+        "shell",
+        "rocket",
+        "cell",
+        "backpack",
+    }
+
+    @staticmethod
+    def _normalize_alnum(value: str) -> str:
+        return re.sub(r"[^a-z0-9]+", "", value.lower())
+
+    @staticmethod
+    def _is_dead_name(name_lower: str) -> bool:
+        return "dead" in name_lower or "gibbe" in name_lower
+
+    def _is_enemy_name(self, name: str) -> bool:
+        if not name:
+            return False
+        name_lower = name.lower()
+        if self._is_dead_name(name_lower):
+            return False
+
+        flat = self._normalize_alnum(name_lower)
+        if not flat:
+            return False
+        if flat in self._enemy_name_aliases:
+            return True
+
+        tokens = [tok for tok in re.findall(r"[a-z0-9]+", name_lower) if tok]
+        for tok in tokens:
+            if tok in self._enemy_name_aliases:
+                return True
+
+        for raw_kw in ENEMY_KEYWORDS:
+            kw = self._normalize_alnum(raw_kw)
+            if not kw:
+                continue
+            for tok in tokens:
+                if tok == kw:
+                    if kw in {"shotgun", "chaingun"} and tok in self._pickup_name_aliases:
+                        continue
+                    return True
+                if tok.startswith(kw) or tok.endswith(kw):
+                    if kw in {"shotgun", "chaingun"} and tok in self._pickup_name_aliases:
+                        continue
+                    return True
+            if flat == kw or flat.startswith(kw) or flat.endswith(kw):
+                if kw in {"shotgun", "chaingun"} and flat in self._pickup_name_aliases:
+                    continue
+                return True
+        return False
     
     def get_state_info(self, state):
         """Parse vizdoom state into structured info."""
@@ -70,16 +152,14 @@ class PerceptionManager:
         enemies = []
         for lbl in labels:
             name = getattr(lbl, "object_name", "") or ""
-            name_lower = name.lower()
-            is_enemy = any(k in name_lower for k in ENEMY_KEYWORDS)
-            is_not_dead = "dead" not in name_lower and "gibbe" not in name_lower
+            is_enemy = self._is_enemy_name(name)
             
             # Must be a real enemy and have reasonable bounding box size
             # Walls/artifacts are usually very small or very large
             area = lbl.width * lbl.height
             reasonable_size = 80 < area < 50000  # Must be substantial but not huge
             
-            if is_enemy and is_not_dead and reasonable_size:
+            if is_enemy and reasonable_size:
                 enemy_z = getattr(lbl, "object_position_z", None)
                 if enemy_z is not None and pos_z is not None:
                     if (enemy_z - pos_z) > 48.0:
@@ -108,8 +188,7 @@ class PerceptionManager:
         count = 0
         for lbl in labels:
             name = getattr(lbl, "object_name", "") or ""
-            name_lower = name.lower()
-            if any(k in name_lower for k in ENEMY_KEYWORDS):
+            if self._is_enemy_name(name):
                 count += 1
         return count
     

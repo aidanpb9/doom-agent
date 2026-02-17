@@ -359,10 +359,10 @@ class NavMesh:
         node = self.get_closest_node_in(pos, self.nodes, use_poly=use_poly)
         return node.group_id if node is not None else -1
 
-    def get_closest_node_in_group(self, pos: Vec3, group_id: int) -> Optional[NavNode]:
+    def get_closest_node_in_group(self, pos: Vec3, group_id: int, use_poly: bool = True) -> Optional[NavNode]:
         if group_id < 0 or group_id >= len(self.groups):
             return None
-        return self.get_closest_node_in(pos, self.groups[group_id].nodes, use_poly=False)
+        return self.get_closest_node_in(pos, self.groups[group_id].nodes, use_poly=use_poly)
 
     def _a_star(self, group: NavGroup, start: NavNode, end: NavNode) -> List[NavNode]:
         group.reset_nodes()
@@ -425,8 +425,8 @@ class NavMesh:
     def find_path(self, group_id: int, start_pos: Vec3, end_pos: Vec3) -> List[Vec3]:
         if group_id < 0 or group_id >= len(self.groups):
             return []
-        start_node = self.get_closest_node_in_group(start_pos, group_id)
-        end_node = self.get_closest_node_in_group(end_pos, group_id)
+        start_node = self.get_closest_node_in_group(start_pos, group_id, use_poly=True)
+        end_node = self.get_closest_node_in_group(end_pos, group_id, use_poly=True)
         if start_node is None or end_node is None:
             return []
         if self.debug_astar:
