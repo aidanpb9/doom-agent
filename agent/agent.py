@@ -18,6 +18,7 @@ except ImportError:
     Image = None
 
 from agent.behavior.behavior_selector import BehaviorSelector
+from agent.utils.action_decoder import ActionDecoder
 from config import ACTION_NAMES
 
 ACTION_VECTORS = [
@@ -478,6 +479,10 @@ class DoomAgent:
                             action_name = ACTION_NAMES[action_idx]
                         else:
                             action_name = f"Action_{action_idx}"
+                    else:
+                        active_names = ActionDecoder.get_action_names(action)
+                        if active_names:
+                            action_name = "+".join(active_names)
                 self._last_action_name = action_name
                 
                 # Store action log entry

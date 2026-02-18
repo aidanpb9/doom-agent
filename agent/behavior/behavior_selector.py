@@ -166,7 +166,15 @@ class BehaviorSelector:
             current_angle = state_info.get('angle', 0)
             sectors = state_info.get("sectors")
             lines = state_info.get("lines")
-            nav_action = self.sector_navigator.decide_action(pos_x, pos_y, sectors, current_angle, lines=lines)
+            nav_action = self.sector_navigator.decide_action(
+                pos_x,
+                pos_y,
+                sectors,
+                current_angle,
+                lines=lines,
+                labels=state_info.get("labels", []),
+                screen_shape=screen_shape,
+            )
             labels = state_info.get("labels", [])
             blocking_barrel = self.perception.detect_blocking_barrel(labels, screen_shape=screen_shape, require_center=True)
             # Proactive barrel avoidance: if collision is likely, veer now.
@@ -349,7 +357,15 @@ class BehaviorSelector:
         sectors = state_info.get("sectors")
         lines = state_info.get("lines")
         screen_shape = screen.shape if screen is not None and hasattr(screen, "shape") else None
-        nav_action = self.sector_navigator.decide_action(pos_x, pos_y, sectors, current_angle, lines=lines)
+        nav_action = self.sector_navigator.decide_action(
+            pos_x,
+            pos_y,
+            sectors,
+            current_angle,
+            lines=lines,
+            labels=state_info.get("labels", []),
+            screen_shape=screen_shape,
+        )
         nav = self.sector_navigator
         labels = state_info.get("labels", [])
         blocking_barrel = self.perception.detect_blocking_barrel(labels, screen_shape=screen_shape, require_center=True)

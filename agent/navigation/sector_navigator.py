@@ -108,6 +108,7 @@ class SectorNavigator:
         self.exit_focus_turn_dir = 1
         self.exit_focus_turn_ticks = 0
         self.exit_focus_push_ticks = 0
+        self.exit_focus_probe_ticks = 0
         self.exit_target_point: Optional[Tuple[float, float]] = None
         self.exit_target_line_point: Optional[Tuple[float, float]] = None
         self.exit_no_progress = 0
@@ -122,6 +123,8 @@ class SectorNavigator:
         self.explore_cooldown = 0
         self.exit_use_burst_ticks = 0
         self.exit_side_swap_cooldown = 0
+        self.exit_mode_latched = False
+        self.exit_switch_last_seen_step = -9999
         self.key_door_specials: Dict[int, str] = {
             26: "blue",
             27: "yellow",
@@ -159,6 +162,14 @@ class SectorNavigator:
         self.last_stuck_target: Optional[int] = None
         self.last_stuck_pos: Optional[Tuple[float, float]] = None
         self.repeat_stuck_count = 0
+        self.blocked_edges_until: Dict[Tuple[int, int], int] = {}
+        self.backtrack_active = False
+        self.backtrack_target_node: Optional[int] = None
+        self.backtrack_start_time: Optional[float] = None
+        self.backtrack_start_pos: Optional[Tuple[float, float]] = None
+        self.backtrack_last_dist: Optional[float] = None
+        self.backtrack_escape_ticks = 0
+        self.backtrack_max_duration_s = 7.0
 
     def set_map_name(self, map_name: str) -> None:
         if map_name and map_name != self.map_name:
@@ -234,6 +245,13 @@ class SectorNavigator:
             self.last_stuck_target = None
             self.last_stuck_pos = None
             self.repeat_stuck_count = 0
+            self.backtrack_active = False
+            self.backtrack_target_node = None
+            self.backtrack_start_time = None
+            self.backtrack_start_pos = None
+            self.backtrack_last_dist = None
+            self.backtrack_escape_ticks = 0
+            self.blocked_edges_until = {}
             self.freeze_events = []
             self.stuck_events = []
             self.exit_node_id = None
@@ -242,6 +260,8 @@ class SectorNavigator:
             self.explore_cooldown = 0
             self.exit_use_burst_ticks = 0
             self.exit_side_swap_cooldown = 0
+            self.exit_mode_latched = False
+            self.exit_switch_last_seen_step = -9999
             self.exit_force_dist = 512.0
             self.route_trace = []
             self.exit_target_point = None
@@ -325,6 +345,8 @@ class SectorNavigator:
         self.explore_cooldown = 0
         self.exit_use_burst_ticks = 0
         self.exit_side_swap_cooldown = 0
+        self.exit_mode_latched = False
+        self.exit_switch_last_seen_step = -9999
         self.map_key_positions = {"blue": [], "red": [], "yellow": []}
         self.acquired_keys = set()
         self.map_keys_loaded = False
@@ -347,6 +369,13 @@ class SectorNavigator:
         self.last_stuck_target = None
         self.last_stuck_pos = None
         self.repeat_stuck_count = 0
+        self.backtrack_active = False
+        self.backtrack_target_node = None
+        self.backtrack_start_time = None
+        self.backtrack_start_pos = None
+        self.backtrack_last_dist = None
+        self.backtrack_escape_ticks = 0
+        self.blocked_edges_until = {}
 
     def _clear_route(self) -> None:
         self.route_nodes = []
@@ -357,6 +386,20 @@ class SectorNavigator:
         self.current_target = None
         self.last_distance = None
         self.no_progress = 0
+        self.backtrack_active = False
+        self.backtrack_target_node = None
+        self.backtrack_start_time = None
+        self.backtrack_start_pos = None
+        self.backtrack_last_dist = None
+        self.backtrack_escape_ticks = 0
+
+    def _clear_backtrack_state(self) -> None:
+        self.backtrack_active = False
+        self.backtrack_target_node = None
+        self.backtrack_start_time = None
+        self.backtrack_start_pos = None
+        self.backtrack_last_dist = None
+        self.backtrack_escape_ticks = 0
 
     def _record_route_trace(self, pos: Tuple[float, float]) -> None:
         if not self.route_trace:
@@ -376,10 +419,23 @@ class SectorNavigator:
             return []
         out: List[int] = []
         for v in sorted(self.mesh.nodes[node_id].neighbor_ids):
+            edge = (min(node_id, v), max(node_id, v))
+            until = self.blocked_edges_until.get(edge)
+            if until is not None and self.step < until:
+                continue
             if allowed is not None and v not in allowed:
                 continue
             out.append(v)
         return out
+
+    def _block_edge_temporarily(self, a: int, b: int, duration_steps: int = 600) -> None:
+        if a == b:
+            return
+        edge = (min(a, b), max(a, b))
+        until = self.step + max(60, int(duration_steps))
+        prev = self.blocked_edges_until.get(edge, -1)
+        if until > prev:
+            self.blocked_edges_until[edge] = until
 
     def _pick_farthest_node_from(self, pos: Tuple[float, float]) -> Optional[int]:
         if self.mesh is None or not self.mesh.nodes:
@@ -425,6 +481,7 @@ class SectorNavigator:
         self.exit_focus_turn_dir = 1
         self.exit_focus_turn_ticks = 0
         self.exit_focus_push_ticks = 0
+        self.exit_focus_probe_ticks = 0
 
     @staticmethod
     def _is_exit_special(special: int) -> bool:
@@ -1319,6 +1376,26 @@ class SectorNavigator:
             return None, None
         return best_dist, best_seg
 
+    def _special_leaf_neighbor(self, current_node_id: Optional[int], max_special_dist: float = 96.0) -> Optional[int]:
+        if self.mesh is None or current_node_id is None or not (0 <= current_node_id < len(self.mesh.nodes)):
+            return None
+        best_id = None
+        best_dist = None
+        for nid in self._valid_neighbors(current_node_id):
+            if not (0 <= nid < len(self.mesh.nodes)):
+                continue
+            # Leaf/corner neighbors near specials are often lift/switch pads.
+            if len(self.mesh.nodes[nid].neighbor_ids) > 1:
+                continue
+            c = self.mesh.nodes[nid].centroid
+            d, _ = self._nearest_special((c[0], c[1]))
+            if d is None or d > max_special_dist:
+                continue
+            if best_dist is None or d < best_dist:
+                best_dist = d
+                best_id = nid
+        return best_id
+
     def _nearest_exit(self, p2d: Tuple[float, float]) -> Tuple[Optional[float], Optional[Tuple[Tuple[float, float], Tuple[float, float]]]]:
         if not self.exit_segments:
             return None, None
@@ -1726,6 +1803,16 @@ class SectorNavigator:
             # If we're hugging an endpoint, bias toward the midpoint to hit the switch face.
             if 0.15 <= t_clamped <= 0.85:
                 t = t_clamped
+        # Sweep along the exit line when stalled so we don't keep aiming at a
+        # non-usable spot on the same linedef.
+        if self.exit_no_progress > 8:
+            sweep = (self.step // 12) % 3
+            if sweep == 0:
+                t = 0.2
+            elif sweep == 1:
+                t = 0.5
+            else:
+                t = 0.8
         target_line = (ax + abx * t, ay + aby * t)
         self.exit_target_line_point = target_line
         dx_line = target_line[0] - pos[0]
@@ -1774,7 +1861,7 @@ class SectorNavigator:
             target_x = target_line[0] + (dx / dist_to_line) * inset
             target_y = target_line[1] + (dy / dist_to_line) * inset
         self.exit_target_point = (target_x, target_y)
-        if dist_to_line < 48.0:
+        if dist_to_line < 48.0 and self.exit_no_progress <= 8:
             if self.exit_use_burst_ticks <= 0:
                 self.exit_use_burst_ticks = 20
             if self.exit_use_burst_ticks > 0:
@@ -1815,6 +1902,20 @@ class SectorNavigator:
             if len(action) > ACTION_USE:
                 action[ACTION_USE] = 1
             return action
+        if dist < 192.0 and self.exit_no_progress > 24:
+            # Hard stall breaker near exit: back off and re-approach with use held.
+            phase = (self.step // 10) % 4
+            if phase == 0:
+                action = ActionDecoder.backward_left_turn()
+            elif phase == 1:
+                action = ActionDecoder.backward_right_turn()
+            elif phase == 2:
+                action = ActionDecoder.forward_left_turn()
+            else:
+                action = ActionDecoder.forward_right_turn()
+            if len(action) > ACTION_USE:
+                action[ACTION_USE] = 1
+            return action
         if dist < 180.0 and self.exit_no_progress > 6:
             # Use-only burst while facing the exit line to ensure activation.
             if self.exit_use_burst_ticks <= 0:
@@ -1828,6 +1929,21 @@ class SectorNavigator:
                 if len(action) > ACTION_USE:
                     action[ACTION_USE] = 1
                 return action
+        if dist < 96.0 and self.exit_no_progress > 8:
+            # We're near the exit line but not activating it; force a side-step/backoff
+            # search pattern so we can find the usable face of the switch/line.
+            phase = (self.step // 8) % 4
+            if phase == 0:
+                action = ActionDecoder.forward_strafe_left()
+            elif phase == 1:
+                action = ActionDecoder.forward_strafe_right()
+            elif phase == 2:
+                action = ActionDecoder.backward_left_turn()
+            else:
+                action = ActionDecoder.backward_right_turn()
+            if len(action) > ACTION_USE:
+                action[ACTION_USE] = 1
+            return action
         if dist_to_line < 64.0:
             if abs(angle_diff) > 12.0:
                 action = (
@@ -1916,6 +2032,7 @@ class SectorNavigator:
             self.exit_focus_turn_dir = 1
             self.exit_focus_turn_ticks = 0
             self.exit_focus_push_ticks = 0
+            self.exit_focus_probe_ticks = 0
             logger.info("[NAV] Exit focus: scan for exit line")
 
         if self.exit_focus_stage == "scan":
@@ -1930,6 +2047,17 @@ class SectorNavigator:
                 return ActionDecoder.left_turn() if self.exit_focus_turn_dir > 0 else ActionDecoder.right_turn()
 
         if self.exit_focus_stage == "approach":
+            if dist < 96.0:
+                self.exit_focus_probe_ticks += 1
+                # Look-only probing near exit: sweep a wider yaw arc in place
+                # so lever detection comes from turning, not translational drift.
+                base_dir = 1 if angle_diff >= 0.0 else -1
+                phase = (self.exit_focus_probe_ticks // 30) % 2
+                turn_dir = base_dir if phase == 0 else -base_dir
+                action = ActionDecoder.left_turn() if turn_dir > 0 else ActionDecoder.right_turn()
+                if len(action) > ACTION_USE:
+                    action[ACTION_USE] = 1
+                return action
             if self.exit_focus_push_ticks > 0:
                 self.exit_focus_push_ticks -= 1
                 action = ActionDecoder.forward()
@@ -1950,6 +2078,108 @@ class SectorNavigator:
             return ActionDecoder.forward()
 
         return None
+
+    @staticmethod
+    def _is_switch_like_label(name: str) -> bool:
+        if not name:
+            return False
+        lower = name.lower()
+        return (
+            "switch" in lower
+            or "lever" in lower
+            or "sw1" in lower
+            or "sw2" in lower
+            or "exit" in lower
+        )
+
+    def _detect_exit_switch_label(self, labels: Any, screen_shape: Optional[Tuple[int, ...]]) -> Optional[Tuple[float, float, float, str, float]]:
+        if not labels or screen_shape is None or len(screen_shape) < 2:
+            return None
+        screen_h = float(screen_shape[0])
+        screen_w = float(screen_shape[1])
+        best = None
+        best_score = -1.0
+        for lbl in labels:
+            name = (getattr(lbl, "object_name", "") or "")
+            if not self._is_switch_like_label(name):
+                continue
+            width = float(getattr(lbl, "width", 0.0))
+            height = float(getattr(lbl, "height", 0.0))
+            if width <= 0.0 or height <= 0.0:
+                continue
+            area = width * height
+            if area < 24.0:
+                continue
+            cx = float(getattr(lbl, "x", 0.0)) + width * 0.5
+            cy = float(getattr(lbl, "y", 0.0)) + height * 0.5
+            if cx < 0.0 or cx > screen_w or cy < 0.0 or cy > screen_h:
+                continue
+            center_bias = 1.0 - min(1.0, abs(cx - (screen_w * 0.5)) / (screen_w * 0.5))
+            near_bias = min(1.0, area / 2200.0)
+            score = (near_bias * 0.75) + (center_bias * 0.25)
+            if score > best_score:
+                best_score = score
+                best = (cx, cy, area, name, score)
+        return best
+
+    def _handle_exit_switch_label_focus(
+        self,
+        labels: Any,
+        screen_shape: Optional[Tuple[int, ...]],
+    ) -> Optional[List[int]]:
+        switch = self._detect_exit_switch_label(labels, screen_shape)
+        if switch is None:
+            return None
+        cx, cy, area, name, score = switch
+        screen_w = float(screen_shape[1])
+        screen_h = float(screen_shape[0])
+        dx = cx - (screen_w * 0.5)
+        dy = cy - (screen_h * 0.56)
+        self.exit_switch_last_seen_step = self.step
+        if self.step % 20 == 0:
+            logger.info(
+                "[NAV] Exit switch label: name=%s dx=%.1f dy=%.1f area=%.1f score=%.2f",
+                name,
+                dx,
+                dy,
+                area,
+                score,
+            )
+        turn_thresh = max(12.0, screen_w * 0.05)
+        tight_turn_thresh = max(5.0, screen_w * 0.02)
+        if abs(dx) > turn_thresh:
+            action = ActionDecoder.left_turn() if dx < 0.0 else ActionDecoder.right_turn()
+            if len(action) > ACTION_USE:
+                action[ACTION_USE] = 1
+            return action
+        if abs(dx) > tight_turn_thresh:
+            action = ActionDecoder.forward_left_turn() if dx < 0.0 else ActionDecoder.forward_right_turn()
+            if len(action) > ACTION_USE:
+                action[ACTION_USE] = 1
+            return action
+        if dy < -screen_h * 0.08 and area < 1800.0:
+            action = ActionDecoder.forward()
+            if len(action) > ACTION_USE:
+                action[ACTION_USE] = 1
+            return action
+        action = ActionDecoder.use()
+        return action
+
+    def _exit_failsafe_action(self) -> List[int]:
+        # Hard fallback for end-sector stalls: always push/use, with slight
+        # motion variation to avoid dead-center deadlocks on exit lines.
+        phase = (self.step // 10) % 4
+        if phase == 0:
+            action = ActionDecoder.forward_strafe_left()
+        elif phase == 1:
+            action = ActionDecoder.forward_strafe_right()
+        elif phase == 2:
+            action = ActionDecoder.forward_left_turn()
+        else:
+            action = ActionDecoder.forward_right_turn()
+        if len(action) > ACTION_USE:
+            action[ACTION_USE] = 1
+        return action
 
     def _update_pos_history(self, pos: Tuple[float, float]) -> Tuple[bool, float]:
         now = time.perf_counter()
@@ -2362,7 +2592,7 @@ class SectorNavigator:
         except Exception as exc:
             logger.warning("[NAV] Failed to write path debug: %s", exc)
 
-    def decide_action(self, pos_x, pos_y, sectors=None, current_angle=0.0, lines=None):
+    def decide_action(self, pos_x, pos_y, sectors=None, current_angle=0.0, lines=None, labels=None, screen_shape=None):
         self.step += 1
         if self.subroute_cooldown > 0:
             self.subroute_cooldown -= 1
@@ -2469,6 +2699,9 @@ class SectorNavigator:
                 entered_end = current_node_id == self.exit_node_id if current_node_id is not None else False
                 if inside_end or entered_end:
                     in_end_sector = True
+                    if not self.exit_mode_latched:
+                        self._reset_exit_focus()
+                    self.exit_mode_latched = True
                     if self.subroute_active:
                         self.subroute_active = False
                         self.subroute_stage = None
@@ -2483,11 +2716,41 @@ class SectorNavigator:
                     self.no_progress = 0
                     self.route_idx = len(self.route_nodes)
                     self.exit_combat_override = True
-                    self._reset_exit_focus()
                     logger.info("[NAV] Exit focus: inside end sector (node=%s)", self.exit_node_id)
+                    switch_action = self._handle_exit_switch_label_focus(labels, screen_shape)
+                    if switch_action is not None:
+                        return switch_action
                     exit_action = self._handle_exit(pos, current_angle)
                     if exit_action is not None:
                         return exit_action
+                    focus_action = self._handle_exit_focus(pos, current_angle)
+                    if focus_action is not None:
+                        return focus_action
+                    return self._exit_failsafe_action()
+
+        if (not exploring) and self.exit_mode_latched:
+            exit_dist, _ = self._nearest_exit((pos[0], pos[1]))
+            if exit_dist is None or exit_dist > 384.0:
+                self.exit_mode_latched = False
+                self.exit_combat_override = False
+            else:
+                self.exit_combat_override = True
+                self.route_idx = len(self.route_nodes)
+                self.path_points = []
+                self.path_idx = 0
+                self.current_target = None
+                self.last_distance = None
+                self.no_progress = 0
+                switch_action = self._handle_exit_switch_label_focus(labels, screen_shape)
+                if switch_action is not None:
+                    return switch_action
+                exit_action = self._handle_exit(pos, current_angle)
+                if exit_action is not None:
+                    return exit_action
+                focus_action = self._handle_exit_focus(pos, current_angle)
+                if focus_action is not None:
+                    return focus_action
+                return self._exit_failsafe_action()
 
         # Do not bias to the exit until we actually reach the end sector.
         if (
@@ -2495,11 +2758,12 @@ class SectorNavigator:
             and not self.subroute_active
             and self.route_idx >= len(self.route_nodes)
             and not in_end_sector
+            and not self.exit_mode_latched
         ):
             # Route ended but we're not in the end sector; rebuild instead of forcing exit.
             self.exit_combat_override = False
             self._clear_route()
-        elif not in_end_sector:
+        elif not in_end_sector and not self.exit_mode_latched:
             self.exit_combat_override = False
 
         if not self.subroute_active and not self.key_detour_active:
@@ -2530,6 +2794,9 @@ class SectorNavigator:
                             entered,
                         )
                         self.last_visited_route_node = target_id
+                        if self.backtrack_active and self.backtrack_target_node == target_id:
+                            logger.info("[NAV] Backtrack complete at node=%s", target_id)
+                            self._clear_backtrack_state()
                         if self.end_node_id is not None and target_id == self.end_node_id:
                             self.route_idx = len(self.route_nodes)
                         else:
@@ -2778,6 +3045,7 @@ class SectorNavigator:
             and not self.subroute_active
             and not self.key_detour_active
             and not self.combat_active
+            and not self.backtrack_active
             and self.route_idx < len(self.route_nodes)
         ):
             # Replan the path instead of flipping steering; Y-flip can rotate
@@ -3013,8 +3281,51 @@ class SectorNavigator:
             )
         if corner_stuck:
             self.corner_stuck_cooldown = 20
+            # Junction recovery: prefer nearby special leaf neighbors (lift/switch
+            # pads) before retrying branches that repeatedly fail.
+            if (
+                current_node_id is not None
+                and not self.key_detour_active
+                and (self.stuck_counter >= 14 or self.no_progress >= 14)
+            ):
+                leaf_id = self._special_leaf_neighbor(current_node_id, max_special_dist=96.0)
+                if leaf_id is not None and leaf_id != self.current_target:
+                    if self._compute_path_to_node(pos, leaf_id):
+                        logger.info(
+                            "[NAV] Stuck at junction: prioritizing special leaf neighbor %s from node %s",
+                            leaf_id,
+                            current_node_id,
+                        )
+                        self.stuck_recovery_ticks = 0
+                        return ActionDecoder.forward()
+
+            # If the current transition itself is repeatedly failing, temporarily
+            # block that edge so routing can choose an alternate corridor/lift path.
+            if (
+                current_node_id is not None
+                and self.current_target is not None
+                and 0 <= current_node_id < len(self.mesh.nodes)
+                and self.current_target in self.mesh.nodes[current_node_id].neighbor_ids
+                and (self.stuck_counter >= 18 or self.no_progress >= 20)
+                and target_dist > 64.0
+            ):
+                self._block_edge_temporarily(current_node_id, self.current_target, duration_steps=900)
+                logger.info(
+                    "[NAV] Blocking failing edge %s<->%s for reroute (stuck=%s no_prog=%s)",
+                    current_node_id,
+                    self.current_target,
+                    self.stuck_counter,
+                    self.no_progress,
+                )
+                self.path_points = []
+                self.path_idx = 0
+                self.current_target = None
+                self.last_distance = None
+                self.no_progress = 0
+                if self._compute_path_to_next_target(pos, current_node_id):
+                    return ActionDecoder.forward()
             # Track repeated stalls on the same target/spot to avoid infinite loops.
-            if self.current_target is not None:
+            if self.current_target is not None and not self.backtrack_active:
                 same_target = self.last_stuck_target == self.current_target
                 same_area = (
                     self.last_stuck_pos is not None
@@ -3070,12 +3381,13 @@ class SectorNavigator:
             self.stuck_node_id = None
             self.subroute_cooldown = 30
         
-        # Backtrack detector - when frozen, go back to a previously visited node and retry.
+        # Backtrack detector - when frozen, go back to the last confirmed visited route node.
         if (
+            not self.backtrack_active
+            and
             not self.key_detour_active
             and not self.combat_active
             and self.route_idx < len(self.route_nodes)
-            and self.route_idx > 0
             and self.last_visited_route_node is not None
         ):
             current_time = time.time()
@@ -3090,7 +3402,7 @@ class SectorNavigator:
                 )
 
                 if dist_moved < 32.0 and time_frozen >= 3.0 and severe_stall:
-                    backtrack_node = self.route_nodes[self.route_idx - 1]
+                    backtrack_node = self.last_visited_route_node
                     if 0 <= backtrack_node < len(self.mesh.nodes):
                         logger.info(
                             "[NAV] Frozen at node=%s target=%s no_prog=%s, backtracking to node=%s",
@@ -3103,6 +3415,12 @@ class SectorNavigator:
                             (pos[0], pos[1], self.step, current_node_id, backtrack_node)
                         )
                         if self._compute_path_to_node(pos, backtrack_node):
+                            self.backtrack_active = True
+                            self.backtrack_target_node = backtrack_node
+                            self.backtrack_start_time = current_time
+                            self.backtrack_start_pos = (pos[0], pos[1])
+                            self.backtrack_last_dist = target_dist
+                            self.backtrack_escape_ticks = 0
                             self.frozen_start_time = None
                             self.frozen_pos = None
                             return ActionDecoder.forward()
@@ -3112,6 +3430,58 @@ class SectorNavigator:
         else:
             self.frozen_start_time = None
             self.frozen_pos = None
+
+        if self.backtrack_active:
+            if self.backtrack_target_node is None or self.mesh is None:
+                self._clear_backtrack_state()
+            elif self.key_detour_active or self.combat_active:
+                self._clear_backtrack_state()
+            else:
+                bt = self.mesh.nodes[self.backtrack_target_node].centroid
+                backtrack_dist = math.hypot(bt[0] - pos[0], bt[1] - pos[1])
+                reached_backtrack = (
+                    current_node_id == self.backtrack_target_node or backtrack_dist <= self.node_visit_radius
+                )
+                if reached_backtrack:
+                    logger.info("[NAV] Backtrack reached node=%s dist=%.1f", self.backtrack_target_node, backtrack_dist)
+                    self._clear_backtrack_state()
+                else:
+                    if self.current_target != self.backtrack_target_node:
+                        self._compute_path_to_node(pos, self.backtrack_target_node)
+                    now = time.time()
+                    if self.backtrack_start_time is None:
+                        self.backtrack_start_time = now
+                    if self.backtrack_start_pos is None:
+                        self.backtrack_start_pos = (pos[0], pos[1])
+                    moved = math.hypot(
+                        pos[0] - self.backtrack_start_pos[0], pos[1] - self.backtrack_start_pos[1]
+                    )
+                    elapsed = now - self.backtrack_start_time
+                    dist_improved = (
+                        self.backtrack_last_dist is None or backtrack_dist < (self.backtrack_last_dist - 4.0)
+                    )
+                    if dist_improved:
+                        self.backtrack_start_time = now
+                        self.backtrack_start_pos = (pos[0], pos[1])
+                    self.backtrack_last_dist = backtrack_dist
+                    if self.backtrack_escape_ticks <= 0 and moved < 24.0 and elapsed >= 1.0:
+                        self.backtrack_escape_ticks = 8
+                        logger.info(
+                            "[NAV] Backtrack stalled (node=%s dist=%.1f moved=%.1f): forcing backward",
+                            self.backtrack_target_node,
+                            backtrack_dist,
+                            moved,
+                        )
+                    if self.backtrack_escape_ticks > 0:
+                        self.backtrack_escape_ticks -= 1
+                        return ActionDecoder.backward()
+                    if elapsed >= self.backtrack_max_duration_s:
+                        logger.info(
+                            "[NAV] Backtrack timeout at node=%s dist=%.1f; resuming normal recovery",
+                            self.backtrack_target_node,
+                            backtrack_dist,
+                        )
+                        self._clear_backtrack_state()
 
         if corner_stuck:
             if self.stuck_recovery_ticks <= 0:
