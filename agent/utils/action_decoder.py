@@ -4,7 +4,7 @@ Provides utilities to construct action vectors and decode them.
 """
 
 from config.defaults import (
-    ACTION_FORWARD, ACTION_LEFT_TURN, ACTION_RIGHT_TURN,
+    ACTION_FORWARD, ACTION_BACKWARD, ACTION_LEFT_TURN, ACTION_RIGHT_TURN,
     ACTION_MOVE_LEFT, ACTION_MOVE_RIGHT, ACTION_ATTACK, ACTION_USE,
     ACTION_COUNT, ACTION_NAMES
 )
@@ -23,6 +23,13 @@ class ActionDecoder:
         """Move forward."""
         action = [0] * ACTION_COUNT
         action[ACTION_FORWARD] = 1
+        return action
+
+    @staticmethod
+    def backward():
+        """Move backward."""
+        action = [0] * ACTION_COUNT
+        action[ACTION_BACKWARD] = 1
         return action
     
     @staticmethod
@@ -60,6 +67,22 @@ class ActionDecoder:
         """Forward and turn right."""
         action = [0] * ACTION_COUNT
         action[ACTION_FORWARD] = 1
+        action[ACTION_RIGHT_TURN] = 1
+        return action
+
+    @staticmethod
+    def backward_left_turn():
+        """Backward and turn left."""
+        action = [0] * ACTION_COUNT
+        action[ACTION_BACKWARD] = 1
+        action[ACTION_LEFT_TURN] = 1
+        return action
+
+    @staticmethod
+    def backward_right_turn():
+        """Backward and turn right."""
+        action = [0] * ACTION_COUNT
+        action[ACTION_BACKWARD] = 1
         action[ACTION_RIGHT_TURN] = 1
         return action
     

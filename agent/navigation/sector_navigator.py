@@ -17,6 +17,7 @@ import numpy as np
 
 from agent.utils.action_decoder import ActionDecoder
 from agent.navigation.navmesh import NavMesh, Vec3
+from config.defaults import ACTION_USE
 
 logger = logging.getLogger(__name__)
 
@@ -137,6 +138,7 @@ class SectorNavigator:
             138: "yellow",
         }
         self.map_key_positions: Dict[str, List[Tuple[float, float]]] = {"blue": [], "red": [], "yellow": []}
+        self.acquired_keys: Set[str] = set()
         self.map_keys_loaded = False
         self.key_detour_active = False
         self.key_detour_stage: Optional[str] = None
@@ -152,6 +154,11 @@ class SectorNavigator:
         self.key_detour_last_stall_target: Optional[int] = None
         self.key_detour_stall_count = 0
         self.corner_stuck_cooldown = 0
+        self.stuck_recovery_ticks = 0
+        self.stuck_recovery_dir = 1
+        self.last_stuck_target: Optional[int] = None
+        self.last_stuck_pos: Optional[Tuple[float, float]] = None
+        self.repeat_stuck_count = 0
 
     def set_map_name(self, map_name: str) -> None:
         if map_name and map_name != self.map_name:
@@ -206,6 +213,7 @@ class SectorNavigator:
             self.exit_strafe_dir = 1
             self.exit_strafe_ticks = 0
             self.map_key_positions = {"blue": [], "red": [], "yellow": []}
+            self.acquired_keys = set()
             self.map_keys_loaded = False
             self.key_detour_active = False
             self.key_detour_stage = None
@@ -221,6 +229,11 @@ class SectorNavigator:
             self.key_detour_last_stall_target = None
             self.key_detour_stall_count = 0
             self.corner_stuck_cooldown = 0
+            self.stuck_recovery_ticks = 0
+            self.stuck_recovery_dir = 1
+            self.last_stuck_target = None
+            self.last_stuck_pos = None
+            self.repeat_stuck_count = 0
             self.freeze_events = []
             self.stuck_events = []
             self.exit_node_id = None
@@ -313,6 +326,7 @@ class SectorNavigator:
         self.exit_use_burst_ticks = 0
         self.exit_side_swap_cooldown = 0
         self.map_key_positions = {"blue": [], "red": [], "yellow": []}
+        self.acquired_keys = set()
         self.map_keys_loaded = False
         self.key_detour_active = False
         self.key_detour_stage = None
@@ -328,6 +342,11 @@ class SectorNavigator:
         self.key_detour_last_stall_target = None
         self.key_detour_stall_count = 0
         self.corner_stuck_cooldown = 0
+        self.stuck_recovery_ticks = 0
+        self.stuck_recovery_dir = 1
+        self.last_stuck_target = None
+        self.last_stuck_pos = None
+        self.repeat_stuck_count = 0
 
     def _clear_route(self) -> None:
         self.route_nodes = []
@@ -1229,6 +1248,63 @@ class SectorNavigator:
                 return True
         return False
 
+    def _poly_clearance(self, poly: List[Tuple[float, float]], p2d: Tuple[float, float]) -> float:
+        if len(poly) < 2:
+            return 0.0
+        best = float("inf")
+        for i in range(len(poly)):
+            a = poly[i]
+            b = poly[(i + 1) % len(poly)]
+            d = self._segment_distance(p2d, a, b)
+            if d < best:
+                best = d
+        if best == float("inf"):
+            return 0.0
+        return best
+
+    def _side_clearance_score(
+        self,
+        pos2d: Tuple[float, float],
+        current_angle: float,
+        current_node_id: Optional[int],
+        side: int,
+    ) -> float:
+        if self.mesh is None or current_node_id is None or not (0 <= current_node_id < len(self.mesh.nodes)):
+            return -1e6
+        side = 1 if side >= 0 else -1
+        rad = math.radians(float(current_angle))
+        fx = math.cos(rad)
+        fy = math.sin(rad)
+        rx = math.cos(rad + (math.pi * 0.5)) * side
+        ry = math.sin(rad + (math.pi * 0.5)) * side
+
+        polys: List[List[Tuple[float, float]]] = [self.mesh.nodes[current_node_id].polygon]
+        if self.current_target is not None and 0 <= self.current_target < len(self.mesh.nodes):
+            tpoly = self.mesh.nodes[self.current_target].polygon
+            if tpoly not in polys:
+                polys.append(tpoly)
+
+        samples = [
+            (pos2d[0] + rx * 24.0 + fx * 16.0, pos2d[1] + ry * 24.0 + fy * 16.0),
+            (pos2d[0] + rx * 40.0 + fx * 24.0, pos2d[1] + ry * 40.0 + fy * 24.0),
+            (pos2d[0] + rx * 56.0 + fx * 12.0, pos2d[1] + ry * 56.0 + fy * 12.0),
+        ]
+
+        score = 0.0
+        for sp in samples:
+            in_any = False
+            best_clear = 0.0
+            for poly in polys:
+                if self._point_in_poly_2d(sp, poly):
+                    in_any = True
+                    c = self._poly_clearance(poly, sp)
+                    if c > best_clear:
+                        best_clear = c
+            if not in_any:
+                score -= 220.0
+            score += best_clear
+        return score
+
     def _nearest_special(self, p2d: Tuple[float, float]) -> Tuple[Optional[float], Optional[Tuple[Tuple[float, float], Tuple[float, float]]]]:
         if not self.special_segments:
             return None, None
@@ -1524,6 +1600,8 @@ class SectorNavigator:
             key_color = self._required_key_for_special(special)
             if key_color is None:
                 continue
+            if key_color in self.acquired_keys:
+                continue
             seg = info.get("segment")
             if not seg or len(seg) != 2:
                 continue
@@ -1562,11 +1640,21 @@ class SectorNavigator:
             to_key = [key_node_id]
         if not back_to_door:
             back_to_door = [door_node_id]
+        resume_idx = self.route_idx
+        # After returning to the locked door, continue from the node *after* the
+        # door target on the main route so we don't retrace the pre-key leg.
+        if self.route_nodes:
+            for idx in range(self.route_idx, len(self.route_nodes)):
+                if self.route_nodes[idx] == door_node_id:
+                    resume_idx = min(idx + 1, len(self.route_nodes))
+                    break
+            else:
+                resume_idx = min(self.route_idx + 1, len(self.route_nodes))
         self.key_detour_active = True
         self.key_detour_stage = "to_key"
         self.key_detour_color = key_color
         self.key_detour_door_seg = ((float(seg[0][0]), float(seg[0][1])), (float(seg[1][0]), float(seg[1][1])))
-        self.key_detour_resume_route_idx = self.route_idx
+        self.key_detour_resume_route_idx = resume_idx
         self.key_detour_to_key_nodes = to_key
         self.key_detour_to_key_idx = 0
         self.key_detour_return_nodes = back_to_door
@@ -1623,8 +1711,8 @@ class SectorNavigator:
                     )
                 else:
                     action = ActionDecoder.forward()
-                if len(action) >= 7:
-                    action[6] = 1
+                if len(action) > ACTION_USE:
+                    action[ACTION_USE] = 1
                 return action
         ax, ay = seg[0]
         bx, by = seg[1]
@@ -1695,8 +1783,8 @@ class SectorNavigator:
                     return ActionDecoder.left_turn() if angle_diff > 0 else ActionDecoder.right_turn()
                 else:
                     action = ActionDecoder.use()
-                if len(action) >= 7:
-                    action[6] = 1
+                if len(action) > ACTION_USE:
+                    action[ACTION_USE] = 1
                 return action
         if dist < 200.0 and self.exit_no_progress > 6:
             target = (target_line[0], target_line[1], 0.0)
@@ -1724,8 +1812,8 @@ class SectorNavigator:
                     if self.exit_strafe_dir > 0
                     else ActionDecoder.forward_strafe_right()
                 )
-            if len(action) >= 7:
-                action[6] = 1
+            if len(action) > ACTION_USE:
+                action[ACTION_USE] = 1
             return action
         if dist < 180.0 and self.exit_no_progress > 6:
             # Use-only burst while facing the exit line to ensure activation.
@@ -1737,8 +1825,8 @@ class SectorNavigator:
                     action = ActionDecoder.left_turn() if angle_diff > 0 else ActionDecoder.right_turn()
                 else:
                     action = ActionDecoder.use()
-                if len(action) >= 7:
-                    action[6] = 1
+                if len(action) > ACTION_USE:
+                    action[ACTION_USE] = 1
                 return action
         if dist_to_line < 64.0:
             if abs(angle_diff) > 12.0:
@@ -1749,8 +1837,8 @@ class SectorNavigator:
                 )
             else:
                 action = ActionDecoder.use()
-            if len(action) >= 7:
-                action[6] = 1
+            if len(action) > ACTION_USE:
+                action[ACTION_USE] = 1
             return action
         if dist < 192.0:
             # Close to the exit: keep moving, use, and strafe if we aren't closing the gap.
@@ -1773,8 +1861,8 @@ class SectorNavigator:
                     )
                 else:
                     action = ActionDecoder.forward()
-            if len(action) >= 7:
-                action[6] = 1
+            if len(action) > ACTION_USE:
+                action[ACTION_USE] = 1
             return action
         if dist < 320.0:
             # Close enough: steer directly at the exit line and keep using.
@@ -1796,8 +1884,8 @@ class SectorNavigator:
                 )
             else:
                 action = ActionDecoder.forward()
-            if len(action) >= 7:
-                action[6] = 1
+            if len(action) > ACTION_USE:
+                action[ACTION_USE] = 1
             return action
         target = (target_x, target_y, 0.0)
         # Force a fresh path toward the exit line target.
@@ -1845,8 +1933,8 @@ class SectorNavigator:
             if self.exit_focus_push_ticks > 0:
                 self.exit_focus_push_ticks -= 1
                 action = ActionDecoder.forward()
-                if len(action) >= 7:
-                    action[6] = 1
+                if len(action) > ACTION_USE:
+                    action[ACTION_USE] = 1
                 return action
             if not seen and dist > 96.0:
                 self.exit_focus_stage = "scan"
@@ -1854,8 +1942,8 @@ class SectorNavigator:
             if dist < 64.0:
                 self.exit_focus_push_ticks = 25
                 action = ActionDecoder.forward()
-                if len(action) >= 7:
-                    action[6] = 1
+                if len(action) > ACTION_USE:
+                    action[ACTION_USE] = 1
                 return action
             if abs(angle_diff) > 12.0:
                 return ActionDecoder.left_turn() if angle_diff > 0 else ActionDecoder.right_turn()
@@ -2317,7 +2405,7 @@ class SectorNavigator:
         near_special_stuck = nearest_special_dist is not None and nearest_special_dist < 12.0
         door_dist, door_info = self._nearest_door(p2d)
         near_door_stuck = door_dist is not None and door_dist < 40.0
-        locked_door_info, locked_key_color = self._nearest_locked_door_without_detour(p2d, max_dist=24.0)
+        locked_door_info, locked_key_color = self._nearest_locked_door_without_detour(p2d, max_dist=48.0)
 
         # Stuck detection
         prev_pos = self.last_pos
@@ -2345,11 +2433,26 @@ class SectorNavigator:
             pos_stuck = pos_stuck and min_elapsed and has_progress
 
         if not self.route_built:
+            route_start_id = self._nearest_node_id_to_point((pos[0], pos[1]))
+            if route_start_id is None:
+                route_start_id = current_node_id
+            if current_node_id is not None and route_start_id is not None and current_node_id != route_start_id:
+                logger.info(
+                    "[NAV] Start node override: poly_node=%s nearest_node=%s",
+                    current_node_id,
+                    route_start_id,
+                )
             self.route_nodes = self._build_node_route(
-                current_node_id,
+                route_start_id,
                 end_id_override=self.explore_end_id if exploring else None,
             )
             self.route_idx = 0
+            if route_start_id is not None:
+                # Treat spawn node as already visited; do not navigate back to it.
+                self.last_visited_route_node = route_start_id
+                if self.route_nodes and self.route_nodes[0] == route_start_id:
+                    self.route_idx = 1
+                    logger.info("[NAV] Skipping start node target=%s (already at spawn)", route_start_id)
             self.route_built = True
             if self.route_nodes:
                 logger.info(f"[NAV] Route nodes: {len(self.route_nodes)}")
@@ -2456,6 +2559,8 @@ class SectorNavigator:
                         continue
                     break
                 if self.key_detour_to_key_idx >= len(self.key_detour_to_key_nodes):
+                    if self.key_detour_color:
+                        self.acquired_keys.add(self.key_detour_color)
                     self.key_detour_stage = "return_door"
                     self.key_detour_replan_cooldown = 0
                     self.key_detour_last_stall_target = None
@@ -2655,9 +2760,12 @@ class SectorNavigator:
             and self.path_idx < len(self.path_points)
         )
         if tracking_active:
-            # Count true regress/stall, not tiny frame-to-frame jitter while advancing.
-            if self.last_distance is not None and distance >= self.last_distance + 1.5:
-                self.no_progress += 1
+            # "No progress" means not getting materially closer (including standing still).
+            if self.last_distance is not None:
+                if distance < self.last_distance - 1.0:
+                    self.no_progress = 0
+                else:
+                    self.no_progress += 1
             else:
                 self.no_progress = 0
             self.last_distance = distance
@@ -2777,6 +2885,26 @@ class SectorNavigator:
 
         if self.use_cooldown > 0:
             self.use_cooldown -= 1
+
+        # Locked-door key detour should not depend on corner_stuck because we
+        # intentionally suppress corner_stuck near doors to avoid false positives.
+        if (
+            not self.key_detour_active
+            and locked_door_info is not None
+            and locked_key_color is not None
+            and door_dist is not None
+            and door_dist < 56.0
+            and abs(angle_diff) < 45.0
+            and target_dist > 48.0
+            and (self.stuck_counter > 8 or self.no_progress > 8)
+        ):
+            if self._activate_key_detour(locked_door_info, locked_key_color, pos):
+                logger.info(
+                    "[NAV] Locked door stall detected: activating key detour color=%s door_dist=%.1f",
+                    locked_key_color,
+                    door_dist,
+                )
+                return ActionDecoder.forward()
         # Door-first assist: if we are aligned, close to a door, and slowing down,
         # try a single throttled use+forward before escalating to stuck recovery.
         if (
@@ -2791,8 +2919,8 @@ class SectorNavigator:
             and (self.step - self.last_special_use_step) >= 90
         ):
             action = ActionDecoder.forward()
-            if len(action) >= 7:
-                action[6] = 1
+            if len(action) > ACTION_USE:
+                action[ACTION_USE] = 1
             self.use_cooldown = 90
             self.last_special_use_seg = door_info.get("segment") if isinstance(door_info, dict) else None
             self.last_special_use_step = self.step
@@ -2855,6 +2983,16 @@ class SectorNavigator:
                 or (min_elapsed and has_progress and (pos_spread < 96.0) and self.no_progress > 52 and not near_special_stuck and not near_door_stuck)
                 or dist_only_stuck
             )
+        # Hard stuck rule: if we are not moving for a sustained span, force stuck handling.
+        forced_stuck = (
+            not self.combat_active
+            and self.route_idx < len(self.route_nodes)
+            and not self.key_detour_active
+            and self.stuck_counter >= 16
+            and target_dist > 24.0
+        )
+        if forced_stuck:
+            corner_stuck = True
         clear_lane_progress = progress > 12.0 if has_progress else self.no_progress < 12
         if corner_stuck and not near_special_stuck and not near_door_stuck and abs(angle_diff) < 22.0 and target_dist > 64.0 and clear_lane_progress:
             corner_stuck = False
@@ -2875,6 +3013,38 @@ class SectorNavigator:
             )
         if corner_stuck:
             self.corner_stuck_cooldown = 20
+            # Track repeated stalls on the same target/spot to avoid infinite loops.
+            if self.current_target is not None:
+                same_target = self.last_stuck_target == self.current_target
+                same_area = (
+                    self.last_stuck_pos is not None
+                    and math.hypot(pos[0] - self.last_stuck_pos[0], pos[1] - self.last_stuck_pos[1]) < 96.0
+                )
+                if same_target and same_area:
+                    self.repeat_stuck_count += 1
+                else:
+                    self.repeat_stuck_count = 1
+                self.last_stuck_target = self.current_target
+                self.last_stuck_pos = (pos[0], pos[1])
+
+                # Escalation: if we keep sticking at the same spot, skip this target.
+                if self.repeat_stuck_count >= 3 and self.route_idx < len(self.route_nodes):
+                    stuck_target = self.current_target
+                    if self.route_nodes[self.route_idx] == stuck_target:
+                        self.route_idx += 1
+                    self.path_points = []
+                    self.path_idx = 0
+                    self.current_target = None
+                    self.no_progress = 0
+                    self.last_distance = None
+                    self.stuck_recovery_ticks = 0
+                    self.corner_stuck_cooldown = 0
+                    logger.info(
+                        "[NAV] Repeated stuck at target=%s, skipping to route_idx=%s",
+                        stuck_target,
+                        self.route_idx,
+                    )
+                    return ActionDecoder.forward()
             # Mark where stuck detection actually fires (throttled for readability).
             if (
                 not self.stuck_events
@@ -2944,6 +3114,55 @@ class SectorNavigator:
             self.frozen_pos = None
 
         if corner_stuck:
+            if self.stuck_recovery_ticks <= 0:
+                self.stuck_recovery_ticks = 16
+                default_dir = 1 if angle_diff < 0.0 else -1
+                right_score = self._side_clearance_score((pos[0], pos[1]), current_angle, current_node_id, 1)
+                left_score = self._side_clearance_score((pos[0], pos[1]), current_angle, current_node_id, -1)
+                if right_score > left_score + 4.0:
+                    self.stuck_recovery_dir = 1
+                elif left_score > right_score + 4.0:
+                    self.stuck_recovery_dir = -1
+                else:
+                    self.stuck_recovery_dir = default_dir
+                logger.info(
+                    "[NAV] Corner-stuck recovery: start backup dir=%s stuck=%s no_prog=%s clear(R/L)=%.1f/%.1f",
+                    "right" if self.stuck_recovery_dir > 0 else "left",
+                    self.stuck_counter,
+                    self.no_progress,
+                    right_score,
+                    left_score,
+                )
+
+            # Phase 1: back away while veering to break contact.
+            if self.stuck_recovery_ticks > 10:
+                self.stuck_recovery_ticks -= 1
+                if self.stuck_recovery_dir > 0:
+                    return ActionDecoder.backward_right_turn()
+                return ActionDecoder.backward_left_turn()
+
+            # Phase 2: keep backing up to clear obstacle.
+            if self.stuck_recovery_ticks > 6:
+                self.stuck_recovery_ticks -= 1
+                return ActionDecoder.backward()
+
+            # Phase 3: re-approach from a side.
+            if self.stuck_recovery_ticks > 0:
+                self.stuck_recovery_ticks -= 1
+                if self.stuck_recovery_dir > 0:
+                    return ActionDecoder.forward_strafe_right()
+                return ActionDecoder.forward_strafe_left()
+
+            # If still corner-stuck after backup/veer sequence, prioritize a subroute.
+            if (
+                not self.subroute_active
+                and self.subroute_cooldown == 0
+                and current_node_id not in self.failed_subroute_nodes
+                and self._start_subroute(current_node_id, (pos[0], pos[1]))
+            ):
+                logger.info("[NAV] Corner-stuck recovery: backup complete, activating subroute")
+                return ActionDecoder.forward()
+
             if near_door_stuck and not self.key_detour_active:
                 if (
                     not self.key_detour_active

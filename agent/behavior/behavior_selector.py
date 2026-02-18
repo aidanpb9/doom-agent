@@ -3,6 +3,7 @@ import logging
 from agent.utils.action_decoder import ActionDecoder
 from agent.perception.perception import PerceptionManager
 from agent.navigation.sector_navigator import SectorNavigator
+from config.defaults import ACTION_ATTACK, ACTION_USE
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,10 @@ class BehaviorSelector:
         self.combat_seen_ticks = 0
         self.combat_active_ticks = 0
         self.combat_max_active = 120
+        self.barrel_avoid_ticks = 0
+        self.barrel_avoid_dir = 1
+        self.barrel_avoid_cooldown = 0
+        self.proactive_barrel_cooldown = 0
 
     def set_map_name(self, map_name: str) -> None:
         if map_name:
@@ -54,6 +59,10 @@ class BehaviorSelector:
         self.combat_rearm = 0
         self.combat_seen_ticks = 0
         self.combat_active_ticks = 0
+        self.barrel_avoid_ticks = 0
+        self.barrel_avoid_dir = 1
+        self.barrel_avoid_cooldown = 0
+        self.proactive_barrel_cooldown = 0
     
     def is_aiming_at_wall(self, screen):
         """Check if screen center shows a wall (uniform, bright color)."""
@@ -108,7 +117,12 @@ class BehaviorSelector:
         nav_action = None
 
         if self.combat_enabled:
+            if self.barrel_avoid_cooldown > 0:
+                self.barrel_avoid_cooldown -= 1
+            if self.proactive_barrel_cooldown > 0:
+                self.proactive_barrel_cooldown -= 1
             screen_h = screen.shape[0] if screen is not None and hasattr(screen, "shape") else None
+            screen_shape = screen.shape if screen is not None and hasattr(screen, "shape") else None
             enemy = self.perception.detect_enemies_from_labels(
                 state_info.get("labels", []),
                 pos_z=pos_z,
@@ -153,11 +167,115 @@ class BehaviorSelector:
             sectors = state_info.get("sectors")
             lines = state_info.get("lines")
             nav_action = self.sector_navigator.decide_action(pos_x, pos_y, sectors, current_angle, lines=lines)
+            labels = state_info.get("labels", [])
+            blocking_barrel = self.perception.detect_blocking_barrel(labels, screen_shape=screen_shape, require_center=True)
+            # Proactive barrel avoidance: if collision is likely, veer now.
+            if blocking_barrel is not None and screen_shape is not None and len(screen_shape) >= 2:
+                cx, cy, area, _ = blocking_barrel
+                screen_w = float(screen_shape[1])
+                screen_h = float(screen_shape[0])
+                nav_stalling_now = (
+                    getattr(nav, "stuck_counter", 0) > 8
+                    and getattr(nav, "no_progress", 0) > 6
+                )
+                nav_slowing = getattr(nav, "no_progress", 0) > 2
+                imminent_collision = (
+                    area > 700.0
+                    and abs(cx - (screen_w * 0.5)) <= screen_w * 0.08
+                    and cy >= screen_h * 0.62
+                )
+                if imminent_collision and nav_slowing and not nav_stalling_now and self.proactive_barrel_cooldown == 0:
+                    avoid_right = cx < (screen_w * 0.5)
+                    # For near-center barrels, bias by nav steering direction so we
+                    # don't dodge into the wall side.
+                    try:
+                        node_id = nav._node_id_for_point((pos_x, pos_y))
+                        right_clear = nav._side_clearance_score((pos_x, pos_y), current_angle, node_id, 1)
+                        left_clear = nav._side_clearance_score((pos_x, pos_y), current_angle, node_id, -1)
+                        if right_clear > left_clear + 2.0:
+                            avoid_right = True
+                        elif left_clear > right_clear + 2.0:
+                            avoid_right = False
+                    except Exception:
+                        pass
+                    logger.info(
+                        "[NAV] Imminent barrel collision: veer dir=%s area=%.1f cx=%.1f no_prog=%s",
+                        "right" if avoid_right else "left",
+                        area,
+                        cx,
+                        getattr(nav, "no_progress", 0),
+                    )
+                    self.proactive_barrel_cooldown = 18
+                    if avoid_right:
+                        return ActionDecoder.forward_strafe_right()
+                    return ActionDecoder.forward_strafe_left()
+            if self.barrel_avoid_ticks > 0:
+                # Stop recovery early if progress resumed and barrel is no longer blocking.
+                if (
+                    getattr(nav, "stuck_counter", 0) < 6
+                    and getattr(nav, "no_progress", 0) < 4
+                    and blocking_barrel is None
+                ):
+                    self.barrel_avoid_ticks = 0
+                    self.barrel_avoid_cooldown = 24
+                else:
+                    self.barrel_avoid_ticks -= 1
+                    if self.barrel_avoid_ticks == 0:
+                        self.barrel_avoid_cooldown = 24
+                    # Pseudo "back off": turn in place first, then veer/strafe around.
+                    if self.barrel_avoid_ticks > 8:
+                        if self.barrel_avoid_dir > 0:
+                            return ActionDecoder.backward_right_turn()
+                        return ActionDecoder.backward_left_turn()
+                    if self.barrel_avoid_ticks > 4:
+                        if self.barrel_avoid_dir > 0:
+                            return ActionDecoder.forward_strafe_right()
+                        return ActionDecoder.forward_strafe_left()
+                    if self.barrel_avoid_dir > 0:
+                        return ActionDecoder.forward_right_turn()
+                    return ActionDecoder.forward_left_turn()
+            nav_stalling = (
+                getattr(nav, "stuck_counter", 0) > 10
+                and getattr(nav, "no_progress", 0) > 8
+            )
+            if blocking_barrel is None and nav_stalling:
+                blocking_barrel = self.perception.detect_blocking_barrel(
+                    labels,
+                    screen_shape=screen_shape,
+                    require_center=False,
+                )
+            if (
+                blocking_barrel is not None
+                and nav_stalling
+                and self.barrel_avoid_cooldown == 0
+            ):
+                cx, _, _, _ = blocking_barrel
+                if screen_shape is not None and len(screen_shape) >= 2:
+                    center_x = float(screen_shape[1]) * 0.5
+                    self.barrel_avoid_dir = 1 if cx < center_x else -1
+                else:
+                    self.barrel_avoid_dir = -self.barrel_avoid_dir
+                self.barrel_avoid_ticks = 12
+                logger.info(
+                    "[NAV] Barrel block detected: recover dir=%s stuck=%s no_prog=%s",
+                    "right" if self.barrel_avoid_dir > 0 else "left",
+                    getattr(nav, "stuck_counter", 0),
+                    getattr(nav, "no_progress", 0),
+                )
+                if self.barrel_avoid_dir > 0:
+                    return ActionDecoder.backward_right_turn()
+                return ActionDecoder.backward_left_turn()
+            elif nav_stalling and self.barrel_avoid_cooldown == 0 and self.barrel_avoid_ticks == 0 and (self.sector_navigator.step % 35 == 0):
+                logger.info(
+                    "[NAV] Barrel recovery not triggered: no barrel label while stalled (stuck=%s no_prog=%s)",
+                    getattr(nav, "stuck_counter", 0),
+                    getattr(nav, "no_progress", 0),
+                )
             if nav.exit_combat_override:
                 force_exit = (
                     isinstance(nav_action, list)
-                    and len(nav_action) >= 7
-                    and nav_action[6] == 1
+                    and len(nav_action) > ACTION_USE
+                    and nav_action[ACTION_USE] == 1
                 )
                 if force_exit or (enemy is None and not took_damage):
                     combat_active = False
@@ -211,24 +329,129 @@ class BehaviorSelector:
                     else:
                         shoot_ok = self.last_enemy_conf >= 0.5
                 if ammo > 0 and shoot_ok:
-                    if len(action) >= 6:
-                        action[5] = 1
+                    if len(action) > ACTION_ATTACK:
+                        action[ACTION_ATTACK] = 1
                 return action
 
             self.combat_active_ticks = 0
-            if isinstance(nav_action, list) and len(nav_action) >= 7 and nav_action[6] == 1:
+            if isinstance(nav_action, list) and len(nav_action) > ACTION_USE and nav_action[ACTION_USE] == 1:
                 return nav_action
 
             return nav_action
 
         # Navigation fallback when combat disabled.
         self.sector_navigator.set_combat_active(False)
+        if self.barrel_avoid_cooldown > 0:
+            self.barrel_avoid_cooldown -= 1
+        if self.proactive_barrel_cooldown > 0:
+            self.proactive_barrel_cooldown -= 1
         current_angle = state_info.get('angle', 0)
         sectors = state_info.get("sectors")
         lines = state_info.get("lines")
+        screen_shape = screen.shape if screen is not None and hasattr(screen, "shape") else None
         nav_action = self.sector_navigator.decide_action(pos_x, pos_y, sectors, current_angle, lines=lines)
+        nav = self.sector_navigator
+        labels = state_info.get("labels", [])
+        blocking_barrel = self.perception.detect_blocking_barrel(labels, screen_shape=screen_shape, require_center=True)
+        if blocking_barrel is not None and screen_shape is not None and len(screen_shape) >= 2:
+            cx, cy, area, _ = blocking_barrel
+            screen_w = float(screen_shape[1])
+            screen_h = float(screen_shape[0])
+            nav_stalling_now = (
+                getattr(nav, "stuck_counter", 0) > 8
+                and getattr(nav, "no_progress", 0) > 6
+            )
+            nav_slowing = getattr(nav, "no_progress", 0) > 2
+            imminent_collision = (
+                area > 700.0
+                and abs(cx - (screen_w * 0.5)) <= screen_w * 0.08
+                and cy >= screen_h * 0.62
+            )
+            if imminent_collision and nav_slowing and not nav_stalling_now and self.proactive_barrel_cooldown == 0:
+                avoid_right = cx < (screen_w * 0.5)
+                try:
+                    node_id = nav._node_id_for_point((pos_x, pos_y))
+                    right_clear = nav._side_clearance_score((pos_x, pos_y), current_angle, node_id, 1)
+                    left_clear = nav._side_clearance_score((pos_x, pos_y), current_angle, node_id, -1)
+                    if right_clear > left_clear + 2.0:
+                        avoid_right = True
+                    elif left_clear > right_clear + 2.0:
+                        avoid_right = False
+                except Exception:
+                    pass
+                logger.info(
+                    "[NAV] Imminent barrel collision: veer dir=%s area=%.1f cx=%.1f no_prog=%s",
+                    "right" if avoid_right else "left",
+                    area,
+                    cx,
+                    getattr(nav, "no_progress", 0),
+                )
+                self.proactive_barrel_cooldown = 18
+                if avoid_right:
+                    return ActionDecoder.forward_strafe_right()
+                return ActionDecoder.forward_strafe_left()
+        if self.barrel_avoid_ticks > 0:
+            if (
+                getattr(nav, "stuck_counter", 0) < 6
+                and getattr(nav, "no_progress", 0) < 4
+                and blocking_barrel is None
+            ):
+                self.barrel_avoid_ticks = 0
+                self.barrel_avoid_cooldown = 24
+            else:
+                self.barrel_avoid_ticks -= 1
+                if self.barrel_avoid_ticks == 0:
+                    self.barrel_avoid_cooldown = 24
+                if self.barrel_avoid_ticks > 8:
+                    if self.barrel_avoid_dir > 0:
+                        return ActionDecoder.backward_right_turn()
+                    return ActionDecoder.backward_left_turn()
+                if self.barrel_avoid_ticks > 4:
+                    if self.barrel_avoid_dir > 0:
+                        return ActionDecoder.forward_strafe_right()
+                    return ActionDecoder.forward_strafe_left()
+                if self.barrel_avoid_dir > 0:
+                    return ActionDecoder.forward_right_turn()
+                return ActionDecoder.forward_left_turn()
+        nav_stalling = (
+            getattr(nav, "stuck_counter", 0) > 10
+            and getattr(nav, "no_progress", 0) > 8
+        )
+        if blocking_barrel is None and nav_stalling:
+            blocking_barrel = self.perception.detect_blocking_barrel(
+                labels,
+                screen_shape=screen_shape,
+                require_center=False,
+            )
+        if (
+            blocking_barrel is not None
+            and nav_stalling
+            and self.barrel_avoid_cooldown == 0
+        ):
+            cx, _, _, _ = blocking_barrel
+            if screen_shape is not None and len(screen_shape) >= 2:
+                center_x = float(screen_shape[1]) * 0.5
+                self.barrel_avoid_dir = 1 if cx < center_x else -1
+            else:
+                self.barrel_avoid_dir = -self.barrel_avoid_dir
+            self.barrel_avoid_ticks = 12
+            logger.info(
+                "[NAV] Barrel block detected: recover dir=%s stuck=%s no_prog=%s",
+                "right" if self.barrel_avoid_dir > 0 else "left",
+                getattr(nav, "stuck_counter", 0),
+                getattr(nav, "no_progress", 0),
+            )
+            if self.barrel_avoid_dir > 0:
+                return ActionDecoder.backward_right_turn()
+            return ActionDecoder.backward_left_turn()
+        elif nav_stalling and self.barrel_avoid_cooldown == 0 and self.barrel_avoid_ticks == 0 and (self.sector_navigator.step % 35 == 0):
+            logger.info(
+                "[NAV] Barrel recovery not triggered: no barrel label while stalled (stuck=%s no_prog=%s)",
+                getattr(nav, "stuck_counter", 0),
+                getattr(nav, "no_progress", 0),
+            )
 
-        if isinstance(nav_action, list) and len(nav_action) >= 7 and nav_action[6] == 1:
+        if isinstance(nav_action, list) and len(nav_action) > ACTION_USE and nav_action[ACTION_USE] == 1:
             return nav_action
 
         return nav_action
