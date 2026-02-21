@@ -2782,7 +2782,14 @@ class SectorNavigator:
                     if prev_pos is not None:
                         poly = self.mesh.nodes[target_id].polygon
                         passed = self._segment_intersects_polygon(prev_pos, (pos[0], pos[1]), poly)
-                    door_hit = crossed_door and not door_consumed
+                    # Door crossing is a weak visit signal; only accept it when
+                    # we're already close to the target node to avoid skipping
+                    # route waypoints that happen to lie later in the graph.
+                    door_hit = (
+                        crossed_door
+                        and not door_consumed
+                        and dist <= max(self.node_visit_radius * 2.0, 144.0)
+                    )
                     entered = current_node_id == target_id if current_node_id is not None else False
                     if entered or dist <= self.node_visit_radius or passed or door_hit:
                         logger.info(
