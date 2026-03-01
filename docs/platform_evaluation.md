@@ -34,69 +34,16 @@ Tested `doom.wad` compatibility with all episodes:
 **Total: 27 levels confirmed working**
 
 Command:
-
 - run this code block, it shows all 27 levels opening
-- use the code block from the raw version of this file
-- make sure you have a doom.wad file in the wads folder
+- make sure doom.wad is named correctly in the wads folder 
+- YOU MUST VISUALLY VERIFY THAT DIFFERENT LEVELS ARE BEING OPENED
 
-`python3 -c "
-import vizdoom as vzd
-game = vzd.DoomGame()
-game.set_doom_scenario_path('wads/doom.wad')
-for ep in [1, 2, 3]:
-    for level in range(1, 10):
-        map_name = f'E{ep}M{level}'
-        try:
-            game.set_doom_map(map_name)
-            game.init()
-            print(f'✓ {map_name} loaded successfully')
-            game.close()
-            game = vzd.DoomGame()
-            game.set_doom_scenario_path('wads/doom.wad')
-        except:
-            print(f'✗ {map_name} failed')
-" 2>&1 | grep "✓"`
-
+python3 -c "import vizdoom as vzd; import time; game = vzd.DoomGame(); game.set_doom_scenario_path('wads/doom.wad'); [print(f'✓ E{ep}M{lv}') if (game.set_doom_map(f'E{ep}M{lv}'), game.init(), time.sleep(0.5), game.close(), True)[-1] else print(f'✗ E{ep}M{lv}') for ep in [1,2,3] for lv in range(1,10)]"
 
 **WAD File Details:**
 - File: `doom.wad`
-- Size: 4.1 MB
+- Size: 10 MB
 - Type: Registered Doom (Episodes 1-3)
-
----
-
-## Performance Baseline (Sprint 1)
-
-### Test Configuration
-- Map: E1M1
-- Mode: Fast (headless)
-- Timeout: 60 seconds
-
-### Test Commands
-
-**Execution time:**
-```bash
-time python3 main.py run --map E1M1 --timeout 60 --fast
-```
-
-**Memory usage:**
-```bash
-/usr/bin/time -v python3 main.py run --map E1M1 --timeout 60 --fast 2>&1 | grep "Maximum resident"
-```
-
-**WAD file size:**
-```bash
-ls -lh wads/doom.wad
-```
-
-### Measured Performance
-- **Execution time:** 1.3 seconds wall-clock time
-- **Memory usage:** ~38 MB RAM per instance
-- **WAD storage:** 4.1 MB
-
-**Note:** Performance measurements represent current baseline. May vary with different maps, agent parameters, or future optimizations.
-
----
 
 ## Limitations and Constraints
 
@@ -104,88 +51,51 @@ ls -lh wads/doom.wad
 
 **Verified Issues:**
 1. **Segmentation fault on exit:** VizDoom crashes during cleanup after successful episode completion. This is a known cosmetic issue that does not affect gameplay or results.
-2. **Headless mode required:** Fast mode disables rendering for optimal performance.
+
 
 **Platform Constraints:**
-1. **Action space:** 7 discrete actions (FORWARD, LEFT_TURN, RIGHT_TURN, STRAFE_LEFT, STRAFE_RIGHT, ATTACK, USE)
-2. **Single-player only:** Multiplayer scenarios not supported
-3. **Deterministic execution:** Same inputs produce same outputs (beneficial for validation and replay)
+1. **Action space:** Has many available actions, but not all are useful/necessary. View all actions with: 
+
+    python3 -c "import vizdoom as vzd; [print(attr) for attr in dir(vzd.Button) if not attr.startswith('_')]"
+2. **Seed:** Seeds control game RNG. We will use one specific seed to minimize randomness.
+3. **Tic rate:** Affects how fast things happen in game. VizDoom's tic rate is 35 by default. We will not change this. 
+3. **Testing Speed:** Slow/fast modes are controlled with frame skip. In fast mode the agent makes decisions about 4 times per second (sees every 8 frames). In slow mode it is 35 times per second. This means there will be some difference in behavior between the modes. So, the genetic algorithm will be ran in fast mode while slow mode will be used for demos, observations, and testing.
 
 ### CubeSat-Specific Constraints
-
-**Resource Requirements:**
-- **Memory:** ~38 MB RAM per agent instance (limits concurrent episodes)
-- **Storage:** 4.1 MB for WAD file (acceptable for CubeSat storage budget)
-- **Compute:** Episode timeout enforcement required to prevent infinite loops
 
 **Operational Constraints:**
 - Episodes must complete within timeout window
 - Fast mode necessary for reasonable execution speed
 - Limited to vanilla Doom content (no complex WAD mods)
 
----
-
-## Alternative Evaluation
+## Alternative Evaluation (researched using Claude Sonnet 4.5)
 
 ### Native Doom Emulators Considered
 
 **Chocolate Doom:**
-- Pros: Exact Doom behavior, low overhead
-- Cons: No Python API, difficult to integrate with agent control
+- Pros: Exact vanilla Doom behavior, very low overhead, faithful reproduction
+- Cons: No Python API, no reinforcement learning interface, would require custom wrapper development
 
 **PrBoom+:**
-- Pros: Enhanced Doom port, good performance
-- Cons: No reinforcement learning API, manual I/O required
+- Pros: Enhanced Doom port with demo recording, good performance, widely used for speedrunning
+- Cons: No built-in RL API, would require manual I/O parsing (demo files or memory reading), significant integration effort
 
 **Crispy Doom:**
-- Pros: Faithful to original, lightweight
-- Cons: No programmatic control interface
+- Pros: Faithful to original with QoL improvements, lightweight, maintains vanilla limits
+- Cons: No programmatic control interface, same integration challenges as Chocolate Doom
 
-### Decision Rationale
+**Why VizDoom was chosen:**
+- Native Python API for agent control
+- Direct access to game state (position, health, enemies, etc.)
+- Screen buffer and label support for perception
+- Designed specifically for RL research
+- Active development and community support
+- Built on ZDoom engine (more features than vanilla while maintaining compatibility)
 
-**VizDoom selected for:**
-1. **Native Python API** - Direct integration with agent code
-2. **RL-focused design** - Built for automated gameplay and training
-3. **State extraction** - Access to game variables, enemy positions, sector data
-4. **Proven research platform** - Established in AI/RL community
-5. **Deterministic replay** - Critical for validation and debugging
-
-Despite minor limitations (exit crash, memory footprint), VizDoom's purpose-built RL capabilities outweigh alternatives that would require custom integration layers.
-
----
-
-## Implementation Notes
-
-### Integration with Agent
-
-VizDoom successfully integrated with:
-- State machine decision-making (`behavior_selector.py`)
-- Navmesh pathfinding (`sector_navigator.py`)
-- Genetic algorithm parameter evolution (`genetic_algo.py`)
-- Performance testing framework (`test_framework.py`)
-
-### Known Workarounds
-
-**Exit crash mitigation:**
-- Crash occurs after episode completion
-- Results and logs saved before crash
-- Does not affect multi-episode runs
-
-**Memory management:**
-- Agent instances properly closed after each episode
-- Logs cleared between test runs
-- No memory leaks observed during testing
-
----
+While native emulators offer faithful Doom execution, VizDoom's purpose-built RL interface eliminates months of wrapper development work. Despite minor limitations (exit crash, memory footprint), VizDoom's capabilities outweigh alternatives that would require custom integration layers.
 
 ## Conclusion
 
-**VizDoom is confirmed suitable for the DoomSat mission.**
-
-✅ Supports all 27 Doom 1 levels  
-✅ Provides necessary RL integration capabilities  
-✅ Performance acceptable for CubeSat constraints  
-✅ Deterministic execution enables validation  
-✅ Active research community for support  
-
+VizDoom is confirmed suitable for the DoomSat mission.
 Platform limitations are manageable and do not block mission objectives.
+While native emulators offer faithful Doom execution, VizDoom's purpose-built RL interface eliminates months of wrapper development work.
