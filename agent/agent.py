@@ -191,7 +191,7 @@ class DoomAgent:
         if self.map_name:
             doom_map = str(self.map_name).upper()
         else:
-            doom_map = "E1M1" if "doom1" in wad_name else "MAP01"
+            doom_map = "E1M1" if "doom" in wad_name else "MAP01"
         try:
             self.game.set_doom_map(doom_map)
         except Exception:

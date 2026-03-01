@@ -15,7 +15,7 @@ DEFAULT_HANG_ACTION_TIMEOUT = 6.0  # seconds of no action completion
 # Game engine settings
 DEFAULT_TICRATE = 35  # Doom's native ticrate
 DEFAULT_MAP_NAME = "E1M1"
-DEFAULT_WAD_PATH = "wads/doom1.wad"
+DEFAULT_WAD_PATH = "wads/doom.wad"
 
 # Enemy detection keywords
 ENEMY_KEYWORDS = (

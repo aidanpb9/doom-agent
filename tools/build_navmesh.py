@@ -134,7 +134,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Build navmesh JSON from a UDMF WAD.")
     parser.add_argument("--map", help="Map name, e.g. E1M1")
     parser.add_argument("--all", action="store_true", help="Build all maps found in --udmf-wad")
-    parser.add_argument("--udmf-wad", default="wads/doom1-udmf.wad", help="Source UDMF WAD")
+    parser.add_argument("--udmf-wad", default="wads/doom-udmf.wad", help="Source UDMF WAD")
     parser.add_argument(
         "--maps-wad",
         default="wads/DOOM.WAD",

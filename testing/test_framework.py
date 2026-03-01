@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class DoomTester:
     """Testing framework for evaluating DoomAgent performance across multiple episodes."""
     
-    def __init__(self, wad_path="wads/doom1.wad", map_name="E1M1"):
+    def __init__(self, wad_path="wads/doom.wad", map_name="E1M1"):
         """
         Initialize the tester.
         
@@ -247,10 +247,10 @@ if __name__ == "__main__":
     
     # Test on E1M1
     print("\nRunning test suite on E1M1...")
-    tester = DoomTester(wad_path="wads/doom1.wad", map_name="E1M1")
+    tester = DoomTester(wad_path="wads/doom.wad", map_name="E1M1")
     tester.run_test_suite(num_episodes=5, episode_timeout=60, fast_mode=True)
     
     # Optionally test on E1M2
     # print("\nRunning test suite on E1M2...")
-    # tester2 = DoomTester(wad_path="wads/doom1.wad", map_name="E1M2")
+    # tester2 = DoomTester(wad_path="wads/doom.wad", map_name="E1M2")
     # tester2.run_test_suite(num_episodes=5, episode_timeout=60, fast_mode=True)

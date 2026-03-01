@@ -208,7 +208,7 @@ def main():
     """Run validation comparison."""
     
     # Configuration
-    wad_path = "wads/doom1.wad"
+    wad_path = "wads/doom.wad"
     map_name = "E1M1"
     num_episodes = 5
     episode_timeout = 120

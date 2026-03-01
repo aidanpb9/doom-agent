@@ -157,7 +157,7 @@ class TwoAgentGA:
     
     def __init__(
         self,
-        wad_path: str = "wads/doom1.wad",
+        wad_path: str = "wads/doom.wad",
         map_name: str = "E1M1",
         episode_timeout: int = 120,
         fast_mode: bool = True,
@@ -510,7 +510,7 @@ if __name__ == "__main__":
     
     # Run 2-agent GA
     ga = TwoAgentGA(
-        wad_path="wads/doom1.wad",
+        wad_path="wads/doom.wad",
         map_name="E1M1",
         episode_timeout=60,
         fast_mode=True,

@@ -68,12 +68,12 @@ pip install -r requirements.txt
 2. **Add your Doom WAD** to the `wads/` directory:
 ```bash
 # For shareware Doom
-cp /path/to/doom1.wad wads/
+cp /path/to/doom.wad wads/
 
 # Or for full Doom
 cp /path/to/doom.wad wads/
 ```
-RENAME the wad file to: doom1.wad
+RENAME the wad file to: doom.wad
 
 ### Basic Usage
 
@@ -96,7 +96,7 @@ python main.py run [options]
 
 Options:
   --map MAP         Map name (default: E1M1)
-  --wad WAD         Path to WAD file (default: wads/doom1.wad)
+  --wad WAD         Path to WAD file (default: wads/doom.wad)
   --timeout SEC     Episode timeout in seconds (default: 60)
   --fast            Run in fast mode (headless, reduced logging)
   --no-debug        Disable debug output (no automap/nav images)

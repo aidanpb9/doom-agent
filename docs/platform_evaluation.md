@@ -1,10 +1,8 @@
 # Platform Evaluation: VizDoom vs Emulator
 
-**Task:** 2.A - Evaluate VizDoom capabilities for full Doom 1  
+**Task:** User Story 2.A - Evaluate VizDoom capabilities for full Doom 1 (E1M1-E3M9)  
 **Date:** February 10, 2026  
 **Team:** Doom Team
-
----
 
 ## Task Overview
 
@@ -17,9 +15,7 @@ Research and document whether VizDoom can run full Doom 1 or only FreeDoom scena
 **Acceptance Criteria:**
 - VizDoom supported scenarios documented
 - Limitations or constraints clearly stated
-- Documented and linked to GitHub issue
 
----
 
 ## VizDoom Capabilities
 
@@ -29,7 +25,7 @@ VizDoom successfully runs full Doom 1 (registered version) with all episodes and
 
 **WAD Verification:**
 
-Tested `doom1.wad` compatibility with all episodes:
+Tested `doom.wad` compatibility with all episodes:
 
 - Episode 1: E1M1-E1M9 ✓
 - Episode 2: E2M1-E2M9 ✓  
@@ -38,6 +34,7 @@ Tested `doom1.wad` compatibility with all episodes:
 **Total: 27 levels confirmed working**
 
 Command:
+
 - run this code block, it shows all 27 levels opening
 - use the code block from the raw version of this file
 - make sure you have a doom.wad file in the wads folder
@@ -45,7 +42,7 @@ Command:
 `python3 -c "
 import vizdoom as vzd
 game = vzd.DoomGame()
-game.set_doom_scenario_path('wads/doom1.wad')
+game.set_doom_scenario_path('wads/doom.wad')
 for ep in [1, 2, 3]:
     for level in range(1, 10):
         map_name = f'E{ep}M{level}'
@@ -55,14 +52,14 @@ for ep in [1, 2, 3]:
             print(f'✓ {map_name} loaded successfully')
             game.close()
             game = vzd.DoomGame()
-            game.set_doom_scenario_path('wads/doom1.wad')
+            game.set_doom_scenario_path('wads/doom.wad')
         except:
             print(f'✗ {map_name} failed')
 " 2>&1 | grep "✓"`
 
 
 **WAD File Details:**
-- File: `doom1.wad`
+- File: `doom.wad`
 - Size: 4.1 MB
 - Type: Registered Doom (Episodes 1-3)
 
@@ -89,7 +86,7 @@ time python3 main.py run --map E1M1 --timeout 60 --fast
 
 **WAD file size:**
 ```bash
-ls -lh wads/doom1.wad
+ls -lh wads/doom.wad
 ```
 
 ### Measured Performance
