@@ -73,6 +73,7 @@ max ammo capacities
 - Armor (regular armor and super armor at key locations)
 - Ammo (type-specific, with max capacity limits)
 - Can't pick up loot beyond max capacity
+- Health max is 200%, armor max is 200%
 
 **Loot Behavior:**
 - Loot scattered on ground throughout levels at spawn time

@@ -1,16 +1,13 @@
-# Overview
+# Execution Algorithm Design
 
-The execution algorithm is a state machine with tunable params that control agent behavior. The default state is Navigation, other states are like interrupts for allowing the agent to deal with the game which temporarily changes behavior and the goal node. This doc defines the architecture needed to beat E1M1 and its mechanics only. States have a natural hierarchy defined by their entry/exit conditions.
-
-Genetic algorithm compares baseline A param set (genome) with mutated B genome and saves the higher scorer as the new baseline.
-
-# Execution Algorithm
+## Overview
+The execution algorithm is a hierarchal state machine with tunable params that control agent behavior. This doc defines the architecture needed to beat E1M1 and its mechanics only. States have a natural hierarchy defined by their entry/exit conditions.
 
 ## Hyperparameters
 - Level timeout: scales by level, E1M1 = 120 seconds
 - Hang detector: level ends if STUCK state active > 30 seconds
 - Stuck detection: if agent's moves < 100 units in the last 3 seconds (while walking forward, agent moves 3.3 units per frame * 25 fps = 80 units per second)
-- Minimum combat ammo: 0, if there's an enemy use every last bullet
+- Minimum combat ammo: 0, ammo_threshold param controls when we look for ammo, but we don't want it to dictate when we run from a fight.
 
 
 ## Layer 1: navigation engine
@@ -134,7 +131,9 @@ Genetic algorithm compares baseline A param set (genome) with mutated B genome a
 
 ## Testing:
 How is aim affected by movement in VizDoom?
+How does agent handle sprinting on tight or zigzag paths?
 Can agent create nodes for loot it sees accurately?
+Can we use automap feature to give good info?
 How far can agent see labels?
 How close does agent need to be to pick up loot?
 Confirm label.object_name provides item type granularity?
@@ -146,4 +145,3 @@ Does action_frame_skip affect stuck detection timing?
 
 ## Future Work
 - Detour state and Breadcrumb pathfinding will allow more exploration
-
