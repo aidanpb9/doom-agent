@@ -10,7 +10,7 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 - Minimum combat ammo: 0, ammo_threshold param controls when we look for ammo, but we don't want it to dictate when we run from a fight.
 
 
-## Layer 1: navigation engine
+## Layer 1: Navigation Engine
 - Use A* or Djistrika's to just go from points A to B
 - Input: start position, goal node, graph of all nodes
 - If door detected in path, execute USE action (doors defined with WADlinedef data)
@@ -129,7 +129,7 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 - Go to TRAVERSE if 360 spin completes
 
 
-## Testing:
+## Needs Testing:
 How is aim affected by movement in VizDoom?
 How does agent handle sprinting on tight or zigzag paths?
 Can agent create nodes for loot it sees accurately?
@@ -140,6 +140,7 @@ Confirm label.object_name provides item type granularity?
 What movement actually helps get unstuck?
 What is frame rate in normal vs fast mode?
 Does action_frame_skip affect stuck detection timing?
+How long does it take to run one level in fast mode (update genetic algo doc)?
 
 
 
