@@ -27,7 +27,6 @@ Genetic algorithm compares baseline A param set (genome) with mutated B genome a
 
 
 ## Layer 3: States
-- See [State Machine Diagram](state_machine_diagram.md) for visual overview
 - High to low priority, these are like goals
 - The hierarchy must be adhered to quite strictly or cycles will occur
 - STUCK is highest because it fixes underlying navigation problems
