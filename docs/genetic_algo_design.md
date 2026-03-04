@@ -46,14 +46,14 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Scan Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `scan_frequency` | 0.0-1.0 | Probability of triggering scan (0=never, 1.0=every ~10s) |
-| `scan_cooldown` | 1.0-8.0 seconds | Minimum time between scans |
+| `scan_frequency` | 0.0-1.0 | Probability of triggering scan (0=never, 1=every ~175 tics (5 seconds)) |
+| `scan_cooldown` | 35-280 tics (1-8 seconds) | Minimum time between scans |
 
 **Navigation Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
 | `stuck_distance_threshold` | 64-150 units | Distance moved to avoid stuck detection |
-| `stuck_time_threshold` | 3-7 seconds | Time before declaring stuck |
+| `stuck_time_threshold` | 105-245 tics (3-7 seconds) | Time before declaring stuck |
 
 **Total:** 8 parameters per genome
 
@@ -64,7 +64,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 ```python
 if level_completed:
     fitness = 1000                          # Base completion bonus
-            + 3000 / time_seconds           # Speed bonus 
+            + 3000 / (time_tics / 35)       # Speed bonus 
             + 2 * health_remaining          # Health
             + 1 * armor_remaining           # Armor   
             + 0.5 * ammo_remaining          # Ammo 
@@ -76,7 +76,7 @@ else:
 
 **Rationale:**
 - Completion heavily weighted (1000 pts) - primary objective
-- Speed matters (up to 600 pts for 0s vs 60s)
+- Completion speed matters 
 - Health more valuable than armor (2× weight)
 - Ammo carryover encouraged for future levels
 - Failed runs get partial credit to improve when levels aren't being completed
@@ -125,7 +125,7 @@ else:
 ## Evaluation Protocol
 **Per-Agent Evaluation:**
 - Map: E1M1
-- Timeout: 120 seconds
+- Timeout: 4200 tics (120 seconds)
 - Seed: Fixed (42) for reproducibility
 - Mode: Fast (headless, action_frame_skip=8)
 

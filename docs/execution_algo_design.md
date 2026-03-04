@@ -4,9 +4,9 @@
 The execution algorithm is a hierarchal state machine with tunable params that control agent behavior. This doc defines the architecture needed to beat E1M1 and its mechanics only. States have a natural hierarchy defined by their entry/exit conditions.
 
 ## Hyperparameters
-- Level timeout: scales by level, E1M1 = 120 seconds
-- Hang detector: level ends if STUCK state active > 30 seconds
-- Stuck detection: if agent's moves < 100 units in the last 3 seconds (while walking forward, agent moves 3.3 units per frame * 25 fps = 80 units per second)
+- Level timeout: should scale by level, E1M1 = 4200 tics (120 seconds @ 35 tic/s)
+- Hang detector: level ends if STUCK state active > 1050 tics (30 seconds)
+- Stuck detection: if agent's moves < x units (this is a genetic param) in the last 105 tics (3 seconds)
 - Minimum combat ammo: 0, ammo_threshold param controls when we look for ammo, but we don't want it to dictate when we run from a fight.
 
 
@@ -142,6 +142,8 @@ VizDoom provides "state.objects" which gives the agent all enemy/item positions 
 
 
 ## Needs Testing:
+How fast does agent walk?
+Does current implementation use A* or Dijkstra?
 How is aim affected by movement in VizDoom?
 How does agent handle sprinting on tight or zigzag paths?
 How far can agent see labels?
