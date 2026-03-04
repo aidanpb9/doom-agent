@@ -26,7 +26,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Mutation rate | 0.25 | 25% chance per parameter |
 | Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
 | Generations | 20-100 | Adjust based on convergence/time constraints |
-| Episode timeout | 120s | E1M1 time limit |
+| Episode timeout | 4200 tics (120 seconds) | E1M1 time limit |
 | Evaluation seed | Fixed(42) | Same seed for all evaluations for fairness |
 
 
@@ -49,13 +49,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | `scan_frequency` | 0.0-1.0 | Probability of triggering scan (0=never, 1=every ~175 tics (5 seconds)) |
 | `scan_cooldown` | 35-280 tics (1-8 seconds) | Minimum time between scans |
 
-**Navigation Parameters:**
-| Parameter | Range | Description |
-|-----------|-------|-------------|
-| `stuck_distance_threshold` | 64-150 units | Distance moved to avoid stuck detection |
-| `stuck_time_threshold` | 105-245 tics (3-7 seconds) | Time before declaring stuck |
-
-**Total:** 8 parameters per genome
+**Total:** 6 parameters per genome
 
 
 ## Fitness Function
@@ -131,11 +125,11 @@ else:
 
 **Metrics to collect:**
 - Level completion status
-- Episode time
+- Episode time and tics
 - Final health, armor, ammo
 - Enemies killed
-- Waypoints reached (if failed)
-- End reason (exit/death/timeout)
+- Waypoints reached
+- End reason (completion/death/timeout)
 
 
 ## Output & Logging
@@ -175,5 +169,6 @@ After evolution completes, generate plots from evolution_history.json:
 
 
 ## Future Work
+- make the 2 genomes run in parallel (multithread)
 - make visuals live using threading or web dashboard (Flask, Streamlit)
 - extend to E1M2
