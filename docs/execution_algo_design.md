@@ -143,6 +143,5 @@ Does action_frame_skip affect stuck detection timing?
 How long does it take to run one level in fast mode (update genetic algo doc)?
 
 
-
 ## Future Work
 - Detour state and Breadcrumb pathfinding will allow more exploration
