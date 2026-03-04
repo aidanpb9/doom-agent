@@ -167,16 +167,10 @@ After evolution completes, generate plots from evolution_history.json:
 
 
 ## Testing
-**Before Evolution:**
 - Verify fitness calculation (better performance = higher score)
 - Test mutation produces valid parameters (all in range)
-- Verify 42 is a valid seed?
 - Verify deterministic seeding (same seed = same result each run)
-
-**During Evolution:**
 - Check parameters aren't stuck at min/max boundaries
-
-**After Evolution:**
 - Re-evaluate final elite 3× to confirm consistency
 
 
