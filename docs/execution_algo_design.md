@@ -129,13 +129,24 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 - Go to TRAVERSE if 360 spin completes
 
 
+## Design Decisions
+**Automap Not Used:**
+VizDoom provides an automap buffer showing entire level layout and object positions. We chose not to use this feature because:
+- We want the agent to explore some and not have perfect map info going into the level
+- Maintains realistic perception constraints
+- Pre-placed waypoints + dynamic item nodes provide sufficient navigation guidance
+- Don't want to write image processing code
+
+**FOV information:**
+VizDoom provides "state.objects" which gives the agent all enemy/item positions in the entire map. We chose not to use this to prioritize learning by giving the agent minimal help. This creates more interesting evolutionary pressure (exploration vs exploitation). Testing on E1M1 showed state.objects returns 84 objects (entire level) while state.labels, which is FOV limited, returns 7 labels, confirming state.objects provides complete map knowledge. We will use state.labels to only use information available in the agent's FOV.
+
+
 ## Needs Testing:
 How is aim affected by movement in VizDoom?
 How does agent handle sprinting on tight or zigzag paths?
-Can agent create nodes for loot it sees accurately?
-Can we use automap feature to give good info?
 How far can agent see labels?
 How close does agent need to be to pick up loot?
+Can agent create nodes for loot it sees accurately?
 Confirm label.object_name provides item type granularity?
 What movement actually helps get unstuck?
 What is frame rate in normal vs fast mode?
