@@ -3,21 +3,21 @@
 ## Overview
 The execution algorithm is a hierarchal state machine with tunable params that control agent behavior. This doc defines the architecture needed to beat E1M1 and its mechanics only. States have a natural hierarchy defined by their entry/exit conditions.
 
+
 ## Hyperparameters
 - Level timeout: should scale by level, E1M1 = 4200 tics (120 seconds @ 35 tic/s)
-- Hang detector: level ends if position changes < 200 units in 1050 tics (30 seconds)
+- Hang detector: level ends if agent moves < 200 units in any 1050 tics (30 seconds)
 - Minimum combat ammo: 0, ammo_threshold param controls when we look for ammo, but we don't want it to dictate when we run from a fight.
 
 
 ## Layer 1: Navigation Engine
-- Use A* or Djistrika's to just go from points A to B
-- Input: start position, goal node, graph of all nodes
+- Use A* to pathfind from points A to B
 - If door detected in path, execute USE action (doors defined with WADlinedef data)
 
 
 ## Layer 2: PathTracker
 - Manages the node graph and mission progress
-- Static nodes define the mininal path for level completion
+- Static nodes, or waypoints, define the mininal path for level completion
 - Two types of dynamic nodes get placed by the agent during playtime, these reset upon level restart:
     1. Dynamic anchor nodes are like an automatic breadcrumb trail, they mark all the places the agent has been. These help the agent return to the main path when it strays from it. 
     2. Dynamic loot nodes get placed on loot within the agent's FOV.
@@ -121,11 +121,9 @@ VizDoom provides "state.objects" which gives the agent all enemy/item positions 
 
 
 ## Needs Testing:
-Does current implementation use A* or Dijkstra?
 How is aim affected by movement in VizDoom?
 How does agent handle sprinting on tight or zigzag paths?
 Does sprint lose control too much?
-How far can agent see labels?
 How close does agent need to be to pick up loot?
 Can agent create nodes for loot it sees accurately?
 Confirm label.object_name provides item type granularity?
@@ -138,12 +136,16 @@ Test what happens when too many dynamic anchor nodes are placed?
 
 ## Testing Results
 **Units, Speed, Visibility, Labels:**
-- For an understanding of unit size in DOOM: https://doomwiki.org/wiki/Map_unit
 - Walking speed: 6.11 units/tic (214 units/sec)
 - Sprinting speed: 12.28 units/tic (430 units/sec)
 - Visibility range: at least 700 units 
 - FOV-limited: state.labels only shows objects in current view
 - Objects behind agent or passed by disappear from labels
+
+
+## References
+Unit size reference: https://doomwiki.org/wiki/Map_unit
+Weapons and items: https://gamefaqs.gamespot.com/ps4/270132-doom-1993/faqs/80222/weapons-and-items
 
 
 ## Future Work

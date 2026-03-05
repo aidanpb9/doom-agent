@@ -46,10 +46,9 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Recovery Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `health_threshold` | 0-200 | Health level triggering RECOVER state |
-| `armor_threshold` | 0-200 | Armor level triggering RECOVER state |
+| `health_threshold` | 0-100 | Health level triggering RECOVER state |
+| `armor_threshold` | 0-100 | Armor level triggering RECOVER state |
 | `ammo_threshold` | 0-200 | Ammo level triggering RECOVER state |
-(200 is max. This gives agent the strategy to pick up every loot node even if generally healthy)
 
 **Scan Parameters:**
 | Parameter | Range | Description |
