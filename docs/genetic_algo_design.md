@@ -41,7 +41,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Combat Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `strafe_switch_time` | 5-50 frames | Ticks before changing strafe direction during combat |
+| `strafe_switch_time` | 5-50 tics | Ticks before changing strafe direction during combat |
 
 **Recovery Parameters:**
 | Parameter | Range | Description |

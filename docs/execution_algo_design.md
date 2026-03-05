@@ -116,17 +116,15 @@ VizDoom provides an automap buffer showing entire level layout and object positi
 - Pre-placed waypoints + dynamic item nodes provide sufficient navigation guidance
 - Don't want to write image processing code
 
-**FOV information:**
+**FOV Information:**
 VizDoom provides "state.objects" which gives the agent all enemy/item positions in the entire map. We chose not to use this to prioritize learning by giving the agent minimal help. This creates more interesting evolutionary pressure (exploration vs exploitation). Testing on E1M1 showed state.objects returns 84 objects (entire level) while state.labels, which is FOV limited, returns 7 labels, confirming state.objects provides complete map knowledge. We will use state.labels to only use information available in the agent's FOV.
+
+**Sprint Not Used:**
+Sprint is a valid action. However, we are omitting it for simplicity. The main benefit of using sprint would be to complete levels faster, but it only takes 2 seconds per level currently, so this isn't a huge time-saver. The main concern is that because sprinting exaggerates the effects of the sliding mechanic, the agent would lose some control over its pathfinding and get stuck or fall more often. This needs to be tested more.
 
 
 ## Needs Testing:
-How well does cheat aim work, and how is it implemented?
-How is aim affected by movement in VizDoom, does strafing throw aim off?
-How does agent handle sprinting on tight or zigzag paths, does it lose control?
 What happens when too many dynamic anchor nodes are placed?
-
-Can agent create nodes for loot it sees accurately?
 
 
 ## Testing Results
@@ -150,3 +148,4 @@ Weapons and items: https://gamefaqs.gamespot.com/ps4/270132-doom-1993/faqs/80222
     Entry: From TRAVERSE or RECOVER when stuck detection triggered (see Hyperparameters)
     Behavior undefined currently. Exit: Go to TRAVERSE when agent returned to main path
 - Detour state and Breadcrumb pathfinding will allow more exploration
+- Explore sprinting pros and cons

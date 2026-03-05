@@ -15,6 +15,7 @@ Played through the 27 levels of Doom (E1M1 - E3M9). Noted all the important game
 - Jump and crouch were not a part of original DOOM, but some version have it
 - Jump and crouch not necessary to beat the game
 - Sprint + Jump can clear barrels and small obstacles (rarely required, could help when stuck)
+- Player slides in direction of movement after stopping 
 
 
 **Stuck Recovery:**
