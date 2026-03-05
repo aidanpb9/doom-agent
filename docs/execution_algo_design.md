@@ -143,6 +143,7 @@ Weapons and items: https://gamefaqs.gamespot.com/ps4/270132-doom-1993/faqs/80222
 
 
 ## Future Work
+- visual node placement tool
 - Stuck state, how it could work:
     Notes: The idea is to help TRAVERSE or RECOVER pathfinding get back to the main path. Even though we might want to shoot enemies while stuck, that would introduce cycles without state tracking (this architecture does not have). Returns to TRAVERSE even if previously in RECOVER to avoid using state history, TRAVERSE will take it to RECOVER anyways if needed
     Entry: From TRAVERSE or RECOVER when stuck detection triggered (see Hyperparameters)
