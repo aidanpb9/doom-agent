@@ -65,7 +65,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 ```python
 if level_completed:
     fitness = 1000                          # Base completion bonus
-            + 3000 / (time_tics / 35)       # Speed bonus 
+             500 * (1 - time_tics / 4200)   # Speed bonus 
             + 2 * health_remaining          # Health
             + 1 * armor_remaining           # Armor   
             + 0.5 * ammo_remaining          # Ammo 
