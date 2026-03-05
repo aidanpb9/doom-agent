@@ -387,6 +387,8 @@ class DoomAgent:
             initial_health = 100.0
             initial_ammo = 0.0
         
+        all_seen_labels = set()
+
         while not self.game.is_episode_finished():
             try:
                 self._hang_stage = "get_state"
@@ -462,6 +464,8 @@ class DoomAgent:
                         name = getattr(lbl, "object_name", "") or ""
                         if name:
                             label_names.add(name)
+                    all_seen_labels.update(label_names)
+
                 else:
                     lbls = []
                     n_enemies = 0
@@ -642,6 +646,7 @@ class DoomAgent:
         stats["end_nav_node_id"] = end_nav_node_id
         stats["end_sector_ids"] = end_sector_ids
 
+        logger.info(f"All labels seen this episode: {sorted(all_seen_labels)}")
         logger.info("=" * 60)
         logger.info("Episode finished")
         logger.info(f"Episode end reason: {end_reason}")

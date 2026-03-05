@@ -121,17 +121,12 @@ VizDoom provides "state.objects" which gives the agent all enemy/item positions 
 
 
 ## Needs Testing:
-How is aim affected by movement in VizDoom?
-How does agent handle sprinting on tight or zigzag paths?
-Does sprint lose control too much?
-How close does agent need to be to pick up loot?
+How well does cheat aim work, and how is it implemented?
+How is aim affected by movement in VizDoom, does strafing throw aim off?
+How does agent handle sprinting on tight or zigzag paths, does it lose control?
+What happens when too many dynamic anchor nodes are placed?
+
 Can agent create nodes for loot it sees accurately?
-Confirm label.object_name provides item type granularity?
-What movement actually helps get unstuck?
-What is frame rate in normal vs fast mode?
-Does action_frame_skip affect stuck detection timing?
-How long does it take to run one level in fast mode (update genetic algo doc)?
-Test what happens when too many dynamic anchor nodes are placed?
 
 
 ## Testing Results
@@ -141,6 +136,7 @@ Test what happens when too many dynamic anchor nodes are placed?
 - Visibility range: at least 700 units 
 - FOV-limited: state.labels only shows objects in current view
 - Objects behind agent or passed by disappear from labels
+- Loot pickup range: ~60 units from item
 
 
 ## References

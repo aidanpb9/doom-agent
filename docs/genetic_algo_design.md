@@ -25,7 +25,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Population size | 2 | Elite + challenger only |
 | Mutation rate | 0.25 | 25% chance per parameter |
 | Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
-| Generations | 20-100 | Adjust based on convergence/time constraints |
+| Generations | 50-1000 | Adjust based on convergence/time constraints |
 | Episode timeout | 4200 tics (120 seconds) | E1M1 time limit |
 | Evaluation seed | Fixed(42) | Same seed for all evaluations for fairness |
 
@@ -129,6 +129,8 @@ else:
 - Timeout: 4200 tics (120 seconds)
 - Seed: Fixed (42) for reproducibility
 - Mode: Fast (headless, action_frame_skip=8)
+
+**Takes about 2 seconds per level**
 
 **Metrics to collect:**
 - Level completion status
