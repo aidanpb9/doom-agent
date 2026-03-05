@@ -25,7 +25,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Population size | 2 | Elite + challenger only |
 | Mutation rate | 0.25 | 25% chance per parameter |
 | Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
-| Generations | 50-1000 | Adjust based on convergence/time constraints |
+| Generations | 50-1000 (Estimate) | Adjust based on convergence/time constraints |
 | Episode timeout | 4200 tics (120 seconds) | E1M1 time limit |
 | Evaluation seed | Fixed(42) | Same seed for all evaluations for fairness |
 
@@ -65,7 +65,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 ```python
 if level_completed:
     fitness = 1000                          # Base completion bonus
-             500 * (1 - time_tics / 4200)   # Speed bonus 
+            + 500 * (1 - time_tics / 4200)  # Speed bonus 
             + 2 * health_remaining          # Health
             + 1 * armor_remaining           # Armor   
             + 0.5 * ammo_remaining          # Ammo 
@@ -178,6 +178,8 @@ After evolution completes, generate plots from evolution_history.json:
 
 
 ## Future Work
+- add GA param for aiming
 - make the 2 genomes run in parallel (multithread)
 - make visuals live using threading or web dashboard (Flask, Streamlit)
+- plateau logic to determine when to stop evolving
 - extend to E1M2
