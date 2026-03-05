@@ -17,9 +17,10 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 
 ## Layer 2: PathTracker
 - Manages the node graph and mission progress
-- Static nodes define the mininal path for level completion created by navmesh
-- Dynamic nodes get created in SCAN state, these are reset each time a level is started
-- Nodes also get type labels such as if a node marks a health pack or level exit
+- Static nodes define the mininal path for level completion
+- Two types of dynamic nodes get placed by the agent during playtime, these reset upon level restart:
+    1. Dynamic anchor nodes are like an automatic breadcrumb trail, they mark all the places the agent has been. These help the agent return to the main path when it strays from it. 
+    2. Dynamic loot nodes get placed on loot within the agent's FOV.
 
 
 ## Layer 3: States
@@ -34,7 +35,7 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 
 ## RECOVER
 **Notes:**
-- Like a higher priority TRAVERSE where the goal node is loot rather than exit
+- Like TRAVERSE but the goal node is loot rather than exit
 - Loot is health pack, armor, ammo (high to low priority)
 - Parameters determine which other states can be accessed from here 
 
@@ -62,7 +63,6 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 - If enemy is detected and ammo > 0
 
 **Behavior:**
-- Place a dynamic node at current position to help return to main path if we strafe too far
 - Mechanics are aim, fire, and strafe
 
 **Exit:**
@@ -93,15 +93,14 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 ## SCAN:
 **Notes:**
 - Only available from TRAVERSE since we want to be on the main path and not actively looking for loot
-- Helps us find loot to pick up and turn towards enemies that shoot us in the back
+- Helps find mark loot nodes we missed and helps turn towards enemies that shoot us in the back
 
 **Entry:**
 - From TRAVERSE
 - IF SCAN not on cooldown AND (damage taken OR scan_frequency param triggered)
 
 **Behavior:**
-- Place a dynamic node at current position since it should be on the main path
-- Perform a 360 degree spin in-place and place dynamic nodes at observed loot positions
+- Perform a 360 degree spin in-place
 
 **Exit:**
 - Go to RECOVER if states drop below thresholds
@@ -122,10 +121,10 @@ VizDoom provides "state.objects" which gives the agent all enemy/item positions 
 
 
 ## Needs Testing:
-How fast does agent move roughly?
 Does current implementation use A* or Dijkstra?
 How is aim affected by movement in VizDoom?
 How does agent handle sprinting on tight or zigzag paths?
+Does sprint lose control too much?
 How far can agent see labels?
 How close does agent need to be to pick up loot?
 Can agent create nodes for loot it sees accurately?
@@ -134,13 +133,17 @@ What movement actually helps get unstuck?
 What is frame rate in normal vs fast mode?
 Does action_frame_skip affect stuck detection timing?
 How long does it take to run one level in fast mode (update genetic algo doc)?
+Test what happens when too many dynamic anchor nodes are placed?
 
 
 ## Testing Results
-**Movement Speed:**
-- Walking: 6.11 units/tic (214 units/sec)
-- Sprinting: 12.28 units/tic (430 units/sec)
-- Sprint multiplier: 2.01x
+**Units, Speed, Visibility, Labels:**
+- For an understanding of unit size in DOOM: https://doomwiki.org/wiki/Map_unit
+- Walking speed: 6.11 units/tic (214 units/sec)
+- Sprinting speed: 12.28 units/tic (430 units/sec)
+- Visibility range: at least 700 units 
+- FOV-limited: state.labels only shows objects in current view
+- Objects behind agent or passed by disappear from labels
 
 
 ## Future Work
