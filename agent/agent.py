@@ -18,6 +18,7 @@ except ImportError:
     Image = None
 
 from agent.behavior.behavior_selector import BehaviorSelector
+from telemetry import TelemetryWriter
 from agent.utils.action_decoder import ActionDecoder
 from config import ACTION_NAMES
 
@@ -100,6 +101,14 @@ class DoomAgent:
         self._hang_stage_time = None
         self._last_action_name = None
         self._frame_count = 0
+        self._episode_index = 0
+        self.telemetry_root = Path("telemetry")
+        self.telemetry_root.mkdir(parents=True, exist_ok=True)
+        self.telemetry = TelemetryWriter(
+            repo_root=Path(__file__).resolve().parents[1],
+            telemetry_dir=self.telemetry_root,
+            algo_id="rule-based-selector",
+        )
         
         # Initialize modular behavior system
         self.behavior_selector = BehaviorSelector(
@@ -294,6 +303,7 @@ class DoomAgent:
             "actions_taken": 0,
             "episode_reward": 0.0,
             "episode_time": 0.0,
+            "telemetry_files": {},
         }
         
         # Reset behavior state for new episode
@@ -319,6 +329,23 @@ class DoomAgent:
         self._hang_stage = "start"
         self._hang_stage_time = time.time()
         self._frame_count = 0
+        self._episode_index += 1
+        level_id = self.map_name or "UNKNOWN"
+        rng_seed_hint = (int(time.time() * 1000) ^ os.getpid() ^ self._episode_index) & 0xFFFFFFFF
+        try:
+            self.telemetry.start_episode(
+                level_id=str(level_id),
+                episode_index=self._episode_index,
+                rng_seed=rng_seed_hint,
+            )
+        except Exception as telemetry_error:
+            logger.error("Failed to initialize telemetry: %s", telemetry_error)
+
+        def safe_episode_tick(fallback):
+            try:
+                return int(self.game.get_episode_time())
+            except Exception:
+                return int(fallback)
 
         def hang_watchdog():
             while self._hang_event is not None and not self._hang_event.is_set():
@@ -372,6 +399,28 @@ class DoomAgent:
             stats["end_reason"] = "start_failed"
             if self._hang_event is not None:
                 self._hang_event.set()
+            try:
+                self.telemetry.record_step(
+                    state_info=None,
+                    action_vector=[0, 0, 0, 0, 0, 0, 0, 0],
+                    tick=0,
+                    frame_id=0,
+                    step_wall_ms=0.0,
+                    step_cpu_ms=0,
+                    timeout_active=True,
+                    timeout_reason="error",
+                    timeout_count=1,
+                    outcome="dead",
+                    emit_action_row=False,
+                )
+                stats["telemetry_files"] = self.telemetry.finalize_episode(
+                    end_reason="start_failed",
+                    episode_time_s=0.0,
+                    nav_stuck_events=0,
+                    nav_recoveries=0,
+                )
+            except Exception as telemetry_error:
+                logger.error("Telemetry finalization failed after start error: %s", telemetry_error)
             return stats
         
         initial_state = self.game.get_state()
@@ -404,14 +453,52 @@ class DoomAgent:
                 state_info = self.get_state_info(state)
                 if state_info is None:
                     # Skip frames where state info isn't ready yet
-                    reward = self.game.make_action(
-                        [1, 0, 0, 0, 0, 0, 0], self.action_frame_skip
+                    fallback_action = [1, 0, 0, 0, 0, 0, 0, 0]
+                    fallback_state = (
+                        dict(last_state_info)
+                        if isinstance(last_state_info, dict)
+                        else {
+                            "health": initial_health,
+                            "ammo": initial_ammo,
+                            "kills": stats["kills"],
+                            "pos_x": self.last_pos[0] if self.last_pos is not None else 0.0,
+                            "pos_y": self.last_pos[1] if self.last_pos is not None else 0.0,
+                            "angle": 0.0,
+                            "labels": [],
+                        }
                     )
+                    self._hang_stage = "make_action"
+                    self._hang_stage_time = time.time()
+                    step_wall_start = time.perf_counter()
+                    step_cpu_start = time.process_time()
+                    reward = self.game.make_action(
+                        fallback_action, self.action_frame_skip
+                    )
+                    step_wall_ms = (time.perf_counter() - step_wall_start) * 1000.0
+                    step_cpu_ms = int(round((time.process_time() - step_cpu_start) * 1000.0))
                     self._last_action_time = time.time()
                     self._hang_stage = "make_action_done"
                     self._hang_stage_time = time.time()
+                    stats["episode_reward"] += float(reward)
+                    stats["actions_taken"] += 1
                     frame_count += 1
                     self._frame_count = frame_count
+                    self.episode_step += 1
+                    try:
+                        self.telemetry.record_step(
+                            state_info=fallback_state,
+                            action_vector=fallback_action,
+                            tick=safe_episode_tick(frame_count),
+                            frame_id=frame_count,
+                            step_wall_ms=step_wall_ms,
+                            step_cpu_ms=step_cpu_ms,
+                            timeout_active=False,
+                            timeout_reason="none",
+                            timeout_count=0,
+                            outcome="alive",
+                        )
+                    except Exception:
+                        pass
                     continue
 
                 last_state_info = state_info
@@ -514,7 +601,11 @@ class DoomAgent:
                 
                 self._hang_stage = "make_action"
                 self._hang_stage_time = time.time()
+                step_wall_start = time.perf_counter()
+                step_cpu_start = time.process_time()
                 reward = self.game.make_action(action, self.action_frame_skip)
+                step_wall_ms = (time.perf_counter() - step_wall_start) * 1000.0
+                step_cpu_ms = int(round((time.process_time() - step_cpu_start) * 1000.0))
                 self._last_action_time = time.time()
                 self._hang_stage = "make_action_done"
                 self._hang_stage_time = time.time()
@@ -523,6 +614,21 @@ class DoomAgent:
                 frame_count += 1
                 self._frame_count = frame_count
                 self.episode_step += 1
+                try:
+                    self.telemetry.record_step(
+                        state_info=state_info,
+                        action_vector=action,
+                        tick=safe_episode_tick(frame_count),
+                        frame_id=frame_count,
+                        step_wall_ms=step_wall_ms,
+                        step_cpu_ms=step_cpu_ms,
+                        timeout_active=False,
+                        timeout_reason="none",
+                        timeout_count=0,
+                        outcome="alive",
+                    )
+                except Exception:
+                    pass
 
                 if time.time() - last_move_time > self.hang_timeout:
                     nav = getattr(self.behavior_selector, "sector_navigator", None)
@@ -594,6 +700,10 @@ class DoomAgent:
         elif state_none:
             end_reason = "state_none"
 
+        nav_obj = getattr(self.behavior_selector, "sector_navigator", None)
+        nav_stuck_events = len(getattr(nav_obj, "stuck_events", []) or []) if nav_obj is not None else 0
+        nav_recoveries = len(getattr(nav_obj, "freeze_events", []) or []) if nav_obj is not None else 0
+
         end_pos = None
         end_nav_node_id = None
         end_sector_ids = []
@@ -646,6 +756,39 @@ class DoomAgent:
         stats["end_nav_node_id"] = end_nav_node_id
         stats["end_sector_ids"] = end_sector_ids
 
+        timeout_reason = "none"
+        if end_reason == "timeout":
+            timeout_reason = "wall_clock"
+        elif end_reason in {"max_steps", "hang_no_movement", "state_none"}:
+            timeout_reason = end_reason
+        elif end_reason.startswith("error:"):
+            timeout_reason = "error"
+        elif end_reason == "player_dead":
+            timeout_reason = "player_dead"
+        final_outcome = "dead" if end_reason == "player_dead" else "alive"
+        try:
+            self.telemetry.record_step(
+                state_info=last_state_info,
+                action_vector=[0, 0, 0, 0, 0, 0, 0, 0],
+                tick=safe_episode_tick(frame_count),
+                frame_id=frame_count,
+                step_wall_ms=0.0,
+                step_cpu_ms=0,
+                timeout_active=(timeout_reason != "none"),
+                timeout_reason=timeout_reason,
+                timeout_count=1 if timeout_reason != "none" else 0,
+                outcome=final_outcome,
+                emit_action_row=False,
+            )
+            stats["telemetry_files"] = self.telemetry.finalize_episode(
+                end_reason=end_reason,
+                episode_time_s=stats["episode_time"],
+                nav_stuck_events=nav_stuck_events,
+                nav_recoveries=nav_recoveries,
+            )
+        except Exception as telemetry_error:
+            logger.error("Telemetry finalization failed: %s", telemetry_error)
+
         logger.info(f"All labels seen this episode: {sorted(all_seen_labels)}")
         logger.info("=" * 60)
         logger.info("Episode finished")
@@ -669,5 +812,9 @@ class DoomAgent:
     
     def close(self):
         """Close the game and cleanup."""
+        try:
+            self.telemetry.close()
+        except Exception:
+            pass
         if self.game:
             self.game.close()

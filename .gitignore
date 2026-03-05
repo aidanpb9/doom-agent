@@ -50,3 +50,9 @@ _vizdoom.ini
 vizdoom-crash.log
 gdb-*
 
+# Telemetry runtime outputs
+telemetry/tier0/
+telemetry/tier1/
+telemetry/tier2/
+telemetry/tlp/
+
