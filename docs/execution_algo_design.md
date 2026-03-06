@@ -33,6 +33,27 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 3. TRAVERSE
 4. SCAN (360)
 
+**State Machine Diagram (Mermaid):**
+```mermaid
+stateDiagram-v2
+    [*] --> TRAVERSE
+
+    TRAVERSE --> SCAN : Damage taken / Freq trigger
+    TRAVERSE --> COMBAT : Enemy detected & Ammo > 0
+    TRAVERSE --> RECOVER : Stats < Thresholds & Loot known
+
+    SCAN --> COMBAT : Enemy visible
+    SCAN --> RECOVER : Stats < Thresholds
+    SCAN --> TRAVERSE : 360° spin complete
+
+    COMBAT --> RECOVER : Health low OR Ammo == 0
+    COMBAT --> TRAVERSE : No enemies detected
+
+    RECOVER --> COMBAT : Armor/Ammo goal & Enemy detected
+    RECOVER --> TRAVERSE : All stats > Thresholds
+```
+
+
 ## RECOVER
 **Notes:**
 - Like TRAVERSE but the goal node is loot rather than exit
