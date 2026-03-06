@@ -6,6 +6,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 - Guaranteed non-regression (elite always preserved)
 - Continuous adaptation through head-to-head competition
 
+
 ## Population Structure
 **Population Size:** Exactly 2 agents
 | Agent | Role | Mutation | Selection |
@@ -23,7 +24,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Hyperparameter | Value | Description |
 |----------------|-------|-------------|
 | Population size | 2 | Elite + challenger only |
-| Mutation rate | 0.25 | 25% chance per parameter |
+| Radiation intensity | 0.25 | Represents probability per parameter of a bit-flip occuring (mutation) |
 | Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
 | Generations | 50-1000 (Estimate) | Adjust based on convergence/time constraints |
 | Episode timeout | 4200 tics (120 seconds) | E1M1 time limit |
@@ -36,7 +37,6 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 |-----------|-------|-------------|
 | `anchor_frequency` | 0.0-0.1  | Probability per tic of dropping an anchor node (0=never, 0.1=10% chance per tic) |
 | `loot_node_distance` | 200-800 units | Distance from agent that loot nodes are placed |
-
 
 **Combat Parameters:**
 | Parameter | Range | Description |
@@ -61,7 +61,6 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 
 ## Fitness Function
 **Weighted combination** - rewards completion, speed, and player stats:
-
 ```python
 if level_completed:
     fitness = 1000                          # Base completion bonus
@@ -84,23 +83,8 @@ else:
 
 
 ## Mutation Strategy
-**Gaussian perturbation** applied independently to each parameter:
-1. For each parameter, with 25% probability:
-   - Add random noise sampled from Gaussian distribution
-   - Mean = 0 (centered on current value)
-   - Standard deviation = 15% of parameter's valid range
+1. Sample new value uniformly at random from the parameter's full valid range (simulating unpredictable bit-flip behavior)
 2. Clamp mutated value to valid range to prevent invalid parameters
-
-**Example:**
-- Elite has `health_threshold = 50`
-- Parameter range is [0, 100], range size = 100
-- Sigma = 15% of range = 15
-- Mutation samples from N(50, 15²)
-- Mutated value clamped to [0, 100]
-
-**Rationale:**
-- 25% mutation rate and 15% sigma balances exploration vs exploitation
-- Also mutations are based on their range, so smaller ranges get smaller mutations
 
 
 ## Evolution Process
