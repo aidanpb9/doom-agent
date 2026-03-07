@@ -18,9 +18,9 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 ## Layer 2: PathTracker
 - Manages the node graph and mission progress
 - Static nodes, or waypoints, define the mininal path for level completion
-- Two types of dynamic nodes get placed by the agent during playtime, these reset upon level restart:
-    1. Dynamic anchor nodes are like an automatic breadcrumb trail, they mark all the places the agent has been. These help the agent return to the main path when it strays from it. 
-    2. Dynamic loot nodes get placed on loot within the agent's FOV.
+- Dynamic nodes get placed by the agent during playtime, these reset upon level restart
+- When agent sees loot, a loot node is placed at the loot position, and an anchor node is placed at the current position
+- An edge connects these two nodes, and the anchor node is inserted between two static nodes
 
 
 ## Layer 3: States

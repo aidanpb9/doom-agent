@@ -35,7 +35,6 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Exploration Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `anchor_frequency` | 0.0-0.1  | Probability per tic of dropping an anchor node (0=never, 0.1=10% chance per tic) |
 | `loot_node_distance` | 200-800 units | Distance from agent that loot nodes are placed |
 
 **Combat Parameters:**
@@ -56,7 +55,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | `scan_frequency` | 0.0-1.0 | Probability of triggering scan (0=never, 1=every ~175 tics (5 seconds)) |
 | `scan_cooldown` | 35-280 tics (1-8 seconds) | Minimum time between scans |
 
-**Total:** 8 parameters per genome
+**Total:** 7 parameters per genome
 
 
 ## Fitness Function
