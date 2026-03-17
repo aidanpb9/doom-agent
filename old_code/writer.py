@@ -1,4 +1,5 @@
 """
+DO NOT MODIFY, KEPT AS IS FROM PHASE 1.
 Telemetry emission utilities for DoomSat schema v2.
 Implements Tier 0, Tier 1, Tier 2, and Two-Line-Plus (TLP) outputs.
 """
