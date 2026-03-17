@@ -2,6 +2,39 @@
 Navmesh-based navigation using zdoom-navmesh-generator output and
 zdoom-pathfinding algorithms (A* + funnel).
 """
+#GOES IN NavEngine.step_towards()
+def _move_to_target(self, pos_x: float, pos_y: float, angle: float, target_x: float, target_y: float) -> Set[str]:
+        target_angle = math.degrees(math.atan2(target_y - pos_y, target_x - pos_x))
+        delta = _normalize_angle_delta_deg(target_angle - angle)
+        dist = _dist2d(pos_x, pos_y, target_x, target_y)
+
+        if abs(delta) > 20.0:
+            return {"TURN_RIGHT"} if delta < 0 else {"TURN_LEFT"}
+        if abs(delta) > 6.0:
+            return {"MOVE_FORWARD", "TURN_RIGHT"} if delta < 0 else {"MOVE_FORWARD", "TURN_LEFT"}
+        if dist > 64.0:
+            return {"MOVE_FORWARD", "SPEED"}
+        return {"MOVE_FORWARD"}
+
+#GOES IN pathtracker.load_static_nodes()
+def _inverse_svg_point(
+    sx: float,
+    sy: float,
+    vertices: Sequence[Tuple[float, float]],
+    width: float = 1400.0,
+    height: float = 1000.0,
+    pad: float = 30.0,
+) -> Tuple[float, float]:
+    min_x = min(v[0] for v in vertices)
+    max_x = max(v[0] for v in vertices)
+    min_y = min(v[1] for v in vertices)
+    max_y = max(v[1] for v in vertices)
+    scale_x = (width - 2.0 * pad) / max(1.0, max_x - min_x)
+    scale_y = (height - 2.0 * pad) / max(1.0, max_y - min_y)
+    scale = min(scale_x, scale_y)
+    x = ((sx - pad) / scale) + min_x
+    y = (((height - sy) - pad) / scale) + min_y
+    return x, y
 
 from __future__ import annotations
 

@@ -2,6 +2,19 @@
 Action encoder/decoder for Doom agent actions.
 Provides utilities to construct action vectors and decode them.
 """
+#Reference
+@staticmethod
+    def _buttons_to_vector(buttons: Iterable[str]) -> List[int]:
+        action = [0] * len(BUTTON_NAMES)
+        for name in buttons:
+            idx = BUTTON_INDEX.get(name)
+            if idx is not None:
+                action[idx] = 1
+        return action
+        
+BUTTON_INDEX = {name: idx for idx, name in enumerate(BUTTON_NAMES)}
+
+
 
 from config.defaults import (
     ACTION_FORWARD, ACTION_BACKWARD, ACTION_LEFT_TURN, ACTION_RIGHT_TURN,

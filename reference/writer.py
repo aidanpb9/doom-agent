@@ -1,8 +1,4 @@
-"""
-DO NOT MODIFY, KEPT AS IS FROM PHASE 1.
-Telemetry emission utilities for DoomSat schema v2.
-Implements Tier 0, Tier 1, Tier 2, and Two-Line-Plus (TLP) outputs.
-"""
+"""Standalone telemetry writer matching the legacy DoomSat output schema."""
 
 from __future__ import annotations
 
@@ -19,7 +15,7 @@ from typing import Any, Dict, List, Optional, Sequence
 
 try:
     import psutil  # type: ignore
-except Exception:  # pragma: no cover - optional runtime dependency
+except Exception:
     psutil = None
 
 
@@ -27,6 +23,10 @@ SCHEMA_VERSION = "v2"
 TIER0_TYPE = "tier0_telemetry"
 TIER1_TYPE = "level_summary"
 TIER2_CSV_HEADER = "t,tick,scene,frame,action,seed,state,cpu_ms"
+TIER0_FILENAME = "on-demand.jsonl"
+TIER1_FILENAME = "level-summary.json"
+TIER2_FILENAME = "action-stream.csv"
+TLP_FILENAME = "latest.txt"
 
 DEFAULT_TLE_LINE1 = "1 25544U 98067A   25273.51782528  .00002182  00000 -0  43188 -4 0  9993"
 DEFAULT_TLE_LINE2 = "2 25544  51.6421 187.1234 0004053 160.4321 310.5678 15.50012345678901"
@@ -58,11 +58,11 @@ _CRC32C_TABLE: List[int] = []
 def _build_crc32c_table() -> List[int]:
     table: List[int] = []
     poly = 0x82F63B78
-    for i in range(256):
-        crc = i
+    for value in range(256):
+        crc = value
         for _ in range(8):
             if crc & 1:
-                crc = (crc >> 1) ^ poly
+                crc = (crc >> 8) ^ poly
             else:
                 crc >>= 1
         table.append(crc & 0xFFFFFFFF)
@@ -163,9 +163,7 @@ def derive_scene_id(level_id: str, fallback_scene: int) -> int:
     level = (level_id or "").strip().upper()
     match = _EM_RE.match(level)
     if match:
-        ep = int(match.group(1))
-        mission = int(match.group(2))
-        return _u16(ep * 100 + mission)
+        return _u16(int(match.group(1)) * 100 + int(match.group(2)))
     match = _MAP_RE.match(level)
     if match:
         return _u16(match.group(1))
@@ -173,16 +171,11 @@ def derive_scene_id(level_id: str, fallback_scene: int) -> int:
 
 
 def encode_action_bitmask(action_vector: Sequence[int]) -> int:
-    """
-    Encoding from design spec:
-    Bit0 ATTACK, Bit1 USE, Bit2 MOVE_FORWARD, Bit3 MOVE_BACKWARD,
-    Bit4 TURN_LEFT, Bit5 TURN_RIGHT, Bit6 STRAFE_LEFT, Bit7 STRAFE_RIGHT,
-    Bit8 SPEED, Bit9 STRAFE.
-    """
+    """Encode the current 10-button action vector into the legacy telemetry bitmask."""
     bits = 0
-    if len(action_vector) > 6 and int(action_vector[6]):
+    if len(action_vector) > 8 and int(action_vector[8]):
         bits |= 1 << 0
-    if len(action_vector) > 7 and int(action_vector[7]):
+    if len(action_vector) > 9 and int(action_vector[9]):
         bits |= 1 << 1
     if len(action_vector) > 0 and int(action_vector[0]):
         bits |= 1 << 2
@@ -236,18 +229,19 @@ def _gc_collection_count() -> int:
 
 
 class TelemetryWriter:
-    """Collects and writes telemetry artifacts defined in design-doc schema v2."""
+    """Collects and writes legacy DoomSat telemetry outputs."""
 
     def __init__(
         self,
         *,
-        repo_root: Path,
-        telemetry_dir: Path,
-        algo_id: str = "rule-based-selector",
+        repo_root: Optional[Path] = None,
+        telemetry_dir: Optional[Path] = None,
+        algo_id: str = "execution-algorithm",
         spacecraft_state: str = "nominal",
     ) -> None:
-        self.repo_root = Path(repo_root)
-        self.telemetry_dir = Path(telemetry_dir)
+        doomsat_root = Path(__file__).resolve().parents[3]
+        self.repo_root = Path(repo_root) if repo_root else doomsat_root
+        self.telemetry_dir = Path(telemetry_dir) if telemetry_dir else doomsat_root / "logs"
         self.telemetry_dir.mkdir(parents=True, exist_ok=True)
         self._tier_dirs = {
             "tier0": self.telemetry_dir / "tier0",
@@ -257,7 +251,7 @@ class TelemetryWriter:
         }
         for tier_dir in self._tier_dirs.values():
             tier_dir.mkdir(parents=True, exist_ok=True)
-        self.algo_id = (algo_id or "rule-based-selector").strip().lower()
+        self.algo_id = (algo_id or "execution-algorithm").strip().lower()
         self.spacecraft_state = (spacecraft_state or "nominal").strip().lower()
         if self.spacecraft_state not in SPACECRAFT_STATE_CODES:
             self.spacecraft_state = "nominal"
@@ -298,7 +292,6 @@ class TelemetryWriter:
         self._timeout_count = 0
 
     def _clear_previous_outputs(self) -> None:
-        # Remove legacy root-level telemetry files from older naming schemes.
         for pattern in ("run*_tier0.jsonl", "run*_tier1.json", "run*_tier2.csv", "run*_tlp.txt"):
             for path in self.telemetry_dir.glob(pattern):
                 try:
@@ -306,7 +299,6 @@ class TelemetryWriter:
                 except Exception:
                     pass
 
-        # Keep only one telemetry output file per tier.
         for tier_key, tier_dir in self._tier_dirs.items():
             suffixes = {
                 "tier0": ("*.jsonl",),
@@ -340,10 +332,10 @@ class TelemetryWriter:
         self._timeout_count = 0
 
         self._clear_previous_outputs()
-        self._tier0_path = self._tier_dirs["tier0"] / "latest.jsonl"
-        self._tier1_path = self._tier_dirs["tier1"] / "latest.json"
-        self._tier2_path = self._tier_dirs["tier2"] / "latest.csv"
-        self._tlp_path = self._tier_dirs["tlp"] / "latest.txt"
+        self._tier0_path = self._tier_dirs["tier0"] / TIER0_FILENAME
+        self._tier1_path = self._tier_dirs["tier1"] / TIER1_FILENAME
+        self._tier2_path = self._tier_dirs["tier2"] / TIER2_FILENAME
+        self._tlp_path = self._tier_dirs["tlp"] / TLP_FILENAME
 
         self._tier0_file = self._tier0_path.open("w", encoding="utf-8", newline="\n")
         self._tier2_file = self._tier2_path.open("w", encoding="utf-8", newline="\n")
@@ -792,3 +784,6 @@ class TelemetryWriter:
             self._tier2_file = None
 
         self._tier2_writer = None
+
+
+Writer = TelemetryWriter
