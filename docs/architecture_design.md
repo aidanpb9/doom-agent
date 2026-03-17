@@ -26,6 +26,7 @@ current_path
 has_reached_node()
 plan_path() (do A* here, return list of nodes to traverse)
 place_node()
+load_static_nodes()
 TODO: clear nodes on level reset
 
 
