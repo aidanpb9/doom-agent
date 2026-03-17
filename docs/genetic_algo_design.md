@@ -70,7 +70,7 @@ if level_completed:
 else:
     fitness = 0
             + 5 * enemies_killed            # Partial credit for progress
-            + 20 * waypoints_reached        # Proximity to goal
+            + 10 * waypoints_reached        # Proximity to goal
 ```
 
 **Rationale:**

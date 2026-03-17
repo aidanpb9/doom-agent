@@ -55,6 +55,7 @@ DOOR_SPECIALS = {
     171, 175, 176, 177, 179, 180, 181, 182, 183, 184,
     185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195,
 }
+DOOR_USE_COOLDOWN = 175  # 5 seconds @ 35 tics/s
 
 #WAD linedef specials that end the level
 EXIT_SPECIALS = {11, 51, 52, 124, 197}
