@@ -2,7 +2,7 @@
 
 ## Overview
 
-This doc explains the different runtime classes in core/ and the execution flow between classes. These are responsible for perception, decision-making, navigation, and telemetry during a single playthrough of E1M1. It does not cover the genetic algorithm (which wraps the runtime via run_episode()), pre-processing tools like the navigation planner, or telemetry output schemas (see telemetry_tiers.md). 
+This doc explains the different runtime classes in core/ and the execution flow between classes. It does not include every method to be added, just mostly the high-level interfacing ones. These classes are responsible for perception, decision-making, navigation, and telemetry during a single playthrough of E1M1. It does not cover the genetic algorithm (which wraps the runtime via run_episode()), pre-processing tools like the navigation planner, or telemetry output schemas (see telemetry_tiers.md). 
 
 The runtime is split into two sides with a clean boundary. The Agent side handles the episode lifecycle: initializing VizDoom, running the game loop, parsing raw game state into a GameState dataclass via Perception, and writing telemetry. Agent makes no decisions. The StateMachine side owns all decision-making: StateMachine reads GameState each tick and returns an action, delegating navigation to NavigationEngine (pure A* pathfinding and movement) and mission progress to PathTracker (node graph management, loot node placement, waypoint tracking). The boundary between the two sides is GameState flowing in and an action vector flowing out.
 
@@ -104,7 +104,7 @@ sequenceDiagram
 - door_use_timer
 
 **Methods:**
-- plan_path() (do A* here, return list of nodes to traverse)
+- make_path() (do A* here, return list of nodes to traverse)
 - step_toward() (angle + action to reach next node, if next node is a door, emit USE action with cooldown)
 
 
@@ -125,11 +125,12 @@ sequenceDiagram
 - visited_waypoints
 
 **Methods:**
-- get_next_node()
-- has_reached_node()
-- get_path() (call plan_path() from NavigationEngine)
+- set_cur_path() (call make_path() from NavigationEngine to update cur_path)
+- _get_next_node()
+- _has_reached_node()
 - place_node()
 - load_static_nodes()
+- update()
 
 
 ## Class StateMachine:
@@ -141,7 +142,7 @@ sequenceDiagram
 - PathTracker 
 
 **Methods:** 
-- update() (a big if block for state switching, returns an action) 
+- update(gamestate) (a big if block for state switching, returns an action) 
 - private methods for each state
 
 

@@ -3,12 +3,11 @@ Node, Edge, and Graph are pure data containers.
 No pathfinding or mission logic lives here."""
 
 from enum import Enum
-from typing import Optional
 
 
 class NodeType(Enum):
     """Represents the different node types of the graph.""" 
-    
+
     waypoint = 1
     anchor = 2
     loot = 3
@@ -44,8 +43,8 @@ class Graph:
         self.nodes = [] 
         self.edges = [] 
     
-    def add_node(self, node):
+    def add_node(self, node) -> None:
         pass
     
-    def add_edge(self, node1, node2):
+    def add_edge(self, node1, node2) -> None:
         pass
