@@ -56,46 +56,66 @@ sequenceDiagram
 
 
 ## Classes
-Graph
-NavigationEngine
-PathTracker
-StateMachine
-Agent
-Perception
-GameState
-LootObject
+1. Graph
+2. NavigationEngine
+3. PathTracker
+4. StateMachine
+5. Agent
+6. Perception
+7. GameState
+8. LootObject
 
 
 ## Class Graph:
-Desc: the node graph. nodes are objects with position, type(WAYPOINT, ANCHOR, LOOT, DOOR, EXIT)
-WAYPOINT is static node from JSON. ANCHOR is dynamically placed to connect to loot. DOOR and EXIT are not waypoints. LOOT uses the name field to specify loot type. Special is a raw linedef number for key doors and exits, only used in DOOR and EXIT nodes.
-Fields: 
+**Overview:**
+- represents the node graph 
+- NodeTypes are WAYPOINT, ANCHOR, LOOT, DOOR, EXIT
+- WAYPOINT is static node from JSON, DOOR and EXIT are not WAYPOINTs
+- ANCHOR is dynamically placed to connect to loot
+- LOOT uses the name field to specify loot type. 
+- Special is a raw linedef number for key doors and exits, only used in DOOR and EXIT nodes
+
+**Fields:**
 - node objects (x, y, type: NodeType, name, special(int, optional))
 - edge objects
-Methods:
+
+**Methods:**
 - add_node() 
 - add_edge()
 
 
 ## Class NavigationEngine: 
-Desc:pure pathfinding and movement. Given a graph and two points, find a path. Given a current position and a target point, produce an action. Knows nothing about mission state, node types, or progress.
-Fields: 
+**Overview:**
+- pure pathfinding and movement
+- given a graph and two points, find a path
+- given a current position and a target point, produce an action
+- knows nothing about mission state, node types, or progress
+
+**Fields:**
 - Graph object
 - door_use_timer
-Methods: 
+
+**Methods:**
 - plan_path() (do A* here, return list of nodes to traverse)
 - step_toward() (angle + action to reach next node, if next node is a door, emit USE action with cooldown)
 
 
 ## Class PathTracker: 
-Desc: mission progress and graph state. Owns the node graph. Knows which node is current, which is next, which is the goal. Decides when a node is "reached." Knows about node types (static, anchor, loot).
-Fields: 
+**Overview:**
+- mission progress and graph state
+- owns the node graph
+- knows which node is current, which is next, which is the goal
+- decides when a node is reached
+- knows about NodeTypes
+
+**Fields:**
 - Graph object
 - NavigationEngine
 - current_path
 - last_node
 - next_node
-Methods: 
+
+**Methods:**
 - get_next_node()
 - has_reached_node()
 - get_path() (call plan_path() from NavigationEngine)
@@ -104,46 +124,72 @@ Methods:
 
 
 ## Class StateMachine:
-Desc: manage what state the agent should be in, returns the agent's action
-Fields: 
+**Overview:** 
+- manage what state the agent should be in, returns the agent's action
+
+**Fields:**
 - enum current_state
 - PathTracker 
-Methods: 
+
+**Methods:** 
 - update() (a big if block for state switching, returns an action) 
 - private methods for each state
 
 
 ## Class Agent:
-Desc: manages the episode details, like the interface between VizDoom and StateMachine. Contains telemetry, perception, game initialization.
-Fields: 
+**Overview:** 
+- manages the episode details, like the interface between VizDoom and StateMachine 
+- contains telemetry, perception, game initialization
+
+**Fields:**
 - VizDoom game object
 - Perception 
 - StateMachine
 - TelemetryWriter
-Methods:
+
+**Methods:**
 - initialize() (VizDoom setup, load config, create one Graph which passes to NavigationEngine and PathTracker)
 - run_episode() (calls perception + state machine each tic, returns stats for GA)
 - close()
 
 
 ## Class Perception:
-Desc: parse raw VizDoom state into a useable GameState
-Fields: 
+**Overview:**
+- parse raw VizDoom state into a useable GameState
+
+**Fields:**
 - enemy_names
 - loot_names
-Methods:
+
+**Methods:**
 - parse()
 
 
 ## Class GameState:
-Desc: dataclass holding game and agent information
-Fields (focus whatever StateMachine needs to make decisions): 
-- health, armor, ammo, enemies_visible, loots_visible: list[LootObject], x, y, angle, enemy_kills, is_damage_taken_since_last_step
+**Overview:**
+- dataclass holding game and agent information
+
+**Fields (what StateMachine needs to make decisions):**
+- health
+- armor
+- ammo, 
+- enemies_visible: list[str]
+- loots_visible: list[LootObject]
+- position x
+- position y
+- angle 
+- enemy_kills 
+- is_damage_taken_since_last_step
 
 
 ## Class LootObject:
-Desc: small dataclass for loot
-Fields: name, x, y
+**Overview:** 
+- small dataclass for loot
+
+**Fields:** 
+- name
+- x
+- y
 
 
 ## References:
