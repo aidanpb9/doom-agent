@@ -8,12 +8,14 @@ The runtime is split into two sides with a clean boundary. The Agent side handle
 
 ## Execution Flow
 
-main.py calls agent.initialize(). Agent creates the VizDoom game object, loads config, creates Perception, creates Graph (loads static nodes from JSON, converts coords), creates NavigationEngine with Graph reference, creates PathTracker with Graph and NavigationEngine references, creates StateMachine with PathTracker and NavigationEngine references.
-main.py calls agent.run_episode(). Agent calls game.new_episode(). Loop starts.
-Tick fires. Agent calls perception.parse(game.get_state()) → GameState populated with health, armor, ammo, x, y, angle, kills, enemies_visible, loot_visible, damage_taken.
-Agent calls state_machine.update(gamestate). StateMachine checks priority: no enemies, stats above thresholds, no damage taken → stay TRAVERSE. StateMachine calls path_tracker.update(gamestate) — PathTracker checks loot_visible, runs duplicate check, places anchor + loot nodes if needed, checks if next_node reached and advances last_node/next_node. PathTracker returns next_node. StateMachine calls path_tracker.get_next_move(current_pos) — PathTracker calls NavigationEngine internally and returns action.
-StateMachine returns action to Agent. Agent calls action_decoder.decode(action) → button presses. Agent calls game.make_action(button_presses). Loop continues.
-game.is_episode_finished() → True. Agent calls finalize_episode(), returns stats.
+1. main.py calls agent.initialize(). Agent creates VizDoom game object, loads config, creates Graph (static nodes from JSON), creates NavigationEngine and PathTracker with Graph reference, creates StateMachine with PathTracker, creates Perception and ActionDecoder.
+2. main.py calls agent.run_episode(). Agent calls game.new_episode(). Loop starts.
+3. Game tick fires. Agent calls perception.parse(game.get_state()) -> GameState.
+4. Agent calls state_machine.update(gamestate). StateMachine checks priority: stats above thresholds, no enemies, no damage taken -> stay in TRAVERSE state. 
+5. StateMachine calls path_tracker.update(game_state). PathTracker checks loot_visible, runs duplicate check, places anchor + loot nodes if needed, advanced last_node and next_node if node reached.
+6. StateMachine calls path_tracker.get_next_move(current_position). PathTracker calls NavigationEngine internally -> returns action.
+7. StateMachine returns action to Agent. Agent calls action_decoder.decode(action) -> button presses. Agent calls game.make_action(button_presses). Agent calls telemetry_writer.record_step().Loop continues
+8. game.is_episode_finished() -> True. Agent calls finalize_episode(), returns stats.
 
 
 ```mermaid
@@ -42,7 +44,6 @@ sequenceDiagram
         SM->>PT: update(gamestate)
         PT->>PT: check loot_visible, place_node() if needed
         PT->>PT: check has_reached_node(), advance last/next
-        PT-->>SM: next_node
 
         SM->>PT: get_next_move(current_pos)
         PT->>NE: step_toward(current_pos, next_node)
@@ -121,6 +122,7 @@ sequenceDiagram
 - current_path
 - last_node
 - next_node
+- visited_waypoints
 
 **Methods:**
 - get_next_node()
@@ -176,9 +178,10 @@ sequenceDiagram
 ## Class ActionDecoder:
 **Overview:**
 - provides utilities to construct action vectors and decode them
+- all static methods, no fields
 
 **Methods (only a few listed):**
--null_action()
+- null_action()
 - forward()
 - attack()
 - strafe_left()
@@ -204,7 +207,6 @@ sequenceDiagram
 ## Class LootObject:
 **Overview:** 
 - small dataclass for loot
-- all static methods, no fields
 
 **Fields:** 
 - name
