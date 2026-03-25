@@ -1,16 +1,106 @@
-#Reference
-'''def _parse_state(state) -> Optional[Dict[str, object]]:
-        if state is None or state.game_variables is None:
-            return None
-        game_vars = state.game_variables
+"""Parses raw VizDoom state into a useable GameState."""
+from config.constants import ENEMY_KEYWORDS, LOOT_KEYWORDS
+from core.execution.game_state import LootObject, GameState
+import re
+from typing import Any
+
+
+class Perception:
+
+    def __init__(self):
+        self.enemy_keywords = ENEMY_KEYWORDS
+        self.loot_keywords = LOOT_KEYWORDS
+        self.last_health = 100
+
+
+    def parse(self, vizdoom_state) -> GameState:
+        """Takes raw VizDoom state, extracts all game variables/labels,
+        runs enemy/loot detection.
+        Returns a populated GameState each tick for StateMachine."""
+        info = self._get_state_info(vizdoom_state)
+        labels = info["labels"]
+
+        return GameState(
+            health=info["health"],
+            armor=0,
+            ammo=info["ammo"],
+            enemies_visible=self._detect_enemies(labels),
+            loots_visible=self._detect_loot(labels),
+            pos_x=info["pos_x"],
+            pos_y=info["pos_y"],
+            angle=info["angle"],
+            enemies_killed=info["enemies_killed"],
+            is_dmg_taken_since_last_step=self._detect_damage(info["health"]),
+        )
+
+
+    @staticmethod
+    def _normalize_name(value: str) -> str:
+        "alpha numeric and lowercase."
+        return re.sub(r"[^a-z0-9]+", "", value.lower())
+
+
+    @staticmethod
+    def _is_dead_name(name_lower: str) -> bool:
+        return "dead" in name_lower or "gibbe" in name_lower
+
+
+    def _is_enemy_name(self, name: str) -> bool:
+        "Checks if an object is an enemy. name must be normalized already."
+        if not name or self._is_dead_name(name):
+            return False
+        return name in self.enemy_keywords
+    
+
+    def _is_loot_name(self, name: str) -> bool:
+        "Checks if an object is loot. name must be normalized already."
+        if not name:
+            return False
+        return name in self.loot_keywords
+
+
+    def _get_state_info(self, vizdoom_state: Any) -> dict:
+        """Extract raw game variables from vizdoom state into dict."""
+        game_vars = vizdoom_state.game_variables
+        labels = getattr(vizdoom_state, "labels", []) or []
         return {
-            "health": float(game_vars[0]) if len(game_vars) > 0 else 0.0,
-            "ammo": float(game_vars[1]) if len(game_vars) > 1 else 0.0,
-            "x": float(game_vars[2]) if len(game_vars) > 2 else 0.0,
-            "y": float(game_vars[3]) if len(game_vars) > 3 else 0.0,
-            "z": float(game_vars[4]) if len(game_vars) > 4 else 0.0,
-            "angle": float(game_vars[5]) if len(game_vars) > 5 else 0.0,
-            "kills": int(game_vars[6]) if len(game_vars) > 6 else 0,
-            "screen": state.screen_buffer,
-            "labels": getattr(state, "labels", []) or [],
-        }'''
+            "health": float(game_vars[0]) if len(game_vars) > 0 else 100.0,
+            "ammo":   float(game_vars[1]) if len(game_vars) > 1 else 0.0,
+            "pos_x":  float(game_vars[2]) if len(game_vars) > 2 else 0.0,
+            "pos_y":  float(game_vars[3]) if len(game_vars) > 3 else 0.0,
+            "angle":  float(game_vars[5]) if len(game_vars) > 5 else 0.0,
+            "enemies_killed": int(game_vars[6]) if len(game_vars) > 6 else 0,
+            "labels": labels,
+        }
+    
+
+    def _detect_enemies(self, labels: list[Any]) -> list[str]:
+        """Returns list of enemy names from visible labels."""
+        enemies = []
+        for lbl in labels:
+            name = getattr(lbl, "object_name", "")
+            if self._is_enemy_name(self._normalize_name(name)):
+                enemies.append(name)
+        return enemies
+
+
+    def _detect_loot(self, labels: list[Any]) -> list[LootObject]:
+        """Returns list of LootObjects from visible labels."""
+        loot = []
+        for lbl in labels:
+            name = getattr(lbl, "object_name", "")
+            if self._is_loot_name(self._normalize_name(name)):
+                loot.append(LootObject(
+                    name=name,
+                    pos_x=float(getattr(lbl, "object_position_x", 0)),
+                    pos_y=float(getattr(lbl, "object_position_y", 0)),
+                ))
+        return loot
+
+    
+    def _detect_damage(self, health: float) -> bool:
+        """Returns True if health decreased since last tick. Updates last_health."""
+        is_dmg_taken = health < self.last_health
+        self.last_health = health
+        return is_dmg_taken
+

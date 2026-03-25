@@ -159,7 +159,7 @@ sequenceDiagram
 - TelemetryWriter
 
 **Methods:**
-- initialize() (VizDoom setup, load config, create one Graph which passes to NavigationEngine and PathTracker)
+- initialize_game() (VizDoom setup, load config, create one Graph which passes to NavigationEngine and PathTracker)
 - run_episode() (calls perception + state machine each tic, returns stats for GA)
 - close()
 
@@ -201,7 +201,7 @@ sequenceDiagram
 - position x
 - position y
 - angle 
-- enemy_kills 
+- enemies_killed
 - is_damage_taken_since_last_step
 
 

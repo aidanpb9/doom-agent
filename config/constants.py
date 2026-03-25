@@ -11,38 +11,50 @@ DEFAULT_LOG_INTERVAL = 20       #steps between log entries
 #Action button indices (must match available_buttons order in vizdoom.cfg)
 ACTION_FORWARD = 0
 ACTION_BACKWARD = 1
-ACTION_LEFT_TURN = 2
-ACTION_RIGHT_TURN = 3
-ACTION_MOVE_LEFT = 4
-ACTION_MOVE_RIGHT = 5
-ACTION_ATTACK = 6
-ACTION_USE = 7
-ACTION_COUNT = 8
-ACTION_NAMES = ["FORWARD", "BACKWARD", "LEFT_TURN", "RIGHT_TURN", "MOVE_LEFT", "MOVE_RIGHT", "ATTACK", "USE"]
+ACTION_TURN_LEFT = 2
+ACTION_TURN_RIGHT = 3
+ACTION_ATTACK = 4
+ACTION_USE = 5
+ACTION_COUNT = 6 #for making arrays of the correct size
+ACTION_NAMES = ["FORWARD", "BACKWARD", "TURN_LEFT", "TURN_RIGHT", "ATTACK", "USE"]
 
-#Enemy label keywords (matched against state.labels object_name)
+#VizDoom keywords (matched against state.labels object_name)
 ENEMY_KEYWORDS = (
     "zombie",
     "zombieman",
-    "shotgun",
-    "chaingun",
+    "shotgunguy",
+    "chaingunguy",
+    "doomimp",
     "imp",
     "demon",
-    "caco",
-    "baron",
-    "lostsoul",
-    "lost soul",
+    "spectre",
+    "cacodemon",
+    "baronofhell",
     "hellknight",
-    "arachno",
+    "lostsoul",
+    "painelemental",
+    "arachnotron",
     "revenant",
     "mancubus",
     "archvile",
-    "pain",
-    "spider",
-    "cyber",
+    "spidermastermind",
+    "cyberdemon",
     "trooper",
-    "troop",
-    "spectre",
+    "troop"
+)
+
+LOOT_KEYWORDS = (
+    "shotgun",
+    "chaingun",
+    "stimpack",
+    "medikit",
+    "healthbonus",
+    "armorbonus",
+    "clip",
+    "shell",
+    "rocket",
+    "cell",
+    "backpack"
 )
 
 #WAD linedef specials that trigger doors

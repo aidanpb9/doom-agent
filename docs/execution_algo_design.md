@@ -84,7 +84,7 @@ stateDiagram-v2
 - If enemy is detected and ammo > 0
 
 **Behavior:**
-- Mechanics are aim, fire, and strafe
+- Aims and fires at enemy
 
 **Exit:**
 - Go to RECOVER if health < health_threshold OR ammo = 0
@@ -150,8 +150,8 @@ What happens when too many dynamic anchor nodes are placed?
 
 ## Testing Results
 **Units, Speed, Visibility, Labels:**
-- Walking speed: 6.11 units/tic (214 units/sec)
-- Sprinting speed: 12.28 units/tic (430 units/sec)
+- Walking speed: 6.11 units/tick (214 units/sec)
+- Sprinting speed: 12.28 units/tick (430 units/sec)
 - Visibility range: at least 700 units 
 - FOV-limited: state.labels only shows objects in current view
 - Objects behind agent or passed by disappear from labels
