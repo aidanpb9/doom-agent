@@ -1,20 +1,75 @@
 """Pure pathfinding and movement. Find paths with A* and produce actions.
 Knows nothing about mission state, node types, or progress."""
+from core.navigation.graph import Node, NodeType
+from core.utils import calculate_euclidean_distance, normalize_angle
+from core.execution.action_decoder import ActionDecoder
+from config.constants import TURN_DEAD_ZONE
+from math import atan2, degrees
+import heapq
 
-from core.navigation.graph import Node
 
 class NavigationEngine:
 
     def __init__(self, graph):
         self.graph = graph
-        self.door_use_timer = 0
 
     def make_path(self, start_node, end_node) -> list[Node]:
-        """Given a graph and 2 points, find a path"""
-        pass #do A* here (and with helpers ofc)
+        """Given a graph and 2 points, find the shortest path. Path guaranteed to exist.
+        This is A* implementation. g=actual cost from start, h=straight-line estimate to goal."""
+        heap = [] #use priority q to get best scoring neighbor
+        closed = set() #to avoid processing nodes we've already seen
+        parent = {} #dict to reconstruct path at the end
+        g = {start_node: 0} #each node is given a cost so far (sum of edges traversed)
+        h = {} #each node has an estimated cost to goal using Euclidean distance 
+        counter = 0 #a tiebreaker if node scores are equal so we don't ever compare Node objects
 
-    def step_toward(self, x, y, angle, target_node) -> list[int]:
-        """Given current pos and target point, produce an action"""
-        #do update door time logic here
-        #do use logic on doors here
-        pass
+        heapq.heappush(heap, (0.0, counter, start_node)) #push (priority, counter, item)
+        while heap:
+            _, _, current = heapq.heappop(heap)
+            if current is end_node: #reconstruct path and return
+                path = []
+                cur = end_node
+                while cur is not start_node:
+                    path.append(cur)
+                    cur = parent[cur]
+                path.reverse()
+                return path
+            
+            if current in closed:
+                continue
+            closed.add(current)
+
+            for neighbor in self.graph.get_neighbors(current):
+                if neighbor in closed:
+                    continue
+                new_g = g[current] + calculate_euclidean_distance(current.x, current.y, neighbor.x, neighbor.y)
+                #only update if this is first time we've seen neighbor, or found a cheaper route to neighbor
+                if neighbor not in g or new_g < g[neighbor]:
+                    g[neighbor] = new_g
+                    parent[neighbor] = current
+                    h[neighbor] = calculate_euclidean_distance(neighbor.x, neighbor.y, end_node.x, end_node.y)
+                    counter += 1
+                    f = new_g + h[neighbor]
+                    heapq.heappush(heap, (f, counter, neighbor))
+
+    def step_toward(self, x, y, angle, target_node, door_use_timer) -> list[int]:
+        """Given current pos and target point, produce an action.
+        We only use forward, turn left or right, and use here."""
+        actions = []
+        actions.append(ActionDecoder.forward()) #always go forward
+
+        #VizDoom angles: 0=East, 90=North, 180=West, 270=South (tested with temporary script)
+        desired = degrees(atan2(target_node.y - y, target_node.x - x)) #where the target is in relation to us
+        angle_delta = normalize_angle(desired - angle) #-180 to 180
+        if abs(angle_delta) > TURN_DEAD_ZONE:
+            if angle_delta > 0:
+                actions.append(ActionDecoder.turn_left())
+            else:
+                actions.append(ActionDecoder.turn_right())
+        
+        #handling doors
+        if not door_use_timer and target_node.node_type == NodeType.DOOR:
+            actions.append(ActionDecoder.use())
+
+        action = ActionDecoder.combine(*actions)
+        return action

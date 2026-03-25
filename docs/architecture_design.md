@@ -101,7 +101,6 @@ sequenceDiagram
 
 **Fields:**
 - Graph object
-- door_use_timer
 
 **Methods:**
 - make_path() (do A* here, return list of nodes to traverse)
@@ -123,6 +122,7 @@ sequenceDiagram
 - last_node
 - next_node
 - visited_waypoints
+- door_use_timer
 
 **Methods:**
 - set_cur_path() (call make_path() from NavigationEngine to update cur_path)

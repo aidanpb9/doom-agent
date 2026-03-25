@@ -1,12 +1,13 @@
 #Constants used by execution and genetic algo logic.
 
 #Game Engine
-DEFAULT_TICRATE = 35           #Doom's native ticrate (tics per second)
+DEFAULT_TICRATE = 35           #Doom's native ticrate (ticks per second)
 DEFAULT_MAP_NAME = "E1M1"
 DEFAULT_WAD_PATH = "wads/doom.wad"
-DEFAULT_EPISODE_TIMEOUT = 4200  #tics (120 seconds @ 35 tic/s)
+DEFAULT_EPISODE_TIMEOUT = 4200  #ticks (120 seconds @ 35 tic/s)
 DEFAULT_ACTION_FRAME_SKIP = 8   #frames skipped per action in fast mode
 DEFAULT_LOG_INTERVAL = 20       #steps between log entries
+TURN_DEAD_ZONE = 1.0            #Angle threshold for not turning towards a target node
 
 #Action button indices (must match available_buttons order in vizdoom.cfg)
 ACTION_FORWARD = 0
@@ -67,7 +68,7 @@ DOOR_SPECIALS = {
     171, 175, 176, 177, 179, 180, 181, 182, 183, 184,
     185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195,
 }
-DOOR_USE_COOLDOWN = 175  # 5 seconds @ 35 tics/s
+DOOR_USE_COOLDOWN = 175  # 5 seconds @ 35 ticks/sec
 
 #WAD linedef specials that end the level
 EXIT_SPECIALS = {11, 51, 52, 124, 197}

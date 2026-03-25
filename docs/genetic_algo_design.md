@@ -27,7 +27,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Radiation intensity | 0.25 | Represents probability per parameter of a bit-flip occuring (mutation) |
 | Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
 | Generations | 50-1000 (Estimate) | Adjust based on convergence/time constraints |
-| Episode timeout | 4200 tics (120 seconds) | E1M1 time limit |
+| Episode timeout | 4200 ticks (120 seconds) | E1M1 time limit |
 | Evaluation seed | Fixed(42) | Same seed for all evaluations for fairness |
 
 
@@ -50,8 +50,8 @@ None Currently
 **Scan Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `scan_frequency` | 0.0-1.0 | Probability of triggering scan (0=never, 1=every ~175 tics (5 seconds)) |
-| `scan_cooldown` | 35-280 tics (1-8 seconds) | Minimum time between scans |
+| `scan_frequency` | 0.0-1.0 | Probability of triggering scan (0=never, 1=every ~175 ticks (5 seconds)) |
+| `scan_cooldown` | 35-280 ticks (1-8 seconds) | Minimum time between scans |
 
 **Total:** 7 parameters per genome
 
@@ -61,7 +61,7 @@ None Currently
 ```python
 if level_completed:
     fitness = 1000                          # Base completion bonus
-            + 500 * (1 - time_tics / 4200)  # Speed bonus 
+            + 500 * (1 - time_ticks / 4200)  # Speed bonus 
             + 2 * health_remaining          # Health
             + 1 * armor_remaining           # Armor   
             + 0.5 * ammo_remaining          # Ammo 
@@ -107,7 +107,7 @@ else:
 ## Evaluation Protocol
 **Per-Agent Evaluation:**
 - Map: E1M1
-- Timeout: 4200 tics (120 seconds)
+- Timeout: 4200 ticks (120 seconds)
 - Seed: Fixed (42) for reproducibility
 - Mode: Fast (headless, action_frame_skip=8)
 
@@ -115,7 +115,7 @@ else:
 
 **Metrics to collect:**
 - Level completion status
-- Episode time and tics
+- Episode time and ticks
 - Final health, armor, ammo
 - Enemies killed
 - Waypoints reached

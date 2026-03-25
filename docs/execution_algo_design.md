@@ -5,8 +5,8 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 
 
 ## Hyperparameters
-- Level timeout: should scale by level, E1M1 = 4200 tics (120 seconds @ 35 tic/s)
-- Hang detector: level ends if agent moves < 200 units in any 1050 tics (30 seconds)
+- Level timeout: should scale by level, E1M1 = 4200 ticks (120 seconds @ 35 tic/s)
+- Hang detector: level ends if agent moves < 200 units in any 1050 ticks (30 seconds)
 - Minimum combat ammo: 0, ammo_threshold param controls when we look for ammo, but we don't want it to dictate when we run from a fight.
 
 
