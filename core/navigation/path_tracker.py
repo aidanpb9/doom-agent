@@ -61,7 +61,7 @@ class PathTracker:
         ]
         }
         """
-        path = Path(f"maps/{map_name}.json")
+        path = Path(f"maps/json/{map_name}.json")
         with open(path) as f:
             data = json.load(f)
 

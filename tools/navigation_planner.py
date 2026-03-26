@@ -1883,6 +1883,7 @@ def draw_svg(
 <text x="20" y="94" fill="#bbbbbb" font-family="monospace" font-size="14">Cyan: portal midpoint route</text>
 <text x="20" y="114" fill="#bbbbbb" font-family="monospace" font-size="14">Red: invalid node-link segments (cross non-portal geometry)</text>
 <text x="20" y="134" fill="#bbbbbb" font-family="monospace" font-size="14">White labels: node numbers</text>
+<text x="20" y="154" fill="#bbbbbb" font-family="monospace" font-size="14">Green dots: doors</text>
 </svg>"""
 
     out = Path(output_path)
@@ -1961,7 +1962,7 @@ def default_json_output_path(map_name: str) -> str:
 
 
 def default_svg_output_path(map_name: str) -> str:
-    return str(Path("maps") / "svg" / f"{map_name}.svg")
+    return str(Path("maps") / "images" / f"{map_name}.svg")
 
 
 def _choose_exit_linedef(pm: ParsedMap) -> Linedef:
