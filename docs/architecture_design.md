@@ -89,6 +89,7 @@ sequenceDiagram
 
 **Methods:**
 - add_node() 
+- remove_node()
 - add_edge()
 - remove_edge()
 - get_edge()
@@ -145,7 +146,7 @@ sequenceDiagram
 - PathTracker 
 
 **Methods:** 
-- update(gamestate) (a big if block for state switching, returns an action) 
+- update(gamestate) (if block for state switching, returns an action) 
 - private methods for each state
 
 

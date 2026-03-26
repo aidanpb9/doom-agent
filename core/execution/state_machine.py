@@ -1,6 +1,8 @@
 """Manages what state the agent should be in, returns the agent's actions."""
 from core.navigation.path_tracker import PathTracker
 from core.execution.game_state import GameState
+from config.constants import (HEALTH_THRESHOLD, ARMOR_THRESHOLD, AMMO_THRESHOLD,
+    HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS)
 from enum import Enum
 
 
@@ -20,15 +22,20 @@ class StateMachine:
         self.scan_cooldown_timer = 0 #update() decrements this
 
 
-    def update(self, game_state: GameState):
-        """Switches to the correct state based on priority."""
-        pass
-    
+    def update(self, gamestate: GameState) -> list[int]:
+        """Updates game info, then switches to the correct state based on priority."""
+        self.path_tracker.update(gamestate)
+
+        if (gamestate.health < HEALTH_THRESHOLD and self.path_tracker.has_loot_node(HEALTH_KEYWORDS) or
+            gamestate.armor < ARMOR_THRESHOLD and self.path_tracker.has_loot_node(ARMOR_KEYWORDS) or
+            gamestate.ammo < AMMO_THRESHOLD and self.path_tracker.has_loot_node(AMMO_KEYWORDS)
+        ):
+            return self._recover
     
     def _traverse(self, gamestate: GameState) -> list[int]:
         """Calls path_tracker. Returns movement action"""
+        #call path_tracker.get_next_move(x, y, angle)
         pass
-
 
     def _combat(self, gamestate: GameState) -> list[int]:
         """Aims, fires, and returns attack action."""
@@ -37,6 +44,7 @@ class StateMachine:
 
     def _recover(self, gamestate: GameState) -> list[int]:
         """Navigates to loot. Returns movement action"""
+        #call path_tracker.get_next_move(x, y, angle)
         pass
 
 

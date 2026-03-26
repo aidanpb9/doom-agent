@@ -7,7 +7,7 @@ from config.constants import LOOT_PROXIMITY
 
 
 class NodeType(Enum):
-    """Represents the different node types of the graph.""" 
+    """Represent the different node types of the graph.""" 
     WAYPOINT = 1
     LOOT = 2
     DOOR = 3
@@ -34,7 +34,7 @@ class Edge:
 
 
 class Graph:
-    """Stores the nav node graph as a collection of nodes and edges.
+    """Store the nav node graph as a collection of nodes and edges.
     Pathtracker owns and mutates this. NavigationEngine reads it for pathfinding."""
     def __init__(self):
         self.nodes = [] 
@@ -45,7 +45,13 @@ class Graph:
         We simply append it to the list since the list order doesn't determine
         the Graph, the node & edge connection does."""
         self.nodes.append(node)
-    
+
+    def remove_node(self, node) -> None:
+        """Remove a node and all its edges from the graph."""
+        self.nodes.remove(node)
+        for neighbor in self.get_neighbors(node):
+            self.remove_edge(node, neighbor)
+
     def add_edge(self, node1, node2) -> None:
         """Record that two nodes are connected."""
         self.edges.append(Edge(node1, node2))
@@ -61,7 +67,7 @@ class Graph:
                 return
             
     def get_edge(self, node1, node2) -> Edge | None:
-        """Returns the edge connnecting node1 and node2, or None if not found."""
+        """Return the edge connnecting node1 and node2, or None if not found."""
         for edge in self.edges:
             if edge.node1 is node1 and edge.node2 is node2:
                 return edge
@@ -81,7 +87,7 @@ class Graph:
         return neighbors
     
     def identify_node(self, loot_x, loot_y) -> Node | None:
-        """Used to find which node a location loot is."""
+        """Find which node a loot location belongs to."""
         best_match = None
         best_match_distance = float('inf')
         for node in self.nodes:

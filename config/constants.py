@@ -1,4 +1,5 @@
-#Constants used by execution and genetic algo logic.
+"""Constants used by execution and genetic algo logic.
+The GA will overwrite some of these constants."""
 
 #Game Engine
 DEFAULT_TICRATE = 35           #Doom's native ticrate (ticks per second)
@@ -44,19 +45,11 @@ ENEMY_KEYWORDS = (
     "troop"
 )
 
-LOOT_KEYWORDS = (
-    "shotgun",
-    "chaingun",
-    "stimpack",
-    "medikit",
-    "healthbonus",
-    "armorbonus",
-    "clip",
-    "shell",
-    "rocket",
-    "cell",
-    "backpack"
-)
+HEALTH_KEYWORDS = {"stimpack", "medikit", "healthbonus"}
+ARMOR_KEYWORDS = {"armorbonus", "greenarmor", "bluearmor"}
+AMMO_KEYWORDS = {"clip", "backpack"}  #pistol only for now
+WEAPON_KEYWORDS = {"shotgun", "chaingun"}
+LOOT_KEYWORDS = HEALTH_KEYWORDS | ARMOR_KEYWORDS | AMMO_KEYWORDS | WEAPON_KEYWORDS
 
 #WAD linedef specials that trigger doors
 DOOR_SPECIALS = {
@@ -78,6 +71,11 @@ TURN_DEAD_ZONE = 1.0 #Angle threshold for not turning towards a target node
 NODE_PROXIMITY = 60 #how many units away from a node to be on it (tested with loot pickup range)
 DOOR_USE_DISTANCE = 30 #need to be more precise about when to USE on doors so we don't waste it
 LOOT_PROXIMITY = 20 #how far loot is away from an existing node, so we know if loot is already marked
+
+#Agent thresholds 
+HEALTH_THRESHOLD = 50
+ARMOR_THRESHOLD = 1
+AMMO_THRESHOLD = 20
 
 #Aiming thresholds (fraction of screen width)
 COMBAT_AIM_THRESHOLD_WIDE = 0.08       # turn to face enemy if offset exceeds this

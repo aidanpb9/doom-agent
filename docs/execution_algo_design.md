@@ -161,7 +161,7 @@ What happens when too many dynamic waypoint nodes are placed close together?
 ## References
 - Unit size reference: https://doomwiki.org/wiki/Map_unit
 - Weapons and items: https://gamefaqs.gamespot.com/ps4/270132-doom-1993/faqs/80222/weapons-and-items
-
+- For more specific item names: https://zdoom.org/w/index.php?title=Main_Page
 
 ## Future Work
 - visual node placement tool

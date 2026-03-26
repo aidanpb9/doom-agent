@@ -24,21 +24,24 @@ class PathTracker:
 
     def update(self, gamestate) -> None:
         """Called by StateMachine every tick to update nodes and door_use_timer."""
-        if self.goal_node and not self.cur_path:
-            self.set_cur_path()
-        
+        #Update door timer
         self.door_use_timer = max(0, self.door_use_timer - TICK)
+        
+        #Update path if needed
+        if self.goal_node and not self.cur_path:
+            self._set_cur_path()
 
         #If we're close to next node in path, update next_node
         if self.next_node and self._has_reached_node(gamestate, self.next_node):
-            self._get_next_node()
+            self._get_next_node(gamestate)
         
+        #Place loot nodes
         if gamestate.loots_visible:
             self._place_node(gamestate)
 
     def get_next_move(self, x, y, angle) -> list[int]:
-        """StateMachine calls this, which calls nav_engine.step_toward().
-        Handles door_use_timer after a USE action."""
+        """Handle door_use_timer reset after a USE action.
+        StateMachine calls this from TRAVERSE/RECOVER, which calls nav_engine.step_toward()."""
         action = self.nav_engine.step_toward(x, y, angle, self.next_node, self.door_use_timer)
         if action[ACTION_USE]:
             self.door_use_timer = DOOR_USE_COOLDOWN
@@ -79,13 +82,21 @@ class PathTracker:
     def set_goal_node(self, node: Node) -> None:
         """Called by StateMachine."""
         self.goal_node = node
+        self._set_cur_path()
+
+    def has_loot_node(self, keywords: set) -> bool:
+        """Check if a loot type is known in the graph."""
+        for node in self.graph.nodes:
+            if node.node_type == NodeType.Loot and node.name in keywords:
+                return True
+        return False
 
     def _set_cur_path(self) -> None:
-        """Updates cur_path by calling nav_engine.make_path()."""
+        """Update cur_path by calling nav_engine.make_path()."""
         self.cur_path = self.nav_engine.make_path(self.last_node, self.goal_node)
 
     def _has_reached_node(self, gamestate, target_node) -> bool:
-        """When a node is close, return True. Different nodes have different thresholds
+        """Return True when a node is close. Different nodes have different thresholds
         which this accounts for, so the function is reusable."""
         distance_to_target = calculate_euclidean_distance(
             gamestate.pos_x, gamestate.pos_y, target_node.x, target_node.y)
@@ -98,21 +109,28 @@ class PathTracker:
             return True
         return False
 
-    def _get_next_node(self) -> Node:
-        """When current next_node is reached, replace it with a new one. Update last node."""
+    def _get_next_node(self, gamestate) -> Node:
+        """When current next_node is reached, replace it with a new one and update last node."""
         if (self.next_node not in self.visited_waypoints and 
             self.next_node.is_static and 
             self.next_node.node_type == NodeType.WAYPOINT
         ):
             self.visited_waypoints.add(self.next_node)
-            
-        self.last_node = self.next_node
-        if self.cur_path:
-            self.next_node = self.cur_path.popleft()
+
+        #Loot nodes are only goal nodes in RECOVER. After pickup, SM sets a new goal
+        #which triggers _set_cur_path automatically via set_goal_node.
+        if self.next_node.node_type == NodeType.LOOT:
+            self.graph.remove_node(self.next_node)
+            self.last_node = self._nearest_node(gamestate)
+            self.next_node = None
+        else:
+            self.last_node = self.next_node
+            if self.cur_path:
+                self.next_node = self.cur_path.popleft()
         return self.next_node
 
     def _place_node(self, gamestate) -> None:
-        "Adds dynamic LOOT and WAYPOINT nodes to the graph."
+        "Add dynamic LOOT and WAYPOINT nodes to the graph."
         for loot in gamestate.loots_visible:
             #Check if loot is already marked as a node
             is_loot_marked = False
@@ -131,9 +149,8 @@ class PathTracker:
                 self._make_anchor(gamestate, loot_node)
 
             #If loot marked, update its connection if shorter distance exists.
-            #Only do update if on the main path (next_node is not loot), this avoids errors where
-            #we get an unfairly close edge between waypoint and loot that won't ever be taken from main path.
-            elif self.next_node.node_type != NodeType.LOOT:
+            #But only if that shorter distance doesn't occur while on the way to the loot node.
+            elif loot_node is not self.next_node:
                 old_anchor = self.graph.get_neighbors(loot_node)[0] #loot nodes only have 1 neighbor, its anchor
                 old_distance = self.graph.get_edge(loot_node, old_anchor).length
                 new_distance = calculate_euclidean_distance(
@@ -144,9 +161,9 @@ class PathTracker:
                     self._make_anchor(gamestate, loot_node)
 
     def _make_anchor(self, gamestate, loot_node) -> None:
-        """Makes an "anchor" node of agent's current position and inserts it into Graph.
-        Adds edges between this anchor node and last, next, and loot.
-        Makes this anchor the last_node."""
+        """Make an "anchor" node of agent's current position and inserts it into Graph.
+        Add edges between this anchor node and last, next, and loot.
+        Make this anchor the last_node."""
         waypoint_node = Node(gamestate.pos_x, gamestate.pos_y, NodeType.WAYPOINT)
         self.graph.add_node(waypoint_node)
         self.graph.remove_edge(self.last_node, self.next_node)
@@ -155,4 +172,14 @@ class PathTracker:
         self.graph.add_edge(waypoint_node, self.next_node)
         self.last_node = waypoint_node
 
-
+    def _nearest_node(self, gamestate) -> Node:
+        """Find the closest node in the graph to agent's position.
+        A limitation is that this could find unreachable nodes."""
+        best_match = None
+        best_match_distance = float('inf')
+        for node in self.graph.nodes:
+            distance = calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, node.x, node.y)
+            if distance < best_match_distance:
+                best_match = node
+                best_match_distance = distance
+        return best_match 
