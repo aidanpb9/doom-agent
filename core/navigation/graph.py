@@ -87,7 +87,7 @@ class Graph:
         return neighbors
     
     def identify_node(self, loot_x, loot_y) -> Node | None:
-        """Find which node a loot location belongs to."""
+        """Find which node a location belongs to. Ensures a reasonable range."""
         best_match = None
         best_match_distance = float('inf')
         for node in self.nodes:

@@ -114,10 +114,10 @@ stateDiagram-v2
 ## SCAN:
 **Notes:**
 - Only available from TRAVERSE since we want to be on the main path and not actively looking for loot
-- Helps find mark loot nodes we missed and helps turn towards enemies that shoot us in the back
+- Helps mark loot nodes we missed and helps turn towards enemies that shoot us in the back
 
 **Entry:**
-- From TRAVERSE
+- From SCAN (continuing), TRAVERSE
 - IF SCAN not on cooldown AND (damage taken OR scan_frequency param triggered) (we don't want to scan every time we take damage because it could be from sources besides enemies like lava)
 
 **Behavior:**

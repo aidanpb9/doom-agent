@@ -1,6 +1,6 @@
-"""Manages mission progress and graph state. Owns the node graph.
-Knows which nodes are current, next, and goal.
-Decides when a node is reached. Knows about NodeTypes."""
+"""Manage mission progress and graph state. Own the node graph.
+Know which nodes are current, next, and goal.
+Decide when a node is reached. Knows about NodeTypes."""
 from core.navigation.graph import Node, NodeType
 from core.utils import calculate_euclidean_distance
 from config.constants import (ACTION_USE, DOOR_USE_COOLDOWN, 
@@ -21,31 +21,6 @@ class PathTracker:
         self.goal_node = None
         self.visited_waypoints = set()
         self.door_use_timer = 0
-
-    def update(self, gamestate) -> None:
-        """Called by StateMachine every tick to update nodes and door_use_timer."""
-        #Update door timer
-        self.door_use_timer = max(0, self.door_use_timer - TICK)
-        
-        #Update path if needed
-        if self.goal_node and not self.cur_path:
-            self._set_cur_path()
-
-        #If we're close to next node in path, update next_node
-        if self.next_node and self._has_reached_node(gamestate, self.next_node):
-            self._get_next_node(gamestate)
-        
-        #Place loot nodes
-        if gamestate.loots_visible:
-            self._place_node(gamestate)
-
-    def get_next_move(self, x, y, angle) -> list[int]:
-        """Handle door_use_timer reset after a USE action.
-        StateMachine calls this from TRAVERSE/RECOVER, which calls nav_engine.step_toward()."""
-        action = self.nav_engine.step_toward(x, y, angle, self.next_node, self.door_use_timer)
-        if action[ACTION_USE]:
-            self.door_use_timer = DOOR_USE_COOLDOWN
-        return action
 
     def load_static_nodes(self, map_name: str) -> None:
         """Load nodes from maps/JSON file made by pre-processing tool into self.graph.
@@ -79,9 +54,45 @@ class PathTracker:
             for i, j in data["edges"]:
                 self.graph.add_edge(nodes[i], nodes[j])
 
-    def set_goal_node(self, node: Node) -> None:
-        """Called by StateMachine."""
-        self.goal_node = node
+    def update(self, gamestate) -> None:
+        """Called by StateMachine every tick to update nodes and door_use_timer."""
+        #Update door timer
+        self.door_use_timer = max(0, self.door_use_timer - TICK)
+        
+        #Update path if needed
+        if self.goal_node and not self.cur_path:
+            self._set_cur_path()
+
+        #If we're close to next node in path, update next_node
+        if self.next_node and self._has_reached_node(gamestate, self.next_node):
+            self._get_next_node(gamestate)
+        
+        #Place loot nodes
+        if gamestate.loots_visible:
+            self._place_node(gamestate)
+
+    def get_next_move(self, x, y, angle) -> list[int]:
+        """Handle door_use_timer reset after a USE action.
+        StateMachine calls this from TRAVERSE/RECOVER, which calls nav_engine.step_toward()."""
+        action = self.nav_engine.step_toward(x, y, angle, self.next_node, self.door_use_timer)
+        if action[ACTION_USE]:
+            self.door_use_timer = DOOR_USE_COOLDOWN
+        return action
+
+    def set_goal_by_type(self, gamestate, node_type: NodeType, keywords=None) -> None:
+        """Find and set the goal node according to current state."""
+        goal_node = None
+        if node_type == NodeType.EXIT:
+            for node in self.graph.nodes:
+                if node.node_type == NodeType.EXIT:
+                    goal_node = node
+        elif node_type == NodeType.LOOT:
+            goal_node = self._nearest_node(gamestate, keywords)
+
+        if not goal_node:
+            return
+        
+        self.goal_node = goal_node
         self._set_cur_path()
 
     def has_loot_node(self, keywords: set) -> bool:
@@ -90,7 +101,7 @@ class PathTracker:
             if node.node_type == NodeType.Loot and node.name in keywords:
                 return True
         return False
-
+    
     def _set_cur_path(self) -> None:
         """Update cur_path by calling nav_engine.make_path()."""
         self.cur_path = self.nav_engine.make_path(self.last_node, self.goal_node)
@@ -172,14 +183,26 @@ class PathTracker:
         self.graph.add_edge(waypoint_node, self.next_node)
         self.last_node = waypoint_node
 
-    def _nearest_node(self, gamestate) -> Node:
+    def _nearest_node(self, gamestate, keywords=None) -> Node:
         """Find the closest node in the graph to agent's position.
-        A limitation is that this could find unreachable nodes."""
+        Used when initializing episode to populate self.last_node,
+        when removing loot nodes after reaching them to give the
+        agent a more accurate node to start its new path, and when finding 
+        closest loot nodes for updating the goal node in RECOVER state.
+        A limitation is that this could choose unreachable nodes in some cases (thru wall)."""
         best_match = None
         best_match_distance = float('inf')
+
         for node in self.graph.nodes:
             distance = calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, node.x, node.y)
-            if distance < best_match_distance:
+            
+            if keywords:
+                if node.name in keywords and distance < best_match_distance:
+                    best_match = node
+                    best_match_distance = distance
+            elif distance < best_match_distance:
                 best_match = node
                 best_match_distance = distance
         return best_match 
+
+        

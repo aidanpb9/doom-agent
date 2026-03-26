@@ -18,9 +18,9 @@ class Agent:
         self.game = None
         self.perception = None
         self.state_machine = None
+        self.path_tracker = None #for loading static nodes
         self.telemetry_writer = None
     
-
     def initialize_game(self) -> None:
         """Does VizDoom setup, loads configs, and creates runtime objects."""
 
@@ -42,17 +42,21 @@ class Agent:
         #Create all runtime objects
         graph = Graph() #one Graph instance shared between NavEngine and PathTracker
         nav_engine = NavigationEngine(graph)
-        path_tracker = PathTracker(graph, nav_engine)
-        self.state_machine = StateMachine(path_tracker)
+        self.path_tracker = PathTracker(graph, nav_engine)
+        self.path_tracker.load_static_nodes(DEFAULT_MAP_NAME)
+        self.state_machine = StateMachine(self.path_tracker)
         self.perception = Perception()
         self.telemetry_writer = TelemetryWriter() #TODO: after cleaning TM
-
 
     def run_episode(self, params: dict) -> dict:
         """calls Perception and StateMachine each tick.
         Uses params as inputs from the GA.
         Returns stats for the genetic algorithm."""
-        pass
+        self.game.new_episode()
+        state = self.game.get_state()
+        gamestate = self.perception.parse(state)
+        self.path_tracker.last_node = self.path_tracker._nearest_node(gamestate)
+
 
     def close(self) -> None:
         if self.game:

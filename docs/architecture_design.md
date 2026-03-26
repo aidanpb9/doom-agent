@@ -130,10 +130,10 @@ sequenceDiagram
 - door_use_timer
 
 **Methods:**
+- load_static_nodes()
 - update()
 - get_next_move()
-- load_static_nodes()
-- set_goal_node()
+- set_goal_by_type()
 
 
 ## Class StateMachine:
