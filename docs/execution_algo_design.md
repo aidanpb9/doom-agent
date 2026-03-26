@@ -118,13 +118,13 @@ stateDiagram-v2
 
 **Entry:**
 - From TRAVERSE
-- IF SCAN not on cooldown AND (damage taken OR scan_frequency param triggered)
+- IF SCAN not on cooldown AND (damage taken OR scan_frequency param triggered) (we don't want to scan every time we take damage because it could be from sources besides enemies like lava)
 
 **Behavior:**
 - Perform a 360 degree spin in-place
 
 **Exit:**
-- Go to RECOVER if states drop below thresholds
+- Go to RECOVER if stats drop below thresholds
 - Go to COMBAT if enemy visible
 - Go to TRAVERSE if 360 spin completes
 

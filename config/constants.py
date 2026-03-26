@@ -77,6 +77,11 @@ HEALTH_THRESHOLD = 50
 ARMOR_THRESHOLD = 1
 AMMO_THRESHOLD = 20
 
+#SCAN thresholds
+SCAN_FREQUENCY = 0.5 #odds of triggering a scan (0=never, 1=every 95 ticks=3seconds)
+SCAN_FREQUENCY_MAX = 95 #represents the hardcoded upper range of the GA param
+SCAN_COOLDOWN = 175 #minimum ticks between scans 
+
 #Aiming thresholds (fraction of screen width)
 COMBAT_AIM_THRESHOLD_WIDE = 0.08       # turn to face enemy if offset exceeds this
 COMBAT_AIM_THRESHOLD_NARROW = 0.12     # shoot if offset is within this
@@ -87,8 +92,4 @@ COMBAT_WALL_BRIGHTNESS_THRESHOLD = 140
 COMBAT_WALL_VARIANCE_THRESHOLD = 1500
 
 #Frames to keep targeting an enemy after they leave FOV
-COMBAT_SEEN_TICKS_DEFAULT = 10
-
-# GA evolvable parameter bounds — populated in Phase 2
-# strafe_switch_time, health_threshold, armor_threshold,
-# ammo_threshold, scan_frequency, scan_cooldown, loot_node_distance
+COMBAT_HOLD_TICKS = 10

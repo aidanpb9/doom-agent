@@ -62,7 +62,7 @@ sequenceDiagram
 ```
 
 
-## Classes
+## Main Classes (there are some tiny helper classes not listed)
 1. Graph
 2. NavigationEngine
 3. PathTracker
@@ -71,7 +71,6 @@ sequenceDiagram
 6. Perception
 7. ActionDecoder
 8. GameState
-9. LootObject
 
 
 ## Class Graph:
@@ -142,8 +141,8 @@ sequenceDiagram
 - manage what state the agent should be in, returns the agent's action
 
 **Fields:**
-- enum current_state
 - PathTracker 
+- state related fields and cooldowns
 
 **Methods:** 
 - update(gamestate) (if block for state switching, returns an action) 

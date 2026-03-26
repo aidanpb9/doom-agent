@@ -50,7 +50,7 @@ None Currently
 **Scan Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `scan_frequency` | 0.0-1.0 | Probability of triggering scan (0=never, 1=every ~175 ticks (5 seconds)) |
+| `scan_frequency` | 0.0-1.0 | Probability of triggering scan (0=never, 1=every ~95 ticks (3 seconds)) |
 | `scan_cooldown` | 35-280 ticks (1-8 seconds) | Minimum time between scans |
 
 **Total:** 7 parameters per genome
