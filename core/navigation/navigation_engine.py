@@ -3,9 +3,10 @@ Knows nothing about mission state, node types, or progress."""
 from core.navigation.graph import Node, NodeType
 from core.utils import calculate_euclidean_distance, normalize_angle
 from core.execution.action_decoder import ActionDecoder
-from config.constants import TURN_DEAD_ZONE
+from config.constants import TURN_DEAD_ZONE, DOOR_USE_DISTANCE
 from math import atan2, degrees
 import heapq
+from collections import deque
 
 
 class NavigationEngine:
@@ -13,7 +14,7 @@ class NavigationEngine:
     def __init__(self, graph):
         self.graph = graph
 
-    def make_path(self, start_node, end_node) -> list[Node]:
+    def make_path(self, start_node, end_node) -> deque[Node]:
         """Given a graph and 2 points, find the shortest path. Path guaranteed to exist.
         This is A* implementation. g=actual cost from start, h=straight-line estimate to goal."""
         heap = [] #use priority q to get best scoring neighbor
@@ -33,7 +34,7 @@ class NavigationEngine:
                     path.append(cur)
                     cur = parent[cur]
                 path.reverse()
-                return path
+                return deque(path)
             
             if current in closed:
                 continue
@@ -69,7 +70,9 @@ class NavigationEngine:
         
         #handling doors
         if not door_use_timer and target_node.node_type == NodeType.DOOR:
-            actions.append(ActionDecoder.use())
+            distance = calculate_euclidean_distance(x, y, target_node.x, target_node.y)
+            if distance < DOOR_USE_DISTANCE:
+                actions.append(ActionDecoder.use())
 
         action = ActionDecoder.combine(*actions)
         return action

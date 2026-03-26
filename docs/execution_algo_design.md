@@ -19,8 +19,8 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 - Manages the node graph and mission progress
 - Static nodes, or waypoints, define the mininal path for level completion
 - Dynamic nodes get placed by the agent during playtime, these reset upon level restart
-- When agent sees loot, a loot node is placed at the loot position, and an anchor node is placed at the current position
-- An edge connects these two nodes, and the anchor node is inserted between two static nodes
+- When agent sees loot, a loot node is placed at the loot position, and a waypoint node is placed at the current position
+- An edge connects these two nodes, and the waypoint node is inserted between two static nodes
 
 
 ## Layer 3: States
@@ -145,7 +145,7 @@ Sprint is a valid action. However, we are omitting it for simplicity. The main b
 
 
 ## Needs Testing:
-What happens when too many dynamic anchor nodes are placed?
+What happens when too many dynamic waypoint nodes are placed close together?
 
 
 ## Testing Results

@@ -3,11 +3,11 @@
 #Game Engine
 DEFAULT_TICRATE = 35           #Doom's native ticrate (ticks per second)
 DEFAULT_MAP_NAME = "E1M1"
-DEFAULT_WAD_PATH = "wads/doom.wad"
+DEFAULT_WAD_PATH = "maps/wads/doom.wad"
 DEFAULT_EPISODE_TIMEOUT = 4200  #ticks (120 seconds @ 35 tic/s)
 DEFAULT_ACTION_FRAME_SKIP = 8   #frames skipped per action in fast mode
 DEFAULT_LOG_INTERVAL = 20       #steps between log entries
-TURN_DEAD_ZONE = 1.0            #Angle threshold for not turning towards a target node
+TICK = 1    
 
 #Action button indices (must match available_buttons order in vizdoom.cfg)
 ACTION_FORWARD = 0
@@ -72,6 +72,12 @@ DOOR_USE_COOLDOWN = 175  # 5 seconds @ 35 ticks/sec
 
 #WAD linedef specials that end the level
 EXIT_SPECIALS = {11, 51, 52, 124, 197}
+
+#Navigation thresholds
+TURN_DEAD_ZONE = 1.0 #Angle threshold for not turning towards a target node
+NODE_PROXIMITY = 60 #how many units away from a node to be on it (tested with loot pickup range)
+DOOR_USE_DISTANCE = 30 #need to be more precise about when to USE on doors so we don't waste it
+LOOT_PROXIMITY = 20 #how far loot is away from an existing node, so we know if loot is already marked
 
 #Aiming thresholds (fraction of screen width)
 COMBAT_AIM_THRESHOLD_WIDE = 0.08       # turn to face enemy if offset exceeds this

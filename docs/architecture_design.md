@@ -12,7 +12,7 @@ The runtime is split into two sides with a clean boundary. The Agent side handle
 2. main.py calls agent.run_episode(). Agent calls game.new_episode(). Loop starts.
 3. Game tick fires. Agent calls perception.parse(game.get_state()) -> GameState.
 4. Agent calls state_machine.update(gamestate). StateMachine checks priority: stats above thresholds, no enemies, no damage taken -> stay in TRAVERSE state. 
-5. StateMachine calls path_tracker.update(game_state). PathTracker checks loot_visible, runs duplicate check, places anchor + loot nodes if needed, advanced last_node and next_node if node reached.
+5. StateMachine calls path_tracker.update(game_state). PathTracker checks loot_visible, runs duplicate check, places waypoint + loot nodes if needed, advanced last_node and next_node if node reached.
 6. StateMachine calls path_tracker.get_next_move(current_position). PathTracker calls NavigationEngine internally -> returns action.
 7. StateMachine returns action to Agent. Agent calls action_decoder.decode(action) -> button presses. Agent calls game.make_action(button_presses). Agent calls telemetry_writer.record_step().Loop continues
 8. game.is_episode_finished() -> True. Agent calls finalize_episode(), returns stats.
@@ -77,19 +77,23 @@ sequenceDiagram
 ## Class Graph:
 **Overview:**
 - represents the node graph 
-- NodeTypes are WAYPOINT, ANCHOR, LOOT, DOOR, EXIT
+- NodeTypes are WAYPOINT, LOOT, DOOR, EXIT
 - WAYPOINT is static node from JSON, DOOR and EXIT are not WAYPOINTs
-- ANCHOR is dynamically placed to connect to loot
 - LOOT uses the name field to specify loot type. 
 - Special is a raw linedef number for key doors and exits, only used in DOOR and EXIT nodes
+- is_static used to distinguish nodes the agent places,important for GA fitness
 
 **Fields:**
-- node objects (x, y, type: NodeType, name, special(int, optional))
+- node objects (x, y, type: NodeType, name, special(int, optional), is_static)
 - edge objects
 
 **Methods:**
 - add_node() 
 - add_edge()
+- remove_edge()
+- get_edge()
+- get_neighbors()
+- identify_node()
 
 
 ## Class NavigationEngine: 
@@ -121,16 +125,15 @@ sequenceDiagram
 - current_path
 - last_node
 - next_node
+- goal_node
 - visited_waypoints
 - door_use_timer
 
 **Methods:**
-- set_cur_path() (call make_path() from NavigationEngine to update cur_path)
-- _get_next_node()
-- _has_reached_node()
-- place_node()
-- load_static_nodes()
 - update()
+- get_next_move()
+- load_static_nodes()
+- set_goal_node()
 
 
 ## Class StateMachine:
@@ -203,16 +206,6 @@ sequenceDiagram
 - angle 
 - enemies_killed
 - is_damage_taken_since_last_step
-
-
-## Class LootObject:
-**Overview:** 
-- small dataclass for loot
-
-**Fields:** 
-- name
-- x
-- y
 
 
 ## References:
