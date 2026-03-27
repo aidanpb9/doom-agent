@@ -35,7 +35,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Exploration Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `loot_node_distance` | 200-800 units | Distance from agent that loot nodes are placed |
+| `loot_node_max_distance` | 200-800 units | Distance from agent that loot nodes are placed |
 
 **Combat Parameters:**
 | Parameter | Range | Description |

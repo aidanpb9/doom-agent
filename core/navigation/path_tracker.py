@@ -4,7 +4,7 @@ Decide when a node is reached. Knows about NodeTypes."""
 from core.navigation.graph import Node, NodeType
 from core.utils import calculate_euclidean_distance
 from config.constants import (ACTION_USE, DOOR_USE_COOLDOWN, 
-    NODE_PROXIMITY, DOOR_USE_DISTANCE, LOOT_PROXIMITY, TICK)
+    NODE_PROXIMITY, LOOT_NODE_MAX_DISTANCE, DOOR_USE_DISTANCE, LOOT_PROXIMITY, TICK)
 import json
 from pathlib import Path
 from collections import deque
@@ -153,14 +153,18 @@ class PathTracker:
                         loot_node = node
                         break
             
-            #If loot not marked, add waypoint and loot nodes to graph
+            #If loot not marked, add waypoint and loot nodes to graph if in range
             if not is_loot_marked:
                 loot_node = Node(loot.x, loot.y, NodeType.LOOT, name=loot.name)
-                self.graph.add_node(loot_node)
-                self._make_anchor(gamestate, loot_node)
+                #check if loot in max marking range (see GA param)
+                is_in_range = calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y) < LOOT_NODE_MAX_DISTANCE
+                if is_in_range:
+                    self.graph.add_node(loot_node)
+                    self._make_anchor(gamestate, loot_node)
 
             #If loot marked, update its connection if shorter distance exists.
             #But only if that shorter distance doesn't occur while on the way to the loot node.
+            #Don't need to check is_in_range here, since we check old_distance which already passes.
             elif loot_node is not self.next_node:
                 old_anchor = self.graph.get_neighbors(loot_node)[0] #loot nodes only have 1 neighbor, its anchor
                 old_distance = self.graph.get_edge(loot_node, old_anchor).length
