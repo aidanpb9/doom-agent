@@ -7,7 +7,9 @@ from core.execution.game_state import GameState
 from core.execution.action_decoder import ActionDecoder
 from core.utils import calculate_euclidean_distance
 from config.constants import (ACTION_USE, DOOR_USE_COOLDOWN, 
-    NODE_PROXIMITY, LOOT_NODE_MAX_DISTANCE, DOOR_USE_DISTANCE, LOOT_PROXIMITY, TICK)
+    NODE_PROXIMITY, LOOT_NODE_MAX_DISTANCE, DOOR_USE_DISTANCE, 
+    LOOT_PROXIMITY, TICK, HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS,
+    WEAPON_KEYWORDS)
 import json
 from pathlib import Path
 from collections import deque
@@ -24,6 +26,10 @@ class PathTracker:
         self.goal_node = None
         self.visited_waypoints = set()
         self.door_use_timer = 0
+        #For seeing if stats increase to remove accidentally claimed loot nodes
+        self.prev_health = 0 
+        self.prev_armor = 0
+        self.prev_ammo = 0
 
     def load_static_nodes(self, map_name: str) -> None:
         """Load nodes from maps/JSON file made by pre-processing tool into self.graph.
@@ -70,9 +76,10 @@ class PathTracker:
         if self.next_node and self._has_reached_node(gamestate, self.next_node):
             self._get_next_node(gamestate)
         
-        #Place loot nodes
+        #Place loot nodes, remove accidentally visited ones
         if gamestate.loots_visible:
             self._place_node(gamestate)
+        self._cleanup_incidental_node(gamestate)
 
     def get_next_move(self, x: float, y: float, angle: float) -> list[int]:
         """Handle door_use_timer reset after a USE action.
@@ -135,7 +142,9 @@ class PathTracker:
             self.next_node = self.cur_path.popleft()
             return self.next_node
 
+        
         if self.next_node.node_type == NodeType.LOOT:
+            #handles when goal node is loot and we want to remove it after claiming
             self.graph.remove_node(self.next_node)
             self.last_node = self._nearest_node(gamestate)
             self.next_node = None
@@ -181,6 +190,7 @@ class PathTracker:
                 
                 if new_distance < old_distance:
                     self.graph.remove_edge(old_anchor, loot_node)
+                    self.graph.remove_node(old_anchor)
                     self._make_anchor(gamestate, loot_node)
 
     def _make_anchor(self, gamestate: GameState, loot_node: Node) -> None:
@@ -216,5 +226,27 @@ class PathTracker:
                 best_match = node
                 best_match_distance = distance
         return best_match 
+    
+    def _cleanup_incidental_node(self, gamestate: GameState) -> None:
+        """If agent stats increase, it must have picked up loot that wasn't intended 
+        by pathtracker. Remove these nodes so agent doesn't think it still exists."""
+        health_gained = gamestate.health > self.prev_health
+        armor_gained = gamestate.armor > self.prev_armor
+        ammo_gained = gamestate.ammo > self.prev_ammo
+        
+        for node in list(self.graph.nodes): #use list here since we're removing nodes
+            if node.node_type != NodeType.LOOT or node is self.next_node:
+                continue
+            dist = calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, node.x, node.y)
+            if dist > NODE_PROXIMITY:
+                continue
+            if ((node.name in HEALTH_KEYWORDS and health_gained) or
+                (node.name in ARMOR_KEYWORDS and armor_gained) or
+                (node.name in (AMMO_KEYWORDS | WEAPON_KEYWORDS) and ammo_gained)):
+                self.graph.remove_node(node)
+        
+        self.prev_health = gamestate.health
+        self.prev_armor = gamestate.armor
+        self.prev_ammo = gamestate.ammo
 
         

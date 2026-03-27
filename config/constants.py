@@ -76,7 +76,9 @@ DOOR_USE_COOLDOWN = 95 # 3 seconds @ 35 ticks/sec
 #Don't tune these. They work and we don't want GA messing with them.
 TURN_DEAD_ZONE = 10 #degrees, angle threshold for not turning towards a target node
 FORWARD_ANGLE_THRESHOLD = 20 #degrees, don't go forwards unless we're aligned with next node
-NODE_PROXIMITY = 60 #how many units away from a node to be on it (tested with loot pickup range)
+#how many units away from a node to be on it, tested several ways
+#it's about 35-60 units depending on the angle, and 20 is a buffer
+NODE_PROXIMITY = 60 + 20
 DOOR_USE_DISTANCE = 30 #need to be more precise about when to USE on doors so we don't waste it
 LOOT_PROXIMITY = 20 #how far loot is away from an existing node, so we know if loot is already marked
 #Tune this

@@ -85,7 +85,7 @@ class Perception:
                 box_x = float(getattr(lbl, "x", 0))
                 box_w = float(getattr(lbl, "width", 0))
                 enemies.append(EnemyObject(
-                    name=name,
+                    name=self._normalize_name(name),
                     pos_x=float(getattr(lbl, "object_position_x", 0)),
                     pos_y=float(getattr(lbl, "object_position_y", 0)),
                     screen_x=box_x + box_w * 0.5
@@ -100,7 +100,7 @@ class Perception:
             name = getattr(lbl, "object_name", "")
             if self._is_loot_name(self._normalize_name(name)):
                 loot.append(LootObject(
-                    name=name,
+                    name=self._normalize_name(name),
                     pos_x=float(getattr(lbl, "object_position_x", 0)),
                     pos_y=float(getattr(lbl, "object_position_y", 0)),
                 ))

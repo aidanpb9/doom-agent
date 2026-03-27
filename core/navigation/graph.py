@@ -3,7 +3,6 @@ Node, Edge, and Graph are pure data containers.
 No pathfinding or mission logic lives here."""
 from enum import Enum
 from core.utils import calculate_euclidean_distance
-from config.constants import LOOT_PROXIMITY
 
 
 class NodeType(Enum):
@@ -93,14 +92,3 @@ class Graph:
             elif edge.node2 is node:
                 neighbors.append(edge.node1)
         return neighbors
-    
-    def identify_node(self, loot_x: float, loot_y: float) -> Node | None:
-        """Find which node a location belongs to while ensuring a reasonable range. TODO: remove if not used."""
-        best_match = None
-        best_match_distance = float('inf')
-        for node in self.nodes:
-            distance = calculate_euclidean_distance(loot_x, loot_y, node.x, node.y)
-            if distance < best_match_distance:
-                best_match = node
-                best_match_distance = distance
-        return best_match if best_match_distance < LOOT_PROXIMITY else None
