@@ -52,7 +52,7 @@ def cmd_run(args):
     agent = Agent(game)
 
     try:
-        agent.initialize_game()
+        agent.initialize_game(headless=args.hl)
         stats = agent.run_episode(params={})
         logger.info("Stats: %s", stats)
         return 0
@@ -69,8 +69,9 @@ def main():
     subparsers = parser.add_subparsers(dest='command')
     subparsers.required = True
 
-    subparsers.add_parser('run', help='Run a single episode').set_defaults(func=cmd_run)
-
+    run_parser = subparsers.add_parser('run', help='Run a single episode')
+    run_parser.add_argument('-hl', action='store_true', help='Headless mode, high tickrate')
+    run_parser.set_defaults(func=cmd_run)
     args = parser.parse_args()
     try:
         return args.func(args)

@@ -2,12 +2,19 @@
 The GA will overwrite some of these constants."""
 
 #Game Engine
-DEFAULT_TICRATE = 35           #Doom's native ticrate (ticks per second)
+#Ticrate notes: Doom's native ticrate is 35 ticks/sec. In headed mode, VizDoom syncs to
+#real-time so set_ticrate() has no effect on wall-clock speed.
+#In headless mode, ticrate is uncapped — set HEADLESS_TICRATE high so
+#CPU is the bottleneck, not the ticrate cap. ACTION_FRAME_SKIP should
+#stay at 1 so agent behavior is identical between headed and headless.
+#Basically agent will act similarly whether head or headless mode as long as
+#you use TICK=1 in agents run loop: self.game.make_action(action, TICK)
+DEFAULT_TICKRATE = 35 #Doom's native ticks per second rate, used in window mode
+HEADLESS_TICKRATE = 2000 #speeds up headless mode, used in headless(no window) mode
 DEFAULT_MAP_NAME = "E1M1"
 DEFAULT_WAD_PATH = "maps/wads/doom.wad"
 DEFAULT_EPISODE_TIMEOUT = 4200  #ticks (120 seconds @ 35 tic/s)
-DEFAULT_ACTION_FRAME_SKIP = 8   #frames skipped per action in fast mode
-DEFAULT_LOG_INTERVAL = 20       #steps between log entries
+DEFAULT_LOG_INTERVAL = 20 #steps between log entries
 TICK = 1    
 
 #Action button indices (must match available_buttons order in vizdoom.cfg)
@@ -66,11 +73,14 @@ EXIT_SPECIALS = {11, 51, 52, 124, 197}
 DOOR_USE_COOLDOWN = 95 # 3 seconds @ 35 ticks/sec
 
 #Navigation thresholds
-TURN_DEAD_ZONE = 1.0 #angle threshold for not turning towards a target node
+#Don't tune these. They work and we don't want GA messing with them.
+TURN_DEAD_ZONE = 10 #degrees, angle threshold for not turning towards a target node
+FORWARD_ANGLE_THRESHOLD = 20 #degrees, don't go forwards unless we're aligned with next node
 NODE_PROXIMITY = 60 #how many units away from a node to be on it (tested with loot pickup range)
 DOOR_USE_DISTANCE = 30 #need to be more precise about when to USE on doors so we don't waste it
 LOOT_PROXIMITY = 20 #how far loot is away from an existing node, so we know if loot is already marked
-LOOT_NODE_MAX_DISTANCE = 400 #units from loot that we can mark it as a node
+#Tune this
+LOOT_NODE_MAX_DISTANCE = 400 #GA param, units from loot that we can mark it as a node
 
 #Agent thresholds 
 HEALTH_THRESHOLD = 50

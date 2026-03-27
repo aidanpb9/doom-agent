@@ -8,7 +8,7 @@ from core.execution.state_machine import StateMachine
 from core.execution.telemetry_writer import TelemetryWriter
 from core.utils import load_blocking_segments_from_wad
 from config.constants import (DEFAULT_WAD_PATH, DEFAULT_MAP_NAME, 
-    DEFAULT_EPISODE_TIMEOUT, DEFAULT_ACTION_FRAME_SKIP)
+    DEFAULT_EPISODE_TIMEOUT, TICK, DEFAULT_TICKRATE, HEADLESS_TICKRATE)
 import vizdoom as vzd
 from pathlib import Path
 import random
@@ -24,12 +24,12 @@ class Agent:
         self.telemetry_writer = None
         self.blocking_segments = None #useful for combat
     
-    def initialize_game(self) -> None:
+    def initialize_game(self, headless=False) -> None:
         """Does VizDoom setup, loads configs, and creates runtime objects."""
         random.seed(42)
         self.game = vzd.DoomGame()
         self.game.load_config("config/vizdoom.cfg")
-        self._apply_native_settings()
+        self._apply_fast_settings() if headless else self._apply_native_settings()
 
         try: self.game.set_sectors_info_enabled(True)
         except Exception: pass
@@ -81,7 +81,7 @@ class Agent:
                 break
             gamestate = self.perception.parse(state)
             action = self.state_machine.update(gamestate)
-            self.game.make_action(action, DEFAULT_ACTION_FRAME_SKIP)
+            self.game.make_action(action, TICK) #decide action every tic
             
         #Derive how the level ended
         is_dead = self.game.is_player_dead()
@@ -117,6 +117,7 @@ class Agent:
             try: fn(*args)
             except Exception: pass
 
+        safe(self.game.set_ticrate, DEFAULT_TICKRATE)
         safe(self.game.set_window_visible, True)
         safe(self.game.set_render_all_frames, True)
         safe(self.game.set_render_hud, True)
@@ -127,3 +128,26 @@ class Agent:
         safe(self.game.set_render_messages, True)
         safe(self.game.set_render_corpses, True)
         safe(self.game.set_screen_resolution, vzd.ScreenResolution.RES_640X480)
+
+    def _apply_fast_settings(self):
+        """Headless, minimal rendering for evolve mode."""
+        def safe(fn, *args):
+            try: fn(*args)
+            except Exception: pass
+
+        safe(self.game.set_ticrate, HEADLESS_TICKRATE)
+        safe(self.game.set_window_visible, False)
+        safe(self.game.set_render_hud, False)
+        safe(self.game.set_render_weapon, False)
+        safe(self.game.set_render_crosshair, False)
+        safe(self.game.set_render_decals, False)
+        safe(self.game.set_render_particles, False)
+        safe(self.game.set_render_messages, False)
+        safe(self.game.set_render_corpses, False)
+        safe(self.game.set_render_all_frames, False)
+        safe(self.game.set_audio_buffer_enabled, False)
+        safe(self.game.set_depth_buffer_enabled, False)
+        safe(self.game.set_automap_buffer_enabled, False)
+        if hasattr(vzd.ScreenResolution, "RES_320X240"):
+            safe(self.game.set_screen_resolution, vzd.ScreenResolution.RES_320X240)
+        safe(self.game.set_screen_format, vzd.ScreenFormat.GRAY8)

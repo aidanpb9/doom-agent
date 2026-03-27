@@ -31,7 +31,8 @@ class Perception:
             angle=info["angle"],
             enemies_killed=info["enemies_killed"],
             is_dmg_taken_since_last_step=self._detect_damage(info["health"]),
-            screen_width=vizdoom_state.screen_buffer.shape[2] if vizdoom_state.screen_buffer is not None else 0
+            #get width whether in head or headless mode
+            screen_width=vizdoom_state.screen_buffer.shape[-1] if vizdoom_state.screen_buffer is not None else 0
         )
 
 

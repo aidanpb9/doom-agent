@@ -3,7 +3,7 @@ Know nothing about mission state, node types, or progress."""
 from core.navigation.graph import Node, NodeType, Graph
 from core.utils import calculate_euclidean_distance, normalize_angle
 from core.execution.action_decoder import ActionDecoder
-from config.constants import TURN_DEAD_ZONE, DOOR_USE_DISTANCE
+from config.constants import TURN_DEAD_ZONE, DOOR_USE_DISTANCE, FORWARD_ANGLE_THRESHOLD
 from math import atan2, degrees
 import heapq
 from collections import deque
@@ -57,11 +57,15 @@ class NavigationEngine:
         """Given current pos and target point, produce an action.
         Only use forward, turn left, tur right, or USE."""
         actions = []
-        actions.append(ActionDecoder.forward()) #always go forward
 
         #VizDoom angles: 0=East, 90=North, 180=West, 270=South (tested with temporary script)
         desired = degrees(atan2(target_node.y - y, target_node.x - x)) #where the target is in relation to us
         angle_delta = normalize_angle(desired - angle) #-180 to 180
+
+        if abs(angle_delta) < FORWARD_ANGLE_THRESHOLD:
+            actions.append(ActionDecoder.forward()) #always go forward
+
+        
         if abs(angle_delta) > TURN_DEAD_ZONE:
             if angle_delta > 0:
                 actions.append(ActionDecoder.turn_left())
