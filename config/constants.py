@@ -13,7 +13,7 @@ DEFAULT_TICKRATE = 35 #Doom's native ticks per second rate, used in window mode
 HEADLESS_TICKRATE = 2000 #speeds up headless mode, used in headless(no window) mode
 DEFAULT_MAP_NAME = "E1M1"
 DEFAULT_WAD_PATH = "maps/wads/doom.wad"
-DEFAULT_EPISODE_TIMEOUT = 4200  #ticks (4200=120 seconds @ 35 tic/s)
+DEFAULT_EPISODE_TIMEOUT = 6300  #ticks (4200=120 seconds @ 35 tic/s)
 DEFAULT_LOG_INTERVAL = 20 #steps between log entries
 TICK = 1    
 
@@ -75,17 +75,17 @@ DOOR_USE_COOLDOWN = 95 # 3 seconds @ 35 ticks/sec
 #Navigation thresholds
 #Don't tune these. They work and we don't want GA messing with them.
 TURN_DEAD_ZONE = 10 #degrees, angle threshold for not turning towards a target node
-FORWARD_ANGLE_THRESHOLD = 20 #degrees, don't go forwards unless we're aligned with next node
+FORWARD_ANGLE_THRESHOLD = 10 #degrees, don't go forwards unless we're aligned with next node
 #how many units away from a node to be on it, tested several ways
 #it's about 35-60 units depending on the angle, 50 works well
-NODE_PROXIMITY = 50
+NODE_PROXIMITY = 40
 DOOR_USE_DISTANCE = 30 #need to be more precise about when to USE on doors so we don't waste it
 LOOT_PROXIMITY = 20 #how far loot is away from an existing node, so we know if loot is already marked
 #Tune this
 LOOT_NODE_MAX_DISTANCE = 400 #GA param, units from loot that we can mark it as a node
 
 #Agent thresholds (won't enter RECOVER if stat = thresh)
-HEALTH_THRESHOLD = 100
+HEALTH_THRESHOLD = 101
 ARMOR_THRESHOLD = 10
 AMMO_THRESHOLD = 20
 

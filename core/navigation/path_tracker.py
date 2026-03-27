@@ -5,7 +5,7 @@ from core.navigation.graph import Node, NodeType, Graph
 from core.navigation.navigation_engine import NavigationEngine
 from core.execution.game_state import GameState
 from core.execution.action_decoder import ActionDecoder
-from core.utils import calculate_euclidean_distance
+from core.utils import calculate_euclidean_distance, has_clear_world_line
 from config.constants import (ACTION_USE, DOOR_USE_COOLDOWN, 
     NODE_PROXIMITY, LOOT_NODE_MAX_DISTANCE, DOOR_USE_DISTANCE, 
     LOOT_PROXIMITY, TICK, HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS,
@@ -17,7 +17,12 @@ from collections import deque
 
 class PathTracker:
 
-    def __init__(self, graph: Graph, nav_engine: NavigationEngine):
+    def __init__(
+        self, 
+        graph: Graph, 
+        nav_engine: NavigationEngine, 
+        blocking_segments: list[tuple[float, float, float, float]]
+    ):
         self.graph = graph
         self.nav_engine = nav_engine
         self.cur_path = deque()
@@ -26,6 +31,7 @@ class PathTracker:
         self.goal_node = None
         self.visited_waypoints = set()
         self.door_use_timer = 0
+        self.blocking_segments = blocking_segments
         #For seeing if stats increase to remove accidentally claimed loot nodes
         self.prev_health = 0 
         self.prev_armor = 0
@@ -108,7 +114,7 @@ class PathTracker:
                 if node.node_type == NodeType.EXIT:
                     goal_node = node
         elif node_type == NodeType.LOOT:
-            goal_node = self._nearest_node(gamestate, keywords)
+            goal_node = self._nearest_node(gamestate, keywords, static_only=False)
         
         #Avoid rebuilding cur_path every tick — only replans when goal actually changes.
         #Rebuilding every tick re-inserts the current next_node into cur_path, causing
@@ -129,8 +135,12 @@ class PathTracker:
     def _set_cur_path(self) -> None:
         """Update cur_path by calling nav_engine.make_path()."""
         self.cur_path = self.nav_engine.make_path(self.last_node, self.goal_node)
+        
+        #For tracing errors
         if self.cur_path is None:
-            msg = f"make_path failed: no path from ({self.last_node.x:.0f},{self.last_node.y:.0f}) to ({self.goal_node.x:.0f},{self.goal_node.y:.0f})"
+            goal_neighbors = self.graph.get_neighbors(self.goal_node)
+            last_neighbors = self.graph.get_neighbors(self.last_node)
+            msg = f"make_path failed: ({self.last_node.x:.0f},{self.last_node.y:.0f}) neighbors={len(last_neighbors)} -> ({self.goal_node.x:.0f},{self.goal_node.y:.0f}) neighbors={len(goal_neighbors)}"
             raise RuntimeError(msg)
 
 
@@ -158,10 +168,14 @@ class PathTracker:
 
         
         if self.next_node.node_type == NodeType.LOOT:
-            #handles when goal node is loot and we want to remove it after claiming
+            #After claiming loot, fully reset nav state so StateMachine sets a 
+            #fresh goal next tick. Otherwise, goal_node still points to removed loot node,
+            #and make_path will fail trying to reach a node no longer in the graph.
             self.graph.remove_node(self.next_node)
-            self.last_node = self._nearest_node(gamestate)
+            self.last_node = self._nearest_node(gamestate, static_only=True)
             self.next_node = None
+            self.goal_node = None
+            self.cur_path = deque()
         else:
             self.last_node = self.next_node
             if self.last_node and self.last_node.is_static and self.last_node.node_type == NodeType.WAYPOINT:
@@ -188,12 +202,20 @@ class PathTracker:
             if not is_loot_marked:
                 loot_node = Node(loot.pos_x, loot.pos_y, NodeType.LOOT, loot.name)
                 #check if loot in max marking range (see GA param)
+                #next_node is required to anchor the loot node into the graph. Without it,
+                #_make_anchor returns early and the loot node is added with no edges (unreachable).
+                #It will be picked up on a future tick once next_node is repopulated.
                 is_in_range = calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y) < LOOT_NODE_MAX_DISTANCE
-                if is_in_range:
+                is_clear_path = has_clear_world_line(gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y, self.blocking_segments, )
+                if is_in_range and is_clear_path and self.next_node is not None:
                     self.graph.add_node(loot_node)
                     self._make_anchor(gamestate, loot_node)
 
-            #If loot marked, update its connection if shorter distance exists.
+            #TODO: anchor update optimization (re-anchor to a shorter path when agent gets closer)
+            #was removed because it breaks chain connectivity when multiple loot nodes share an
+            #anchor chain. To fix: before removing old_anchor, reconnect its non-loot neighbors
+            #so the chain isn't severed. Then _make_anchor can safely replace it.
+            '''#If loot marked, update its connection if shorter distance exists.
             #But only if that shorter distance doesn't occur while on the way to the loot node.
             #Don't need to check is_in_range here, since we check old_distance which already passes.
             elif loot_node is not self.next_node:
@@ -211,7 +233,7 @@ class PathTracker:
                 if new_distance < old_distance and self.next_node is not None:
                     self.graph.remove_edge(old_anchor, loot_node)
                     self.graph.remove_node(old_anchor)
-                    self._make_anchor(gamestate, loot_node)
+                    self._make_anchor(gamestate, loot_node)'''
 
     def _make_anchor(self, gamestate: GameState, loot_node: Node) -> None:
         """Make an "anchor" node of agent's current position and inserts it into Graph.
@@ -228,8 +250,8 @@ class PathTracker:
         self.graph.add_edge(waypoint_node, self.next_node)
         self.last_node = waypoint_node
 
-    def _nearest_node(self, gamestate: GameState, keywords: set[str] | None = None) -> Node:
-        """Find the closest node in the graph to agent's position.
+    def _nearest_node(self, gamestate: GameState, keywords: set[str] | None = None, static_only: bool = False) -> Node:
+        """Find the closest static node in the graph to agent's position.
         Used when initializing episode to populate self.last_node,
         when removing loot nodes after reaching them to give the
         agent a more accurate node to start its new path, and when finding 
@@ -239,8 +261,10 @@ class PathTracker:
         best_match_distance = float('inf')
 
         for node in self.graph.nodes:
+            if static_only and not node.is_static:
+                continue
+
             distance = calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, node.x, node.y)
-            
             if keywords:
                 if node.name in keywords and distance < best_match_distance:
                     best_match = node

@@ -27,7 +27,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Radiation intensity | 0.25 | Represents probability per parameter of a bit-flip occuring (mutation) |
 | Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
 | Generations | 50-1000 (Estimate) | Adjust based on convergence/time constraints |
-| Episode timeout | 4200 ticks (120 seconds) | E1M1 time limit |
+| Episode timeout | 6300 ticks (180 seconds) | E1M1 time limit |
 | Evaluation seed | Fixed(42) | Same seed for all evaluations for fairness |
 
 

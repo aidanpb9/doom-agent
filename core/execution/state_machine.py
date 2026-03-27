@@ -3,7 +3,7 @@ from core.navigation.graph import NodeType
 from core.navigation.path_tracker import PathTracker
 from core.execution.game_state import GameState, EnemyObject
 from core.execution.action_decoder import ActionDecoder
-from core.utils import segments_intersect
+from core.utils import has_clear_world_line
 from config.constants import (HEALTH_THRESHOLD, ARMOR_THRESHOLD, AMMO_THRESHOLD,
     HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS, SCAN_FREQUENCY, SCAN_FREQUENCY_MAX, 
     SCAN_COOLDOWN, COMBAT_HOLD_TICKS, COMBAT_AIM_THRESHOLD, VERTICAL_IGNORE_THRESHOLD, TICK)
@@ -146,7 +146,7 @@ class StateMachine:
         for enemy in gamestate.enemies_visible:
             if enemy.pos_x is None or enemy.pos_y is None:
                 continue
-            if not self._has_clear_world_line(gamestate.pos_x, gamestate.pos_y, enemy.pos_x, enemy.pos_y):
+            if not has_clear_world_line(gamestate.pos_x, gamestate.pos_y, enemy.pos_x, enemy.pos_y, self.blocking_segments):
                 continue
             screen_y_center = (enemy.screen_y - gamestate.screen_height * 0.5) / gamestate.screen_height
             if abs(screen_y_center) > VERTICAL_IGNORE_THRESHOLD:
@@ -159,22 +159,3 @@ class StateMachine:
                 best_offset = abs(offset_x)
                 best_raw_offset = offset_x
         return best, best_raw_offset
-
-    def _has_clear_world_line(
-        self,
-        player_x: float,
-        player_y: float,
-        enemy_x: float | None,
-        enemy_y: float | None,
-    ) -> bool:
-        """Use blocking segments to determine if the agent has a clear shot."""
-        if enemy_x is None or enemy_y is None or not self.blocking_segments:
-            return True
-        
-        line_start = (float(player_x), float(player_y))
-        line_end = (float(enemy_x), float(enemy_y))
-
-        for x1, y1, x2, y2 in self.blocking_segments:
-            if segments_intersect(line_start, line_end, (x1, y1), (x2, y2)):
-                return False
-        return True

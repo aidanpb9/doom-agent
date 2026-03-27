@@ -66,7 +66,27 @@ def load_blocking_segments_from_wad(wad_path: str, map_name: str) -> list[tuple[
         segments.append((x1, y1, x2, y2))
     return segments
 
-def segments_intersect(
+def has_clear_world_line(
+        player_x: float,
+        player_y: float,
+        object_x: float | None,
+        object_y: float | None,
+        segments: list[tuple[float, float, float, float]]
+    ) -> bool:
+        """Use blocking segments to determine if the agent has a clear line.
+        Used for enemies and loot."""
+        if object_x is None or object_y is None or not segments:
+            return True
+        
+        line_start = (float(player_x), float(player_y))
+        line_end = (float(object_x), float(object_y))
+
+        for x1, y1, x2, y2 in segments:
+            if _segments_intersect(line_start, line_end, (x1, y1), (x2, y2)):
+                return False
+        return True
+
+def _segments_intersect(
     p1: tuple[float, float],
     p2: tuple[float, float],
     q1: tuple[float, float],

@@ -45,7 +45,7 @@ class Agent:
         #Create all runtime objects
         graph = Graph() #one Graph instance shared between classes
         nav_engine = NavigationEngine(graph)
-        self.path_tracker = PathTracker(graph, nav_engine)
+        self.path_tracker = PathTracker(graph, nav_engine, self.blocking_segments)
         self.path_tracker.load_static_nodes(DEFAULT_MAP_NAME)
         self.state_machine = StateMachine(self.path_tracker, self.blocking_segments)
         self.perception = Perception()
