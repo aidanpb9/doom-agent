@@ -1,6 +1,6 @@
 """Manages the episode details. Acts as the interface between VizDoom and StateMachine.
 Contains game initialization, telemetry outputs, perception."""
-from core.navigation.graph import Graph
+from core.navigation.graph import Graph, NodeType
 from core.navigation.navigation_engine import NavigationEngine
 from core.navigation.path_tracker import PathTracker
 from core.execution.perception import Perception
@@ -71,6 +71,8 @@ class Agent:
         state = self.game.get_state()
         gamestate = self.perception.parse(state)
         self.path_tracker.last_node = self.path_tracker._nearest_node(gamestate)
+        self.path_tracker.set_goal_by_type(gamestate, NodeType.EXIT)
+        self.path_tracker._get_next_node(gamestate)
 
         #Run loop
         while not self.game.is_episode_finished():

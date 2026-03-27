@@ -4,6 +4,7 @@ Decide when a node is reached. Knows about NodeTypes."""
 from core.navigation.graph import Node, NodeType, Graph
 from core.navigation.navigation_engine import NavigationEngine
 from core.execution.game_state import GameState
+from core.execution.action_decoder import ActionDecoder
 from core.utils import calculate_euclidean_distance
 from config.constants import (ACTION_USE, DOOR_USE_COOLDOWN, 
     NODE_PROXIMITY, LOOT_NODE_MAX_DISTANCE, DOOR_USE_DISTANCE, LOOT_PROXIMITY, TICK)
@@ -76,7 +77,11 @@ class PathTracker:
     def get_next_move(self, x: float, y: float, angle: float) -> list[int]:
         """Handle door_use_timer reset after a USE action.
         StateMachine calls this from TRAVERSE/RECOVER, which calls nav_engine.step_toward()."""
+        if not self.next_node:
+            return ActionDecoder.null_action()
+        
         action = self.nav_engine.step_toward(x, y, angle, self.next_node, self.door_use_timer)
+
         if action[ACTION_USE]:
             self.door_use_timer = DOOR_USE_COOLDOWN
         return action
@@ -100,7 +105,7 @@ class PathTracker:
     def has_loot_node(self, keywords: set[str]) -> bool:
         """Check if a loot type is known in the graph."""
         for node in self.graph.nodes:
-            if node.node_type == NodeType.Loot and node.name in keywords:
+            if node.node_type == NodeType.LOOT and node.name in keywords:
                 return True
         return False
     
@@ -124,20 +129,21 @@ class PathTracker:
 
     def _get_next_node(self, gamestate: GameState) -> Node:
         """When current next_node is reached, replace it with a new one and update last node."""
-        if (self.next_node not in self.visited_waypoints and 
-            self.next_node.is_static and 
-            self.next_node.node_type == NodeType.WAYPOINT
-        ):
-            self.visited_waypoints.add(self.next_node)
-
         #Loot nodes are only goal nodes in RECOVER. After pickup, SM sets a new goal
         #which triggers _set_cur_path automatically via set_goal_node.
+        if self.next_node is None:
+            self.next_node = self.cur_path.popleft()
+            return self.next_node
+
         if self.next_node.node_type == NodeType.LOOT:
             self.graph.remove_node(self.next_node)
             self.last_node = self._nearest_node(gamestate)
             self.next_node = None
         else:
             self.last_node = self.next_node
+            if self.last_node and self.last_node.is_static and self.last_node.node_type == NodeType.WAYPOINT:
+                if self.last_node not in self.visited_waypoints:
+                    self.visited_waypoints.add(self.last_node)
             if self.cur_path:
                 self.next_node = self.cur_path.popleft()
         return self.next_node
@@ -149,7 +155,7 @@ class PathTracker:
             is_loot_marked = False
             for node in self.graph.nodes:
                 if node.node_type == NodeType.LOOT:
-                    distance = calculate_euclidean_distance(loot.x, loot.y, node.x, node.y)
+                    distance = calculate_euclidean_distance(loot.pos_x, loot.pos_y, node.x, node.y)
                     if distance < LOOT_PROXIMITY:
                         is_loot_marked = True
                         loot_node = node

@@ -63,7 +63,7 @@ DOOR_SPECIALS = {
 }
 #WAD linedef specials that end the level
 EXIT_SPECIALS = {11, 51, 52, 124, 197}
-DOOR_USE_COOLDOWN = 175  # 5 seconds @ 35 ticks/sec
+DOOR_USE_COOLDOWN = 95 # 3 seconds @ 35 ticks/sec
 
 #Navigation thresholds
 TURN_DEAD_ZONE = 1.0 #angle threshold for not turning towards a target node
@@ -74,7 +74,7 @@ LOOT_NODE_MAX_DISTANCE = 400 #units from loot that we can mark it as a node
 
 #Agent thresholds 
 HEALTH_THRESHOLD = 50
-ARMOR_THRESHOLD = 1
+ARMOR_THRESHOLD = 0
 AMMO_THRESHOLD = 20
 
 #SCAN thresholds
