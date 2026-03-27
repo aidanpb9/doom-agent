@@ -1,6 +1,5 @@
-"""Provides utilities to construct action vectors for agent actions 
-and decodes them. All static methods, no fields."""
-
+"""Provide utilities to construct action vectors for agent actions 
+and decode them. All static methods, no fields."""
 from config.constants import (
     ACTION_FORWARD, ACTION_BACKWARD, ACTION_TURN_LEFT, ACTION_TURN_RIGHT,
     ACTION_ATTACK, ACTION_USE, ACTION_COUNT, ACTION_NAMES
@@ -17,47 +16,47 @@ class ActionDecoder:
     """
     
     @staticmethod
-    def null_action():
+    def null_action() -> list[int]:
         """Return a null action (stand still)."""
         return [0] * ACTION_COUNT
     
     @staticmethod
-    def forward():
+    def forward() -> list[int]:
         """Move forward."""
         action = [0] * ACTION_COUNT
         action[ACTION_FORWARD] = 1
         return action
 
     @staticmethod
-    def backward():
+    def backward() -> list[int]:
         """Move backward."""
         action = [0] * ACTION_COUNT
         action[ACTION_BACKWARD] = 1
         return action
     
     @staticmethod
-    def turn_left():
+    def turn_left() -> list[int]:
         """Turn left."""
         action = [0] * ACTION_COUNT
         action[ACTION_TURN_LEFT] = 1
         return action
     
     @staticmethod
-    def turn_right():
+    def turn_right() -> list[int]:
         """Turn right."""
         action = [0] * ACTION_COUNT
         action[ACTION_TURN_RIGHT] = 1
         return action
     
     @staticmethod
-    def attack():
+    def attack() -> list[int]:
         """Pure attack."""
         action = [0] * ACTION_COUNT
         action[ACTION_ATTACK] = 1
         return action
     
     @staticmethod
-    def use():
+    def use() -> list[int]:
         """Use/activate."""
         action = [0] * ACTION_COUNT
         action[ACTION_USE] = 1

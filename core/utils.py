@@ -1,4 +1,4 @@
-"""Contains resuable functions."""
+"""Contain resuable functions."""
 from math import sqrt
 from pathlib import Path
 import struct
@@ -10,11 +10,11 @@ def calculate_euclidean_distance(point1_x, point1_y, point2_x, point2_y) -> floa
     return sqrt((point2_x - point1_x)**2 + (point2_y - point1_y)**2)
 
 def normalize_angle(angle_deg: float) -> float:
-    """Wraps an angle -180 to 180 deg."""
+    """Wrap an angle -180 to 180 deg."""
     return (angle_deg + 180.0) % 360.0 - 180.0
 
 def load_blocking_segments_from_wad(wad_path: str, map_name: str) -> list[tuple[float, float, float, float]]:
-    """Used to get wall data for better combat."""
+    """Get wall data for better combat."""
     if not wad_path or not map_name:
         return []
     
@@ -72,6 +72,7 @@ def segments_intersect(
     q1: tuple[float, float],
     q2: tuple[float, float],
 ) -> bool:
+    """Return True if line segment p1-p2 intersects line segment q1-q2."""
     o1 = _orientation(p1, p2, q1)
     o2 = _orientation(p1, p2, q2)
     o3 = _orientation(q1, q2, p1)

@@ -16,7 +16,15 @@ class NodeType(Enum):
 
 class Node:
     """A point in the navigation graph with a position, type and optional metadata."""
-    def __init__(self, x, y, node_type, name=None, special=None, is_static=False):
+    def __init__(
+        self, 
+        x: float, 
+        y: float, 
+        node_type: NodeType, 
+        name: str | None  = None, 
+        special: int | None = None, 
+        is_static: bool = False
+    ):
         self.x = x
         self.y = y
         self.node_type = node_type
@@ -27,7 +35,7 @@ class Node:
 
 class Edge:
     """An undirected connection between two nodes with a precomputed length."""
-    def __init__(self, node1, node2):
+    def __init__(self, node1: Node, node2: Node):
         self.node1 = node1
         self.node2 = node2
         self.length = calculate_euclidean_distance(node1.x, node1.y, node2.x, node2.y)
@@ -40,23 +48,23 @@ class Graph:
         self.nodes = [] 
         self.edges = [] 
     
-    def add_node(self, node) -> None:
+    def add_node(self, node: Node) -> None:
         """Register this node as part of Graph so pathfinding can reach it.
         We simply append it to the list since the list order doesn't determine
         the Graph, the node & edge connection does."""
         self.nodes.append(node)
 
-    def remove_node(self, node) -> None:
+    def remove_node(self, node: Node) -> None:
         """Remove a node and all its edges from the graph."""
         self.nodes.remove(node)
         for neighbor in self.get_neighbors(node):
             self.remove_edge(node, neighbor)
 
-    def add_edge(self, node1, node2) -> None:
+    def add_edge(self, node1: Node, node2: Node) -> None:
         """Record that two nodes are connected."""
         self.edges.append(Edge(node1, node2))
     
-    def remove_edge(self, node1, node2) -> None:
+    def remove_edge(self, node1: Node, node2: Node) -> None:
         """Remove the edge connnecting node1 and node2."""
         for edge in self.edges:
             if edge.node1 is node1 and edge.node2 is node2:
@@ -66,7 +74,7 @@ class Graph:
                 self.edges.remove(edge)
                 return
             
-    def get_edge(self, node1, node2) -> Edge | None:
+    def get_edge(self, node1: Node, node2: Node) -> Edge | None:
         """Return the edge connnecting node1 and node2, or None if not found."""
         for edge in self.edges:
             if edge.node1 is node1 and edge.node2 is node2:
@@ -75,7 +83,7 @@ class Graph:
                 return edge
         return None
 
-    def get_neighbors(self, node) -> list[Node]:
+    def get_neighbors(self, node: Node) -> list[Node]:
         """Loop through all edges in the graph. Each edge has 2 nodes.
         If one of those nodes is the input node, we know the other is a neighbor."""
         neighbors = []
@@ -86,8 +94,8 @@ class Graph:
                 neighbors.append(edge.node1)
         return neighbors
     
-    def identify_node(self, loot_x, loot_y) -> Node | None:
-        """Find which node a location belongs to. Ensures a reasonable range."""
+    def identify_node(self, loot_x: float, loot_y: float) -> Node | None:
+        """Find which node a location belongs to while ensuring a reasonable range. TODO: remove if not used."""
         best_match = None
         best_match_distance = float('inf')
         for node in self.nodes:

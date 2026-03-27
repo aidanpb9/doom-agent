@@ -1,8 +1,8 @@
 """Parses raw VizDoom state into a useable GameState."""
 from config.constants import ENEMY_KEYWORDS, LOOT_KEYWORDS
 from core.execution.game_state import LootObject, EnemyObject, GameState
-import re
 from typing import Any
+import re
 
 
 class Perception:
@@ -13,7 +13,7 @@ class Perception:
         self.last_health = 100
 
 
-    def parse(self, vizdoom_state) -> GameState:
+    def parse(self, vizdoom_state: Any) -> GameState:
         """Takes raw VizDoom state, extracts all game variables/labels,
         runs enemy/loot detection.
         Returns a populated GameState each tick for StateMachine."""

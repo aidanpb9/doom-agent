@@ -1,6 +1,6 @@
 """Pure pathfinding and movement. Find paths with A* and produce actions.
-Knows nothing about mission state, node types, or progress."""
-from core.navigation.graph import Node, NodeType
+Know nothing about mission state, node types, or progress."""
+from core.navigation.graph import Node, NodeType, Graph
 from core.utils import calculate_euclidean_distance, normalize_angle
 from core.execution.action_decoder import ActionDecoder
 from config.constants import TURN_DEAD_ZONE, DOOR_USE_DISTANCE
@@ -11,10 +11,10 @@ from collections import deque
 
 class NavigationEngine:
 
-    def __init__(self, graph):
+    def __init__(self, graph: Graph):
         self.graph = graph
 
-    def make_path(self, start_node, end_node) -> deque[Node]:
+    def make_path(self, start_node: Node, end_node: Node) -> deque[Node]:
         """Given a graph and 2 points, find the shortest path. Path guaranteed to exist.
         This is A* implementation. g=actual cost from start, h=straight-line estimate to goal."""
         heap = [] #use priority q to get best scoring neighbor
@@ -53,9 +53,9 @@ class NavigationEngine:
                     f = new_g + h[neighbor]
                     heapq.heappush(heap, (f, counter, neighbor))
 
-    def step_toward(self, x, y, angle, target_node, door_use_timer) -> list[int]:
+    def step_toward(self, x: float, y: float, angle: float, target_node: Node, door_use_timer: int) -> list[int]:
         """Given current pos and target point, produce an action.
-        We only use forward, turn left or right, and use here."""
+        Only use forward, turn left, tur right, or USE."""
         actions = []
         actions.append(ActionDecoder.forward()) #always go forward
 

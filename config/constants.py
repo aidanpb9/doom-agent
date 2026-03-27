@@ -66,7 +66,7 @@ EXIT_SPECIALS = {11, 51, 52, 124, 197}
 DOOR_USE_COOLDOWN = 175  # 5 seconds @ 35 ticks/sec
 
 #Navigation thresholds
-TURN_DEAD_ZONE = 1.0 #Angle threshold for not turning towards a target node
+TURN_DEAD_ZONE = 1.0 #angle threshold for not turning towards a target node
 NODE_PROXIMITY = 60 #how many units away from a node to be on it (tested with loot pickup range)
 DOOR_USE_DISTANCE = 30 #need to be more precise about when to USE on doors so we don't waste it
 LOOT_PROXIMITY = 20 #how far loot is away from an existing node, so we know if loot is already marked

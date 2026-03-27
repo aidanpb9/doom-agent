@@ -15,7 +15,7 @@ from pathlib import Path
 
 class Agent:
 
-    def __init__(self, game):
+    def __init__(self, game: vzd.DoomGame):
         self.game = None
         self.perception = None
         self.state_machine = None
@@ -51,7 +51,7 @@ class Agent:
         self.perception = Perception()
         self.telemetry_writer = TelemetryWriter() #TODO: after cleaning TM
 
-    def run_episode(self, params: dict) -> dict:
+    def run_episode(self, params: dict | None = None) -> dict:
         """calls Perception and StateMachine each tick.
         Uses params as inputs from the GA.
         Returns stats for the genetic algorithm."""
@@ -60,12 +60,10 @@ class Agent:
         gamestate = self.perception.parse(state)
         self.path_tracker.last_node = self.path_tracker._nearest_node(gamestate)
 
-
     def close(self) -> None:
         if self.game:
             self.game.close()
     
-
     def _apply_native_settings(self):
         """Windowed, full rendering for run mode."""
         def safe(fn, *args):
