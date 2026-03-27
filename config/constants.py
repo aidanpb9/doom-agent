@@ -77,16 +77,16 @@ DOOR_USE_COOLDOWN = 95 # 3 seconds @ 35 ticks/sec
 TURN_DEAD_ZONE = 10 #degrees, angle threshold for not turning towards a target node
 FORWARD_ANGLE_THRESHOLD = 20 #degrees, don't go forwards unless we're aligned with next node
 #how many units away from a node to be on it, tested several ways
-#it's about 35-60 units depending on the angle, and 20 is a buffer
-NODE_PROXIMITY = 60 + 20
+#it's about 35-60 units depending on the angle, 50 works well
+NODE_PROXIMITY = 50
 DOOR_USE_DISTANCE = 30 #need to be more precise about when to USE on doors so we don't waste it
 LOOT_PROXIMITY = 20 #how far loot is away from an existing node, so we know if loot is already marked
 #Tune this
 LOOT_NODE_MAX_DISTANCE = 400 #GA param, units from loot that we can mark it as a node
 
-#Agent thresholds 
-HEALTH_THRESHOLD = 50
-ARMOR_THRESHOLD = 0
+#Agent thresholds (won't enter RECOVER if stat = thresh)
+HEALTH_THRESHOLD = 100
+ARMOR_THRESHOLD = 10
 AMMO_THRESHOLD = 20
 
 #SCAN thresholds

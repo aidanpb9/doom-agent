@@ -72,8 +72,12 @@ class PathTracker:
         if self.goal_node and not self.cur_path:
             self._set_cur_path()
 
-        #If we're close to next node in path, update next_node
-        if self.next_node and self._has_reached_node(gamestate, self.next_node):
+        #next_node can be None after loot collection (_get_next_node sets it to None on loot pickup).
+        #When that happens, the proximity check below never fires (guarded by self.next_node),
+        #so we need to explicitly repopulate next_node from cur_path here.
+        if not self.next_node and self.cur_path:
+            self._get_next_node(gamestate)
+        elif self.next_node and self._has_reached_node(gamestate, self.next_node):
             self._get_next_node(gamestate)
         
         #Place loot nodes, remove accidentally visited ones
@@ -125,6 +129,10 @@ class PathTracker:
     def _set_cur_path(self) -> None:
         """Update cur_path by calling nav_engine.make_path()."""
         self.cur_path = self.nav_engine.make_path(self.last_node, self.goal_node)
+        if self.cur_path is None:
+            msg = f"make_path failed: no path from ({self.last_node.x:.0f},{self.last_node.y:.0f}) to ({self.goal_node.x:.0f},{self.goal_node.y:.0f})"
+            raise RuntimeError(msg)
+
 
     def _has_reached_node(self, gamestate: GameState, target_node: Node) -> bool:
         """Return True when a node is close. Different nodes have different thresholds
@@ -198,7 +206,9 @@ class PathTracker:
                 new_distance = calculate_euclidean_distance(
                     gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y)
                 
-                if new_distance < old_distance:
+                #Don't update anchor if next_node is None — _make_anchor returns early without
+                #creating a replacement, leaving the loot node isolated with no edges in the graph.
+                if new_distance < old_distance and self.next_node is not None:
                     self.graph.remove_edge(old_anchor, loot_node)
                     self.graph.remove_node(old_anchor)
                     self._make_anchor(gamestate, loot_node)
