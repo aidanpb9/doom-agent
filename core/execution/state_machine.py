@@ -6,7 +6,7 @@ from core.execution.action_decoder import ActionDecoder
 from core.utils import segments_intersect
 from config.constants import (HEALTH_THRESHOLD, ARMOR_THRESHOLD, AMMO_THRESHOLD,
     HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS, SCAN_FREQUENCY, SCAN_FREQUENCY_MAX, 
-    SCAN_COOLDOWN, COMBAT_HOLD_TICKS, COMBAT_AIM_THRESHOLD, TICK)
+    SCAN_COOLDOWN, COMBAT_HOLD_TICKS, COMBAT_AIM_THRESHOLD, VERTICAL_IGNORE_THRESHOLD, TICK)
 from enum import Enum
 import random
 
@@ -93,7 +93,7 @@ class StateMachine:
         #find best enemy, if no enemy then just wait (enemies move, won't be stuck forever)
         enemy, offset = self._get_best_enemy(gamestate)
         if not enemy: #don't check offset because it can be 0
-            return ActionDecoder.null_action()
+            return self._traverse(gamestate)
         
         #shoot at enemy or make adjustments if not accurate enough yet
         if abs(offset) < COMBAT_AIM_THRESHOLD:
@@ -147,6 +147,9 @@ class StateMachine:
             if enemy.pos_x is None or enemy.pos_y is None:
                 continue
             if not self._has_clear_world_line(gamestate.pos_x, gamestate.pos_y, enemy.pos_x, enemy.pos_y):
+                continue
+            screen_y_center = (enemy.screen_y - gamestate.screen_height * 0.5) / gamestate.screen_height
+            if abs(screen_y_center) > VERTICAL_IGNORE_THRESHOLD:
                 continue
             
             #normalize to -0.5 to 0.5, negative=left of center, positive=right of center

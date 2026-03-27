@@ -183,7 +183,11 @@ class PathTracker:
             #But only if that shorter distance doesn't occur while on the way to the loot node.
             #Don't need to check is_in_range here, since we check old_distance which already passes.
             elif loot_node is not self.next_node:
-                old_anchor = self.graph.get_neighbors(loot_node)[0] #loot nodes only have 1 neighbor, its anchor
+                neighbors = self.graph.get_neighbors(loot_node)
+                if not neighbors:
+                    continue
+
+                old_anchor = neighbors[0] #loot nodes only have 1 neighbor, its anchor
                 old_distance = self.graph.get_edge(loot_node, old_anchor).length
                 new_distance = calculate_euclidean_distance(
                     gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y)

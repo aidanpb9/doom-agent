@@ -41,7 +41,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Parameter | Range | Description |
 |-----------|-------|-------------|
 | `combat_hold_ticks` | 5-50 | ticks that agent stays in combat when enemy leaves FOV |
-| `combat_aim_threshold` | 0.01-0.1 | how accurate the crosshair must be to fire |
+| `vertical_ignore_threshold` | 0.1-0.5 | when to engage enemies that are different y-axis |
 
 **Recovery Parameters:**
 | Parameter | Range | Description |

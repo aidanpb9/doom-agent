@@ -98,4 +98,7 @@ SCAN_COOLDOWN = 175 #minimum ticks between scans
 COMBAT_HOLD_TICKS = 10 #ticks to keep targeting an enemy after they leave FOV or die
 #based on offset which ranges from -0.5 to 0.5 (left to right edge, center=0).
 #0.05 means fire if enemy center is within 5% of screen width from center.
-COMBAT_AIM_THRESHOLD = 0.05 
+COMBAT_AIM_THRESHOLD = 0.01 #not a GA param, can't tune accuracy meaningfully
+#don't shoot at enemies who are way above or below
+#ga param, no less than 0.1 from testing
+VERTICAL_IGNORE_THRESHOLD = 0.15 

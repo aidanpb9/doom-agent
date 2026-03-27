@@ -32,7 +32,8 @@ class Perception:
             enemies_killed=info["enemies_killed"],
             is_dmg_taken_since_last_step=self._detect_damage(info["health"]),
             #get width whether in head or headless mode
-            screen_width=vizdoom_state.screen_buffer.shape[-1] if vizdoom_state.screen_buffer is not None else 0
+            screen_width=vizdoom_state.screen_buffer.shape[1] if vizdoom_state.screen_buffer is not None else 0,
+            screen_height=vizdoom_state.screen_buffer.shape[0] if vizdoom_state.screen_buffer is not None else 0
         )
 
 
@@ -86,13 +87,19 @@ class Perception:
         for lbl in labels:
             name = getattr(lbl, "object_name", "")
             if self._is_enemy_name(self._normalize_name(name)):
+                #x and y are top left corner
                 box_x = float(getattr(lbl, "x", 0))
+                box_y = float(getattr(lbl, "y", 0))
+                #w(idth) and h(eight) are dimensions
                 box_w = float(getattr(lbl, "width", 0))
+                box_h = float(getattr(lbl, "height", 0))
+                
                 enemies.append(EnemyObject(
                     name=self._normalize_name(name),
                     pos_x=float(getattr(lbl, "object_position_x", 0)),
                     pos_y=float(getattr(lbl, "object_position_y", 0)),
-                    screen_x=box_x + box_w * 0.5
+                    screen_x=box_x + box_w * 0.5,
+                    screen_y=box_y + box_h * 0.5
                 ))
         return enemies
 

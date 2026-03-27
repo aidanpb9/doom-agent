@@ -18,6 +18,7 @@ class EnemyObject:
     pos_y: float
     #center of enemy's bounding box on screen, left edge + half of box width
     screen_x: float 
+    screen_y: float
 
 
 @dataclass
@@ -32,6 +33,6 @@ class GameState:
     angle: float
     enemies_killed: int
     is_dmg_taken_since_last_step: bool
-    screen_width: float #don't need height since only do horizontal movements
-
+    screen_width: float 
+    screen_height: float
 

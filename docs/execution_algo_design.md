@@ -144,10 +144,6 @@ VizDoom provides "state.objects" which gives the agent all enemy/item positions 
 Sprint is a valid action. However, we are omitting it for simplicity. The main benefit of using sprint would be to complete levels faster, but it only takes 2 seconds per level currently, so this isn't a huge time-saver. The main concern is that because sprinting exaggerates the effects of the sliding mechanic, the agent would lose some control over its pathfinding and get stuck or fall more often. This needs to be tested more.
 
 
-## Needs Testing:
-What happens when too many dynamic waypoint nodes are placed close together?
-
-
 ## Testing Results
 **Units, Speed, Visibility, Labels:**
 - Walking speed: 6.11 units/tick (214 units/sec)
@@ -157,6 +153,7 @@ What happens when too many dynamic waypoint nodes are placed close together?
 - Objects behind agent or passed by disappear from labels
 - Loot pickup range: ~60 units from item
 - game.get_state.screen_buffer.shape gives (channels, height, width) (needed for combat aim)
+- can damage enemies if horizontally aligned even if not vertically aligned
 
 
 ## References
