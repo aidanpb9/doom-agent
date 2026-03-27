@@ -156,6 +156,7 @@ What happens when too many dynamic waypoint nodes are placed close together?
 - FOV-limited: state.labels only shows objects in current view
 - Objects behind agent or passed by disappear from labels
 - Loot pickup range: ~60 units from item
+- game.get_state.screen_buffer.shape gives (channels, height, width) (needed for combat aim)
 
 
 ## References

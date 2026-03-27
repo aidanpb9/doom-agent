@@ -31,6 +31,7 @@ class Perception:
             angle=info["angle"],
             enemies_killed=info["enemies_killed"],
             is_dmg_taken_since_last_step=self._detect_damage(info["health"]),
+            screen_width=vizdoom_state.screen_buffer.shape[2] if vizdoom_state.screen_buffer is not None else 0
         )
 
 
@@ -74,13 +75,20 @@ class Perception:
         }
     
 
-    def _detect_enemies(self, labels: list[Any]) -> list[str]:
-        """Returns list of enemy names from visible labels."""
+    def _detect_enemies(self, labels: list[Any]) -> list[EnemyObject]:
+        """Returns list of EnemyObjects from visible labels."""
         enemies = []
         for lbl in labels:
             name = getattr(lbl, "object_name", "")
             if self._is_enemy_name(self._normalize_name(name)):
-                enemies.append(name)
+                box_x = float(getattr(lbl, "x", 0))
+                box_w = float(getattr(lbl, "width", 0))
+                enemies.append(EnemyObject(
+                    name=name,
+                    pos_x=float(getattr(lbl, "object_position_x", 0)),
+                    pos_y=float(getattr(lbl, "object_position_y", 0)),
+                    screen_x=box_x + box_w * 0.5
+                ))
         return enemies
 
 
