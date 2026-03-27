@@ -1,11 +1,12 @@
-"""Manage what state the agent should be in, returns the agent's actions."""
+"""Contain the states, state updates, state-based logic, and helpers."""
 from core.navigation.graph import NodeType
 from core.navigation.path_tracker import PathTracker
-from core.execution.game_state import GameState
+from core.execution.game_state import GameState, EnemyObject
 from core.execution.action_decoder import ActionDecoder
+from core.utils import segments_intersect
 from config.constants import (HEALTH_THRESHOLD, ARMOR_THRESHOLD, AMMO_THRESHOLD,
     HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS, SCAN_FREQUENCY, SCAN_FREQUENCY_MAX, 
-    SCAN_COOLDOWN, COMBAT_HOLD_TICKS, TICK)
+    SCAN_COOLDOWN, COMBAT_HOLD_TICKS, COMBAT_AIM_THRESHOLD, TICK)
 from enum import Enum
 import random
 
@@ -19,12 +20,13 @@ class State(Enum):
 
 
 class StateMachine:
-    """"""
-    def __init__(self, path_tracker: PathTracker):
+    """Manage what state the agent should be in, returns the agent's actions."""
+    def __init__(self, path_tracker: PathTracker, blocking_segments: list[tuple[float, float, float, float]]):
         self.path_tracker = path_tracker
         self.last_state = State.TRAVERSE
         self.recover_type = None#so we now what type of loot to find when entering RECOVER
         self.combat_hold = 0 #keeps combat active after last enemy seen, avoid flickering
+        self.blocking_segments = blocking_segments
         self.scan_cooldown = 0 #update() decrements this
         self.scan_last_angle = 0 #for calculating how far we've turned since last tick
         self.scan_total_deg = 0 #number of degs since starting a scan
@@ -82,10 +84,24 @@ class StateMachine:
         return action
 
     def _combat(self, gamestate: GameState) -> list[int]:
-        """Aiming and firing. Return attack action."""
-        #set self.combat_hold
+        """Aiming and firing. Return attack, turn, or null action."""
+        #update
+        if gamestate.enemies_visible:
+            self.combat_hold = COMBAT_HOLD_TICKS
         self.last_state = State.COMBAT
-        pass
+
+        #find best enemy, if no enemy then just wait (enemies move, won't be stuck forever)
+        enemy, offset = self._get_best_enemy(gamestate)
+        if not enemy: #don't check offset because it can be 0
+            return ActionDecoder.null_action()
+        
+        #shoot at enemy or make adjustments if not accurate enough yet
+        if abs(offset) < COMBAT_AIM_THRESHOLD:
+            return ActionDecoder.attack()
+        if offset > 0: #enemy right of center
+            return ActionDecoder.turn_right()
+        if offset < 0: #enemy left of center
+            return ActionDecoder.turn_left()
 
     def _recover(self, gamestate: GameState) -> list[int]:
         """Navigates to closest LOOT node. Return movement action."""
@@ -99,22 +115,63 @@ class StateMachine:
         #reset cooldown every time we enter, so when we leave it decrements naturally
         self.scan_cooldown = SCAN_COOLDOWN 
 
-        #update total turn degrees 
+        #update total turn degrees if came from scan
         if self.last_state == State.SCAN:
             deg = gamestate.angle - self.scan_last_angle
             if deg < 0:
                 deg += 360 #this works since we do right turns only
             self.scan_total_deg += deg
+        else: #need to reset progress since we're entering scan for the first time
+            self.scan_total_deg = 0
 
-        #Stop when 360 degrees accumulated.
+        #stop when 360 degrees accumulated.
         if self.scan_total_deg > 360:
             self.last_state = State.TRAVERSE
             self.scan_total_deg = 0
             self.scan_last_angle = 0
             return ActionDecoder.null_action()
 
+        #continue scan
         self.last_state = State.SCAN
         self.scan_last_angle = gamestate.angle
         return ActionDecoder.turn_right()
+    
+    def _get_best_enemy(self, gamestate: GameState) -> tuple[EnemyObject, float] | None:
+        """Find the most centered visible enemy with a clear line of sight.
+        A returned enemy is not blocked by a wall."""
+        best = None
+        best_offset = float('inf')
+        best_raw_offset = 0.0
 
+        for enemy in gamestate.enemies_visible:
+            if enemy.pos_x is None or enemy.pos_y is None:
+                continue
+            if not self._has_clear_world_line(gamestate.pos_x, gamestate.pos_y, enemy.pos_x, enemy.pos_y):
+                continue
+            
+            #normalize to -0.5 to 0.5, negative=left of center, positive=right of center
+            offset_x = (enemy.screen_x - gamestate.screen_width * 0.5) / gamestate.screen_width
+            if abs(offset_x) < best_offset:
+                best = enemy
+                best_offset = abs(offset_x)
+                best_raw_offset = offset_x
+        return best, best_raw_offset
+
+    def _has_clear_world_line(
+        self,
+        player_x: float,
+        player_y: float,
+        enemy_x: float | None,
+        enemy_y: float | None,
+    ) -> bool:
+        """Use blocking segments to determine if the agent has a clear shot."""
+        if enemy_x is None or enemy_y is None or not self.blocking_segments:
+            return True
         
+        line_start = (float(player_x), float(player_y))
+        line_end = (float(enemy_x), float(enemy_y))
+
+        for x1, y1, x2, y2 in self.blocking_segments:
+            if segments_intersect(line_start, line_end, (x1, y1), (x2, y2)):
+                return False
+        return True

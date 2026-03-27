@@ -83,13 +83,7 @@ SCAN_FREQUENCY_MAX = 95 #represents the hardcoded upper range of the GA param
 SCAN_COOLDOWN = 175 #minimum ticks between scans 
 
 #Aiming thresholds (fraction of screen width)
-COMBAT_AIM_THRESHOLD_WIDE = 0.08       # turn to face enemy if offset exceeds this
-COMBAT_AIM_THRESHOLD_NARROW = 0.12     # shoot if offset is within this
-COMBAT_CONFIDENCE_THRESHOLD = 0.5      # minimum label confidence to shoot
-
-#Wall detection (to avoid shooting walls instead of enemies)
-COMBAT_WALL_BRIGHTNESS_THRESHOLD = 140
-COMBAT_WALL_VARIANCE_THRESHOLD = 1500
-
-#Frames to keep targeting an enemy after they leave FOV
-COMBAT_HOLD_TICKS = 10
+COMBAT_HOLD_TICKS = 10 #ticks to keep targeting an enemy after they leave FOV or die
+#based on offset which ranges from -0.5 to 0.5 (left to right edge, center=0).
+#0.05 means fire if enemy center is within 5% of screen width from center.
+COMBAT_AIM_THRESHOLD = 0.05 

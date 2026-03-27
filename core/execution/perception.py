@@ -1,6 +1,6 @@
 """Parses raw VizDoom state into a useable GameState."""
 from config.constants import ENEMY_KEYWORDS, LOOT_KEYWORDS
-from core.execution.game_state import LootObject, GameState
+from core.execution.game_state import LootObject, EnemyObject, GameState
 import re
 from typing import Any
 

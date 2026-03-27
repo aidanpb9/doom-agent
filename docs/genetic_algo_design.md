@@ -38,7 +38,10 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | `loot_node_distance` | 200-800 units | Distance from agent that loot nodes are placed |
 
 **Combat Parameters:**
-None Currently
+| Parameter | Range | Description |
+|-----------|-------|-------------|
+| `combat_hold_ticks` | 5-50 | ticks that agent stays in combat when enemy leaves FOV |
+| `combat_aim_threshold` | 0.01-0.1 | how accurate the crosshair must be to fire |
 
 **Recovery Parameters:**
 | Parameter | Range | Description |

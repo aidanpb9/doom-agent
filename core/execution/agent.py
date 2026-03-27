@@ -6,6 +6,7 @@ from core.navigation.path_tracker import PathTracker
 from core.execution.perception import Perception
 from core.execution.state_machine import StateMachine
 from core.execution.telemetry_writer import TelemetryWriter
+from core.utils import load_blocking_segments_from_wad
 from config.constants import DEFAULT_WAD_PATH, DEFAULT_MAP_NAME, DEFAULT_EPISODE_TIMEOUT
 
 import vizdoom as vzd
@@ -20,6 +21,7 @@ class Agent:
         self.state_machine = None
         self.path_tracker = None #for loading static nodes
         self.telemetry_writer = None
+        self.blocking_segments = None #useful for combat
     
     def initialize_game(self) -> None:
         """Does VizDoom setup, loads configs, and creates runtime objects."""
@@ -38,13 +40,14 @@ class Agent:
         self.game.set_doom_map(DEFAULT_MAP_NAME)
         self.game.set_episode_timeout(DEFAULT_EPISODE_TIMEOUT)
         self.game.init()
+        self.blocking_segments = load_blocking_segments_from_wad(DEFAULT_WAD_PATH, DEFAULT_MAP_NAME)
 
         #Create all runtime objects
         graph = Graph() #one Graph instance shared between NavEngine and PathTracker
         nav_engine = NavigationEngine(graph)
         self.path_tracker = PathTracker(graph, nav_engine)
         self.path_tracker.load_static_nodes(DEFAULT_MAP_NAME)
-        self.state_machine = StateMachine(self.path_tracker)
+        self.state_machine = StateMachine(self.path_tracker, self.blocking_segments)
         self.perception = Perception()
         self.telemetry_writer = TelemetryWriter() #TODO: after cleaning TM
 
