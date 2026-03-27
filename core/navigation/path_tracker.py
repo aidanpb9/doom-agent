@@ -198,6 +198,9 @@ class PathTracker:
         Add edges between this anchor node and last, next, and loot.
         Make this anchor the last_node."""
         waypoint_node = Node(gamestate.pos_x, gamestate.pos_y, NodeType.WAYPOINT)
+        if self.next_node is None:
+            return
+        
         self.graph.add_node(waypoint_node)
         self.graph.remove_edge(self.last_node, self.next_node)
         self.graph.add_edge(loot_node, waypoint_node)

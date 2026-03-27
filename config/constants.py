@@ -13,7 +13,7 @@ DEFAULT_TICKRATE = 35 #Doom's native ticks per second rate, used in window mode
 HEADLESS_TICKRATE = 2000 #speeds up headless mode, used in headless(no window) mode
 DEFAULT_MAP_NAME = "E1M1"
 DEFAULT_WAD_PATH = "maps/wads/doom.wad"
-DEFAULT_EPISODE_TIMEOUT = 4200  #ticks (120 seconds @ 35 tic/s)
+DEFAULT_EPISODE_TIMEOUT = 4200  #ticks (4200=120 seconds @ 35 tic/s)
 DEFAULT_LOG_INTERVAL = 20 #steps between log entries
 TICK = 1    
 

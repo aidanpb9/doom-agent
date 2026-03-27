@@ -22,7 +22,7 @@ class Perception:
 
         return GameState(
             health=info["health"],
-            armor=0,
+            armor=info["armor"],
             ammo=info["ammo"],
             enemies_visible=self._detect_enemies(labels),
             loots_visible=self._detect_loot(labels),
@@ -65,16 +65,20 @@ class Perception:
         """Extract raw game variables from vizdoom state into dict."""
         game_vars = vizdoom_state.game_variables
         labels = getattr(vizdoom_state, "labels", []) or []
-        return {
-            "health": float(game_vars[0]) if len(game_vars) > 0 else 100.0,
-            "ammo":   float(game_vars[1]) if len(game_vars) > 1 else 0.0,
-            "pos_x":  float(game_vars[2]) if len(game_vars) > 2 else 0.0,
-            "pos_y":  float(game_vars[3]) if len(game_vars) > 3 else 0.0,
-            "angle":  float(game_vars[5]) if len(game_vars) > 5 else 0.0,
-            "enemies_killed": int(game_vars[6]) if len(game_vars) > 6 else 0,
-            "labels": labels,
-        }
-    
+        if len(game_vars) >= 7:
+            return {
+                "health": float(game_vars[0]),
+                "armor": float(game_vars[1]),
+                "ammo":   float(game_vars[2]),
+                "pos_x":  float(game_vars[3]),
+                "pos_y":  float(game_vars[4]),
+                "angle":  float(game_vars[5]),
+                "enemies_killed": int(game_vars[6]),
+                "labels": labels,
+            }
+        else:
+            return {"health": 100.0, "armor": 0.0, "ammo": 0.0, "pos_x": 0.0, 
+                    "pos_y": 0.0, "angle": 0.0, "enemies_killed": 0, "labels": labels}
 
     def _detect_enemies(self, labels: list[Any]) -> list[EnemyObject]:
         """Returns list of EnemyObjects from visible labels."""
