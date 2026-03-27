@@ -7,10 +7,11 @@ from core.execution.perception import Perception
 from core.execution.state_machine import StateMachine
 from core.execution.telemetry_writer import TelemetryWriter
 from core.utils import load_blocking_segments_from_wad
-from config.constants import DEFAULT_WAD_PATH, DEFAULT_MAP_NAME, DEFAULT_EPISODE_TIMEOUT
-
+from config.constants import (DEFAULT_WAD_PATH, DEFAULT_MAP_NAME, 
+    DEFAULT_EPISODE_TIMEOUT, DEFAULT_ACTION_FRAME_SKIP)
 import vizdoom as vzd
 from pathlib import Path
+import random
 
 
 class Agent:
@@ -25,8 +26,7 @@ class Agent:
     
     def initialize_game(self) -> None:
         """Does VizDoom setup, loads configs, and creates runtime objects."""
-
-        #VizDoom setup
+        random.seed(42)
         self.game = vzd.DoomGame()
         self.game.load_config("config/vizdoom.cfg")
         self._apply_native_settings()
@@ -43,7 +43,7 @@ class Agent:
         self.blocking_segments = load_blocking_segments_from_wad(DEFAULT_WAD_PATH, DEFAULT_MAP_NAME)
 
         #Create all runtime objects
-        graph = Graph() #one Graph instance shared between NavEngine and PathTracker
+        graph = Graph() #one Graph instance shared between classes
         nav_engine = NavigationEngine(graph)
         self.path_tracker = PathTracker(graph, nav_engine)
         self.path_tracker.load_static_nodes(DEFAULT_MAP_NAME)
@@ -55,10 +55,55 @@ class Agent:
         """calls Perception and StateMachine each tick.
         Uses params as inputs from the GA.
         Returns stats for the genetic algorithm."""
+        stats = {
+            "finish_level": False,
+            "ticks": 0,
+            "health": 0,
+            "armor": 0,
+            "ammo": 0,
+            "enemies_killed": 0,
+            "waypoints_reached": 0,
+            "end_reason": "timeout"
+        }
+
+        #Setup
         self.game.new_episode()
         state = self.game.get_state()
         gamestate = self.perception.parse(state)
         self.path_tracker.last_node = self.path_tracker._nearest_node(gamestate)
+
+        #Run loop
+        while not self.game.is_episode_finished():
+            state = self.game.get_state()
+            if state is None:
+                break
+            gamestate = self.perception.parse(state)
+            action = self.state_machine.update(gamestate)
+            self.game.make_action(action, DEFAULT_ACTION_FRAME_SKIP)
+            
+        #Derive how the level ended
+        is_dead = self.game.is_player_dead()
+        is_timeout = self.game.get_episode_time() >= DEFAULT_EPISODE_TIMEOUT
+        level_completed = self.game.is_episode_finished() and not is_dead and not is_timeout
+        if is_dead:
+            end_reason = "death"
+        elif is_timeout:
+            end_reason = "timeout"
+        elif level_completed:
+            end_reason = "completion"
+        else:
+            end_reason = "unknown"
+
+        #Fill in final stats 
+        stats["finish_level"] = end_reason == "completion"
+        stats["ticks"] = self.game.get_episode_time()
+        stats["health"] = gamestate.health
+        stats["armor"] = gamestate.armor
+        stats["ammo"] = gamestate.ammo
+        stats["enemies_killed"] = gamestate.enemies_killed
+        stats["waypoints_reached"] = len(self.path_tracker.visited_waypoints)
+        stats["end_reason"] = end_reason
+        return stats
 
     def close(self) -> None:
         if self.game:

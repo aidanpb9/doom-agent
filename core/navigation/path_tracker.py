@@ -157,7 +157,7 @@ class PathTracker:
             
             #If loot not marked, add waypoint and loot nodes to graph if in range
             if not is_loot_marked:
-                loot_node = Node(loot.x, loot.y, NodeType.LOOT, name=loot.name)
+                loot_node = Node(loot.pos_x, loot.pos_y, NodeType.LOOT, loot.name)
                 #check if loot in max marking range (see GA param)
                 is_in_range = calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y) < LOOT_NODE_MAX_DISTANCE
                 if is_in_range:
