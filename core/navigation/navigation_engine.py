@@ -65,7 +65,6 @@ class NavigationEngine:
         if abs(angle_delta) < FORWARD_ANGLE_THRESHOLD:
             actions.append(ActionDecoder.forward()) #always go forward
 
-        
         if abs(angle_delta) > TURN_DEAD_ZONE:
             if angle_delta > 0:
                 actions.append(ActionDecoder.turn_left())
@@ -73,7 +72,7 @@ class NavigationEngine:
                 actions.append(ActionDecoder.turn_right())
         
         #handling doors
-        if not door_use_timer and target_node.node_type == NodeType.DOOR:
+        if not door_use_timer and target_node.node_type in (NodeType.DOOR, NodeType.EXIT):
             distance = calculate_euclidean_distance(x, y, target_node.x, target_node.y)
             if distance < DOOR_USE_DISTANCE:
                 actions.append(ActionDecoder.use())

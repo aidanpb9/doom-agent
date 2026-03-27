@@ -127,7 +127,7 @@ class PathTracker:
             gamestate.pos_x, gamestate.pos_y, target_node.x, target_node.y)
         
         #If target_node is DOOR, don't update next_node until we're sure that we used the door.
-        if target_node.node_type == NodeType.DOOR:
+        if target_node.node_type in (NodeType.DOOR, NodeType.EXIT):
             if self.door_use_timer > 0 and distance_to_target < DOOR_USE_DISTANCE:
                 return True
         elif distance_to_target < NODE_PROXIMITY:
