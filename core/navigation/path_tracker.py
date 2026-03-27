@@ -96,14 +96,20 @@ class PathTracker:
     def set_goal_by_type(self, gamestate: GameState, node_type: NodeType, keywords: set[str] | None = None) -> None:
         """Find and set the goal node according to current state."""
         goal_node = None
+
+        #Either set goal as EXIT or LOOT. If exit, we have to do a linear scan
+        #here to find it, hence the repeated node_type EXIT check.
         if node_type == NodeType.EXIT:
             for node in self.graph.nodes:
                 if node.node_type == NodeType.EXIT:
                     goal_node = node
         elif node_type == NodeType.LOOT:
             goal_node = self._nearest_node(gamestate, keywords)
-
-        if not goal_node:
+        
+        #Avoid rebuilding cur_path every tick — only replans when goal actually changes.
+        #Rebuilding every tick re-inserts the current next_node into cur_path, causing
+        #navigation to an already-consumed node.
+        if not goal_node or goal_node is self.goal_node:
             return
         
         self.goal_node = goal_node
