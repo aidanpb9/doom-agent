@@ -12,8 +12,7 @@ import re
 import struct
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-
+from typing import Any
 
 NORMAL_EXIT_SPECIALS = {11, 52, 197}
 SECRET_EXIT_SPECIALS = {51, 124}
@@ -26,17 +25,17 @@ DAMAGING_SECTOR_PENALTY = 8192.0
 SVG_PAD = 30.0
 SVG_WIDTH = 1400.0
 SVG_HEIGHT = 1000.0
-_SECTOR_BOUNDARY_CACHE: Dict[int, Dict[int, List[Tuple[Tuple[float, float], Tuple[float, float]]]]] = {}
-_SECTOR_BBOX_CACHE: Dict[int, Dict[int, Tuple[float, float, float, float]]] = {}
-_BARREL_OBSTACLE_CACHE: Dict[int, List["BarrelObstacle"]] = {}
-_LINEDEF_GEOM_CACHE: Dict[int, List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float, float, float], frozenset[int]]]] = {}
-_SEGMENT_INVALID_CACHE: Dict[
-    Tuple[
+_SECTOR_BOUNDARY_CACHE: dict[int, dict[int, list[tuple[tuple[float, float], tuple[float, float]]]]] = {}
+_SECTOR_BBOX_CACHE: dict[int, dict[int, tuple[float, float, float, float]]] = {}
+_BARREL_OBSTACLE_CACHE: dict[int, list["BarrelObstacle"]] = {}
+_LINEDEF_GEOM_CACHE: dict[int, list[tuple[tuple[float, float], tuple[float, float], tuple[float, float, float, float], frozenset[int]]]] = {}
+_SEGMENT_INVALID_CACHE: dict[
+    tuple[
         int,
         int,
         int,
         int,
-        Tuple[Tuple[float, float], Tuple[float, float]],
+        tuple[tuple[float, float], tuple[float, float]],
     ],
     bool,
 ] = {}
@@ -87,18 +86,18 @@ class Linedef:
 
 @dataclass
 class ParsedMap:
-    vertices: List[Tuple[float, float]]
-    sidedefs: List[int]
-    sectors: List[Dict[str, Any]]
-    linedefs: List[Linedef]
-    things: List[Dict[str, Any]]
+    vertices: list[tuple[float, float]]
+    sidedefs: list[int]
+    sectors: list[dict[str, Any]]
+    linedefs: list[Linedef]
+    things: list[dict[str, Any]]
 
 
 @dataclass
 class BarrelObstacle:
-    center: Tuple[float, float]
+    center: tuple[float, float]
     radius: float
-    segments: List[Tuple[Tuple[float, float], Tuple[float, float]]]
+    segments: list[tuple[tuple[float, float], tuple[float, float]]]
 
 
 def parse_scalar(raw: str) -> Any:
@@ -122,15 +121,15 @@ def parse_textmap(text: str) -> ParsedMap:
     block_re = re.compile(r"(?is)\b([A-Za-z_][A-Za-z0-9_]*)\b[^\{]*\{(.*?)\}")
     kv_re = re.compile(r"(?is)\b([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^;]+);")
 
-    vertices: List[Tuple[float, float]] = []
-    sidedefs: List[int] = []
-    sectors: List[Dict[str, Any]] = []
-    linedefs: List[Linedef] = []
-    things: List[Dict[str, Any]] = []
+    vertices: list[tuple[float, float]] = []
+    sidedefs: list[int] = []
+    sectors: list[dict[str, Any]] = []
+    linedefs: list[Linedef] = []
+    things: list[dict[str, Any]] = []
 
     for block_name, body in block_re.findall(text):
         kind = block_name.lower()
-        kv: Dict[str, Any] = {}
+        kv: dict[str, Any] = {}
         for k, v in kv_re.findall(body):
             kv[k.lower()] = parse_scalar(v)
 
@@ -157,24 +156,24 @@ def parse_textmap(text: str) -> ParsedMap:
     return ParsedMap(vertices=vertices, sidedefs=sidedefs, sectors=sectors, linedefs=linedefs, things=things)
 
 
-def parse_classic_map(raw: bytes, map_lumps: Dict[str, Tuple[int, int]]) -> ParsedMap:
+def parse_classic_map(raw: bytes, map_lumps: dict[str, tuple[int, int]]) -> ParsedMap:
     if "VERTEXES" not in map_lumps or "LINEDEFS" not in map_lumps or "SIDEDEFS" not in map_lumps:
         raise RuntimeError("Classic map missing VERTEXES/LINEDEFS/SIDEDEFS")
 
     vx_pos, vx_size = map_lumps["VERTEXES"]
-    vertices: List[Tuple[float, float]] = []
+    vertices: list[tuple[float, float]] = []
     for off in range(0, vx_size, 4):
         x, y = struct.unpack_from("<hh", raw, vx_pos + off)
         vertices.append((float(x), float(y)))
 
     sd_pos, sd_size = map_lumps["SIDEDEFS"]
-    sidedefs: List[int] = []
+    sidedefs: list[int] = []
     for off in range(0, sd_size, 30):
         sector = struct.unpack_from("<h", raw, sd_pos + off + 28)[0]
         sidedefs.append(int(sector))
 
     ld_pos, ld_size = map_lumps["LINEDEFS"]
-    linedefs: List[Linedef] = []
+    linedefs: list[Linedef] = []
     for off in range(0, ld_size, 14):
         v1, v2, flags, special, tag, right, left = struct.unpack_from("<hhhhhhh", raw, ld_pos + off)
         linedefs.append(
@@ -188,7 +187,7 @@ def parse_classic_map(raw: bytes, map_lumps: Dict[str, Tuple[int, int]]) -> Pars
             )
         )
 
-    sectors: List[Dict[str, Any]] = []
+    sectors: list[dict[str, Any]] = []
     if "SECTORS" in map_lumps:
         sec_pos, sec_size = map_lumps["SECTORS"]
         for off in range(0, sec_size, 26):
@@ -208,7 +207,7 @@ def parse_classic_map(raw: bytes, map_lumps: Dict[str, Tuple[int, int]]) -> Pars
                 }
             )
 
-    things: List[Dict[str, Any]] = []
+    things: list[dict[str, Any]] = []
     if "THINGS" in map_lumps:
         th_pos, th_size = map_lumps["THINGS"]
         for off in range(0, th_size, 10):
@@ -226,13 +225,13 @@ def parse_classic_map(raw: bytes, map_lumps: Dict[str, Tuple[int, int]]) -> Pars
     return ParsedMap(vertices=vertices, sidedefs=sidedefs, sectors=sectors, linedefs=linedefs, things=things)
 
 
-def read_wad_directory(wad_path: str) -> Tuple[bytes, List[Tuple[str, int, int]]]:
+def read_wad_directory(wad_path: str) -> tuple[bytes, list[tuple[str, int, int]]]:
     raw = Path(wad_path).read_bytes()
     ident, num_lumps, dir_ofs = struct.unpack_from("<4sii", raw, 0)
     if ident not in (b"IWAD", b"PWAD"):
         raise RuntimeError(f"Unsupported WAD type: {ident!r}")
 
-    directory: List[Tuple[str, int, int]] = []
+    directory: list[tuple[str, int, int]] = []
     for i in range(num_lumps):
         pos, size, name_raw = struct.unpack_from("<ii8s", raw, dir_ofs + i * 16)
         name = name_raw.split(b"\0", 1)[0].decode("ascii", errors="ignore").upper()
@@ -240,11 +239,11 @@ def read_wad_directory(wad_path: str) -> Tuple[bytes, List[Tuple[str, int, int]]
     return raw, directory
 
 
-def list_map_markers(wad_path: str) -> List[str]:
+def list_map_markers(wad_path: str) -> list[str]:
     _, directory = read_wad_directory(wad_path)
     maps = [name for name, _, _ in directory if MAP_MARKER_RE.match(name)]
     # Keep order of first appearance and drop duplicates.
-    out: List[str] = []
+    out: list[str] = []
     seen = set()
     for m in maps:
         if m in seen:
@@ -266,7 +265,7 @@ def load_map_data(wad_path: str, map_name: str) -> ParsedMap:
     if marker_idx < 0:
         raise RuntimeError(f"Map marker {map_name} not found in {wad_path}")
 
-    map_lumps: Dict[str, Tuple[int, int]] = {}
+    map_lumps: dict[str, tuple[int, int]] = {}
     classic_lump_names = {
         "THINGS",
         "LINEDEFS",
@@ -304,14 +303,14 @@ def load_map_data(wad_path: str, map_name: str) -> ParsedMap:
     return parse_classic_map(raw, map_lumps)
 
 
-def dist2(a: Tuple[float, float], b: Tuple[float, float]) -> float:
+def dist2(a: tuple[float, float], b: tuple[float, float]) -> float:
     dx = a[0] - b[0]
     dy = a[1] - b[1]
     return dx * dx + dy * dy
 
 
-def build_sector_centroids(pm: ParsedMap) -> Dict[int, Tuple[float, float]]:
-    points_by_sector: Dict[int, List[Tuple[float, float]]] = {}
+def build_sector_centroids(pm: ParsedMap) -> dict[int, tuple[float, float]]:
+    points_by_sector: dict[int, list[tuple[float, float]]] = {}
     for ld in pm.linedefs:
         if ld.v1 < 0 or ld.v2 < 0 or ld.v1 >= len(pm.vertices) or ld.v2 >= len(pm.vertices):
             continue
@@ -325,7 +324,7 @@ def build_sector_centroids(pm: ParsedMap) -> Dict[int, Tuple[float, float]]:
                 continue
             points_by_sector.setdefault(sec, []).extend([p1, p2])
 
-    centroids: Dict[int, Tuple[float, float]] = {}
+    centroids: dict[int, tuple[float, float]] = {}
     for sec, pts in points_by_sector.items():
         if not pts:
             continue
@@ -335,8 +334,8 @@ def build_sector_centroids(pm: ParsedMap) -> Dict[int, Tuple[float, float]]:
     return centroids
 
 
-def build_sector_graph(pm: ParsedMap) -> Dict[int, List[int]]:
-    graph: Dict[int, List[int]] = {}
+def build_sector_graph(pm: ParsedMap) -> dict[int, list[int]]:
+    graph: dict[int, list[int]] = {}
     for ld in pm.linedefs:
         if ld.blocking:
             continue
@@ -353,8 +352,8 @@ def build_sector_graph(pm: ParsedMap) -> Dict[int, List[int]]:
     return graph
 
 
-def build_sector_transition_graph(pm: ParsedMap) -> Dict[int, List[Tuple[int, int]]]:
-    graph: Dict[int, List[Tuple[int, int]]] = {}
+def build_sector_transition_graph(pm: ParsedMap) -> dict[int, list[tuple[int, int]]]:
+    graph: dict[int, list[tuple[int, int]]] = {}
     for ld in pm.linedefs:
         if ld.blocking:
             continue
@@ -374,10 +373,10 @@ def build_sector_transition_graph(pm: ParsedMap) -> Dict[int, List[Tuple[int, in
 
 def build_sector_key_mask(
     pm: ParsedMap,
-    centroids: Dict[int, Tuple[float, float]],
-    reachable_sectors: Optional[set[int]] = None,
-) -> Dict[int, int]:
-    out: Dict[int, int] = {}
+    centroids: dict[int, tuple[float, float]],
+    reachable_sectors: set[int] | None = None,
+) -> dict[int, int]:
+    out: dict[int, int] = {}
     for t in pm.things:
         ttype = int(t.get("type", 0))
         km = THING_KEY_MASK.get(ttype, 0)
@@ -395,7 +394,7 @@ def build_sector_key_mask(
     return out
 
 
-def nearest_sector(pt: Tuple[float, float], centroids: Dict[int, Tuple[float, float]]) -> int:
+def nearest_sector(pt: tuple[float, float], centroids: dict[int, tuple[float, float]]) -> int:
     best_sec = -1
     best_d = float("inf")
     for sec, c in centroids.items():
@@ -408,9 +407,9 @@ def nearest_sector(pt: Tuple[float, float], centroids: Dict[int, Tuple[float, fl
     return best_sec
 
 
-def _sector_geometry(pm: ParsedMap) -> Tuple[
-    Dict[int, List[Tuple[Tuple[float, float], Tuple[float, float]]]],
-    Dict[int, Tuple[float, float, float, float]],
+def _sector_geometry(pm: ParsedMap) -> tuple[
+    dict[int, list[tuple[tuple[float, float], tuple[float, float]]]],
+    dict[int, tuple[float, float, float, float]],
 ]:
     key = id(pm)
     cached_bounds = _SECTOR_BOUNDARY_CACHE.get(key)
@@ -418,7 +417,7 @@ def _sector_geometry(pm: ParsedMap) -> Tuple[
     if cached_bounds is not None and cached_boxes is not None:
         return cached_bounds, cached_boxes
 
-    boundaries: Dict[int, List[Tuple[Tuple[float, float], Tuple[float, float]]]] = {}
+    boundaries: dict[int, list[tuple[tuple[float, float], tuple[float, float]]]] = {}
     for ld in pm.linedefs:
         if ld.v1 < 0 or ld.v2 < 0 or ld.v1 >= len(pm.vertices) or ld.v2 >= len(pm.vertices):
             continue
@@ -432,7 +431,7 @@ def _sector_geometry(pm: ParsedMap) -> Tuple[
         if sec_b >= 0:
             boundaries.setdefault(sec_b, []).append(seg)
 
-    boxes: Dict[int, Tuple[float, float, float, float]] = {}
+    boxes: dict[int, tuple[float, float, float, float]] = {}
     for sec, segs in boundaries.items():
         xs = [p[0] for seg in segs for p in seg]
         ys = [p[1] for seg in segs for p in seg]
@@ -444,9 +443,9 @@ def _sector_geometry(pm: ParsedMap) -> Tuple[
 
 
 def _point_on_segment(
-    pt: Tuple[float, float],
-    a: Tuple[float, float],
-    b: Tuple[float, float],
+    pt: tuple[float, float],
+    a: tuple[float, float],
+    b: tuple[float, float],
     eps: float = 1e-4,
 ) -> bool:
     px, py = pt
@@ -460,8 +459,8 @@ def _point_on_segment(
 
 
 def _point_in_sector_segments(
-    pt: Tuple[float, float],
-    segs: List[Tuple[Tuple[float, float], Tuple[float, float]]],
+    pt: tuple[float, float],
+    segs: list[tuple[tuple[float, float], tuple[float, float]]],
 ) -> bool:
     x, y = pt
     inside = False
@@ -480,13 +479,13 @@ def _point_in_sector_segments(
 
 def sector_of_point(
     pm: ParsedMap,
-    pt: Tuple[float, float],
-    centroids: Dict[int, Tuple[float, float]],
-    candidate_sectors: Optional[set[int]] = None,
+    pt: tuple[float, float],
+    centroids: dict[int, tuple[float, float]],
+    candidate_sectors: set[int] | None = None,
 ) -> int:
     boundaries, boxes = _sector_geometry(pm)
     x, y = pt
-    candidates: List[Tuple[float, int]] = []
+    candidates: list[tuple[float, int]] = []
     sector_ids = candidate_sectors if candidate_sectors is not None else set(boundaries.keys())
     for sec in sector_ids:
         bbox = boxes.get(sec)
@@ -508,7 +507,7 @@ def sector_of_point(
     return nearest_sector(pt, centroids)
 
 
-def _sector_meta(pm: ParsedMap, sec: int) -> Dict[str, Any]:
+def _sector_meta(pm: ParsedMap, sec: int) -> dict[str, Any]:
     if 0 <= sec < len(pm.sectors):
         meta = pm.sectors[sec]
         if isinstance(meta, dict):
@@ -527,7 +526,7 @@ def _sector_is_damaging(pm: ParsedMap, sec: int) -> bool:
 
 def _sector_step_cost(
     pm: ParsedMap,
-    centroids: Dict[int, Tuple[float, float]],
+    centroids: dict[int, tuple[float, float]],
     cur_sec: int,
     nxt_sec: int,
 ) -> float:
@@ -539,17 +538,17 @@ def _sector_step_cost(
 
 def a_star_sector_path(
     pm: ParsedMap,
-    graph: Dict[int, List[int]],
-    centroids: Dict[int, Tuple[float, float]],
+    graph: dict[int, list[int]],
+    centroids: dict[int, tuple[float, float]],
     start_sec: int,
     goal_sec: int,
-) -> List[int]:
+) -> list[int]:
     if start_sec == goal_sec:
         return [start_sec]
 
-    open_heap: List[Tuple[float, int, int]] = []
-    g: Dict[int, float] = {start_sec: 0.0}
-    parent: Dict[int, int] = {}
+    open_heap: list[tuple[float, int, int]] = []
+    g: dict[int, float] = {start_sec: 0.0}
+    parent: dict[int, int] = {}
     closed = set()
     counter = 0
 
@@ -587,18 +586,18 @@ def a_star_sector_path(
 
 def a_star_sector_path_with_keys(
     pm: ParsedMap,
-    graph: Dict[int, List[Tuple[int, int]]],
-    centroids: Dict[int, Tuple[float, float]],
-    sector_keys: Dict[int, int],
+    graph: dict[int, list[tuple[int, int]]],
+    centroids: dict[int, tuple[float, float]],
+    sector_keys: dict[int, int],
     start_sec: int,
     goal_sec: int,
-) -> Tuple[List[int], int]:
+) -> tuple[list[int], int]:
     start_keys = sector_keys.get(start_sec, 0)
     start_state = (start_sec, start_keys)
 
-    open_heap: List[Tuple[float, int, Tuple[int, int]]] = []
-    g: Dict[Tuple[int, int], float] = {start_state: 0.0}
-    parent: Dict[Tuple[int, int], Tuple[int, int]] = {}
+    open_heap: list[tuple[float, int, tuple[int, int]]] = []
+    g: dict[tuple[int, int], float] = {start_state: 0.0}
+    parent: dict[tuple[int, int], tuple[int, int]] = {}
     closed = set()
     counter = 0
 
@@ -607,7 +606,7 @@ def a_star_sector_path_with_keys(
 
     heapq.heappush(open_heap, (heuristic(start_sec, goal_sec), counter, start_state))
 
-    goal_state: Optional[Tuple[int, int]] = None
+    goal_state: tuple[int, int] | None = None
     while open_heap:
         _, _, cur = heapq.heappop(open_heap)
         if cur in closed:
@@ -649,7 +648,7 @@ def a_star_sector_path_with_keys(
     return sector_path, final_keys
 
 
-def connected_sector_component(graph: Dict[int, List[int]], start_sec: int) -> set[int]:
+def connected_sector_component(graph: dict[int, list[int]], start_sec: int) -> set[int]:
     seen = {start_sec}
     stack = [start_sec]
     while stack:
@@ -662,11 +661,11 @@ def connected_sector_component(graph: Dict[int, List[int]], start_sec: int) -> s
     return seen
 
 
-def _triarea2(a: Tuple[float, float], b: Tuple[float, float], c: Tuple[float, float]) -> float:
+def _triarea2(a: tuple[float, float], b: tuple[float, float], c: tuple[float, float]) -> float:
     return (c[0] - a[0]) * (b[1] - a[1]) - (b[0] - a[0]) * (c[1] - a[1])
 
 
-def _vequal(a: Tuple[float, float], b: Tuple[float, float], eps: float = 1e-6) -> bool:
+def _vequal(a: tuple[float, float], b: tuple[float, float], eps: float = 1e-6) -> bool:
     return abs(a[0] - b[0]) <= eps and abs(a[1] - b[1]) <= eps
 
 
@@ -676,7 +675,7 @@ def _sector_of_side(pm: ParsedMap, side: int) -> int:
     return pm.sidedefs[side]
 
 
-def _shared_portal_segment(pm: ParsedMap, sec_a: int, sec_b: int) -> Optional[Tuple[Tuple[float, float], Tuple[float, float]]]:
+def _shared_portal_segment(pm: ParsedMap, sec_a: int, sec_b: int) -> tuple[tuple[float, float], tuple[float, float]] | None:
     best = None
     best_len2 = -1.0
     for ld in pm.linedefs:
@@ -696,11 +695,11 @@ def _shared_portal_segment(pm: ParsedMap, sec_a: int, sec_b: int) -> Optional[Tu
 
 
 def _orient_portal(
-    p: Tuple[float, float],
-    q: Tuple[float, float],
-    from_pt: Tuple[float, float],
-    to_pt: Tuple[float, float],
-) -> Tuple[Tuple[float, float], Tuple[float, float]]:
+    p: tuple[float, float],
+    q: tuple[float, float],
+    from_pt: tuple[float, float],
+    to_pt: tuple[float, float],
+) -> tuple[tuple[float, float], tuple[float, float]]:
     mx = 0.5 * (p[0] + q[0])
     my = 0.5 * (p[1] + q[1])
     dx = to_pt[0] - from_pt[0]
@@ -714,10 +713,10 @@ def _orient_portal(
 
 def _build_portals(
     pm: ParsedMap,
-    sector_path: List[int],
-    centroids: Dict[int, Tuple[float, float]],
-) -> List[Tuple[Tuple[float, float], Tuple[float, float]]]:
-    portals: List[Tuple[Tuple[float, float], Tuple[float, float]]] = []
+    sector_path: list[int],
+    centroids: dict[int, tuple[float, float]],
+) -> list[tuple[tuple[float, float], tuple[float, float]]]:
+    portals: list[tuple[tuple[float, float], tuple[float, float]]] = []
     for i in range(len(sector_path) - 1):
         a = sector_path[i]
         b = sector_path[i + 1]
@@ -731,11 +730,11 @@ def _build_portals(
 
 
 def _portal_midpoint_chain(
-    start_xy: Tuple[float, float],
-    end_xy: Tuple[float, float],
-    portals: List[Tuple[Tuple[float, float], Tuple[float, float]]],
-) -> List[Tuple[float, float]]:
-    pts: List[Tuple[float, float]] = [start_xy]
+    start_xy: tuple[float, float],
+    end_xy: tuple[float, float],
+    portals: list[tuple[tuple[float, float], tuple[float, float]]],
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = [start_xy]
     for left, right in portals:
         pts.append((0.5 * (left[0] + right[0]), 0.5 * (left[1] + right[1])))
     pts.append(end_xy)
@@ -743,20 +742,20 @@ def _portal_midpoint_chain(
 
 
 def _funnel_path(
-    start_xy: Tuple[float, float],
-    end_xy: Tuple[float, float],
-    portals: List[Tuple[Tuple[float, float], Tuple[float, float]]],
-) -> List[Tuple[float, float]]:
+    start_xy: tuple[float, float],
+    end_xy: tuple[float, float],
+    portals: list[tuple[tuple[float, float], tuple[float, float]]],
+) -> list[tuple[float, float]]:
     if not portals:
         return [start_xy, end_xy]
 
-    corridor: List[Tuple[Tuple[float, float], Tuple[float, float]]] = [
+    corridor: list[tuple[tuple[float, float], tuple[float, float]]] = [
         ((start_xy[0], start_xy[1]), (start_xy[0], start_xy[1]))
     ]
     corridor.extend(portals)
     corridor.append(((end_xy[0], end_xy[1]), (end_xy[0], end_xy[1])))
 
-    pts: List[Tuple[float, float]] = [start_xy]
+    pts: list[tuple[float, float]] = [start_xy]
     apex = start_xy
     left = start_xy
     right = start_xy
@@ -831,10 +830,10 @@ def _seg_intersection(ax: float, ay: float, bx: float, by: float, cx: float, cy:
 
 
 def _centroid_path_points(
-    sector_path: List[int],
-    centroids: Dict[int, Tuple[float, float]],
-) -> List[Tuple[float, float]]:
-    out: List[Tuple[float, float]] = []
+    sector_path: list[int],
+    centroids: dict[int, tuple[float, float]],
+) -> list[tuple[float, float]]:
+    out: list[tuple[float, float]] = []
     for sec in sector_path:
         if sec in centroids:
             out.append(centroids[sec])
@@ -843,10 +842,10 @@ def _centroid_path_points(
 
 def build_sector_key_pickups(
     pm: ParsedMap,
-    centroids: Dict[int, Tuple[float, float]],
-    reachable_sectors: Optional[set[int]] = None,
-) -> Dict[int, List[Tuple[float, float]]]:
-    out: Dict[int, List[Tuple[float, float]]] = {}
+    centroids: dict[int, tuple[float, float]],
+    reachable_sectors: set[int] | None = None,
+) -> dict[int, list[tuple[float, float]]]:
+    out: dict[int, list[tuple[float, float]]] = {}
     for t in pm.things:
         ttype = int(t.get("type", 0))
         if THING_KEY_MASK.get(ttype, 0) == 0:
@@ -864,14 +863,14 @@ def build_sector_key_pickups(
 
 
 def _inject_sector_pickups(
-    sector_path: List[int],
-    path_points: List[Tuple[float, float]],
-    sector_pickups: Dict[int, List[Tuple[float, float]]],
-) -> List[Tuple[float, float]]:
+    sector_path: list[int],
+    path_points: list[tuple[float, float]],
+    sector_pickups: dict[int, list[tuple[float, float]]],
+) -> list[tuple[float, float]]:
     if len(path_points) != len(sector_path):
         return path_points
 
-    out: List[Tuple[float, float]] = []
+    out: list[tuple[float, float]] = []
     injected: set[int] = set()
     for sec, pt in zip(sector_path, path_points):
         out.append(pt)
@@ -891,12 +890,12 @@ def _inject_sector_pickups(
     return out
 
 
-def _collect_barrel_obstacles(pm: ParsedMap) -> List[BarrelObstacle]:
+def _collect_barrel_obstacles(pm: ParsedMap) -> list[BarrelObstacle]:
     cached = _BARREL_OBSTACLE_CACHE.get(id(pm))
     if cached is not None:
         return cached
 
-    obstacles: List[BarrelObstacle] = []
+    obstacles: list[BarrelObstacle] = []
     r = BARREL_RADIUS
     for thing in pm.things:
         if int(thing.get("type", 0)) not in BARREL_THING_TYPES:
@@ -922,12 +921,12 @@ def _collect_barrel_obstacles(pm: ParsedMap) -> List[BarrelObstacle]:
 
 def _linedef_geometry(
     pm: ParsedMap,
-) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float, float, float], frozenset[int]]]:
+) -> list[tuple[tuple[float, float], tuple[float, float], tuple[float, float, float, float], frozenset[int]]]:
     cached = _LINEDEF_GEOM_CACHE.get(id(pm))
     if cached is not None:
         return cached
 
-    geom: List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float, float, float], frozenset[int]]] = []
+    geom: list[tuple[tuple[float, float], tuple[float, float], tuple[float, float, float, float], frozenset[int]]] = []
     for ld in pm.linedefs:
         if ld.v1 < 0 or ld.v2 < 0 or ld.v1 >= len(pm.vertices) or ld.v2 >= len(pm.vertices):
             continue
@@ -948,12 +947,12 @@ def _linedef_geometry(
 
 def _segment_cache_key(
     pm: ParsedMap,
-    p: Tuple[float, float],
-    q: Tuple[float, float],
+    p: tuple[float, float],
+    q: tuple[float, float],
     allowed_pairs: set[frozenset[int]],
-    allowed_sectors: Optional[set[int]],
-    centroids: Optional[Dict[int, Tuple[float, float]]],
-) -> Tuple[int, int, int, int, Tuple[Tuple[float, float], Tuple[float, float]]]:
+    allowed_sectors: set[int] | None,
+    centroids: dict[int, tuple[float, float]] | None,
+) -> tuple[int, int, int, int, tuple[tuple[float, float], tuple[float, float]]]:
     a = (round(p[0], 4), round(p[1], 4))
     b = (round(q[0], 4), round(q[1], 4))
     seg = (a, b) if a <= b else (b, a)
@@ -962,11 +961,11 @@ def _segment_cache_key(
 
 def _segment_invalid_for_pairs(
     pm: ParsedMap,
-    p: Tuple[float, float],
-    q: Tuple[float, float],
+    p: tuple[float, float],
+    q: tuple[float, float],
     allowed_pairs: set[frozenset[int]],
-    allowed_sectors: Optional[set[int]] = None,
-    centroids: Optional[Dict[int, Tuple[float, float]]] = None,
+    allowed_sectors: set[int] | None = None,
+    centroids: dict[int, tuple[float, float]] | None = None,
 ) -> bool:
     cache_key = _segment_cache_key(pm, p, q, allowed_pairs, allowed_sectors, centroids)
     cached = _SEGMENT_INVALID_CACHE.get(cache_key)
@@ -1019,8 +1018,8 @@ def _segment_invalid_for_pairs(
 def _build_obstacle_segments(
     pm: ParsedMap,
     allowed_pairs: set[frozenset[int]],
-) -> List[Tuple[Tuple[float, float], Tuple[float, float]]]:
-    out: List[Tuple[Tuple[float, float], Tuple[float, float]]] = []
+) -> list[tuple[tuple[float, float], tuple[float, float]]]:
+    out: list[tuple[tuple[float, float], tuple[float, float]]] = []
     for p1, p2, _bbox, pair in _linedef_geometry(pm):
         if pair in allowed_pairs:
             continue
@@ -1031,9 +1030,9 @@ def _build_obstacle_segments(
 
 
 def _segment_invalid_for_obstacles(
-    p: Tuple[float, float],
-    q: Tuple[float, float],
-    obstacles: List[Tuple[Tuple[float, float], Tuple[float, float]]],
+    p: tuple[float, float],
+    q: tuple[float, float],
+    obstacles: list[tuple[tuple[float, float], tuple[float, float]]],
 ) -> bool:
     for a, b in obstacles:
         x1, y1 = a
@@ -1055,8 +1054,8 @@ def _collect_pair_vertices(
     pm: ParsedMap,
     sec_a: int,
     sec_b: int,
-) -> List[Tuple[float, float]]:
-    pts: List[Tuple[float, float]] = []
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = []
     for ld in pm.linedefs:
         if ld.v1 < 0 or ld.v2 < 0 or ld.v1 >= len(pm.vertices) or ld.v2 >= len(pm.vertices):
             continue
@@ -1068,8 +1067,8 @@ def _collect_pair_vertices(
     return pts
 
 
-def _dedupe_points(points: List[Tuple[float, float]], eps2: float = 1.0) -> List[Tuple[float, float]]:
-    out: List[Tuple[float, float]] = []
+def _dedupe_points(points: list[tuple[float, float]], eps2: float = 1.0) -> list[tuple[float, float]]:
+    out: list[tuple[float, float]] = []
     for p in points:
         if any(dist2(p, q) <= eps2 for q in out):
             continue
@@ -1077,8 +1076,8 @@ def _dedupe_points(points: List[Tuple[float, float]], eps2: float = 1.0) -> List
     return out
 
 
-def _dedupe_consecutive_points(points: List[Tuple[float, float]], eps2: float = 1.0) -> List[Tuple[float, float]]:
-    out: List[Tuple[float, float]] = []
+def _dedupe_consecutive_points(points: list[tuple[float, float]], eps2: float = 1.0) -> list[tuple[float, float]]:
+    out: list[tuple[float, float]] = []
     for p in points:
         if out and dist2(out[-1], p) <= eps2:
             continue
@@ -1087,9 +1086,9 @@ def _dedupe_consecutive_points(points: List[Tuple[float, float]], eps2: float = 
 
 
 def _dist2_point_to_segment(
-    p: Tuple[float, float],
-    a: Tuple[float, float],
-    b: Tuple[float, float],
+    p: tuple[float, float],
+    a: tuple[float, float],
+    b: tuple[float, float],
 ) -> float:
     vx = b[0] - a[0]
     vy = b[1] - a[1]
@@ -1109,10 +1108,10 @@ def _dist2_point_to_segment(
 
 
 def _move_toward(
-    src: Tuple[float, float],
-    dst: Tuple[float, float],
+    src: tuple[float, float],
+    dst: tuple[float, float],
     dist: float,
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     dx = dst[0] - src[0]
     dy = dst[1] - src[1]
     l2 = dx * dx + dy * dy
@@ -1125,9 +1124,9 @@ def _move_toward(
 
 def _node_clearance(
     pm: ParsedMap,
-    p: Tuple[float, float],
+    p: tuple[float, float],
     allowed_pairs: set[frozenset[int]],
-    obstacle_segments: Optional[List[Tuple[Tuple[float, float], Tuple[float, float]]]] = None,
+    obstacle_segments: list[tuple[tuple[float, float], tuple[float, float]]] | None = None,
 ) -> float:
     obstacles = obstacle_segments
     if obstacles is None:
@@ -1144,11 +1143,11 @@ def _node_clearance(
 
 def _segment_clearance(
     pm: ParsedMap,
-    p: Tuple[float, float],
-    q: Tuple[float, float],
+    p: tuple[float, float],
+    q: tuple[float, float],
     allowed_pairs: set[frozenset[int]],
     samples: int = 7,
-    obstacle_segments: Optional[List[Tuple[Tuple[float, float], Tuple[float, float]]]] = None,
+    obstacle_segments: list[tuple[tuple[float, float], tuple[float, float]]] | None = None,
 ) -> float:
     obstacles = obstacle_segments
     if obstacles is None:
@@ -1169,13 +1168,13 @@ def _segment_clearance(
 
 def _collect_dense_corridor_nodes(
     pm: ParsedMap,
-    sector_path: List[int],
-    centroids: Dict[int, Tuple[float, float]],
-    start_xy: Tuple[float, float],
-    exit_xy: Tuple[float, float],
-) -> List[Tuple[float, float]]:
+    sector_path: list[int],
+    centroids: dict[int, tuple[float, float]],
+    start_xy: tuple[float, float],
+    exit_xy: tuple[float, float],
+) -> list[tuple[float, float]]:
     corridor = set(sector_path)
-    nodes: List[Tuple[float, float]] = [start_xy, exit_xy]
+    nodes: list[tuple[float, float]] = [start_xy, exit_xy]
     for s in sector_path:
         if s in centroids:
             nodes.append(centroids[s])
@@ -1213,8 +1212,8 @@ def _collect_dense_corridor_nodes(
     return _dedupe_points(nodes, eps2=4.0)
 
 
-def _build_sector_adjacency(pm: ParsedMap) -> Dict[int, List[int]]:
-    adj: Dict[int, List[int]] = {}
+def _build_sector_adjacency(pm: ParsedMap) -> dict[int, list[int]]:
+    adj: dict[int, list[int]] = {}
     for ld in pm.linedefs:
         if ld.sidefront < 0 or ld.sideback < 0:
             continue
@@ -1229,7 +1228,7 @@ def _build_sector_adjacency(pm: ParsedMap) -> Dict[int, List[int]]:
     return adj
 
 
-def _expand_sector_set(seed: set[int], adj: Dict[int, List[int]], depth: int = 1) -> set[int]:
+def _expand_sector_set(seed: set[int], adj: dict[int, list[int]], depth: int = 1) -> set[int]:
     cur = set(seed)
     frontier = set(seed)
     for _ in range(depth):
@@ -1245,8 +1244,8 @@ def _expand_sector_set(seed: set[int], adj: Dict[int, List[int]], depth: int = 1
     return cur
 
 
-def _frange(a: float, b: float, step: float) -> List[float]:
-    out: List[float] = []
+def _frange(a: float, b: float, step: float) -> list[float]:
+    out: list[float] = []
     x = a
     # inclusive upper bound
     while x <= b + 1e-6:
@@ -1257,13 +1256,13 @@ def _frange(a: float, b: float, step: float) -> List[float]:
 
 def _repair_segment_with_subdivision(
     pm: ParsedMap,
-    p: Tuple[float, float],
-    q: Tuple[float, float],
-    dense_nodes: List[Tuple[float, float]],
+    p: tuple[float, float],
+    q: tuple[float, float],
+    dense_nodes: list[tuple[float, float]],
     allowed_pairs: set[frozenset[int]],
-    centroids: Dict[int, Tuple[float, float]],
-    sector_path: List[int],
-) -> List[Tuple[float, float]]:
+    centroids: dict[int, tuple[float, float]],
+    sector_path: list[int],
+) -> list[tuple[float, float]]:
     if not centroids:
         return [p, q]
     allowed_sectors = set(sector_path)
@@ -1293,7 +1292,7 @@ def _repair_segment_with_subdivision(
         return [p, q]
 
     for step in (64.0, 40.0):
-        grid_nodes: List[Tuple[float, float]] = []
+        grid_nodes: list[tuple[float, float]] = []
         for x in _frange(min_x, max_x, step):
             for y in _frange(min_y, max_y, step):
                 pt = (x, y)
@@ -1325,12 +1324,12 @@ def _repair_segment_with_subdivision(
 
 def _portal_offset_chain(
     pm: ParsedMap,
-    sector_path: List[int],
-    centroids: Dict[int, Tuple[float, float]],
-    start_xy: Tuple[float, float],
-    end_xy: Tuple[float, float],
-) -> List[Tuple[float, float]]:
-    pts: List[Tuple[float, float]] = [start_xy]
+    sector_path: list[int],
+    centroids: dict[int, tuple[float, float]],
+    start_xy: tuple[float, float],
+    end_xy: tuple[float, float],
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = [start_xy]
     for i in range(len(sector_path) - 1):
         a = sector_path[i]
         b = sector_path[i + 1]
@@ -1349,18 +1348,18 @@ def _portal_offset_chain(
 
 def _build_visibility_graph(
     pm: ParsedMap,
-    nodes: List[Tuple[float, float]],
+    nodes: list[tuple[float, float]],
     allowed_pairs: set[frozenset[int]],
-    allowed_sectors: Optional[set[int]] = None,
-    centroids: Optional[Dict[int, Tuple[float, float]]] = None,
-    clearance: Optional[Dict[int, float]] = None,
+    allowed_sectors: set[int] | None = None,
+    centroids: dict[int, tuple[float, float]] | None = None,
+    clearance: dict[int, float] | None = None,
     clearance_weight: float = 0.0,
     min_edge_clearance: float = 0.0,
-    obstacle_segments: Optional[List[Tuple[Tuple[float, float], Tuple[float, float]]]] = None,
+    obstacle_segments: list[tuple[tuple[float, float], tuple[float, float]]] | None = None,
     k_neighbors: int = 24,
-) -> Dict[int, List[Tuple[int, float]]]:
+) -> dict[int, list[tuple[int, float]]]:
     n = len(nodes)
-    nearest: Dict[int, List[int]] = {}
+    nearest: dict[int, list[int]] = {}
     for i in range(n):
         d = []
         pi = nodes[i]
@@ -1371,9 +1370,9 @@ def _build_visibility_graph(
         d.sort(key=lambda x: x[0])
         nearest[i] = [j for _distv, j in d[:k_neighbors]]
 
-    edges: Dict[int, List[Tuple[int, float]]] = {}
+    edges: dict[int, list[tuple[int, float]]] = {}
     checked = set()
-    edge_clear_cache: Dict[Tuple[int, int], float] = {}
+    edge_clear_cache: dict[tuple[int, int], float] = {}
     for i in range(n):
         for j in nearest[i]:
             a, b = (i, j) if i < j else (j, i)
@@ -1410,14 +1409,14 @@ def _build_visibility_graph(
 
 
 def _a_star_node_path(
-    nodes: List[Tuple[float, float]],
-    edges: Dict[int, List[Tuple[int, float]]],
+    nodes: list[tuple[float, float]],
+    edges: dict[int, list[tuple[int, float]]],
     start_idx: int,
     goal_idx: int,
-) -> List[Tuple[float, float]]:
-    open_heap: List[Tuple[float, int, int]] = []
+) -> list[tuple[float, float]]:
+    open_heap: list[tuple[float, int, int]] = []
     g = {start_idx: 0.0}
-    parent: Dict[int, int] = {}
+    parent: dict[int, int] = {}
     closed = set()
     counter = 0
 
@@ -1452,20 +1451,20 @@ def _a_star_node_path(
 
 def _local_waypoint_astar_segment(
     pm: ParsedMap,
-    p: Tuple[float, float],
-    q: Tuple[float, float],
-    dense_nodes: List[Tuple[float, float]],
+    p: tuple[float, float],
+    q: tuple[float, float],
+    dense_nodes: list[tuple[float, float]],
     allowed_pairs: set[frozenset[int]],
-    allowed_sectors: Optional[set[int]] = None,
-    centroids: Optional[Dict[int, Tuple[float, float]]] = None,
-) -> List[Tuple[float, float]]:
+    allowed_sectors: set[int] | None = None,
+    centroids: dict[int, tuple[float, float]] | None = None,
+) -> list[tuple[float, float]]:
     pad = 256.0
     min_x = min(p[0], q[0]) - pad
     max_x = max(p[0], q[0]) + pad
     min_y = min(p[1], q[1]) - pad
     max_y = max(p[1], q[1]) + pad
 
-    def point_allowed(pt: Tuple[float, float]) -> bool:
+    def point_allowed(pt: tuple[float, float]) -> bool:
         if not allowed_sectors or not centroids:
             return True
         return sector_of_point(pm, pt, centroids) in allowed_sectors
@@ -1506,10 +1505,10 @@ def _local_waypoint_astar_segment(
         local = _dedupe_points(keep, eps2=4.0)
 
     base_local = local
-    node_clear_cache: Dict[Tuple[int, int], float] = {}
+    node_clear_cache: dict[tuple[int, int], float] = {}
     obstacles = _build_obstacle_segments(pm, allowed_pairs)
 
-    def node_c(n: Tuple[float, float]) -> float:
+    def node_c(n: tuple[float, float]) -> float:
         k = (int(round(n[0] * 2.0)), int(round(n[1] * 2.0)))
         if k in node_clear_cache:
             return node_clear_cache[k]
@@ -1536,7 +1535,7 @@ def _local_waypoint_astar_segment(
                 local.append(n)
         local = _dedupe_points(local, eps2=4.0)
 
-        clr: Dict[int, float] = {}
+        clr: dict[int, float] = {}
         for i, n in enumerate(local):
             if i in (0, 1):
                 clr[i] = 1e9
@@ -1563,12 +1562,12 @@ def _local_waypoint_astar_segment(
 
 def _force_valid_by_local_waypoints(
     pm: ParsedMap,
-    base_route: List[Tuple[float, float]],
-    sector_path: List[int],
-    centroids: Dict[int, Tuple[float, float]],
-    start_xy: Tuple[float, float],
-    exit_xy: Tuple[float, float],
-) -> List[Tuple[float, float]]:
+    base_route: list[tuple[float, float]],
+    sector_path: list[int],
+    centroids: dict[int, tuple[float, float]],
+    start_xy: tuple[float, float],
+    exit_xy: tuple[float, float],
+) -> list[tuple[float, float]]:
     if len(base_route) < 2:
         return base_route
     allowed_pairs = {frozenset((sector_path[i], sector_path[i + 1])) for i in range(len(sector_path) - 1)}
@@ -1602,12 +1601,12 @@ def _force_valid_by_local_waypoints(
 
 def _find_detour_for_segment(
     pm: ParsedMap,
-    p: Tuple[float, float],
-    q: Tuple[float, float],
+    p: tuple[float, float],
+    q: tuple[float, float],
     pair: frozenset[int],
     allowed_pairs: set[frozenset[int]],
     max_nodes: int = 64,
-) -> List[Tuple[float, float]]:
+) -> list[tuple[float, float]]:
     if not _segment_invalid_for_pairs(pm, p, q, allowed_pairs):
         return [p, q]
 
@@ -1616,7 +1615,7 @@ def _find_detour_for_segment(
         return [p, q]
     sec_a, sec_b = pair_vals[0], pair_vals[1]
 
-    candidates: List[Tuple[float, float]] = [p, q]
+    candidates: list[tuple[float, float]] = [p, q]
     portal = _shared_portal_segment(pm, sec_a, sec_b)
     if portal is not None:
         candidates.append(portal[0])
@@ -1642,8 +1641,8 @@ def _find_detour_for_segment(
 
     start_idx = 0
     goal_idx = 1
-    edges: Dict[int, List[Tuple[int, float]]] = {}
-    vis_cache: Dict[Tuple[int, int], bool] = {}
+    edges: dict[int, list[tuple[int, float]]] = {}
+    vis_cache: dict[tuple[int, int], bool] = {}
 
     def visible(i: int, j: int) -> bool:
         k = (i, j) if i < j else (j, i)
@@ -1661,9 +1660,9 @@ def _find_detour_for_segment(
             edges.setdefault(i, []).append((j, w))
             edges.setdefault(j, []).append((i, w))
 
-    open_heap: List[Tuple[float, int, int]] = []
+    open_heap: list[tuple[float, int, int]] = []
     g = {start_idx: 0.0}
-    parent: Dict[int, int] = {}
+    parent: dict[int, int] = {}
     closed = set()
     counter = 0
 
@@ -1699,18 +1698,18 @@ def _find_detour_for_segment(
 
 def _refined_path_points(
     pm: ParsedMap,
-    sector_path: List[int],
-    centroids: Dict[int, Tuple[float, float]],
+    sector_path: list[int],
+    centroids: dict[int, tuple[float, float]],
     _depth_unused: int = 0,
-) -> Tuple[List[Tuple[float, float]], List[frozenset[int]]]:
+) -> tuple[list[tuple[float, float]], list[frozenset[int]]]:
     if not sector_path:
         return [], []
     if len(sector_path) == 1:
         sec = sector_path[0]
         return ([centroids[sec]] if sec in centroids else []), []
 
-    out_pts: List[Tuple[float, float]] = [centroids[sector_path[0]]]
-    out_pairs: List[frozenset[int]] = []
+    out_pts: list[tuple[float, float]] = [centroids[sector_path[0]]]
+    out_pairs: list[frozenset[int]] = []
     first_sec = sector_path[0]
     if first_sec not in centroids:
         return [], []
@@ -1729,8 +1728,8 @@ def _refined_path_points(
     # Refine only where a segment is invalid by inserting detour nodes.
     for _ in range(3):
         changed = False
-        new_pts: List[Tuple[float, float]] = [out_pts[0]]
-        new_pairs: List[frozenset[int]] = []
+        new_pts: list[tuple[float, float]] = [out_pts[0]]
+        new_pairs: list[frozenset[int]] = []
         for i, pair in enumerate(out_pairs):
             p = out_pts[i]
             q = out_pts[i + 1]
@@ -1753,12 +1752,12 @@ def _refined_path_points(
 
 def _invalid_route_segments(
     pm: ParsedMap,
-    route_pts: List[Tuple[float, float]],
+    route_pts: list[tuple[float, float]],
     allowed_pairs: set[frozenset[int]],
-    allowed_sectors: Optional[set[int]] = None,
-    centroids: Optional[Dict[int, Tuple[float, float]]] = None,
-) -> List[Tuple[Tuple[float, float], Tuple[float, float]]]:
-    invalid: List[Tuple[Tuple[float, float], Tuple[float, float]]] = []
+    allowed_sectors: set[int] | None = None,
+    centroids: dict[int, tuple[float, float]] | None = None,
+) -> list[tuple[tuple[float, float], tuple[float, float]]]:
+    invalid: list[tuple[tuple[float, float], tuple[float, float]]] = []
     for i in range(max(0, len(route_pts) - 1)):
         p = route_pts[i]
         q = route_pts[i + 1]
@@ -1768,10 +1767,10 @@ def _invalid_route_segments(
 
 
 def _route_node_payload(
-    centroid_path: List[Tuple[float, float]],
+    centroid_path: list[tuple[float, float]],
     tx: Any,
     ty: Any,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     return [
         {
             "number": number,
@@ -1784,13 +1783,13 @@ def _route_node_payload(
 
 def draw_svg(
     pm: ParsedMap,
-    centroids: Dict[int, Tuple[float, float]],
-    sector_path: List[int],
-    centroid_path: List[Tuple[float, float]],
-    typed_nodes: List[Dict[str, Any]],
-    invalid_segments: List[Tuple[Tuple[float, float], Tuple[float, float]]],
-    start_xy: Tuple[float, float],
-    exit_xy: Tuple[float, float],
+    centroids: dict[int, tuple[float, float]],
+    sector_path: list[int],
+    centroid_path: list[tuple[float, float]],
+    typed_nodes: list[dict[str, Any]],
+    invalid_segments: list[tuple[tuple[float, float], tuple[float, float]]],
+    start_xy: tuple[float, float],
+    exit_xy: tuple[float, float],
     map_name: str,
     output_path: str,
 ) -> None:
@@ -1809,7 +1808,7 @@ def draw_svg(
     path_set = set(sector_path)
     barrel_obstacles = _collect_barrel_obstacles(pm)
     route_nodes = _route_node_payload(centroid_path, tx, ty)
-    lines_svg: List[str] = []
+    lines_svg: list[str] = []
     for ld in pm.linedefs:
         if ld.v1 < 0 or ld.v2 < 0 or ld.v1 >= len(verts) or ld.v2 >= len(verts):
             continue
@@ -1825,7 +1824,7 @@ def draw_svg(
             f'stroke="{color}" stroke-width="{width}" />'
         )
 
-    barrel_svg: List[str] = []
+    barrel_svg: list[str] = []
     for barrel in barrel_obstacles:
         r = barrel.radius * s
         bx = tx(barrel.center[0])
@@ -1891,7 +1890,7 @@ def draw_svg(
     out.write_text(svg, encoding="utf-8")
 
 
-def _svg_transform(pm: ParsedMap) -> Tuple[Any, Any]:
+def _svg_transform(pm: ParsedMap) -> tuple[Any, Any]:
     verts = pm.vertices
     min_x = min(v[0] for v in verts)
     max_x = max(v[0] for v in verts)
@@ -1918,7 +1917,7 @@ def write_route_json(
     output_path: str,
     wad_path: str,
     map_name: str,
-    typed_nodes: List[Dict[str, Any]],
+    typed_nodes: list[dict[str, Any]],
 ) -> None:
     edges = [[i, i + 1] for i in range(len(typed_nodes) - 1)]
     payload = {
@@ -1932,10 +1931,10 @@ def write_route_json(
     out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
-def _build_sector_door_specials(pm: ParsedMap) -> Dict[int, int]:
+def _build_sector_door_specials(pm: ParsedMap) -> dict[int, int]:
     """Returns sector_id -> special for sectors where a non-exit special
     appears on at least two linedefs (the sector is a door)."""
-    sector_special_counts: Dict[int, Dict[int, int]] = {}
+    sector_special_counts: dict[int, dict[int, int]] = {}
     for ld in pm.linedefs:
         if ld.special == 0 or ld.special in EXIT_SPECIALS:
             continue
@@ -1948,7 +1947,7 @@ def _build_sector_door_specials(pm: ParsedMap) -> Dict[int, int]:
             counts = sector_special_counts.setdefault(sec, {})
             counts[ld.special] = counts.get(ld.special, 0) + 1
 
-    door_sectors: Dict[int, int] = {}
+    door_sectors: dict[int, int] = {}
     for sec, counts in sector_special_counts.items():
         for special, count in counts.items():
             if count >= 2:
@@ -1981,8 +1980,8 @@ def generate_one_map(
     wad_path: str,
     map_name: str,
     out_svg: str,
-    out_json: Optional[str] = None,
-) -> Dict[str, Any]:
+    out_json: str | None = None,
+) -> dict[str, Any]:
     pm = load_map_data(wad_path, map_name)
     if not pm.vertices or not pm.linedefs:
         raise RuntimeError("Failed to parse map geometry")
@@ -2040,7 +2039,7 @@ def generate_one_map(
     key_positions = {pt for pts in sector_pickups.values() for pt in pts}
     exit_special = ex_ld.special
     door_sectors = _build_sector_door_specials(pm)
-    typed_nodes: List[Dict[str, Any]] = []
+    typed_nodes: list[dict[str, Any]] = []
     for pt in centroid_path:
         sec = sector_of_point(pm, pt, centroids)
         door_special = door_sectors.get(sec)
