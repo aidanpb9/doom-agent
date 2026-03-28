@@ -157,7 +157,7 @@ class TelemetryWriter:
             "stuck_events": self._stuck_events,
             "damage_taken_total": round(self._damage_taken_total),
             "ammo_used": round(ammo_used),
-            "fitness": round(fitness, 2),
+            "fitness": fitness,
         }
         if self._genome:
             summary["genome"] = self._genome

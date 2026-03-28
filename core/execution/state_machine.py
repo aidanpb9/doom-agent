@@ -4,10 +4,11 @@ from core.navigation.graph import NodeType
 from core.navigation.path_tracker import PathTracker
 from core.execution.game_state import GameState, EnemyObject
 from core.execution.action_decoder import ActionDecoder
-from core.utils import has_clear_world_line
+from core.utils import has_clear_world_line, calculate_euclidean_distance
 from config.constants import (HEALTH_THRESHOLD, ARMOR_THRESHOLD, AMMO_THRESHOLD,
-    HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS, SCAN_INTERVAL, COMBAT_HOLD_TICKS, 
-    COMBAT_AIM_THRESHOLD, TICK, STUCK_RECOVERY_TICKS)
+    HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS, SCAN_INTERVAL, COMBAT_HOLD_TICKS,
+    COMBAT_AIM_THRESHOLD, COMBAT_MAX_RANGE, TICK, STUCK_RECOVERY_TICKS)
+
 from enum import Enum
 import random
 
@@ -37,11 +38,11 @@ class StateMachine:
 
     def update(self, gamestate: GameState) -> list[int]:
         """Evaluate state priority each tick and return the action for the highest active state.
-        Priority: STUCK > COMBAT > RECOVER > SCAN > TRAVERSE.
+        Priority: STUCK > COMBAT > SCAN > RECOVER > TRAVERSE.
         STUCK highest because agent can't fight or navigate effectively, and
         recovery only lasts ~2 seconds so interrupting combat is a small cost.
-        COMBAT above RECOVER so the agent finishes fights before seeking loot, usually safer
-        to finish the fight. """
+        COMBAT above SCAN/RECOVER so the agent finishes fights before seeking loot.
+        SCAN above RECOVER so agent can scan for closer loot before committing to a known node."""
 
         #Updates
         self.combat_hold = max(0, self.combat_hold - TICK)
@@ -56,37 +57,37 @@ class StateMachine:
         if self.stuck_recovery_ticks > 0:
             return self._stuck()
 
-        #COMBAT — require ammo even when hold is active, so we exit combat when ammo runs out
+        #COMBAT. Require ammo even when hold is active, so we exit combat when ammo runs out
         if (self.combat_hold or gamestate.enemies_visible) and gamestate.ammo > 0:
             return self._combat(gamestate)
 
+        #SCAN above RECOVER so agent can scan for closer loot before committing to a known node
+        if self.last_state == State.SCAN:
+            return self._scan(gamestate)
+
+        is_scan_chance = random.randint(1, SCAN_INTERVAL) == 1
+        if not self.scan_cooldown and (gamestate.is_dmg_taken_since_last_step or is_scan_chance):
+            self.scan_cooldown = SCAN_INTERVAL
+            return self._scan(gamestate)
+
         #RECOVER
-        if (gamestate.health < HEALTH_THRESHOLD and 
+        if (gamestate.health < HEALTH_THRESHOLD and
             self.path_tracker.has_loot_node(HEALTH_KEYWORDS)
         ):
             self.recover_type = HEALTH_KEYWORDS
             return self._recover(gamestate)
 
-        if (gamestate.armor < ARMOR_THRESHOLD and 
+        if (gamestate.armor < ARMOR_THRESHOLD and
             self.path_tracker.has_loot_node(ARMOR_KEYWORDS)
         ):
             self.recover_type = ARMOR_KEYWORDS
             return self._recover(gamestate)
 
-        if (gamestate.ammo < AMMO_THRESHOLD and 
+        if (gamestate.ammo < AMMO_THRESHOLD and
             self.path_tracker.has_loot_node(AMMO_KEYWORDS)
         ):
             self.recover_type = AMMO_KEYWORDS
             return self._recover(gamestate)
-
-        #SCAN
-        if self.last_state == State.SCAN:
-            return self._scan(gamestate)
-        
-        is_scan_chance = random.randint(1, SCAN_INTERVAL) == 1
-        if not self.scan_cooldown and (gamestate.is_dmg_taken_since_last_step or is_scan_chance):
-            self.scan_cooldown = SCAN_INTERVAL
-            return self._scan(gamestate)
 
         #TRAVERSE
         return self._traverse(gamestate)
@@ -116,13 +117,6 @@ class StateMachine:
         if offset < 0: #enemy left of center
             return ActionDecoder.turn_left()
 
-    def _recover(self, gamestate: GameState) -> list[int]:
-        """Navigates to closest LOOT node. Return movement action."""
-        self.path_tracker.set_goal_by_type(gamestate, NodeType.LOOT, self.recover_type)
-        action = self.path_tracker.get_next_move(gamestate.pos_x, gamestate.pos_y, gamestate.angle)
-        self.last_state = State.RECOVER
-        return action
-
     def _scan(self, gamestate: GameState) -> list[int]:
         """Spin right until 360 is done. Return turn action."""
         #reset cooldown every time we enter, so when we leave it decrements naturally
@@ -148,6 +142,13 @@ class StateMachine:
         self.last_state = State.SCAN
         self.scan_last_angle = gamestate.angle
         return ActionDecoder.turn_right()
+
+    def _recover(self, gamestate: GameState) -> list[int]:
+        """Navigates to closest LOOT node. Return movement action."""
+        self.path_tracker.set_goal_by_type(gamestate, NodeType.LOOT, self.recover_type)
+        action = self.path_tracker.get_next_move(gamestate.pos_x, gamestate.pos_y, gamestate.angle)
+        self.last_state = State.RECOVER
+        return action
     
     def _traverse(self, gamestate: GameState) -> list[int]:
         """Navigates to EXIT node. Return movement action."""
@@ -165,6 +166,8 @@ class StateMachine:
 
         for enemy in gamestate.enemies_visible:
             if enemy.pos_x is None or enemy.pos_y is None:
+                continue
+            if calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, enemy.pos_x, enemy.pos_y) > COMBAT_MAX_RANGE:
                 continue
             if not has_clear_world_line(gamestate.pos_x, gamestate.pos_y, enemy.pos_x, enemy.pos_y, self.blocking_segments):
                 continue

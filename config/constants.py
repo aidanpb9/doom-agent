@@ -3,11 +3,11 @@ The GA will overwrite some of these constants."""
 
 
 #GA Parameters — evolvable per genome, ranges defined in genetic_algo_design.md
-LOOT_NODE_MAX_DISTANCE = 400     #units from agent that loot nodes can be placed
+LOOT_NODE_MAX_DISTANCE = 500     #units from agent that loot nodes can be placed
 STUCK_RECOVERY_TICKS = 70        #ticks of turn+forward to dislodge from obstacles (~2 seconds)
-HEALTH_THRESHOLD = 100           #enter RECOVER if health drops below this
+HEALTH_THRESHOLD = 80            #enter RECOVER if health drops below this
 ARMOR_THRESHOLD = 5              #enter RECOVER if armor drops below this
-AMMO_THRESHOLD = 30              #enter RECOVER if ammo drops below this
+AMMO_THRESHOLD = 25              #enter RECOVER if ammo drops below this
 SCAN_INTERVAL = 140              #1-in-N chance per tick of triggering a scan, also used as cooldown
 COMBAT_HOLD_TICKS = 35           #ticks to keep targeting after enemy leaves FOV
 
@@ -109,11 +109,12 @@ LOOT_PROXIMITY = 20             #units, loot within this distance of an existing
 
 
 #Stuck detection and loot node placement
-ANCHOR_MIN_WALL_DISTANCE = 10   #units, min distance from wall to place an anchor node
+ANCHOR_MIN_WALL_DISTANCE = 12   #units, min distance from wall to place an anchor node
 STUCK_CHECK_INTERVAL = 175      #ticks between stuck checks (~5 seconds)
-STUCK_DISTANCE_THRESHOLD = 50   #units, agent must move more than this per interval to avoid stuck trigger
+STUCK_DISTANCE_THRESHOLD = 40   #units, agent must move more than this per interval to avoid stuck trigger
 LOOT_NODE_COOLDOWN = 210        #ticks before a removed loot node can be re-added (~6 seconds)
 
 
 #Combat
 COMBAT_AIM_THRESHOLD = 0.01     #fraction of screen width, fire when enemy center is within this of screen center
+COMBAT_MAX_RANGE = 900          #units, ignore enemies beyond this distance to avoid wasting ammo

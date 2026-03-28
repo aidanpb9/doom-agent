@@ -13,12 +13,13 @@ The state machine delegates all movement to PathTracker and NavigationEngine. St
 - High to low priority, these are like goals
 - The hierarchy must be adhered to quite strictly or cycles will occur
 - STUCK is highest priority so stuck recovery always completes before other states can interrupt it
-- COMBAT is above RECOVER. Agent finishes the fight first, then heals. Running for loot past enemies is often more dangerous than standing and fighting.
+- COMBAT is above SCAN/RECOVER. Agent finishes the fight first, then heals. Running for loot past enemies is often more dangerous than standing and fighting.
+- SCAN is above RECOVER. A scan may reveal closer loot than the currently known node, so scanning before committing to a RECOVER path is usually worth the brief delay.
 
 1. STUCK
 2. COMBAT
-3. RECOVER
-4. SCAN (360)
+3. SCAN (360)
+4. RECOVER
 5. TRAVERSE
 
 **State Machine Diagram (Mermaid):**
@@ -33,7 +34,6 @@ stateDiagram-v2
 
     SCAN --> STUCK : stuck
     SCAN --> COMBAT : enemy visible
-    SCAN --> RECOVER : stats low & loot known
     SCAN --> TRAVERSE : spin complete
 
     COMBAT --> STUCK : stuck
@@ -41,6 +41,7 @@ stateDiagram-v2
     COMBAT --> TRAVERSE : no enemies & stats ok
 
     RECOVER --> STUCK : stuck
+    RECOVER --> SCAN : damage taken or freq trigger
     RECOVER --> TRAVERSE : stats ok
 
     STUCK --> TRAVERSE : recovery complete
@@ -101,7 +102,7 @@ stateDiagram-v2
 - Parameters determine which other states can be accessed from here
 
 **Entry:**
-- From COMBAT or TRAVERSE or SCAN
+- From COMBAT, TRAVERSE, or SCAN
 - if health/armor/ammo below thresholds AND respective loot nodes are known
 
 **Behavior:**
@@ -110,6 +111,8 @@ stateDiagram-v2
 - Navigate to goal node
 
 **Exit:**
+- Go to STUCK if stuck detection fires
+- Go to SCAN if not on cooldown and damage taken or freq trigger (may find closer loot)
 - Go to TRAVERSE when all stats above thresholds
 
 
@@ -137,21 +140,21 @@ stateDiagram-v2
 
 ## SCAN:
 **Notes:**
-- Only available from TRAVERSE since we want to be on the main path and not actively looking for loot
+- Available from TRAVERSE or RECOVER, scanning while stats are low may reveal closer loot
 - Helps mark loot nodes we missed and helps turn towards enemies that shoot us in the back
+- Once a scan starts it runs to completion, RECOVER cannot interrupt it, only STUCK or COMBAT can
 
 **Entry:**
-- From SCAN (continuing), TRAVERSE
-- IF SCAN not on cooldown AND (damage taken OR scan_frequency param triggered) (we don't want to scan every time we take damage because it could be from sources besides enemies like lava)
+- From SCAN (continuing), TRAVERSE, or RECOVER
+- If SCAN not on cooldown AND (damage taken OR scan_frequency param triggered)
 
 **Behavior:**
 - Perform a 360 degree spin in-place
 
 **Exit:**
 - Go to STUCK if stuck detection fires
-- Go to RECOVER if stats drop below thresholds
 - Go to COMBAT if enemy visible
-- Go to TRAVERSE if 360 spin completes
+- Go to TRAVERSE if 360 spin completes (RECOVER will fire next tick if stats still low)
 
 
 ## Design Decisions
@@ -190,6 +193,7 @@ Sprint is a valid action. However, we are omitting it for simplicity. The main b
 - For more specific item names: https://zdoom.org/w/index.php?title=Main_Page
 
 ## Future Work
+- If it becomes a problem, can use blocking segments in _nearest_node()
 - Combat blackist (if needed): if we don't kill any enemies after being in combat for a while, it means the enemy is behind some geometry and we need to stop shooting or all ammo will get wasted. Can work similarly to loot node blacklist in path_tracker.
 - Move backwards during combat. A few ways to do this. Could make it a GA param. Helpful when there's an enemy with a lot of health and we need more time to kill it.
 - A way to allow for more exploration. A detour state or some type of breadcrumb pathfinding could help.

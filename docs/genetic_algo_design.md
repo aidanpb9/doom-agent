@@ -35,7 +35,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Exploration Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `loot_node_max_distance` | 200-800 units | Distance from agent that loot nodes are placed |
+| `loot_node_max_distance` | 200-1000 units | Distance from agent that loot nodes are placed |
 | `stuck_recovery_ticks` | 35-140 ticks | Ticks of turn+forward to dislodge from obstacles |
 
 **Combat Parameters:**
@@ -53,7 +53,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Scan Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `scan_interval` | 35-280 ticks | How often agent is likely to scan |
+| `scan_interval` | 70-420 ticks (2-12sec) | How often agent is likely to scan |
 
 **Total:** 7 parameters per genome
 
@@ -109,7 +109,6 @@ else:
 ## Evaluation Protocol
 **Per-Agent Evaluation:**
 - Map: E1M1 until plateau, then E1M2 and so on
-- Timeout: 12600 ticks (360 seconds) (covers all levels)
 - Seed: A fresh random seed is generated and set at the start of each episode (`random.seed(seed)`). The seed is recorded in Tier 1. It controls Python RNG only (SCAN timing, STUCK turn direction), but VizDoom's internal RNG is independent, so full episode reproduction is not possible. Average score of 3 runs is used to smooth variation.
 
 **Takes up to 10ish seconds per level in headless mode.**

@@ -10,10 +10,12 @@ def compute_fitness(stats: dict) -> float:
     """Compute fitness from episode stats. See genetic_algo_design.md."""
     if stats.get("finish_level"):
         ticks = stats.get("ticks", 12600)
-        return (1000
-                + 500 * (1 - ticks / 4200)
-                + 2 * stats.get("health", 0)
-                + 1 * stats.get("armor", 0)
-                + 0.5 * stats.get("ammo", 0))
-    return (5 * stats.get("enemies_killed", 0)
-            + 10 * stats.get("waypoints_reached", 0))
+        raw = (1000
+               + 500 * (1 - ticks / 4200)
+               + 2 * stats.get("health", 0)
+               + 1 * stats.get("armor", 0)
+               + 0.5 * stats.get("ammo", 0))
+    else:
+        raw = (5 * stats.get("enemies_killed", 0)
+               + 10 * stats.get("waypoints_reached", 0))
+    return round(raw, 2)
