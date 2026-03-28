@@ -18,9 +18,7 @@ from pathlib import Path
 from datetime import datetime
 from core.execution.agent import Agent
 from ga.genome import compute_fitness
-
-
-RUN_OUTPUT_DIR = Path("output/run")
+from config.constants import RUN_DIR
 
 
 #Ensure project root is on the path so imports work from any working directory
@@ -69,8 +67,8 @@ def cmd_run(args):
     logger.info("DoomSat - Run Mode")
 
     #Wipe previous run output so output/run/ always reflects the latest run only
-    if RUN_OUTPUT_DIR.exists():
-        shutil.rmtree(RUN_OUTPUT_DIR)
+    if Path(RUN_DIR).exists():
+        shutil.rmtree(RUN_DIR)
 
     agent = Agent()
     try:

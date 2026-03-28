@@ -12,6 +12,11 @@ SCAN_INTERVAL = 140              #1-in-N chance per tick of triggering a scan, a
 COMBAT_HOLD_TICKS = 35           #ticks to keep targeting after enemy leaves FOV
 
 
+#Output directories
+RUN_DIR = "output/run"
+EVOLVE_DIR = "output/evolve"
+
+
 #Game Engine
 #Ticrate notes: Doom's native ticrate is 35 ticks/sec. In headed mode, VizDoom syncs to
 #real-time so set_ticrate() has no effect on wall-clock speed.

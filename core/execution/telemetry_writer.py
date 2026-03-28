@@ -11,14 +11,13 @@ import time
 from pathlib import Path
 from typing import Optional
 from core.execution.game_state import GameState
+from config.constants import RUN_DIR, EVOLVE_DIR
 
 try:
     import psutil
     _process = psutil.Process()
 except ImportError:
     _process = None
-
-TELEMETRY_DIR = Path("output/run")
 
 #Integer values match State enum in state_machine.py
 _STATE_NAMES = {1: "STUCK", 2: "COMBAT", 3: "RECOVER", 4: "SCAN", 5: "TRAVERSE"}
@@ -31,7 +30,8 @@ def _encode_action(action: list[int]) -> int:
 
 class TelemetryWriter:
 
-    def __init__(self) -> None:
+    def __init__(self, evolve: bool = False) -> None:
+        self._dir: Path = Path(EVOLVE_DIR if evolve else RUN_DIR)
         self._episode_id: int = 0
         self._seed: int = 0
         self._genome: Optional[dict] = None
@@ -71,13 +71,13 @@ class TelemetryWriter:
         self._stuck_events = 0
         self._last_sm_state = 5
 
-        TELEMETRY_DIR.mkdir(parents=True, exist_ok=True)
+        self._dir.mkdir(parents=True, exist_ok=True)
         prefix = f"ep_{episode_id:04d}"
 
         if full_telemetry:
-            self._tier0_file = (TELEMETRY_DIR / f"{prefix}_debug.jsonl").open("w", encoding="utf-8")
+            self._tier0_file = (self._dir / f"{prefix}_debug.jsonl").open("w", encoding="utf-8")
 
-        self._tier2_file = (TELEMETRY_DIR / f"{prefix}_actions.csv").open("w", encoding="utf-8", newline="")
+        self._tier2_file = (self._dir / f"{prefix}_actions.csv").open("w", encoding="utf-8", newline="")
         self._tier2_writer = csv.writer(self._tier2_file)
         self._tier2_writer.writerow(["tick", "action", "sm_state", "pos_x", "pos_y"])
 
@@ -136,9 +136,9 @@ class TelemetryWriter:
     def finalize_episode(self, stats: dict) -> dict:
         """Write Tier 1 summary, generate map if applicable. Returns output file paths."""
         prefix = f"ep_{self._episode_id:04d}"
-        tier1_path = TELEMETRY_DIR / f"{prefix}_summary.json"
-        tier2_path = TELEMETRY_DIR / f"{prefix}_actions.csv"
-        map_path = TELEMETRY_DIR / f"{prefix}_map.svg"
+        tier1_path = self._dir / f"{prefix}_summary.json"
+        tier2_path = self._dir / f"{prefix}_actions.csv"
+        map_path = self._dir / f"{prefix}_map.svg"
 
         ammo_used = max(0.0, (self._ammo_start or 0.0) - stats.get("ammo", 0.0))
         fitness = stats.get("fitness", 0.0)
@@ -183,7 +183,7 @@ class TelemetryWriter:
         return {
             "tier1": str(tier1_path),
             "tier2": str(tier2_path),
-            "tier0": str(TELEMETRY_DIR / f"{prefix}_debug.jsonl") if self._full_telemetry else "",
+            "tier0": str(self._dir / f"{prefix}_debug.jsonl") if self._full_telemetry else "",
             "map": str(map_path),
         }
 

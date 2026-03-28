@@ -27,7 +27,7 @@ class Agent:
         self.blocking_segments = None #useful for combat
         self.episode_count = 0
     
-    def initialize_game(self, headless=False, map_name=DEFAULT_MAP_NAME) -> None:
+    def initialize_game(self, headless=False, map_name=DEFAULT_MAP_NAME, evolve=False) -> None:
         """Does VizDoom setup, loads configs, and creates runtime objects."""
         self.map_name = map_name
         self.headless = headless
@@ -53,7 +53,7 @@ class Agent:
         self.path_tracker.load_static_nodes(map_name)
         self.state_machine = StateMachine(self.path_tracker, self.blocking_segments)
         self.perception = Perception()
-        self.telemetry_writer = TelemetryWriter()
+        self.telemetry_writer = TelemetryWriter(evolve=evolve)
 
     def run_episode(self, params: dict | None = None, full_telemetry: bool = True) -> dict:
         """calls Perception and StateMachine each tick.

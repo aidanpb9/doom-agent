@@ -1,6 +1,6 @@
 """GA evolution runner. Wraps Agent and controls the evolution loop.
 
-main.py evolve delegates fully here — GeneticAlgo owns the Agent instance
+main.py evolve delegates to this file. GeneticAlgo owns the Agent instance
 and calls run_episode(), compute_fitness(), and finalize_episode() each evaluation.
 See genetic_algo_design.md for algorithm details.
 """
@@ -12,7 +12,7 @@ class GeneticAlgo:
 
     def __init__(self) -> None:
         self.agent = Agent()
-        self.agent.initialize_game(headless=True)
+        self.agent.initialize_game(headless=True, evolve=True)
 
     def _evaluate(self, params: dict) -> float:
         """Run one episode with the given genome params and return fitness."""
