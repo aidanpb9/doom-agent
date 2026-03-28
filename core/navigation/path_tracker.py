@@ -36,6 +36,7 @@ class PathTracker:
         self.stuck_cooldowns = {} #dict of (x, y) -> ticks remaining
         self.stuck_timer = 0
         self.stuck_last_pos = (0.0, 0.0)
+        self.is_stuck = False
         #For seeing if stats increase to remove accidentally claimed loot nodes
         self.prev_health = 0 
         self.prev_armor = 0
@@ -98,6 +99,8 @@ class PathTracker:
                 if self.goal_node.node_type == NodeType.LOOT:
                     self.stuck_cooldowns[(self.goal_node.x, self.goal_node.y)] = STUCK_COOLDOWN
                     self.graph.remove_node(self.goal_node)
+                else:
+                    self.is_stuck = True
                 self.last_node = self._nearest_node(gamestate, static_only=True)
                 self.goal_node = None
                 self.next_node = None

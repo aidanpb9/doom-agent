@@ -97,20 +97,22 @@ LOOT_NODE_MAX_DISTANCE = 400 #GA param, units from loot that we can mark it as a
 
 #Stuck detection and placing valid loot nodes
 ANCHOR_MIN_WALL_DISTANCE = 10 #min distance from a blocking segment to place an anchor. Tune if tight rooms fail to mark loot.
-STUCK_CHECK_INTERVAL = 175 #ticks between stuck checks (5 seconds)
-STUCK_DISTANCE_THRESHOLD = 120 #units agent must move to not be considered stuck
+STUCK_CHECK_INTERVAL = 175 #ticks between stuck checks (5 seconds), probably no point in changing this, it's just the window
+#units agent must move more than to not be considered stuck, higher=more movement required to avoid being stuck
+STUCK_DISTANCE_THRESHOLD = 50 
 STUCK_COOLDOWN = 210 #ticks before a removed loot node can be re-added (~6 seconds)
+STUCK_RECOVERY_TICKS = 70 #ticks of turn+forward to dislodge from obstacles (~2 seconds)
 
 #Agent thresholds (won't enter RECOVER if stat = thresh)
 HEALTH_THRESHOLD = 100
-ARMOR_THRESHOLD = 1
+ARMOR_THRESHOLD = 5
 AMMO_THRESHOLD = 30
 
 #SCAN thresholds
-SCAN_INTERVAL = 70 #GA param (35-280), likeliness of triggering one scan in x ticks
+SCAN_INTERVAL = 140 #GA param (35-280), likeliness of triggering one scan in x ticks
 
 #Aiming thresholds (fraction of screen width)
-COMBAT_HOLD_TICKS = 10 #ticks to keep targeting an enemy after they leave FOV or die
+COMBAT_HOLD_TICKS = 35 #ticks to keep targeting an enemy after they leave FOV or die
 #based on offset which ranges from -0.5 to 0.5 (left to right edge, center=0).
 #0.05 means fire if enemy center is within 5% of screen width from center.
 COMBAT_AIM_THRESHOLD = 0.01 #not a GA param, can't tune accuracy meaningfully
