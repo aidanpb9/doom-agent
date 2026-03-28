@@ -119,7 +119,6 @@ class Agent:
         stats["waypoints_reached"] = len(self.path_tracker.visited_waypoints)
         stats["end_reason"] = end_reason
 
-        self.telemetry_writer.finalize_episode(stats)
         return stats
 
     def close(self) -> None:

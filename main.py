@@ -17,6 +17,7 @@ import logging
 from pathlib import Path
 from datetime import datetime
 from core.execution.agent import Agent
+from ga.genome import compute_fitness
 
 
 RUN_OUTPUT_DIR = Path("output/run")
@@ -75,6 +76,8 @@ def cmd_run(args):
     try:
         agent.initialize_game(headless=args.headless, map_name=args.map)
         stats = agent.run_episode(params={})
+        stats["fitness"] = compute_fitness(stats)
+        agent.telemetry_writer.finalize_episode(stats)
         logger.info("Stats: %s", stats)
         return 0
     except Exception as e:
@@ -82,6 +85,21 @@ def cmd_run(args):
         return 1
     finally:
         agent.close()  #always runs, even on exception
+
+
+def cmd_evolve(args):
+    """GA evolution — main delegates fully to GeneticAlgo."""
+    logger = setup_logging("evolve", args.verbose)
+    logger.info("DoomSat - Evolve Mode")
+
+    from ga.genetic_algo import GeneticAlgo
+    ga = GeneticAlgo()
+    try:
+        ga.run()
+        return 0
+    except Exception as e:
+        logger.error("Error: %s", e, exc_info=True)
+        return 1
 
 
 def main():
@@ -94,6 +112,11 @@ def main():
     run_parser.add_argument('--headless', action='store_true', help='Headless mode, high tickrate')
     run_parser.add_argument('--map', default='E1M1', help='Map to load (default: E1M1)')
     run_parser.set_defaults(func=cmd_run)
+
+    evolve_parser = subparsers.add_parser('evolve', help='Run GA evolution')
+    evolve_parser.add_argument('-v', '--verbose', action='store_true', help='Debug logging')
+    evolve_parser.set_defaults(func=cmd_evolve)
+
     args = parser.parse_args()
     try:
         return args.func(args)

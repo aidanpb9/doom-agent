@@ -4,61 +4,97 @@
 
 This doc explains the different runtime classes in core/ and the execution flow between classes. It does not include every method to be added, just mostly the high-level interfacing ones. These classes are responsible for perception, decision-making, navigation, and telemetry during a single playthrough of E1M1. It does not cover the genetic algorithm (which wraps the runtime via run_episode()), pre-processing tools like the navigation planner, or telemetry output schemas (see telemetry_tiers.md). 
 
-The runtime is split into two sides with a clean boundary. The Agent side handles the episode lifecycle: initializing VizDoom, running the game loop, parsing raw game state into a GameState dataclass via Perception, and writing telemetry. Agent makes no decisions. The StateMachine side owns all decision-making: StateMachine reads GameState each tick and returns an action, delegating navigation to NavigationEngine (pure A* pathfinding and movement) and mission progress to PathTracker (node graph management, loot node placement, waypoint tracking). The boundary between the two sides is GameState flowing in and an action vector flowing out.
+The runtime is split into two sides with a clean boundary. The Agent side handles the episode lifecycle: initializing VizDoom, running the game loop, and parsing raw game state into a GameState dataclass via Perception. Agent makes no decisions. The StateMachine side owns all decision-making: StateMachine reads GameState each tick and returns an action, delegating navigation to NavigationEngine (pure A* pathfinding and movement) and mission progress to PathTracker (node graph management, loot node placement, waypoint tracking). The boundary between the two sides is GameState flowing in and an action vector flowing out.
+
+In run mode, main.py drives a single episode directly through Agent. In evolve mode, main.py delegates to GeneticAlgo, which owns the Agent and manages the full evolution loop. In both modes, the runner computes fitness and calls telemetry_writer.finalize_episode() after run_episode() returns.
 
 ## Execution Flow
 
-1. main.py calls agent.initialize(). Agent creates VizDoom game object, loads config, creates Graph (static nodes from JSON), creates NavigationEngine and PathTracker with Graph reference, creates StateMachine with PathTracker, creates Perception and ActionDecoder.
-2. main.py calls agent.run_episode(). Agent calls game.new_episode(). Loop starts.
+1. main.py calls agent.initialize_game(). Agent creates VizDoom game object, loads config, creates Graph (static nodes from JSON), creates NavigationEngine and PathTracker with Graph reference, creates StateMachine with PathTracker, creates Perception.
+2. main.py calls agent.run_episode(params). Agent seeds RNG, calls game.new_episode(), opens telemetry files. Loop starts.
 3. Game tick fires. Agent calls perception.parse(game.get_state()) -> GameState.
-4. Agent calls state_machine.update(gamestate). StateMachine checks priority: stats above thresholds, no enemies, no damage taken -> stay in TRAVERSE state. 
-5. StateMachine calls path_tracker.update(game_state). PathTracker checks loot_visible, runs duplicate check, places waypoint + loot nodes if needed, advanced last_node and next_node if node reached.
+4. Agent calls state_machine.update(gamestate). StateMachine checks priority: stats above thresholds, no enemies, no damage taken -> stay in TRAVERSE state.
+5. StateMachine calls path_tracker.update(game_state). PathTracker checks loot_visible, runs duplicate check, places waypoint + loot nodes if needed, advances last_node and next_node if node reached.
 6. StateMachine calls path_tracker.get_next_move(current_position). PathTracker calls NavigationEngine internally -> returns action.
-7. StateMachine returns action to Agent. Agent calls action_decoder.decode(action) -> button presses. Agent calls game.make_action(button_presses). Agent calls telemetry_writer.record_step().Loop continues
-8. game.is_episode_finished() -> True. Agent calls finalize_episode(), returns stats.
+7. StateMachine returns action to Agent. Agent calls game.make_action(action) and telemetry_writer.record_step(). Loop continues.
+8. game.is_episode_finished() -> True. Agent returns raw stats to runner.
+9. Runner (main.py or GeneticAlgo) calls compute_fitness(stats) then agent.telemetry_writer.finalize_episode(stats).
 
 
+**Runtime Sequence Diagram:**
 ```mermaid
 sequenceDiagram
     participant M as main.py
     participant A as Agent
     participant P as Perception
-    participant AD as ActionDecoder
     participant SM as StateMachine
     participant PT as PathTracker
-    participant NE as NavigationEngine
-    participant TW as TelemetryWriter
 
-    M->>A: initialize()
-    A->>PT: (Graph with static nodes loaded)
-    A->>TW: start_episode()
-
-    M->>A: run_episode()
-    A->>A: game.new_episode()
-
-    loop each tick
-        A->>P: parse(game.get_state())
-        P-->>A: GameState
-
-        A->>SM: update(gamestate)
-        SM->>PT: update(gamestate)
-        PT->>PT: check loot_visible, place_node() if needed
-        PT->>PT: check has_reached_node(), advance last/next
-
-        SM->>PT: get_next_move(current_pos)
-        PT->>NE: step_toward(current_pos, next_node)
-        NE-->>PT: action
-        PT-->>SM: action
-
-        SM-->>A: action
-        A->>AD: decode(action)
-        AD-->>A: button_presses
-        A->>A: game.make_action(button_presses) 
-        A->>TW: record_step()
+    rect rgb(30, 58, 95)
+        M->>A: initialize_game()
+        A->>PT: load_static_nodes()
+        M->>A: run_episode(params)
+        A->>A: game.new_episode()
     end
 
-    A->>TW: finalize_episode()
-    A-->>M: stats
+    loop each tick
+        rect rgb(30, 77, 46)
+            A->>P: parse(game.get_state())
+            P-->>A: GameState
+            A->>SM: update(GameState)
+            SM->>PT: update(GameState)
+            SM->>PT: get_next_move()
+            PT-->>SM: action
+            SM-->>A: action
+            A->>A: game.make_action(action)
+        end
+    end
+
+    rect rgb(77, 46, 30)
+        A-->>M: stats
+        M->>M: compute_fitness(stats)
+        M->>A: telemetry_writer.finalize_episode(stats)
+    end
+```
+
+**File Interactions Flowchart:**
+```mermaid
+flowchart TD
+    planner["tools/navigation_planner.py\n(offline)"] -->|generates| maps["maps/json/"]
+
+    maps --> agent
+    cfg["config/vizdoom.cfg"] --> agent
+
+    main["main.py"] -->|run mode| agent["agent.py"]
+    main -->|evolve mode| ga["ga/genetic_algo.py"]
+    ga --> agent
+
+    agent --> perc["perception.py"]
+    perc -->|GameState| agent
+
+    agent --> sm["state_machine.py"]
+    sm --> agent
+    sm --> nav["core/navigation/"]
+    nav --> sm
+
+    main -->|compute_fitness| genome["ga/genome.py"]
+    ga -->|compute_fitness| genome
+
+    agent --> tw["telemetry_writer.py"]
+    main -->|finalize_episode| tw
+    ga -->|finalize_episode| tw
+
+    tw --> output["output/"]
+
+    classDef entry fill:#1e3a5f,stroke:#4a7ab5,color:#fff
+    classDef runtime fill:#1e4d2e,stroke:#4a9a5d,color:#fff
+    classDef ga fill:#4d2e1e,stroke:#9a6a4a,color:#fff
+    classDef data fill:#3d3d3d,stroke:#888,color:#fff
+
+    class main entry
+    class agent,perc,sm,nav,tw runtime
+    class ga,genome ga
+    class maps,cfg,output,planner data
 ```
 
 
@@ -69,8 +105,7 @@ sequenceDiagram
 4. StateMachine
 5. Agent
 6. Perception
-7. ActionDecoder
-8. GameState
+7. GameState
 
 
 ## Class Graph:
@@ -157,14 +192,13 @@ sequenceDiagram
 
 **Fields:**
 - VizDoom game object
-- Perception 
-- ActionDecoder
+- Perception
 - StateMachine
 - TelemetryWriter
 
 **Methods:**
 - initialize_game() (VizDoom setup, load config, create one Graph which passes to NavigationEngine and PathTracker)
-- run_episode() (calls perception + state machine each tic, returns stats for GA)
+- run_episode() (calls perception + state machine each tick, returns raw stats. Runner computes fitness and calls finalize_episode)
 - close()
 
 
@@ -179,17 +213,6 @@ sequenceDiagram
 **Methods:**
 - parse()
 
-
-## Class ActionDecoder:
-**Overview:**
-- provides utilities to construct action vectors and decode them
-- all static methods, no fields
-
-**Methods (only a few listed):**
-- null_action()
-- forward()
-- attack()
-- use()
 
 ## Class GameState:
 **Overview:**

@@ -29,19 +29,6 @@ def _encode_action(action: list[int]) -> int:
     return sum(v << i for i, v in enumerate(action) if v)
 
 
-def _compute_fitness(stats: dict) -> float:
-    """Fitness function defined in genetic_algo_design.md."""
-    if stats.get("finish_level"):
-        ticks = stats.get("ticks", 12600)
-        return (1000
-                + 500 * (1 - ticks / 4200)
-                + 2 * stats.get("health", 0)
-                + 1 * stats.get("armor", 0)
-                + 0.5 * stats.get("ammo", 0))
-    return (5 * stats.get("enemies_killed", 0)
-            + 10 * stats.get("waypoints_reached", 0))
-
-
 class TelemetryWriter:
 
     def __init__(self) -> None:
@@ -154,7 +141,7 @@ class TelemetryWriter:
         map_path = TELEMETRY_DIR / f"{prefix}_map.svg"
 
         ammo_used = max(0.0, (self._ammo_start or 0.0) - stats.get("ammo", 0.0))
-        fitness = _compute_fitness(stats)
+        fitness = stats.get("fitness", 0.0)
 
         summary = {
             "episode_id": self._episode_id,

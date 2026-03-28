@@ -1,34 +1,19 @@
-# Execution Algorithm Design
+# State Machine Design
+
 
 ## Overview
-The execution algorithm is a hierarchal state machine with tunable params that control agent behavior. This doc defines the architecture needed to beat E1M1 and its mechanics only. States have a natural hierarchy defined by their entry/exit conditions.
+This doc details how StateMachine works. The state machine is hierarchical with tunable params that control agent behavior. States have a natural hierarchy defined by their entry/exit conditions.
 
 
-## Hyperparameters
-- Level timeout: scales by level, up to 12600 ticks (360 seconds @ 35 tic/s)
-- Stuck detection: fires if agent moves < 50 units in any 175 ticks (5 seconds)
-- Stuck recovery: agent turns randomly + moves forward for 70 ticks (~2 seconds) to dislodge
-- Minimum combat ammo: 0, ammo_threshold param controls when we look for ammo, but we don't want it to dictate when we run from a fight.
+## Navigation
+The state machine delegates all movement to PathTracker and NavigationEngine. States that navigate (TRAVERSE, RECOVER) set a goal node. PathTracker manages the node graph, tracks mission progress, and detects stuck conditions. NavigationEngine handles A* pathfinding and movement. The state machine only decides what to target; the navigation stack handles how to get there. See architecture_design.md for class-level details.
 
 
-## Layer 1: Navigation Engine
-- Use A* to pathfind from points A to B
-
-
-## Layer 2: PathTracker
-- Manages the node graph and mission progress
-- Static nodes, or waypoints, define the mininal path for level completion
-- Dynamic nodes get placed by the agent during playtime, these reset upon level restart
-- When agent sees loot, a loot node is placed at the loot position, and a waypoint node is placed at the current position
-- An edge connects these two nodes, and the waypoint node is inserted between two static nodes
-- If door or exit detected in path, execute USE action (defined with WADlinedef data)
-
-
-## Layer 3: States
+## State Machine & Priority
 - High to low priority, these are like goals
 - The hierarchy must be adhered to quite strictly or cycles will occur
 - STUCK is highest priority so stuck recovery always completes before other states can interrupt it
-- COMBAT is above RECOVER — agent finishes the fight first, then tends to wounds. Running for loot past enemies is often more dangerous than standing and fighting.
+- COMBAT is above RECOVER. Agent finishes the fight first, then heals. Running for loot past enemies is often more dangerous than standing and fighting.
 
 1. STUCK
 2. COMBAT
@@ -41,24 +26,36 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 stateDiagram-v2
     [*] --> TRAVERSE
 
-    TRAVERSE --> STUCK : Stuck detection triggered
-    TRAVERSE --> SCAN : Damage taken / Freq trigger
-    TRAVERSE --> COMBAT : Enemy detected & Ammo > 0
-    TRAVERSE --> RECOVER : Stats < Thresholds & Loot known
+    TRAVERSE --> STUCK : stuck
+    TRAVERSE --> SCAN : damage taken or freq trigger
+    TRAVERSE --> COMBAT : enemy visible & ammo > 0
+    TRAVERSE --> RECOVER : stats low & loot known
 
-    SCAN --> STUCK : Stuck detection triggered
-    SCAN --> COMBAT : Enemy visible
-    SCAN --> RECOVER : Stats < Thresholds
-    SCAN --> TRAVERSE : 360° spin complete
+    SCAN --> STUCK : stuck
+    SCAN --> COMBAT : enemy visible
+    SCAN --> RECOVER : stats low & loot known
+    SCAN --> TRAVERSE : spin complete
 
-    COMBAT --> STUCK : Stuck detection triggered
-    COMBAT --> RECOVER : No enemies detected & Stats < Thresholds & Loot known
-    COMBAT --> TRAVERSE : No enemies detected & Stats above Thresholds
+    COMBAT --> STUCK : stuck
+    COMBAT --> RECOVER : no enemies & stats low & loot known
+    COMBAT --> TRAVERSE : no enemies & stats ok
 
-    RECOVER --> STUCK : Stuck detection triggered
-    RECOVER --> TRAVERSE : All stats > Thresholds
+    RECOVER --> STUCK : stuck
+    RECOVER --> TRAVERSE : stats ok
 
-    STUCK --> TRAVERSE : Recovery ticks complete
+    STUCK --> TRAVERSE : recovery complete
+
+    classDef traverse fill:#1e3a5f,stroke:#4a7ab5,color:#fff
+    classDef combat fill:#6b1e1e,stroke:#b54a4a,color:#fff
+    classDef recover fill:#1e4d2e,stroke:#4a9a5d,color:#fff
+    classDef scan fill:#4d3d1e,stroke:#9a7a4a,color:#fff
+    classDef stuck fill:#3d1e4d,stroke:#7a4a9a,color:#fff
+
+    class TRAVERSE traverse
+    class COMBAT combat
+    class RECOVER recover
+    class SCAN scan
+    class STUCK stuck
 ```
 
 
@@ -80,6 +77,23 @@ stateDiagram-v2
 - Go to TRAVERSE when recovery ticks complete
 
 
+## COMBAT
+**Notes:**
+- Higher priority than RECOVER — agent finishes the fight before seeking loot
+- Vertical aiming is handled by the engine (`+autoaim 35` in vizdoom.cfg), no screen-space filtering needed
+
+**Entry:**
+- From TRAVERSE, SCAN, or RECOVER
+- If enemy is detected and ammo > 0
+
+**Behavior:**
+- Aims and fires at enemy
+
+**Exit:**
+- Go to RECOVER if no enemies and stats < thresholds and loot known
+- Go to TRAVERSE if no enemies and stats above thresholds
+
+
 ## RECOVER
 **Notes:**
 - Like TRAVERSE but the goal node is loot rather than exit
@@ -97,23 +111,6 @@ stateDiagram-v2
 
 **Exit:**
 - Go to TRAVERSE when all stats above thresholds
-
-
-## COMBAT
-**Notes:**
-- Higher priority than RECOVER — agent finishes the fight before seeking loot
-- Vertical aiming is handled by the engine (`+autoaim 35` in vizdoom.cfg), no screen-space filtering needed
-
-**Entry:**
-- From TRAVERSE, SCAN, or RECOVER
-- If enemy is detected and ammo > 0
-
-**Behavior:**
-- Aims and fires at enemy
-
-**Exit:**
-- Go to RECOVER if no enemies and stats < thresholds and loot known
-- Go to TRAVERSE if no enemies and stats above thresholds
 
 
 ## TRAVERSE:
