@@ -96,7 +96,7 @@ EXIT_SPECIALS = {11, 51, 52, 124, 197}
 DOOR_USE_COOLDOWN = 95          #ticks, ~3 seconds @ 35 ticks/sec
 
 
-#Navigation thresholds — don't tune, these are geometry constants not behavior params
+#Navigation thresholds. Don't tune with GA, only manually. These are geometry constants not behavior params
 TURN_DEAD_ZONE = 10             #degrees, stop turning when this close to target angle
 FORWARD_ANGLE_THRESHOLD = 10    #degrees, only move forward when aligned within this angle
 NODE_PROXIMITY = 40             #units, distance to consider a node reached (tested: ~35-60 depending on angle)

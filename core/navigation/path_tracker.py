@@ -26,19 +26,19 @@ class PathTracker:
     ):
         self.graph = graph
         self.nav_engine = nav_engine
-        self.cur_path = deque()
-        self.last_node = None
-        self.next_node = None
-        self.goal_node = None
-        self.visited_waypoints = set()
-        self.door_use_timer = 0
-        self.blocking_segments = blocking_segments
-        self.stuck_cooldowns = {} #dict of (x, y) -> ticks remaining
-        self.stuck_timer = 0
-        self.stuck_last_pos = (0.0, 0.0)
-        self.is_stuck = False
+        self.cur_path = deque() #ordered deque of nodes from last_node to goal_node
+        self.last_node = None #most recently reached node, A* starts from here
+        self.next_node = None #immediate navigation target, the next node in cur_path
+        self.goal_node = None #destination node for current state (EXIT or LOOT)
+        self.visited_waypoints = set() #static waypoints reached, used for GA fitness
+        self.door_use_timer = 0 #cooldown after USE action to prevent door spam
+        self.blocking_segments = blocking_segments #improve node placing by adding map objects to geometry
+        self.loot_blacklist = {} #(x, y) -> ticks remaining; prevents re-marking loot that was removed as unreachable
+        self.stuck_timer = 0 #ticks elapsed since last stuck check
+        self.stuck_last_pos = (0.0, 0.0) #agent position at last stuck check, compared against current pos
+        self.is_stuck = False #set True when non-LOOT stuck fires, consumed by StateMachine
         #For seeing if stats increase to remove accidentally claimed loot nodes
-        self.prev_health = 0 
+        self.prev_health = 0
         self.prev_armor = 0
         self.prev_ammo = 0
 
@@ -79,13 +79,13 @@ class PathTracker:
         #Update door timer
         self.door_use_timer = max(0, self.door_use_timer - TICK)
         
-        #Decrement stuck cooldowns each tick
+        #Expire loot blacklist entries each tick. Position is clear to re-mark once it hits 0.
         active_cooldowns = {}
-        for pos, ticks in self.stuck_cooldowns.items():
+        for pos, ticks in self.loot_blacklist.items():
             remaining = ticks - TICK
             if remaining > 0:
                 active_cooldowns[pos] = remaining
-        self.stuck_cooldowns = active_cooldowns
+        self.loot_blacklist = active_cooldowns
 
         #If agent hasn't moved enough, the current goal is likely unreachable. For loot nodes, 
         #remove and cooldown so they can be re-marked from a better position. For other goals, trigger stuck recovery.
@@ -97,7 +97,7 @@ class PathTracker:
             
             if dist_moved < STUCK_DISTANCE_THRESHOLD and self.goal_node:
                 if self.goal_node.node_type == NodeType.LOOT:
-                    self.stuck_cooldowns[(self.goal_node.x, self.goal_node.y)] = LOOT_NODE_COOLDOWN
+                    self.loot_blacklist[(self.goal_node.x, self.goal_node.y)] = LOOT_NODE_COOLDOWN
                     self.graph.remove_node(self.goal_node)
                 else:
                     self.is_stuck = True
@@ -107,7 +107,6 @@ class PathTracker:
                 self.cur_path = deque()
             self.stuck_timer = 0
             self.stuck_last_pos = (gamestate.pos_x, gamestate.pos_y)
-
 
         #Update path if needed
         if self.goal_node and not self.cur_path:
@@ -127,8 +126,7 @@ class PathTracker:
         self._cleanup_incidental_node(gamestate)
 
     def get_next_move(self, x: float, y: float, angle: float) -> list[int]:
-        """Handle door_use_timer reset after a USE action.
-        StateMachine calls this from TRAVERSE/RECOVER, which calls nav_engine.step_toward()."""
+        """Return movement action toward next_node. Fires USE on nearby doors and the exit."""
         if not self.next_node:
             return ActionDecoder.null_action()
         
@@ -184,7 +182,7 @@ class PathTracker:
         """Update cur_path by calling nav_engine.make_path()."""
         self.cur_path = self.nav_engine.make_path(self.last_node, self.goal_node)
         
-        #For tracing errors
+        #make_path returns None only if start or goal node has no neighbors
         if self.cur_path is None:
             goal_neighbors = self.graph.get_neighbors(self.goal_node)
             last_neighbors = self.graph.get_neighbors(self.last_node)
@@ -213,15 +211,14 @@ class PathTracker:
             return True
         return False
 
-    def _get_next_node(self, gamestate: GameState) -> Node:
+    def _get_next_node(self, gamestate: GameState) -> Node | None:
         """When current next_node is reached, replace it with a new one and update last node."""
         #Loot nodes are only goal nodes in RECOVER. After pickup, SM sets a new goal
-        #which triggers _set_cur_path automatically via set_goal_node.
+        #which triggers _set_cur_path automatically via set_goal_by_type.
         if self.next_node is None:
             self.next_node = self.cur_path.popleft()
             return self.next_node
 
-        
         if self.next_node.node_type == NodeType.LOOT:
             #After claiming loot, fully reset nav state so StateMachine sets a 
             #fresh goal next tick. Otherwise, goal_node still points to removed loot node,
@@ -241,7 +238,7 @@ class PathTracker:
         return self.next_node
 
     def _place_node(self, gamestate: GameState) -> None:
-        "Add dynamic LOOT and WAYPOINT nodes to the graph."
+        """Add dynamic LOOT and WAYPOINT nodes to the graph."""
         for loot in gamestate.loots_visible:
             #Check if loot is already marked as a node
             is_loot_marked = False
@@ -276,13 +273,16 @@ class PathTracker:
                 #Skip loot that was recently removed due to being unreachable, agent will reposition
                 in_cooldown = any(
                     calculate_euclidean_distance(loot.pos_x, loot.pos_y, cx, cy) < LOOT_PROXIMITY
-                    for cx, cy in self.stuck_cooldowns) 
+                    for cx, cy in self.loot_blacklist) 
 
                 if self.next_node is not None and is_in_range and is_clear_path and not too_close_to_wall and not in_cooldown:
                     self.graph.add_node(loot_node)
                     self._make_anchor(gamestate, loot_node)
 
+            #Anchor update: if agent is now closer to this loot than the existing anchor,
+            #replace the anchor with a better one.
             #Don't need to check is_in_range here, since we check old_distance which already passes.
+            #Skip anchor update if loot is already the active nav target, about to get it anyways.
             elif loot_node is not self.next_node:
                 neighbors = self.graph.get_neighbors(loot_node)
                 if not neighbors:
@@ -295,6 +295,7 @@ class PathTracker:
                 
                 #Don't update anchor if next_node is None, _make_anchor returns early without
                 #creating a replacement, leaving the loot node isolated with no edges in the graph.
+                #Also, skip if old_anchor is actively being navigated. Removing it would corrupt current path.
                 if (new_distance < old_distance and self.next_node is not None and 
                     old_anchor is not self.next_node and old_anchor not in self.cur_path):
                     #Reconnect old_anchor's non-loot neighbors before removing it,
@@ -316,9 +317,8 @@ class PathTracker:
                         self.graph.add_edge(waypoint_node, other)
 
     def _make_anchor(self, gamestate: GameState, loot_node: Node) -> None:
-        """Make an "anchor" node of agent's current position and inserts it into Graph.
-        Add edges between this anchor node and last, next, and loot.
-        Make this anchor the last_node."""
+        """Create a waypoint at the agent's current position and splice it into the graph
+        between last_node and next_node, with an edge to loot_node. Updates last_node to this waypoint."""
         waypoint_node = Node(gamestate.pos_x, gamestate.pos_y, NodeType.WAYPOINT)
         if self.next_node is None:
             return
@@ -330,7 +330,7 @@ class PathTracker:
         self.last_node = waypoint_node
 
     def _nearest_node(self, gamestate: GameState, keywords: set[str] | None = None, static_only: bool = False) -> Node:
-        """Find the closest static node in the graph to agent's position.
+        """Find the closest node in the graph to the agent's position.
         Used when initializing episode to populate self.last_node,
         when removing loot nodes after reaching them to give the
         agent a more accurate node to start its new path, and when finding 
@@ -354,7 +354,7 @@ class PathTracker:
         return best_match 
     
     def _cleanup_incidental_node(self, gamestate: GameState) -> None:
-        """If agent stats increase, it must have picked up loot that wasn't intended 
+        """If agent stats increase, it must have picked up loot that wasn't intended
         by pathtracker. Remove these nodes so agent doesn't think it still exists."""
         health_gained = gamestate.health > self.prev_health
         armor_gained = gamestate.armor > self.prev_armor
