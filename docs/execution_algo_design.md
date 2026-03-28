@@ -194,4 +194,4 @@ Sprint is a valid action. However, we are omitting it for simplicity. The main b
 
 ## Future Work
 - Visual map of agent's run after episode could be useful
-- Detour state and Breadcrumb pathfinding will allow more exploration
+- Detour state or Breadcrumb pathfinding could allow more exploration

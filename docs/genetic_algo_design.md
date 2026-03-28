@@ -113,7 +113,7 @@ else:
 - Timeout: 12600 ticks (360 seconds) (covers all levels)
 - Seed: Random. No line of code needed because Python makes the seed random anyways. The reason is that even with a set seed, gameplay was not deterministic, and it was also causing the SCANs to activate in the same places. We will use average score of 3 runs.
 
-**Takes up to 5ish seconds per level**
+**Takes up to 10ish seconds per level in headless mode.**
 
 **Metrics to collect:**
 - Level completion status
@@ -160,7 +160,6 @@ After evolution completes, generate plots from evolution_history.json:
 
 
 ## Future Work
-- add GA param for aiming
 - make the 2 genomes run in parallel (multithread)
 - make visuals
 - plateau logic to determine when to stop evolving
