@@ -52,6 +52,17 @@ ENEMY_KEYWORDS = (
     "troop"
 )
 
+OBSTACLE_KEYWORDS = {
+    34,   #Candlestick
+    35,   #Candelabra
+    48,   #Tall techno column
+    55,   #Short techno floor lamp
+    85,   #Tall green firestick
+    86,   #Short green firestick
+    2028, #Floor lamp
+}
+OBSTACLE_RADIUS = 16
+
 HEALTH_KEYWORDS = {"stimpack", "medikit", "healthbonus"}
 ARMOR_KEYWORDS = {"armorbonus", "greenarmor", "bluearmor"}
 AMMO_KEYWORDS = {"clip", "backpack"}  #pistol only for now
@@ -85,15 +96,15 @@ LOOT_PROXIMITY = 20 #how far loot is away from an existing node, so we know if l
 LOOT_NODE_MAX_DISTANCE = 400 #GA param, units from loot that we can mark it as a node
 
 #Stuck detection and placing valid loot nodes
-ANCHOR_MIN_WALL_DISTANCE = 32 #min distance from a blocking segment to place an anchor. Tune if tight rooms fail to mark loot.
+ANCHOR_MIN_WALL_DISTANCE = 10 #min distance from a blocking segment to place an anchor. Tune if tight rooms fail to mark loot.
 STUCK_CHECK_INTERVAL = 175 #ticks between stuck checks (5 seconds)
-STUCK_DISTANCE_THRESHOLD = 50 #units agent must move to not be considered stuck
+STUCK_DISTANCE_THRESHOLD = 120 #units agent must move to not be considered stuck
 STUCK_COOLDOWN = 210 #ticks before a removed loot node can be re-added (~6 seconds)
 
 #Agent thresholds (won't enter RECOVER if stat = thresh)
-HEALTH_THRESHOLD = 80
-ARMOR_THRESHOLD = 10
-AMMO_THRESHOLD = 20
+HEALTH_THRESHOLD = 100
+ARMOR_THRESHOLD = 1
+AMMO_THRESHOLD = 30
 
 #SCAN thresholds
 SCAN_INTERVAL = 70 #GA param (35-280), likeliness of triggering one scan in x ticks

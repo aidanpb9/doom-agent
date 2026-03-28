@@ -1,9 +1,9 @@
 """Pure pathfinding and movement. Find paths with A* and produce actions.
 Know nothing about mission state, node types, or progress."""
-from core.navigation.graph import Node, NodeType, Graph
+from core.navigation.graph import Node, Graph
 from core.utils import calculate_euclidean_distance, normalize_angle
 from core.execution.action_decoder import ActionDecoder
-from config.constants import TURN_DEAD_ZONE, DOOR_USE_DISTANCE, FORWARD_ANGLE_THRESHOLD
+from config.constants import TURN_DEAD_ZONE, FORWARD_ANGLE_THRESHOLD
 from math import atan2, degrees
 import heapq
 from collections import deque

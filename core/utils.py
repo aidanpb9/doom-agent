@@ -4,6 +4,8 @@ from pathlib import Path
 import struct
 import re
 MAP_MARKER_RE = re.compile(r"^(E[1-9]M[1-9]|MAP[0-9][0-9])$")
+from config.constants import OBSTACLE_KEYWORDS, OBSTACLE_RADIUS
+
 
 def calculate_euclidean_distance(point1_x, point1_y, point2_x, point2_y) -> float:
     """Distance between 2 points formula."""
@@ -64,6 +66,18 @@ def load_blocking_segments_from_wad(wad_path: str, map_name: str) -> list[tuple[
         x1, y1 = vertices[v1]
         x2, y2 = vertices[v2]
         segments.append((x1, y1, x2, y2))
+    
+    if "THINGS" in map_lumps:
+        th_pos, th_size = map_lumps["THINGS"]
+        for off in range(0, th_size, 10):
+            x, y, _angle, type_id, _flags = struct.unpack_from("<hhhhh", raw, th_pos + off)
+            if type_id not in OBSTACLE_KEYWORDS:
+                continue
+            cx, cy, r = float(x), float(y), OBSTACLE_RADIUS
+            segments.append((cx - r, cy - r, cx + r, cy - r))
+            segments.append((cx + r, cy - r, cx + r, cy + r))
+            segments.append((cx + r, cy + r, cx - r, cy + r))
+            segments.append((cx - r, cy + r, cx - r, cy - r))
     return segments
 
 def has_clear_world_line(

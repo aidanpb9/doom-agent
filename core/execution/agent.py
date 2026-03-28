@@ -16,7 +16,7 @@ import random
 
 class Agent:
 
-    def __init__(self, game: vzd.DoomGame):
+    def __init__(self):
         self.game = None
         self.perception = None
         self.state_machine = None

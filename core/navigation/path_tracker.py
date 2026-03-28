@@ -86,17 +86,19 @@ class PathTracker:
                 active_cooldowns[pos] = remaining
         self.stuck_cooldowns = active_cooldowns
 
-        #If navigating to loot and haven't moved, the node is likely unreachable from
-        #this angle. Remove it and cooldown so it can be re-marked from a better position.
+        #If agent hasn't moved enough, the current goal is likely unreachable. For loot nodes, 
+        #remove and cooldown so they can be re-marked from a better position. For other goals, trigger stuck recovery.
         self.stuck_timer += TICK
         if self.stuck_timer >= STUCK_CHECK_INTERVAL:
             dist_moved = calculate_euclidean_distance(
                 gamestate.pos_x, gamestate.pos_y,
                 self.stuck_last_pos[0], self.stuck_last_pos[1])
             
-            if dist_moved < STUCK_DISTANCE_THRESHOLD and self.goal_node and self.goal_node.node_type == NodeType.LOOT:
-                self.stuck_cooldowns[(self.goal_node.x, self.goal_node.y)] = STUCK_COOLDOWN
-                self.graph.remove_node(self.goal_node)
+            if dist_moved < STUCK_DISTANCE_THRESHOLD and self.goal_node:
+                if self.goal_node.node_type == NodeType.LOOT:
+                    self.stuck_cooldowns[(self.goal_node.x, self.goal_node.y)] = STUCK_COOLDOWN
+                    self.graph.remove_node(self.goal_node)
+                self.last_node = self._nearest_node(gamestate, static_only=True)
                 self.goal_node = None
                 self.next_node = None
                 self.cur_path = deque()

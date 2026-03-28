@@ -47,10 +47,7 @@ def cmd_run(args):
     logger = setup_logging(args.verbose)
     logger.info("DoomSat - Run Mode")
 
-    #Create VizDoom game object and Agent, then run one episode
-    game = vzd.DoomGame()
-    agent = Agent(game)
-
+    agent = Agent()
     try:
         agent.initialize_game(headless=args.hl)
         stats = agent.run_episode(params={})
