@@ -14,8 +14,8 @@ import random
 class State(Enum):
     """Represent the different states."""
     STUCK = 1
-    RECOVER = 2
-    COMBAT = 3
+    COMBAT = 2
+    RECOVER = 3
     SCAN = 4
     TRAVERSE = 5
 
@@ -49,6 +49,10 @@ class StateMachine:
         if self.stuck_recovery_ticks > 0:
             return self._stuck(gamestate)
 
+        #COMBAT
+        if self.combat_hold or (gamestate.enemies_visible and gamestate.ammo > 0):
+            return self._combat(gamestate)
+
         #RECOVER
         if (gamestate.health < HEALTH_THRESHOLD and 
             self.path_tracker.has_loot_node(HEALTH_KEYWORDS)
@@ -67,10 +71,6 @@ class StateMachine:
         ):
             self.recover_type = AMMO_KEYWORDS
             return self._recover(gamestate)
-        
-        #COMBAT
-        if self.combat_hold or (gamestate.enemies_visible and gamestate.ammo > 0):
-            return self._combat(gamestate)
 
         #SCAN
         if self.last_state == State.SCAN:
@@ -85,22 +85,11 @@ class StateMachine:
         return self._traverse(gamestate)
     
     def _stuck(self, gamestate) -> list[int]:
-        if self.last_state != State.STUCK:
-            print("STUCK")
         """Choose left or right turn direction + forward for duration of stuck.
         Main purpose is to dislodge from obstacles like barrels or candles."""
         self.stuck_recovery_ticks -= TICK
         self.last_state = State.STUCK
         return ActionDecoder.combine(self.stuck_direction(), ActionDecoder.forward())
-
-    def _recover(self, gamestate: GameState) -> list[int]:
-        if self.last_state != State.RECOVER:
-            print("RECOVER")
-        """Navigates to closest LOOT node. Return movement action."""
-        self.path_tracker.set_goal_by_type(gamestate, NodeType.LOOT, self.recover_type)
-        action = self.path_tracker.get_next_move(gamestate.pos_x, gamestate.pos_y, gamestate.angle)
-        self.last_state = State.RECOVER
-        return action
 
     def _combat(self, gamestate: GameState) -> list[int]:
         """Aiming and firing. Return attack, turn, or null action."""
@@ -109,8 +98,6 @@ class StateMachine:
             #keep moving without updating state to avoid unneeded state transitions
             return self.path_tracker.get_next_move(gamestate.pos_x, gamestate.pos_y, gamestate.angle)
         
-        if self.last_state != State.COMBAT:
-            print("COMBAT")
         self.combat_hold = COMBAT_HOLD_TICKS #only hold if valid target found
         self.last_state = State.COMBAT
 
@@ -122,9 +109,14 @@ class StateMachine:
         if offset < 0: #enemy left of center
             return ActionDecoder.turn_left()
 
+    def _recover(self, gamestate: GameState) -> list[int]:
+        """Navigates to closest LOOT node. Return movement action."""
+        self.path_tracker.set_goal_by_type(gamestate, NodeType.LOOT, self.recover_type)
+        action = self.path_tracker.get_next_move(gamestate.pos_x, gamestate.pos_y, gamestate.angle)
+        self.last_state = State.RECOVER
+        return action
+
     def _scan(self, gamestate: GameState) -> list[int]:
-        if self.last_state != State.SCAN:
-            print("SCAN")
         """Spin right until 360 is done. Return turn action."""
         #reset cooldown every time we enter, so when we leave it decrements naturally
         self.scan_cooldown = SCAN_INTERVAL 
@@ -141,7 +133,6 @@ class StateMachine:
         #stop when 360 degrees accumulated.
         if self.scan_total_deg > 360:
             self.last_state = State.TRAVERSE
-            print("TRAVERSE")#TODO
             self.scan_total_deg = 0
             self.scan_last_angle = 0
             return ActionDecoder.null_action()

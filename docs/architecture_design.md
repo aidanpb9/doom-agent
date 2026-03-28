@@ -123,11 +123,12 @@ sequenceDiagram
 - Graph object
 - NavigationEngine
 - current_path
-- last_node
-- next_node
-- goal_node
+- last/next/goal nodes
+- previous health, armor, ammo
 - visited_waypoints
 - door_use_timer
+- blocking_segments
+- is_stuck
 
 **Methods:**
 - load_static_nodes()
@@ -188,8 +189,7 @@ sequenceDiagram
 - null_action()
 - forward()
 - attack()
-- strafe_left()
-
+- use()
 
 ## Class GameState:
 **Overview:**
@@ -199,7 +199,7 @@ sequenceDiagram
 - health
 - armor
 - ammo, 
-- enemies_visible: list[str]
+- enemies_visible: list[EnemyObject]
 - loots_visible: list[LootObject]
 - position x
 - position y

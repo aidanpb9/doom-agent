@@ -28,10 +28,11 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 - High to low priority, these are like goals
 - The hierarchy must be adhered to quite strictly or cycles will occur
 - STUCK is highest priority so stuck recovery always completes before other states can interrupt it
+- COMBAT is above RECOVER — agent finishes the fight first, then tends to wounds. Running for loot past enemies is often more dangerous than standing and fighting.
 
 1. STUCK
-2. RECOVER
-3. COMBAT
+2. COMBAT
+3. RECOVER
 4. SCAN (360)
 5. TRAVERSE
 
@@ -51,11 +52,10 @@ stateDiagram-v2
     SCAN --> TRAVERSE : 360° spin complete
 
     COMBAT --> STUCK : Stuck detection triggered
-    COMBAT --> RECOVER : Health low OR Ammo == 0
-    COMBAT --> TRAVERSE : No enemies detected
+    COMBAT --> RECOVER : No enemies detected & Stats < Thresholds & Loot known
+    COMBAT --> TRAVERSE : No enemies detected & Stats above Thresholds
 
     RECOVER --> STUCK : Stuck detection triggered
-    RECOVER --> COMBAT : Armor/Ammo goal & Enemy detected
     RECOVER --> TRAVERSE : All stats > Thresholds
 
     STUCK --> TRAVERSE : Recovery ticks complete
@@ -96,26 +96,24 @@ stateDiagram-v2
 - Navigate to goal node
 
 **Exit:**
-- If seeking health: no exit, highest priority
-- Then if seeking armor OR ammo, can go to COMBAT if enemy detected AND ammo > 0
-- Then if all stats above threshold, go to TRAVERSE
+- Go to TRAVERSE when all stats above thresholds
 
 
 ## COMBAT
 **Notes:**
-- Only overriden by RECOVER if health or armor stats drop below threshold
+- Higher priority than RECOVER — agent finishes the fight before seeking loot
 - Vertical enemies (too far above/below) are filtered out and do not trigger combat hold
 
 **Entry:**
-- From RECOVER or TRAVERSE or SCAN
+- From TRAVERSE, SCAN, or RECOVER
 - If enemy is detected and ammo > 0
 
 **Behavior:**
 - Aims and fires at enemy
 
 **Exit:**
-- Go to RECOVER if health < health_threshold OR ammo = 0
-- Go to TRAVERSE if no more enemies detected
+- Go to RECOVER if no enemies and stats < thresholds and loot known
+- Go to TRAVERSE if no enemies and stats above thresholds
 
 
 ## TRAVERSE:
