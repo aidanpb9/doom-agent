@@ -84,6 +84,12 @@ LOOT_PROXIMITY = 20 #how far loot is away from an existing node, so we know if l
 #Tune this
 LOOT_NODE_MAX_DISTANCE = 400 #GA param, units from loot that we can mark it as a node
 
+#Stuck detection and placing valid loot nodes
+ANCHOR_MIN_WALL_DISTANCE = 32 #min distance from a blocking segment to place an anchor. Tune if tight rooms fail to mark loot.
+STUCK_CHECK_INTERVAL = 175   #ticks between stuck checks (~1 second)
+STUCK_DISTANCE_THRESHOLD = 50  #units agent must move to not be considered stuck
+STUCK_COOLDOWN = 210        #ticks before a removed loot node can be re-added (~6 seconds)
+
 #Agent thresholds (won't enter RECOVER if stat = thresh)
 HEALTH_THRESHOLD = 101
 ARMOR_THRESHOLD = 10

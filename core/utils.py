@@ -86,6 +86,16 @@ def has_clear_world_line(
                 return False
         return True
 
+def point_to_segment_distance(px: float, py: float, x1: float, y1: float, x2: float, y2: float) -> float:
+    """Shortest distance from point (px,py) to line segment (x1,y1)-(x2,y2).
+    Used to check if an anchor position is dangerously close to a wall."""
+    dx, dy = x2 - x1, y2 - y1
+    if dx == 0 and dy == 0:
+        return calculate_euclidean_distance(px, py, x1, y1)
+    t = max(0.0, min(1.0, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)))
+    return calculate_euclidean_distance(px, py, x1 + t * dx, y1 + t * dy)
+
+
 def _segments_intersect(
     p1: tuple[float, float],
     p2: tuple[float, float],

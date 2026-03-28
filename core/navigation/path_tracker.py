@@ -5,11 +5,12 @@ from core.navigation.graph import Node, NodeType, Graph
 from core.navigation.navigation_engine import NavigationEngine
 from core.execution.game_state import GameState
 from core.execution.action_decoder import ActionDecoder
-from core.utils import calculate_euclidean_distance, has_clear_world_line
+from core.utils import calculate_euclidean_distance, has_clear_world_line, point_to_segment_distance
 from config.constants import (ACTION_USE, DOOR_USE_COOLDOWN, 
     NODE_PROXIMITY, LOOT_NODE_MAX_DISTANCE, DOOR_USE_DISTANCE, 
     LOOT_PROXIMITY, TICK, HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS,
-    WEAPON_KEYWORDS)
+    WEAPON_KEYWORDS, ANCHOR_MIN_WALL_DISTANCE, STUCK_CHECK_INTERVAL, STUCK_COOLDOWN,
+    STUCK_DISTANCE_THRESHOLD)
 import json
 from pathlib import Path
 from collections import deque
@@ -32,6 +33,9 @@ class PathTracker:
         self.visited_waypoints = set()
         self.door_use_timer = 0
         self.blocking_segments = blocking_segments
+        self.stuck_cooldowns = {} #dict of (x, y) -> ticks remaining
+        self.stuck_timer = 0
+        self.stuck_last_pos = (0.0, 0.0)
         #For seeing if stats increase to remove accidentally claimed loot nodes
         self.prev_health = 0 
         self.prev_armor = 0
@@ -74,6 +78,32 @@ class PathTracker:
         #Update door timer
         self.door_use_timer = max(0, self.door_use_timer - TICK)
         
+        #Decrement stuck cooldowns each tick
+        active_cooldowns = {}
+        for pos, ticks in self.stuck_cooldowns.items():
+            remaining = ticks - TICK
+            if remaining > 0:
+                active_cooldowns[pos] = remaining
+        self.stuck_cooldowns = active_cooldowns
+
+        #If navigating to loot and haven't moved, the node is likely unreachable from
+        #this angle. Remove it and cooldown so it can be re-marked from a better position.
+        self.stuck_timer += TICK
+        if self.stuck_timer >= STUCK_CHECK_INTERVAL:
+            dist_moved = calculate_euclidean_distance(
+                gamestate.pos_x, gamestate.pos_y,
+                self.stuck_last_pos[0], self.stuck_last_pos[1])
+            
+            if dist_moved < STUCK_DISTANCE_THRESHOLD and self.goal_node and self.goal_node.node_type == NodeType.LOOT:
+                self.stuck_cooldowns[(self.goal_node.x, self.goal_node.y)] = STUCK_COOLDOWN
+                self.graph.remove_node(self.goal_node)
+                self.goal_node = None
+                self.next_node = None
+                self.cur_path = deque()
+            self.stuck_timer = 0
+            self.stuck_last_pos = (gamestate.pos_x, gamestate.pos_y)
+
+
         #Update path if needed
         if self.goal_node and not self.cur_path:
             self._set_cur_path()
@@ -143,6 +173,13 @@ class PathTracker:
             msg = f"make_path failed: ({self.last_node.x:.0f},{self.last_node.y:.0f}) neighbors={len(last_neighbors)} -> ({self.goal_node.x:.0f},{self.goal_node.y:.0f}) neighbors={len(goal_neighbors)}"
             raise RuntimeError(msg)
 
+        #Immediately populate next_node if None to avoid a one-tick gap when
+        #_set_cur_path is called from set_goal_by_type after update has already run.
+        if not self.next_node:
+            if self.cur_path:
+                self.next_node = self.cur_path.popleft()
+            else:
+                self.next_node = self.goal_node
 
     def _has_reached_node(self, gamestate: GameState, target_node: Node) -> bool:
         """Return True when a node is close. Different nodes have different thresholds
@@ -206,17 +243,27 @@ class PathTracker:
                 #_make_anchor returns early and the loot node is added with no edges (unreachable).
                 #It will be picked up on a future tick once next_node is repopulated.
                 is_in_range = calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y) < LOOT_NODE_MAX_DISTANCE
-                is_clear_path = has_clear_world_line(gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y, self.blocking_segments, )
-                if is_in_range and is_clear_path and self.next_node is not None:
+                is_clear_path = has_clear_world_line(gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y, self.blocking_segments)
+                
+                #Don't mark loot if the anchor would be placed too close to a wall.
+                #Anchors are created at the agent's current position — if that position is
+                #wall-adjacent (e.g. near a candle next to a wall), every future path to
+                #this loot routes through that tight spot and the agent gets stuck.
+                #The loot will be marked on a future tick from a safer position.
+                too_close_to_wall = self.blocking_segments and any(
+                    point_to_segment_distance(gamestate.pos_x, gamestate.pos_y, x1, y1, x2, y2) < ANCHOR_MIN_WALL_DISTANCE
+                    for x1, y1, x2, y2 in self.blocking_segments
+                )
+
+                #Skip loot that was recently removed due to being unreachable, agent will reposition
+                in_cooldown = any(
+                    calculate_euclidean_distance(loot.pos_x, loot.pos_y, cx, cy) < LOOT_PROXIMITY
+                    for cx, cy in self.stuck_cooldowns) 
+
+                if self.next_node is not None and is_in_range and is_clear_path and not too_close_to_wall and not in_cooldown:
                     self.graph.add_node(loot_node)
                     self._make_anchor(gamestate, loot_node)
 
-            #TODO: anchor update optimization (re-anchor to a shorter path when agent gets closer)
-            #was removed because it breaks chain connectivity when multiple loot nodes share an
-            #anchor chain. To fix: before removing old_anchor, reconnect its non-loot neighbors
-            #so the chain isn't severed. Then _make_anchor can safely replace it.
-            '''#If loot marked, update its connection if shorter distance exists.
-            #But only if that shorter distance doesn't occur while on the way to the loot node.
             #Don't need to check is_in_range here, since we check old_distance which already passes.
             elif loot_node is not self.next_node:
                 neighbors = self.graph.get_neighbors(loot_node)
@@ -228,12 +275,23 @@ class PathTracker:
                 new_distance = calculate_euclidean_distance(
                     gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y)
                 
-                #Don't update anchor if next_node is None — _make_anchor returns early without
+                #Don't update anchor if next_node is None, _make_anchor returns early without
                 #creating a replacement, leaving the loot node isolated with no edges in the graph.
-                if new_distance < old_distance and self.next_node is not None:
-                    self.graph.remove_edge(old_anchor, loot_node)
-                    self.graph.remove_node(old_anchor)
-                    self._make_anchor(gamestate, loot_node)'''
+                if new_distance < old_distance and self.next_node is not None and old_anchor is not self.next_node:
+                    #Reconnect old_anchor's non-loot neighbors before removing it,
+                    #so that the chain through old_anchor isn't severed.
+                    others = []
+                    for n in self.graph.get_neighbors(old_anchor):
+                        if n is not loot_node:
+                            others.append(n)
+
+                    waypoint_node = Node(gamestate.pos_x, gamestate.pos_y, NodeType.WAYPOINT)
+                    self.graph.add_node(waypoint_node)
+                    self.last_node = waypoint_node
+                    self.graph.remove_node(old_anchor) #removes all old_anchor edges
+                    self.graph.add_edge(loot_node, waypoint_node)
+                    for other in others:
+                        self.graph.add_edge(waypoint_node, other)
 
     def _make_anchor(self, gamestate: GameState, loot_node: Node) -> None:
         """Make an "anchor" node of agent's current position and inserts it into Graph.
@@ -282,7 +340,7 @@ class PathTracker:
         ammo_gained = gamestate.ammo > self.prev_ammo
         
         for node in list(self.graph.nodes): #use list here since we're removing nodes
-            if node.node_type != NodeType.LOOT or node is self.next_node:
+            if node.node_type != NodeType.LOOT or node is self.next_node or node is self.goal_node:
                 continue
             dist = calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, node.x, node.y)
             if dist > NODE_PROXIMITY:
