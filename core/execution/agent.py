@@ -74,6 +74,7 @@ class Agent:
         self.path_tracker._get_next_node(gamestate)
 
         #Run loop
+        tick_count = 0
         while not self.game.is_episode_finished():
             state = self.game.get_state()
             if state is None:
@@ -81,7 +82,8 @@ class Agent:
             gamestate = self.perception.parse(state)
             action = self.state_machine.update(gamestate)
             self.game.make_action(action, TICK) #decide action every tic
-            
+            tick_count += TICK
+
         #Derive how the level ended
         is_dead = self.game.is_player_dead()
         is_timeout = self.game.get_episode_time() >= DEFAULT_EPISODE_TIMEOUT
@@ -97,7 +99,7 @@ class Agent:
 
         #Fill in final stats 
         stats["finish_level"] = end_reason == "completion"
-        stats["ticks"] = self.game.get_episode_time()
+        stats["ticks"] = tick_count
         stats["health"] = gamestate.health
         stats["armor"] = gamestate.armor
         stats["ammo"] = gamestate.ammo

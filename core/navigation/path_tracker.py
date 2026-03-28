@@ -9,7 +9,7 @@ from core.utils import calculate_euclidean_distance, has_clear_world_line, point
 from config.constants import (DOOR_USE_COOLDOWN, 
     NODE_PROXIMITY, LOOT_NODE_MAX_DISTANCE, DOOR_USE_DISTANCE, 
     LOOT_PROXIMITY, TICK, HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS,
-    WEAPON_KEYWORDS, ANCHOR_MIN_WALL_DISTANCE, STUCK_CHECK_INTERVAL, STUCK_COOLDOWN,
+    WEAPON_KEYWORDS, ANCHOR_MIN_WALL_DISTANCE, STUCK_CHECK_INTERVAL, LOOT_NODE_COOLDOWN,
     STUCK_DISTANCE_THRESHOLD)
 import json
 from pathlib import Path
@@ -97,7 +97,7 @@ class PathTracker:
             
             if dist_moved < STUCK_DISTANCE_THRESHOLD and self.goal_node:
                 if self.goal_node.node_type == NodeType.LOOT:
-                    self.stuck_cooldowns[(self.goal_node.x, self.goal_node.y)] = STUCK_COOLDOWN
+                    self.stuck_cooldowns[(self.goal_node.x, self.goal_node.y)] = LOOT_NODE_COOLDOWN
                     self.graph.remove_node(self.goal_node)
                 else:
                     self.is_stuck = True

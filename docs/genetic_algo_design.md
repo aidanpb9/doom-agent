@@ -36,12 +36,13 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Parameter | Range | Description |
 |-----------|-------|-------------|
 | `loot_node_max_distance` | 200-800 units | Distance from agent that loot nodes are placed |
+| `stuck_recovery_ticks` | 35-140 ticks | Ticks of turn+forward to dislodge from obstacles |
 
 **Combat Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `combat_hold_ticks` | 5-50 | ticks that agent stays in combat when enemy leaves FOV |
-| `vertical_ignore_threshold` | 0.1-0.5 | when to engage enemies that are different y-axis |
+| `combat_hold_ticks` | 5-50 ticks | Ticks that agent stays in combat when enemy leaves FOV |
+| `vertical_ignore_threshold` | 0.1-0.5 %of screen | When to engage enemies that are different y-axis |
 
 **Recovery Parameters:**
 | Parameter | Range | Description |
@@ -53,9 +54,9 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Scan Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `scan_interval` | 35-280 | How often agent is likely to scan |
+| `scan_interval` | 35-280 ticks | How often agent is likely to scan |
 
-**Total:** 7 parameters per genome
+**Total:** 8 parameters per genome
 
 
 ## Fitness Function
