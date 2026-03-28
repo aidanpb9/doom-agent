@@ -195,6 +195,7 @@ class PathTracker:
             if self.cur_path:
                 self.next_node = self.cur_path.popleft()
             else:
+                #Empty path means start == goal or directly adjacent, need to target the goal directly
                 self.next_node = self.goal_node
 
     def _has_reached_node(self, gamestate: GameState, target_node: Node) -> bool:

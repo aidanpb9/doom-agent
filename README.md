@@ -70,7 +70,7 @@ RENAME the wad file to: doom.wad
 - **zdoom-navmesh-generator**: Navmesh extraction tools
 - **zdoom-pathfinding**: A* and funnel algorithms
 
-## Contact
+## Authors
 
 [Add contact information]
 
