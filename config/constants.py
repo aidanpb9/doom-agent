@@ -96,9 +96,7 @@ ARMOR_THRESHOLD = 10
 AMMO_THRESHOLD = 20
 
 #SCAN thresholds
-SCAN_FREQUENCY = 0.5 #odds of triggering a scan (0=never, 1=every 95 ticks=3seconds)
-SCAN_FREQUENCY_MAX = 95 #represents the hardcoded upper range of the GA param
-SCAN_COOLDOWN = 175 #minimum ticks between scans 
+SCAN_INTERVAL = 70 #GA param (35-280), likeliness of triggering one scan in x ticks
 
 #Aiming thresholds (fraction of screen width)
 COMBAT_HOLD_TICKS = 10 #ticks to keep targeting an enemy after they leave FOV or die

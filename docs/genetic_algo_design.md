@@ -28,7 +28,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
 | Generations | 50-1000 (Estimate) | Adjust based on convergence/time constraints |
 | Episode timeout | 6300 ticks (180 seconds) | E1M1 time limit |
-| Evaluation seed | Fixed(42) | Same seed for all evaluations for fairness |
+| Evaluation seed | Random | See Eval Protocol below |
 
 
 ## Evolvable Parameters (keeping their ranges wide for observation)
@@ -53,8 +53,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Scan Parameters:**
 | Parameter | Range | Description |
 |-----------|-------|-------------|
-| `scan_frequency` | 0.0-1.0 | Probability of triggering scan (0=never, 1=every ~95 ticks (3 seconds)) |
-| `scan_cooldown` | 35-280 ticks (1-8 seconds) | Minimum time between scans |
+| `scan_interval` | 35-280 | How often agent is likely to scan |
 
 **Total:** 7 parameters per genome
 
@@ -111,7 +110,7 @@ else:
 **Per-Agent Evaluation:**
 - Map: E1M1 until plateau, then E1M2 and so on
 - Timeout: 12600 ticks (360 seconds) (covers all levels)
-- Seed: Fixed (42) for reproducibility, but even with set seed, results are not deterministic, so use average score of 3 runs.
+- Seed: Random. No line of code needed because Python makes the seed random anyways. The reason is that even with a set seed, gameplay was not deterministic, and it was also causing the SCANs to activate in the same places. We will use average score of 3 runs.
 
 **Takes up to 5ish seconds per level**
 
@@ -155,7 +154,6 @@ After evolution completes, generate plots from evolution_history.json:
 ## Testing
 - Verify fitness calculation (better performance = higher score)
 - Test mutation produces valid parameters (all in range)
-- Verify deterministic seeding (same seed = same result each run)
 - Check parameters aren't stuck at min/max boundaries
 - Re-evaluate final elite 3× to confirm consistency
 

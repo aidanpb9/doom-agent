@@ -154,6 +154,8 @@ Sprint is a valid action. However, we are omitting it for simplicity. The main b
 - Loot pickup range: ~60 units from item
 - game.get_state.screen_buffer.shape gives (channels, height, width) (needed for combat aim)
 - can damage enemies if horizontally aligned even if not vertically aligned
+- VizDoom angles: 0=East, 90=North, 180=West, 270=South (tested with temporary script)
+
 
 
 ## References
@@ -163,6 +165,7 @@ Sprint is a valid action. However, we are omitting it for simplicity. The main b
 - For more specific item names: https://zdoom.org/w/index.php?title=Main_Page
 
 ## Future Work
+- Visual map of agent's run after episode could be useful
 - Stuck state, how it could work:
     Notes: The idea is to help TRAVERSE or RECOVER pathfinding get back to the main path. Even though we might want to shoot enemies while stuck, that would introduce cycles without state tracking (this architecture does not have). Returns to TRAVERSE even if previously in RECOVER to avoid using state history, TRAVERSE will take it to RECOVER anyways if needed
     Entry: From TRAVERSE or RECOVER when stuck detection triggered (see Hyperparameters)

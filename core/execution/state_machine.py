@@ -5,8 +5,7 @@ from core.execution.game_state import GameState, EnemyObject
 from core.execution.action_decoder import ActionDecoder
 from core.utils import has_clear_world_line
 from config.constants import (HEALTH_THRESHOLD, ARMOR_THRESHOLD, AMMO_THRESHOLD,
-    HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS, SCAN_FREQUENCY, SCAN_FREQUENCY_MAX, 
-    SCAN_COOLDOWN, COMBAT_HOLD_TICKS, COMBAT_AIM_THRESHOLD, VERTICAL_IGNORE_THRESHOLD, TICK)
+    HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS, SCAN_INTERVAL, COMBAT_HOLD_TICKS, COMBAT_AIM_THRESHOLD, VERTICAL_IGNORE_THRESHOLD, TICK)
 from enum import Enum
 import random
 
@@ -65,12 +64,9 @@ class StateMachine:
         if self.last_state == State.SCAN:
             return self._scan(gamestate)
         
-        if not SCAN_FREQUENCY:
-            is_scan_chance = False
-        else:
-            scan_range = int(SCAN_FREQUENCY_MAX / SCAN_FREQUENCY)
-            is_scan_chance = random.randint(1, scan_range) == random.randint(1, scan_range)
+        is_scan_chance = random.randint(1, SCAN_INTERVAL) == 1
         if not self.scan_cooldown and (gamestate.is_dmg_taken_since_last_step or is_scan_chance):
+            self.scan_cooldown = SCAN_INTERVAL
             return self._scan(gamestate)
 
         #TRAVERSE
@@ -113,11 +109,11 @@ class StateMachine:
     def _scan(self, gamestate: GameState) -> list[int]:
         """Spin right until 360 is done. Return turn action."""
         #reset cooldown every time we enter, so when we leave it decrements naturally
-        self.scan_cooldown = SCAN_COOLDOWN 
+        self.scan_cooldown = SCAN_INTERVAL 
 
         #update total turn degrees if came from scan
         if self.last_state == State.SCAN:
-            deg = gamestate.angle - self.scan_last_angle
+            deg = self.scan_last_angle - gamestate.angle #degrees are clockwise in this game
             if deg < 0:
                 deg += 360 #this works since we do right turns only
             self.scan_total_deg += deg

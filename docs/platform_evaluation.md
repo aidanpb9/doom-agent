@@ -57,7 +57,7 @@ python3 -c "import vizdoom as vzd; import time; game = vzd.DoomGame(); game.set_
 1. **Action space:** Has many available actions, but not all are useful/necessary. View all actions with: 
 
     python3 -c "import vizdoom as vzd; [print(attr) for attr in dir(vzd.Button) if not attr.startswith('_')]"
-2. **Seed:** Seeds controls some game RNG. We will use one specific seed to minimize randomness.
+2. **Seed:** Random. Seeds don't guarantee deterministic reproducibility. See ga design doc for more info
 3. **Tick rate:** Affects how fast things happen in game. VizDoom's tick rate is 35 by default. We will not change this. 
 3. **Testing Speed:** Slow/fast modes are controlled with frame skip. In fast mode the agent makes decisions about 4 times per second (sees every 8 frames). In slow mode it is 35 times per second. This means there will be some difference in behavior between the modes. So, the genetic algorithm will be ran in fast mode while slow mode will be used for demos, observations, and testing.
 

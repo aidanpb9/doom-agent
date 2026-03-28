@@ -26,7 +26,6 @@ class Agent:
     
     def initialize_game(self, headless=False) -> None:
         """Does VizDoom setup, loads configs, and creates runtime objects."""
-        random.seed(42)
         self.game = vzd.DoomGame()
         self.game.load_config("config/vizdoom.cfg")
         self._apply_fast_settings() if headless else self._apply_native_settings()

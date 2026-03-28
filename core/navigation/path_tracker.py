@@ -369,5 +369,3 @@ class PathTracker:
         self.prev_health = gamestate.health
         self.prev_armor = gamestate.armor
         self.prev_ammo = gamestate.ammo
-
-        
