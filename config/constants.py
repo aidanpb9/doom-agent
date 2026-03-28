@@ -10,7 +10,6 @@ ARMOR_THRESHOLD = 5              #enter RECOVER if armor drops below this
 AMMO_THRESHOLD = 30              #enter RECOVER if ammo drops below this
 SCAN_INTERVAL = 140              #1-in-N chance per tick of triggering a scan, also used as cooldown
 COMBAT_HOLD_TICKS = 35           #ticks to keep targeting after enemy leaves FOV
-VERTICAL_IGNORE_THRESHOLD = 0.15 #fraction of screen height, ignore enemies above/below this
 
 
 #Game Engine

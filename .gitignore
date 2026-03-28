@@ -31,28 +31,21 @@ env/
 *.swp
 *.swo
 
-# Logs (keep only last_run.json)
-logs/*
-!logs/last_run.json
-!logs/navmesh_wads/
-!logs/navmesh_wads/**
+# Logs — errors only, overwritten each run
+logs/
+
+# Runtime outputs generated each run
+output/run/
+output/evolve/
 
 # Vendored github repos
 zdoom-navmesh-generator-master/
 zdoom-pathfinding-master/
 
-# WADS
-wads/
+# WADs — binary, distributed separately
+maps/wads/
 
 # VizDoom generated files
-# make sure vizdoom_config.cfg IS NOT HERE: it needs to be tracked
 _vizdoom.ini
 vizdoom-crash.log
 gdb-*
-
-# Telemetry runtime outputs
-telemetry/tier0/
-telemetry/tier1/
-telemetry/tier2/
-telemetry/tlp/
-

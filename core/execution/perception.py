@@ -30,8 +30,7 @@ class Perception:
             enemies_killed=info["enemies_killed"],
             is_dmg_taken_since_last_step=self._detect_damage(info["health"]),
             ##screen_buffer shape is (height, width), index 0=height, 1=width
-            screen_width=vizdoom_state.screen_buffer.shape[1] if vizdoom_state.screen_buffer is not None else 0,
-            screen_height=vizdoom_state.screen_buffer.shape[0] if vizdoom_state.screen_buffer is not None else 0
+            screen_width=vizdoom_state.screen_buffer.shape[1] if vizdoom_state.screen_buffer is not None else 0
         )
 
     @staticmethod

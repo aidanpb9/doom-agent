@@ -7,7 +7,7 @@ from core.execution.action_decoder import ActionDecoder
 from core.utils import has_clear_world_line
 from config.constants import (HEALTH_THRESHOLD, ARMOR_THRESHOLD, AMMO_THRESHOLD,
     HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS, SCAN_INTERVAL, COMBAT_HOLD_TICKS, 
-    COMBAT_AIM_THRESHOLD, VERTICAL_IGNORE_THRESHOLD, TICK, STUCK_RECOVERY_TICKS)
+    COMBAT_AIM_THRESHOLD, TICK, STUCK_RECOVERY_TICKS)
 from enum import Enum
 import random
 
@@ -50,8 +50,8 @@ class StateMachine:
         if self.stuck_recovery_ticks > 0:
             return self._stuck()
 
-        #COMBAT
-        if self.combat_hold or (gamestate.enemies_visible and gamestate.ammo > 0):
+        #COMBAT — require ammo even when hold is active, so we exit combat when ammo runs out
+        if (self.combat_hold or gamestate.enemies_visible) and gamestate.ammo > 0:
             return self._combat(gamestate)
 
         #RECOVER
@@ -162,11 +162,8 @@ class StateMachine:
                 continue
             if not has_clear_world_line(gamestate.pos_x, gamestate.pos_y, enemy.pos_x, enemy.pos_y, self.blocking_segments):
                 continue
-            screen_y_center = (enemy.screen_y - gamestate.screen_height * 0.5) / gamestate.screen_height
-            if abs(screen_y_center) > VERTICAL_IGNORE_THRESHOLD:
-                continue
-            
-            #normalize to -0.5 to 0.5, negative=left of center, positive=right of center
+            #normalize horizontal offset to -0.5..0.5 (negative=left, positive=right)
+            #no vertical filter needed — engine autoaim handles elevation via +autoaim 35 in vizdoom.cfg
             offset_x = (enemy.screen_x - gamestate.screen_width * 0.5) / gamestate.screen_width
             if abs(offset_x) < best_offset:
                 best = enemy

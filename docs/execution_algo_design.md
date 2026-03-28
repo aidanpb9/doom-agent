@@ -102,7 +102,7 @@ stateDiagram-v2
 ## COMBAT
 **Notes:**
 - Higher priority than RECOVER — agent finishes the fight before seeking loot
-- Vertical enemies (too far above/below) are filtered out and do not trigger combat hold
+- Vertical aiming is handled by the engine (`+autoaim 35` in vizdoom.cfg), no screen-space filtering needed
 
 **Entry:**
 - From TRAVERSE, SCAN, or RECOVER
@@ -180,7 +180,7 @@ Sprint is a valid action. However, we are omitting it for simplicity. The main b
 - FOV-limited: state.labels only shows objects in current view
 - Objects behind agent or passed by disappear from labels
 - Loot pickup range: ~60 units from item
-- game.get_state.screen_buffer.shape gives (channels, height, width) (needed for combat aim)
+- game.get_state.screen_buffer.shape gives (height, width) for GRAY8 or (height, width, channels) for RGB24, VizDoom uses channels-last, so shape[1] is always width
 - can damage enemies if horizontally aligned even if not vertically aligned
 - VizDoom angles: 0=East, 90=North, 180=West, 270=South (tested with temporary script)
 
@@ -193,5 +193,6 @@ Sprint is a valid action. However, we are omitting it for simplicity. The main b
 - For more specific item names: https://zdoom.org/w/index.php?title=Main_Page
 
 ## Future Work
-- Visual map of agent's run after episode could be useful
-- Detour state or Breadcrumb pathfinding could allow more exploration
+- Combat blackist (if needed): if we don't kill any enemies after being in combat for a while, it means the enemy is behind some geometry and we need to stop shooting or all ammo will get wasted. Can work similarly to loot node blacklist in path_tracker.
+- Move backwards during combat. A few ways to do this. Could make it a GA param. Helpful when there's an enemy with a lot of health and we need more time to kill it.
+- A way to allow for more exploration. A detour state or some type of breadcrumb pathfinding could help.

@@ -27,7 +27,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Radiation intensity | 0.25 | Represents probability per parameter of a bit-flip occuring (mutation) |
 | Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
 | Generations | 50-1000 (Estimate) | Adjust based on convergence/time constraints |
-| Episode timeout | 6300 ticks (180 seconds) | E1M1 time limit |
+| Episode timeout | 12600 ticks (360 seconds) | E1M1 time limit |
 | Evaluation seed | Random | See Eval Protocol below |
 
 
@@ -42,7 +42,6 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Parameter | Range | Description |
 |-----------|-------|-------------|
 | `combat_hold_ticks` | 5-50 ticks | Ticks that agent stays in combat when enemy leaves FOV |
-| `vertical_ignore_threshold` | 0.1-0.5 %of screen | When to engage enemies that are different y-axis |
 
 **Recovery Parameters:**
 | Parameter | Range | Description |
@@ -56,7 +55,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 |-----------|-------|-------------|
 | `scan_interval` | 35-280 ticks | How often agent is likely to scan |
 
-**Total:** 8 parameters per genome
+**Total:** 7 parameters per genome
 
 
 ## Fitness Function
@@ -143,7 +142,7 @@ After evolution completes, generate plots from evolution_history.json:
 **2. Parameter Evolution:**
 - X-axis: Generation number  
 - Y-axis: Parameter value
-- One line per parameter (8 lines total)
+- One line per parameter (7 lines total)
 - Shows: Which params changed most
 
 **3. Success Rate:**

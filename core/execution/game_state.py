@@ -33,6 +33,5 @@ class GameState:
     angle: float
     enemies_killed: int
     is_dmg_taken_since_last_step: bool
-    screen_width: float 
-    screen_height: float
+    screen_width: float
 

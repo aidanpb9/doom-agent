@@ -18,14 +18,19 @@ class Agent:
 
     def __init__(self):
         self.game = None
+        self.map_name = DEFAULT_MAP_NAME
+        self.headless = False
         self.perception = None
         self.state_machine = None
         self.path_tracker = None #for loading static nodes
         self.telemetry_writer = None
         self.blocking_segments = None #useful for combat
+        self.episode_count = 0
     
-    def initialize_game(self, headless=False) -> None:
+    def initialize_game(self, headless=False, map_name=DEFAULT_MAP_NAME) -> None:
         """Does VizDoom setup, loads configs, and creates runtime objects."""
+        self.map_name = map_name
+        self.headless = headless
         self.game = vzd.DoomGame()
         self.game.load_config("config/vizdoom.cfg")
         self._apply_fast_settings() if headless else self._apply_native_settings()
@@ -36,21 +41,21 @@ class Agent:
         except Exception: pass
 
         self.game.set_doom_scenario_path(str(Path(DEFAULT_WAD_PATH).resolve()))
-        self.game.set_doom_map(DEFAULT_MAP_NAME)
+        self.game.set_doom_map(map_name)
         self.game.set_episode_timeout(DEFAULT_EPISODE_TIMEOUT)
         self.game.init()
-        self.blocking_segments = load_blocking_segments_from_wad(DEFAULT_WAD_PATH, DEFAULT_MAP_NAME)
+        self.blocking_segments = load_blocking_segments_from_wad(DEFAULT_WAD_PATH, map_name)
 
         #Create all runtime objects
         graph = Graph() #one Graph instance shared between classes
         nav_engine = NavigationEngine(graph)
         self.path_tracker = PathTracker(graph, nav_engine, self.blocking_segments)
-        self.path_tracker.load_static_nodes(DEFAULT_MAP_NAME)
+        self.path_tracker.load_static_nodes(map_name)
         self.state_machine = StateMachine(self.path_tracker, self.blocking_segments)
         self.perception = Perception()
-        self.telemetry_writer = TelemetryWriter() #TODO: after cleaning TM
+        self.telemetry_writer = TelemetryWriter()
 
-    def run_episode(self, params: dict | None = None) -> dict:
+    def run_episode(self, params: dict | None = None, full_telemetry: bool = True) -> dict:
         """calls Perception and StateMachine each tick.
         Uses params as inputs from the GA.
         Returns stats for the genetic algorithm."""
@@ -67,6 +72,8 @@ class Agent:
 
         #Setup
         self.game.new_episode()
+        self.episode_count += 1
+        self.telemetry_writer.start_episode(self.map_name, self.episode_count, full_telemetry=full_telemetry)
         state = self.game.get_state()
         gamestate = self.perception.parse(state)
         self.path_tracker.last_node = self.path_tracker._nearest_node(gamestate)
@@ -82,14 +89,16 @@ class Agent:
             gamestate = self.perception.parse(state)
             action = self.state_machine.update(gamestate)
             self.game.make_action(action, TICK) #decide action every tic
+            self.telemetry_writer.record_step(gamestate, action, self.state_machine.last_state.value)
             tick_count += TICK
 
         #Derive how the level ended
         is_dead = self.game.is_player_dead()
-        is_timeout = self.game.get_episode_time() >= DEFAULT_EPISODE_TIMEOUT
+        is_timeout = tick_count >= DEFAULT_EPISODE_TIMEOUT
         level_completed = self.game.is_episode_finished() and not is_dead and not is_timeout
         if is_dead:
             end_reason = "death"
+            gamestate.health = 0
         elif is_timeout:
             end_reason = "timeout"
         elif level_completed:
@@ -106,6 +115,8 @@ class Agent:
         stats["enemies_killed"] = gamestate.enemies_killed
         stats["waypoints_reached"] = len(self.path_tracker.visited_waypoints)
         stats["end_reason"] = end_reason
+
+        self.telemetry_writer.finalize_episode(stats)
         return stats
 
     def close(self) -> None:
