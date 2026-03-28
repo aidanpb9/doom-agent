@@ -36,7 +36,13 @@ class StateMachine:
         self.stuck_direction = None #need to maintain one direction per attempt
 
     def update(self, gamestate: GameState) -> list[int]:
-        """Updates game info, then switches to the correct state based on priority."""
+        """Evaluate state priority each tick and return the action for the highest active state.
+        Priority: STUCK > COMBAT > RECOVER > SCAN > TRAVERSE.
+        STUCK highest because agent can't fight or navigate effectively, and
+        recovery only lasts ~2 seconds so interrupting combat is a small cost.
+        COMBAT above RECOVER so the agent finishes fights before seeking loot, usually safer
+        to finish the fight. """
+
         #Updates
         self.combat_hold = max(0, self.combat_hold - TICK)
         self.scan_cooldown = max(0, self.scan_cooldown - TICK)

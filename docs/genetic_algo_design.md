@@ -28,7 +28,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
 | Generations | 50-1000 (Estimate) | Adjust based on convergence/time constraints |
 | Episode timeout | 12600 ticks (360 seconds) | E1M1 time limit |
-| Evaluation seed | Random | See Eval Protocol below |
+| Evaluation seed | Random per episode | Python RNG seeded fresh each episode, seed recorded in Tier 1 Telemetry |
 
 
 ## Evolvable Parameters (keeping their ranges wide for observation)
@@ -110,7 +110,7 @@ else:
 **Per-Agent Evaluation:**
 - Map: E1M1 until plateau, then E1M2 and so on
 - Timeout: 12600 ticks (360 seconds) (covers all levels)
-- Seed: Random. No line of code needed because Python makes the seed random anyways. The reason is that even with a set seed, gameplay was not deterministic, and it was also causing the SCANs to activate in the same places. We will use average score of 3 runs.
+- Seed: A fresh random seed is generated and set at the start of each episode (`random.seed(seed)`). The seed is recorded in Tier 1. It controls Python RNG only (SCAN timing, STUCK turn direction), but VizDoom's internal RNG is independent, so full episode reproduction is not possible. Average score of 3 runs is used to smooth variation.
 
 **Takes up to 10ish seconds per level in headless mode.**
 

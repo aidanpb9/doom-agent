@@ -1,4 +1,5 @@
 """Render an SVG map showing agent path from a Tier 2 action stream.
+Called automatically by TelemetryWriter.finalize_episode() at the end of every episode.
 
 Usage (CLI):
     python tools/replay_map.py <tier2_csv> <map_json> <output_svg> [wad_path] [map_name] [end_reason]

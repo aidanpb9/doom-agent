@@ -70,10 +70,12 @@ class Agent:
             "end_reason": "timeout"
         }
 
-        #Setup
+        #Setup — seed Python RNG per episode so SCAN/STUCK randomness is reproducible from seed alone
+        seed = random.randrange(2**32)
+        random.seed(seed)
         self.game.new_episode()
         self.episode_count += 1
-        self.telemetry_writer.start_episode(self.map_name, self.episode_count, full_telemetry=full_telemetry)
+        self.telemetry_writer.start_episode(self.map_name, self.episode_count, seed=seed, full_telemetry=full_telemetry)
         state = self.game.get_state()
         gamestate = self.perception.parse(state)
         self.path_tracker.last_node = self.path_tracker._nearest_node(gamestate)
@@ -94,11 +96,12 @@ class Agent:
 
         #Derive how the level ended
         is_dead = self.game.is_player_dead()
+        #tick_count used because after episode ends, game.get_episode_time() returns 0
         is_timeout = tick_count >= DEFAULT_EPISODE_TIMEOUT
         level_completed = self.game.is_episode_finished() and not is_dead and not is_timeout
         if is_dead:
             end_reason = "death"
-            gamestate.health = 0
+            gamestate.health = 0 #force to 0 because game reports last alive value
         elif is_timeout:
             end_reason = "timeout"
         elif level_completed:

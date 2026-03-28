@@ -50,6 +50,7 @@ Episode index is sequential across an entire evolution run and does not reset be
 **Fields:**
 - `episode_id`: sequential episode index
 - `level_id`: map name (e.g. `"E1M1"`)
+- `seed`: Python RNG seed for this episode, controls SCAN timing and STUCK turn direction. VizDoom's internal RNG is independent and not recorded.
 - `end_reason`: `"completion"`, `"death"`, or `"timeout"`
 - `ticks`: total ticks elapsed
 - `health`, `armor`, `ammo`: final player stats
@@ -103,6 +104,15 @@ writer.finalize_episode(stats)
 - `full_telemetry=True` enables Tier 0 (run mode), map SVG is always generated
 - `genome` dict is embedded in Tier 1 when provided (evolve mode)
 - `record_step` is called every tick (frameskip = 1 always)
+
+
+## Run Mode vs Evolve Mode
+Run mode (`python main.py run`) is ground testing only. It writes to `output/run/`,
+which is wiped at the start of each run so you always have one clean set of outputs.
+`full_telemetry=True` by default. Tier 0 and map SVG always generated.
+
+Evolve mode writes to `output/evolve/` and keeps all episodes across runs so the GA
+can reference any episode by ID. `full_telemetry=False` excludes Tier 0, but map SVG still generated. The satellite runs evolve mode exclusively.
 
 
 ## Design Decisions

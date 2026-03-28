@@ -46,6 +46,7 @@ class TelemetryWriter:
 
     def __init__(self) -> None:
         self._episode_id: int = 0
+        self._seed: int = 0
         self._genome: Optional[dict] = None
         self._full_telemetry: bool = False
 
@@ -64,12 +65,14 @@ class TelemetryWriter:
         self,
         level_id: str,
         episode_id: int,
+        seed: int = 0,
         genome: Optional[dict] = None,
         full_telemetry: bool = False
     ) -> None:
         """Open output files for a new episode."""
         self.close()
         self._episode_id = episode_id
+        self._seed = seed
         self._map_name = level_id.upper()
         self._genome = genome
         self._full_telemetry = full_telemetry
@@ -156,6 +159,7 @@ class TelemetryWriter:
         summary = {
             "episode_id": self._episode_id,
             "level_id": self._map_name,
+            "seed": self._seed,
             "end_reason": stats.get("end_reason", "unknown"),
             "ticks": stats.get("ticks", self._tick_count),
             "health": stats.get("health", 0),
