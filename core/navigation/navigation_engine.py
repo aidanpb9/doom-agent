@@ -53,7 +53,7 @@ class NavigationEngine:
                     f = new_g + h[neighbor]
                     heapq.heappush(heap, (f, counter, neighbor))
 
-    def step_toward(self, x: float, y: float, angle: float, target_node: Node, door_use_timer: int) -> list[int]:
+    def step_toward(self, x: float, y: float, angle: float, target_node: Node) -> list[int]:
         """Given current pos and target point, produce an action.
         Only use forward, turn left, tur right, or USE."""
         actions = []
@@ -70,12 +70,6 @@ class NavigationEngine:
                 actions.append(ActionDecoder.turn_left())
             else:
                 actions.append(ActionDecoder.turn_right())
-        
-        #handling doors
-        if not door_use_timer and target_node.node_type in (NodeType.DOOR, NodeType.EXIT):
-            distance = calculate_euclidean_distance(x, y, target_node.x, target_node.y)
-            if distance < DOOR_USE_DISTANCE:
-                actions.append(ActionDecoder.use())
 
         action = ActionDecoder.combine(*actions)
         return action

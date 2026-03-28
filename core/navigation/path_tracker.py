@@ -6,7 +6,7 @@ from core.navigation.navigation_engine import NavigationEngine
 from core.execution.game_state import GameState
 from core.execution.action_decoder import ActionDecoder
 from core.utils import calculate_euclidean_distance, has_clear_world_line, point_to_segment_distance
-from config.constants import (ACTION_USE, DOOR_USE_COOLDOWN, 
+from config.constants import (DOOR_USE_COOLDOWN, 
     NODE_PROXIMITY, LOOT_NODE_MAX_DISTANCE, DOOR_USE_DISTANCE, 
     LOOT_PROXIMITY, TICK, HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS,
     WEAPON_KEYWORDS, ANCHOR_MIN_WALL_DISTANCE, STUCK_CHECK_INTERVAL, STUCK_COOLDOWN,
@@ -127,10 +127,23 @@ class PathTracker:
         if not self.next_node:
             return ActionDecoder.null_action()
         
-        action = self.nav_engine.step_toward(x, y, angle, self.next_node, self.door_use_timer)
+        action = self.nav_engine.step_toward(x, y, angle, self.next_node)
 
-        if action[ACTION_USE]:
-            self.door_use_timer = DOOR_USE_COOLDOWN
+        #Do USE on any nearby door regardless of nav target, handles doors that closed during combat
+        #and were already consumed from cur_path. EXIT is intentional only, fire when it's next_node
+        #to avoid exiting the level early while collecting loot nearby.
+        if not self.door_use_timer:
+            for node in self.graph.nodes:
+                if node.node_type == NodeType.DOOR:
+                    if calculate_euclidean_distance(x, y, node.x, node.y) < DOOR_USE_DISTANCE:
+                        action = ActionDecoder.combine(action, ActionDecoder.use())
+                        self.door_use_timer = DOOR_USE_COOLDOWN
+                        break
+                elif node.node_type == NodeType.EXIT and node is self.next_node:
+                    if calculate_euclidean_distance(x, y, node.x, node.y) < DOOR_USE_DISTANCE:
+                        action = ActionDecoder.combine(action, ActionDecoder.use())
+                        self.door_use_timer = DOOR_USE_COOLDOWN
+                        break
         return action
 
     def set_goal_by_type(self, gamestate: GameState, node_type: NodeType, keywords: set[str] | None = None) -> None:
@@ -277,7 +290,8 @@ class PathTracker:
                 
                 #Don't update anchor if next_node is None, _make_anchor returns early without
                 #creating a replacement, leaving the loot node isolated with no edges in the graph.
-                if new_distance < old_distance and self.next_node is not None and old_anchor is not self.next_node:
+                if (new_distance < old_distance and self.next_node is not None and 
+                    old_anchor is not self.next_node and old_anchor not in self.cur_path):
                     #Reconnect old_anchor's non-loot neighbors before removing it,
                     #so that the chain through old_anchor isn't severed.
                     others = []
@@ -287,7 +301,10 @@ class PathTracker:
 
                     waypoint_node = Node(gamestate.pos_x, gamestate.pos_y, NodeType.WAYPOINT)
                     self.graph.add_node(waypoint_node)
-                    self.last_node = waypoint_node
+
+                    if self.last_node is old_anchor:
+                        self.last_node = self._nearest_node(gamestate, static_only=True)
+
                     self.graph.remove_node(old_anchor) #removes all old_anchor edges
                     self.graph.add_edge(loot_node, waypoint_node)
                     for other in others:
@@ -302,7 +319,6 @@ class PathTracker:
             return
         
         self.graph.add_node(waypoint_node)
-        self.graph.remove_edge(self.last_node, self.next_node)
         self.graph.add_edge(loot_node, waypoint_node)
         self.graph.add_edge(self.last_node, waypoint_node)
         self.graph.add_edge(waypoint_node, self.next_node)

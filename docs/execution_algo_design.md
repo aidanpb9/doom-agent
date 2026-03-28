@@ -12,7 +12,6 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 
 ## Layer 1: Navigation Engine
 - Use A* to pathfind from points A to B
-- If door detected in path, execute USE action (doors defined with WADlinedef data)
 
 
 ## Layer 2: PathTracker
@@ -21,6 +20,7 @@ The execution algorithm is a hierarchal state machine with tunable params that c
 - Dynamic nodes get placed by the agent during playtime, these reset upon level restart
 - When agent sees loot, a loot node is placed at the loot position, and a waypoint node is placed at the current position
 - An edge connects these two nodes, and the waypoint node is inserted between two static nodes
+- If door or exit detected in path, execute USE action (defined with WADlinedef data)
 
 
 ## Layer 3: States

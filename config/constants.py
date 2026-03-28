@@ -13,7 +13,7 @@ DEFAULT_TICKRATE = 35 #Doom's native ticks per second rate, used in window mode
 HEADLESS_TICKRATE = 2000 #speeds up headless mode, used in headless(no window) mode
 DEFAULT_MAP_NAME = "E1M1"
 DEFAULT_WAD_PATH = "maps/wads/doom.wad"
-DEFAULT_EPISODE_TIMEOUT = 6300  #ticks (4200=120 seconds @ 35 tic/s)
+DEFAULT_EPISODE_TIMEOUT = 12600  #ticks, covers longest expected level (12600ticks=360s @ 35 tic/s)
 DEFAULT_LOG_INTERVAL = 20 #steps between log entries
 TICK = 1    
 
@@ -86,12 +86,12 @@ LOOT_NODE_MAX_DISTANCE = 400 #GA param, units from loot that we can mark it as a
 
 #Stuck detection and placing valid loot nodes
 ANCHOR_MIN_WALL_DISTANCE = 32 #min distance from a blocking segment to place an anchor. Tune if tight rooms fail to mark loot.
-STUCK_CHECK_INTERVAL = 175   #ticks between stuck checks (~1 second)
-STUCK_DISTANCE_THRESHOLD = 50  #units agent must move to not be considered stuck
-STUCK_COOLDOWN = 210        #ticks before a removed loot node can be re-added (~6 seconds)
+STUCK_CHECK_INTERVAL = 175 #ticks between stuck checks (5 seconds)
+STUCK_DISTANCE_THRESHOLD = 50 #units agent must move to not be considered stuck
+STUCK_COOLDOWN = 210 #ticks before a removed loot node can be re-added (~6 seconds)
 
 #Agent thresholds (won't enter RECOVER if stat = thresh)
-HEALTH_THRESHOLD = 101
+HEALTH_THRESHOLD = 80
 ARMOR_THRESHOLD = 10
 AMMO_THRESHOLD = 20
 

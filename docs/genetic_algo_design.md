@@ -96,25 +96,24 @@ else:
 
 **Evolution:**
 1. Agent B = mutate(Agent A)
-2. Evaluate A and B on E1M1
-3. Compare fitness scores
+2. Evaluate A and B on E1M1 3 times
+3. Compare fitness scores and average them
 4. If fitness(B) > fitness(A):
        Agent A ← Agent B  (new elite)
    Else:
        Retain Agent A (elite preserved)
 5. Save generation results
-6. Repeat
+6. Competition occurs until plateau reached, then move onto next level
 
-**Termination:** Run for fixed number of generations.
+**Termination:** Plateau detection. Move on to next level if episode is beat with current elites and no elite change in 10 generations. 
 
 ## Evaluation Protocol
 **Per-Agent Evaluation:**
-- Map: E1M1
-- Timeout: 4200 ticks (120 seconds)
-- Seed: Fixed (42) for reproducibility
-- Mode: Fast (headless, action_frame_skip=8)
+- Map: E1M1 until plateau, then E1M2 and so on
+- Timeout: 12600 ticks (360 seconds) (covers all levels)
+- Seed: Fixed (42) for reproducibility, but even with set seed, results are not deterministic, so use average score of 3 runs.
 
-**Takes about 2 seconds per level**
+**Takes up to 5ish seconds per level**
 
 **Metrics to collect:**
 - Level completion status
@@ -164,6 +163,5 @@ After evolution completes, generate plots from evolution_history.json:
 ## Future Work
 - add GA param for aiming
 - make the 2 genomes run in parallel (multithread)
-- make visuals live using threading or web dashboard (Flask, Streamlit)
+- make visuals
 - plateau logic to determine when to stop evolving
-- extend to E1M2

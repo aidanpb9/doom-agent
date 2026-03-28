@@ -108,7 +108,7 @@ sequenceDiagram
 
 **Methods:**
 - make_path() (do A* here, return list of nodes to traverse)
-- step_toward() (angle + action to reach next node, if next node is a door, emit USE action with cooldown)
+- step_toward() (angle + action to reach next node)
 
 
 ## Class PathTracker: 
