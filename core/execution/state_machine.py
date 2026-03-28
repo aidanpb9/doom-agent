@@ -1,4 +1,5 @@
-"""Contain the states, state updates, state-based logic, and helpers."""
+"""Priority/hierarchal state machine. Each tick, update() evaluates
+conditions highest to lowest priority and returns an action."""
 from core.navigation.graph import NodeType
 from core.navigation.path_tracker import PathTracker
 from core.execution.game_state import GameState, EnemyObject
@@ -25,13 +26,13 @@ class StateMachine:
     def __init__(self, path_tracker: PathTracker, blocking_segments: list[tuple[float, float, float, float]]):
         self.path_tracker = path_tracker
         self.last_state = State.TRAVERSE
-        self.recover_type = None#so we now what type of loot to find when entering RECOVER
+        self.recover_type = None #so we know what type of loot to find when entering RECOVER
         self.combat_hold = 0 #keeps combat active after last enemy seen, avoid flickering
         self.blocking_segments = blocking_segments
         self.scan_cooldown = 0 #update() decrements this
         self.scan_last_angle = 0 #for calculating how far we've turned since last tick
         self.scan_total_deg = 0 #number of degs since starting a scan
-        self.stuck_recovery_ticks = 0
+        self.stuck_recovery_ticks = 0 #counts down from STUCK_RECOVERY_TICKS, STUCK state active while > 0
         self.stuck_direction = None #need to maintain one direction per attempt
 
     def update(self, gamestate: GameState) -> list[int]:
@@ -47,7 +48,7 @@ class StateMachine:
             self.stuck_recovery_ticks = STUCK_RECOVERY_TICKS
             self.stuck_direction = random.choice([ActionDecoder.turn_right, ActionDecoder.turn_left])
         if self.stuck_recovery_ticks > 0:
-            return self._stuck(gamestate)
+            return self._stuck()
 
         #COMBAT
         if self.combat_hold or (gamestate.enemies_visible and gamestate.ammo > 0):
@@ -84,7 +85,7 @@ class StateMachine:
         #TRAVERSE
         return self._traverse(gamestate)
     
-    def _stuck(self, gamestate) -> list[int]:
+    def _stuck(self) -> list[int]:
         """Choose left or right turn direction + forward for duration of stuck.
         Main purpose is to dislodge from obstacles like barrels or candles."""
         self.stuck_recovery_ticks -= TICK
@@ -94,7 +95,7 @@ class StateMachine:
     def _combat(self, gamestate: GameState) -> list[int]:
         """Aiming and firing. Return attack, turn, or null action."""
         enemy, offset = self._get_best_enemy(gamestate)
-        if not enemy: #don't check offset because it can be 0
+        if not enemy: #offset can be 0 (perfectly aligned), so check enemy only
             #keep moving without updating state to avoid unneeded state transitions
             return self.path_tracker.get_next_move(gamestate.pos_x, gamestate.pos_y, gamestate.angle)
         
@@ -119,7 +120,7 @@ class StateMachine:
     def _scan(self, gamestate: GameState) -> list[int]:
         """Spin right until 360 is done. Return turn action."""
         #reset cooldown every time we enter, so when we leave it decrements naturally
-        self.scan_cooldown = SCAN_INTERVAL 
+        self.scan_cooldown = SCAN_INTERVAL
 
         #update total turn degrees if came from scan
         if self.last_state == State.SCAN:
@@ -149,7 +150,7 @@ class StateMachine:
         self.last_state = State.TRAVERSE
         return action
 
-    def _get_best_enemy(self, gamestate: GameState) -> tuple[EnemyObject, float] | None:
+    def _get_best_enemy(self, gamestate: GameState) -> tuple[EnemyObject | None, float]:
         """Find the most centered visible enemy with a clear line of sight.
         A returned enemy is not blocked by a wall."""
         best = None

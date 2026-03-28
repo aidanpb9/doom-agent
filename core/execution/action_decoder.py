@@ -1,20 +1,15 @@
-"""Provide utilities to construct action vectors for agent actions 
-and decode them. All static methods, no fields."""
+"""Provide utilities to construct action vectors for agent actions.
+All static methods, no fields. vizdoom.cfg has available buttons. 
+We assign indices in constants.py. Each method builds a zero array
+of size ACTION_COUNT and sets a 1 at the relevant index."""
 from config.constants import (
     ACTION_FORWARD, ACTION_BACKWARD, ACTION_TURN_LEFT, ACTION_TURN_RIGHT,
-    ACTION_ATTACK, ACTION_USE, ACTION_COUNT, ACTION_NAMES
+    ACTION_ATTACK, ACTION_USE, ACTION_COUNT
 )
 
 
 class ActionDecoder:
-    """Decode and encode Doom actions.
 
-    Explanation: vizdoom.cfg has available buttons. We assign those in constants.py.
-    Then import those constants here. 
-    In each function, we make an array of 0's with size=8.
-    Then we set a 1 in an array position that corresponds to the action and return it.
-    """
-    
     @staticmethod
     def null_action() -> list[int]:
         """Return a null action (stand still)."""
@@ -29,7 +24,7 @@ class ActionDecoder:
 
     @staticmethod
     def backward() -> list[int]:
-        """Move backward."""
+        """Move backward. NOTE: not used yet, but no harm in keeping."""
         action = [0] * ACTION_COUNT
         action[ACTION_BACKWARD] = 1
         return action
@@ -67,7 +62,7 @@ class ActionDecoder:
         """Combines multiple actions together."""
         result = [0] * ACTION_COUNT
         for action in actions:
-             for index, value in enumerate(action):
+            for index, value in enumerate(action):
                 if value:
                     result[index] = value
         return result

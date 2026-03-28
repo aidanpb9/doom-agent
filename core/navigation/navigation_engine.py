@@ -21,7 +21,7 @@ class NavigationEngine:
         closed = set() #to avoid processing nodes we've already seen
         parent = {} #dict to reconstruct path at the end
         g = {start_node: 0} #each node is given a cost so far (sum of edges traversed)
-        h = {} #each node has an estimated cost to goal using Euclidean distance 
+        h = {} #each node has an estimated cost to goal using Euclidean distance
         counter = 0 #a tiebreaker if node scores are equal so we don't ever compare Node objects
 
         heapq.heappush(heap, (0.0, counter, start_node)) #push (priority, counter, item)
@@ -50,12 +50,12 @@ class NavigationEngine:
                     parent[neighbor] = current
                     h[neighbor] = calculate_euclidean_distance(neighbor.x, neighbor.y, end_node.x, end_node.y)
                     counter += 1
-                    f = new_g + h[neighbor]
+                    f = new_g + h[neighbor] #f = g + h (total estimated cost)
                     heapq.heappush(heap, (f, counter, neighbor))
 
     def step_toward(self, x: float, y: float, angle: float, target_node: Node) -> list[int]:
         """Given current pos and target point, produce an action.
-        Only use forward, turn left, tur right, or USE."""
+        Only use forward, turn left, turn right, or USE."""
         actions = []
 
         #VizDoom angles: 0=East, 90=North, 180=West, 270=South (tested with temporary script)

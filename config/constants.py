@@ -35,7 +35,6 @@ ACTION_TURN_RIGHT = 3
 ACTION_ATTACK = 4
 ACTION_USE = 5
 ACTION_COUNT = 6                #for making arrays of the correct size
-ACTION_NAMES = ["FORWARD", "BACKWARD", "TURN_LEFT", "TURN_RIGHT", "ATTACK", "USE"]
 
 
 #VizDoom keywords (matched against state.labels object_name)

@@ -6,7 +6,7 @@ from core.utils import calculate_euclidean_distance
 
 
 class NodeType(Enum):
-    """Represent the different node types of the graph.""" 
+    """Represent the different node types of the graph."""
     WAYPOINT = 1
     LOOT = 2
     DOOR = 3
@@ -20,7 +20,7 @@ class Node:
         x: float, 
         y: float, 
         node_type: NodeType, 
-        name: str | None  = None, 
+        name: str | None = None, 
         special: int | None = None, 
         is_static: bool = False
     ):
@@ -28,7 +28,7 @@ class Node:
         self.y = y
         self.node_type = node_type
         self.name = name
-        self.special = special      
+        self.special = special   
         self.is_static = is_static
 
 
@@ -44,8 +44,8 @@ class Graph:
     """Store the nav node graph as a collection of nodes and edges.
     Pathtracker owns and mutates this. NavigationEngine reads it for pathfinding."""
     def __init__(self):
-        self.nodes = [] 
-        self.edges = [] 
+        self.nodes = []
+        self.edges = []
     
     def add_node(self, node: Node) -> None:
         """Register this node as part of Graph so pathfinding can reach it.
@@ -64,7 +64,7 @@ class Graph:
         self.edges.append(Edge(node1, node2))
     
     def remove_edge(self, node1: Node, node2: Node) -> None:
-        """Remove the edge connnecting node1 and node2."""
+        """Remove the edge connecting node1 and node2."""
         for edge in self.edges:
             if edge.node1 is node1 and edge.node2 is node2:
                 self.edges.remove(edge)
@@ -74,7 +74,7 @@ class Graph:
                 return
             
     def get_edge(self, node1: Node, node2: Node) -> Edge | None:
-        """Return the edge connnecting node1 and node2, or None if not found."""
+        """Return the edge connecting node1 and node2, or None if not found."""
         for edge in self.edges:
             if edge.node1 is node1 and edge.node2 is node2:
                 return edge
