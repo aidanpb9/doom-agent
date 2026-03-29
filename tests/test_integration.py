@@ -22,6 +22,7 @@ and surface the missing dependency explicitly rather than passing silently.
 import pytest
 from pathlib import Path
 from core.execution.agent import Agent
+from ga.genetic_algo import compute_fitness
 
 
 pytestmark = pytest.mark.local
@@ -54,8 +55,11 @@ def test_run_episode_returns_stats_with_all_required_keys(agent):
 
 def test_tier1_and_tier2_files_created_on_disk(agent):
     #episode_count increments each run_episode() call, so we capture it after
-    #the call to know which episode number was just written
-    agent.run_episode()
+    #the call to know which episode number was just written.
+    #finalize_episode() must be called explicitly, run_episode() only returns stats.
+    stats = agent.run_episode()
+    stats["fitness"] = compute_fitness(stats)
+    agent.telemetry_writer.finalize_episode(stats)
     ep = agent.episode_count
     out = Path("output/run")
     assert (out / f"ep_{ep:04d}_summary.json").exists()
@@ -64,7 +68,10 @@ def test_tier1_and_tier2_files_created_on_disk(agent):
 
 def test_map_svg_is_generated(agent):
     #requires maps/json/E1M1.json to exist — if missing, render silently fails
-    #and this assertion surfaces the gap rather than passing silently
-    agent.run_episode()
+    #and this assertion surfaces the gap rather than passing silently.
+    #finalize_episode() triggers the map render.
+    stats = agent.run_episode()
+    stats["fitness"] = compute_fitness(stats)
+    agent.telemetry_writer.finalize_episode(stats)
     ep = agent.episode_count
     assert (Path("output/run") / f"ep_{ep:04d}_map.svg").exists()

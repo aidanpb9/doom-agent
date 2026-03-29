@@ -35,10 +35,14 @@ class Agent:
         self.game.load_config("config/vizdoom.cfg")
         self._apply_fast_settings() if headless else self._apply_native_settings()
 
-        try: self.game.set_sectors_info_enabled(True)
-        except Exception: pass
-        try: self.game.set_lines_info_enabled(True)
-        except Exception: pass
+        try: 
+            self.game.set_sectors_info_enabled(True)
+        except Exception: 
+            pass
+        try: 
+            self.game.set_lines_info_enabled(True)
+        except Exception: 
+            pass
 
         self.game.set_doom_scenario_path(str(Path(DEFAULT_WAD_PATH).resolve()))
         self.game.set_doom_map(map_name)
@@ -145,8 +149,10 @@ class Agent:
     def _apply_native_settings(self):
         """Windowed, full rendering for run mode."""
         def safe(fn, *args):
-            try: fn(*args)
-            except Exception: pass
+            try: 
+                fn(*args)
+            except Exception: 
+                pass
 
         safe(self.game.set_ticrate, DEFAULT_TICKRATE)
         safe(self.game.set_window_visible, True)
@@ -163,8 +169,10 @@ class Agent:
     def _apply_fast_settings(self):
         """Headless, minimal rendering for evolve mode."""
         def safe(fn, *args):
-            try: fn(*args)
-            except Exception: pass
+            try: 
+                fn(*args)
+            except Exception: 
+                pass
 
         safe(self.game.set_ticrate, HEADLESS_TICKRATE)
         safe(self.game.set_window_visible, False)

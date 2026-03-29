@@ -1128,12 +1128,12 @@ def _move_toward(
 ) -> tuple[float, float]:
     dx = dst[0] - src[0]
     dy = dst[1] - src[1]
-    l2 = dx * dx + dy * dy
-    if l2 <= 1e-9:
+    dist_sq = dx * dx + dy * dy
+    if dist_sq <= 1e-9:
         return src
-    l = math.sqrt(l2)
-    t = min(1.0, dist / l)
-    return (src[0] + dx * t, src[1] + dy * t)
+    length = math.sqrt(dist_sq)
+    step_fraction = min(1.0, dist / length)
+    return (src[0] + dx * step_fraction, src[1] + dy * step_fraction)
 
 
 def _node_clearance(

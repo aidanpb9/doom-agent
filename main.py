@@ -23,7 +23,7 @@ import argparse
 from pathlib import Path
 from core.execution.agent import Agent
 from ga.genetic_algo import compute_fitness
-from config.constants import RUN_DIR, EVOLVE_DIR
+from config.constants import RUN_DIR
 
 
 #Ensure project root is on the path so imports work from any working directory

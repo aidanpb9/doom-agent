@@ -40,7 +40,9 @@ def test_remove_node():
 def test_remove_node_also_removes_edges():
     g = Graph()
     a, b, c = make_node(0, 0), make_node(1, 0), make_node(2, 0)
-    g.add_node(a); g.add_node(b); g.add_node(c)
+    g.add_node(a)
+    g.add_node(b)
+    g.add_node(c)
     g.add_edge(a, b)
     g.add_edge(b, c)
     g.remove_node(b)
@@ -57,7 +59,8 @@ def test_remove_node_also_removes_edges():
 def test_add_edge():
     g = Graph()
     a, b = make_node(0, 0), make_node(3, 4)
-    g.add_node(a); g.add_node(b)
+    g.add_node(a)
+    g.add_node(b)
     g.add_edge(a, b)
     assert len(g.edges) == 1
 
@@ -65,7 +68,8 @@ def test_add_edge():
 def test_remove_edge():
     g = Graph()
     a, b = make_node(), make_node(1, 0)
-    g.add_node(a); g.add_node(b)
+    g.add_node(a)
+    g.add_node(b)
     g.add_edge(a, b)
     g.remove_edge(a, b)
     assert len(g.edges) == 0
@@ -74,7 +78,8 @@ def test_remove_edge():
 def test_get_edge_returns_correct_edge():
     g = Graph()
     a, b = make_node(0, 0), make_node(3, 4)
-    g.add_node(a); g.add_node(b)
+    g.add_node(a)
+    g.add_node(b)
     g.add_edge(a, b)
     edge = g.get_edge(a, b)
     assert edge is not None
@@ -85,7 +90,8 @@ def test_get_edge_is_undirected():
     # adding edge (a, b) should be findable in both directions
     g = Graph()
     a, b = make_node(), make_node(1, 0)
-    g.add_node(a); g.add_node(b)
+    g.add_node(a)
+    g.add_node(b)
     g.add_edge(a, b)
     assert g.get_edge(a, b) is not None
     assert g.get_edge(b, a) is not None
@@ -94,7 +100,8 @@ def test_get_edge_is_undirected():
 def test_get_edge_returns_none_when_not_found():
     g = Graph()
     a, b = make_node(), make_node(1, 0)
-    g.add_node(a); g.add_node(b)
+    g.add_node(a)
+    g.add_node(b)
     assert g.get_edge(a, b) is None
 
 
@@ -102,7 +109,8 @@ def test_edge_length_precomputed():
     #3-4-5 triangle, edge length should be 5.0
     g = Graph()
     a, b = make_node(0, 0), make_node(3, 4)
-    g.add_node(a); g.add_node(b)
+    g.add_node(a)
+    g.add_node(b)
     g.add_edge(a, b)
     assert g.get_edge(a, b).length == pytest.approx(5.0)
 
@@ -111,7 +119,8 @@ def test_add_edge_duplicate_is_ignored():
     #add_edge silently ignores duplicate edges, graph stays at one edge
     g = Graph()
     a, b = make_node(), make_node(1, 0)
-    g.add_node(a); g.add_node(b)
+    g.add_node(a)
+    g.add_node(b)
     g.add_edge(a, b)
     g.add_edge(a, b)
     assert len(g.edges) == 1
@@ -124,7 +133,9 @@ def test_add_edge_duplicate_is_ignored():
 def test_get_neighbors_correct():
     g = Graph()
     a, b, c = make_node(0, 0), make_node(1, 0), make_node(2, 0)
-    g.add_node(a); g.add_node(b); g.add_node(c)
+    g.add_node(a)
+    g.add_node(b)
+    g.add_node(c)
     g.add_edge(a, b)
     g.add_edge(a, c)
     neighbors = g.get_neighbors(a)

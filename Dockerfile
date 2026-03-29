@@ -28,8 +28,8 @@ WORKDIR /app
 
 #Install Python dependencies before copying source so this layer is cached
 #as long as requirements.txt doesn't change.
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+COPY pyproject.toml .
+RUN pip3 install --no-cache-dir .
 
 COPY . .
 

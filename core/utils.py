@@ -1,10 +1,11 @@
 """Contain resuable functions."""
+from config.constants import OBSTACLE_KEYWORDS, OBSTACLE_RADIUS
 from math import sqrt
 from pathlib import Path
 import struct
 import re
 MAP_MARKER_RE = re.compile(r"^(E[1-9]M[1-9]|MAP[0-9][0-9])$")
-from config.constants import OBSTACLE_KEYWORDS, OBSTACLE_RADIUS
+
 
 
 def calculate_euclidean_distance(point1_x, point1_y, point2_x, point2_y) -> float:

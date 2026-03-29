@@ -73,7 +73,8 @@ python3 main.py run                  # single episode, windowed
 python3 main.py run --headless       # single episode, headless
 python3 main.py run --map E1M2       # specific map
 python3 main.py evolve               # GA evolution
-python3 -m pytest tests/ -m "not local"          # unit tests
+pytest tests/ -m "not local" -v          # unit tests (CI)
+pytest tests/ -v                         # all tests including integration (local only, requires VizDoom)
 python3 ga/report.py output/evolve/YYYY-MM-DD_HHMM/  # post-run analysis
 ```
 
@@ -81,7 +82,10 @@ python3 ga/report.py output/evolve/YYYY-MM-DD_HHMM/  # post-run analysis
 ```bash
 # TODO: update paths and usage notes once flight software repo structure is defined
 docker build -t doomsat .
-docker run -v /path/to/doom.wad:/app/maps/wads/doom.wad doomsat
+
+#Must be run from inside the DoomSat directory
+#Quotes are required. "$PWD" expands to the absolute path of your current directory
+docker run -v "$PWD/maps/wads/doom.wad:/app/maps/wads/doom.wad" doomsat
 ```
 
 ## License

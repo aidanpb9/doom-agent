@@ -29,7 +29,11 @@ jobs:
 
       - name: Install dependencies
         #TODO: update working-directory once flight software repo structure is defined
-        run: pip install -r requirements.txt
+        #".[dev]" installs runtime deps + pytest and ruff from pyproject.toml
+        run: pip install ".[dev]"
+
+      - name: Lint
+        run: ruff check .
 
       - name: Run tests
         #-m "not local" skips integration tests that require VizDoom and doom.wad

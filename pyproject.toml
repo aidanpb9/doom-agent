@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = []
+
+[project]
+name = "doomsat"
+version = "0.1.0"
+description = "Autonomous Doom-playing agent for CubeSat payload simulation"
+requires-python = ">=3.10"
+
+dependencies = [
+    "vizdoom>=1.1.13",
+    "psutil>=5.9.0",
+    "matplotlib>=3.7.0",
+]
+
+[tool.pytest.ini_options]
+markers = ["local: marks tests that require VizDoom and doom.wad (skipped in CI)"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "ruff>=0.4.0",
+]
