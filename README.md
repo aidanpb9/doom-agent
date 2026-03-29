@@ -67,14 +67,29 @@ RENAME the wad file to: doom.wad
 
 ## Usage
 
-Run tests with: python3 -m pytest tests/
-Run ga report with: python3 ga/report.py output/evolve/YYYY-MM-DD_HHMM/
+### Local development
+```bash
+python3 main.py run                  # single episode, windowed
+python3 main.py run --headless       # single episode, headless
+python3 main.py run --map E1M2       # specific map
+python3 main.py evolve               # GA evolution
+python3 -m pytest tests/ -m "not local"          # unit tests
+python3 ga/report.py output/evolve/YYYY-MM-DD_HHMM/  # post-run analysis
+```
+
+### Docker (quick run, no local setup required, NEED TO HAVE DOCKER DESKTOP OPEN)
+```bash
+# TODO: update paths and usage notes once flight software repo structure is defined
+docker build -t doomsat .
+docker run -v /path/to/doom.wad:/app/maps/wads/doom.wad doomsat
+```
 
 ## License
 
 [Add license information]
 
 ## Potential Future Work
+- Combine with FSW branch into one main branch (need to fix dependencies and paths after)
 - If node finding becomes a problem, can add blocking segments in _nearest_node()
 - Combat blackist (if needed): if we don't kill any enemies after being in combat for a while, it means the enemy is behind some geometry and we need to stop shooting or all ammo will get wasted. Can work similarly to loot node blacklist in path_tracker.
 - Move backwards during combat. A few ways to do this. Could make it a GA param. Helpful when there's an enemy with a lot of health and we need more time to kill it.
