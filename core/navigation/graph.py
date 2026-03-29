@@ -60,8 +60,9 @@ class Graph:
             self.remove_edge(node, neighbor)
 
     def add_edge(self, node1: Node, node2: Node) -> None:
-        """Record that two nodes are connected."""
-        self.edges.append(Edge(node1, node2))
+        """Record that two nodes are connected. Silently ignore duplicate edges."""
+        if self.get_edge(node1, node2) is None:
+            self.edges.append(Edge(node1, node2))
     
     def remove_edge(self, node1: Node, node2: Node) -> None:
         """Remove the edge connecting node1 and node2."""

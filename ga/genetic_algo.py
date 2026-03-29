@@ -12,7 +12,7 @@ from pathlib import Path
 from core.execution.agent import Agent
 from config.constants import EVOLVE_DIR
 import multiprocessing as mp
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, TimeoutError
 import glob
 
 
@@ -135,11 +135,25 @@ class GeneticAlgo:
                 elite = random_genome()
             challenger = mutate(elite)
 
-            #Submite the two genomes to the worker and get the returns.
-            f_a = self._pool.submit(eval_worker, elite, level, gen, "elite")
-            f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger")
-            a_fit, a_beat = f_a.result()
-            b_fit, b_beat = f_b.result()
+            #Submit the two genomes to the workers and get returns
+            #The purpose of wrapping this in attempt block is to handle crashes
+            #that occur on the first generation, but we don't want to retry forver.
+            for attempt in range(2):
+                f_a = self._pool.submit(eval_worker, elite, level, gen, "elite")
+                f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger")
+                try:
+                    a_fit, a_beat = f_a.result(timeout=300)
+                    b_fit, b_beat = f_b.result(timeout=300)
+                    break  #success
+                except TimeoutError:
+                    print(f"[{level}] gen={gen} timed out (attempt {attempt + 1}/2), retrying...")
+            else:
+                #Both attempts timed out which means VizDoom is likely stuck.
+                #Record the failure in history so it's visible in the output and try next level.
+                print(f"[{level}] gen={gen} failed both attempts, skipping level")
+                history[level]["timeout"] = True
+                (evolve_dir / "evolution_history.json").write_text(json.dumps(history, indent=2))
+                continue
 
             #Update the elite genome by comparing results
             level_beaten = a_beat or b_beat
@@ -159,12 +173,20 @@ class GeneticAlgo:
                 gen += 1
                 challenger = mutate(elite)
                 
-                #Submit workers and get returns
+                #Submit the two genomes to the workers and get returns
                 f_a = self._pool.submit(eval_worker, elite, level, gen, "elite")
                 f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger")
-                a_fit, a_beat = f_a.result()
-                b_fit, b_beat = f_b.result()
-                
+                #VizDoom can hang at the C++ level with no Python exception raised.
+                #If a worker freezes past 5 minutes we skip the generation entirely.
+                #The elite is unchanged, the plateau counter is not incremented,
+                #and the next generation will retry with a fresh mutant.
+                try:
+                    a_fit, a_beat = f_a.result()
+                    b_fit, b_beat = f_b.result()
+                except TimeoutError:
+                    print(f"[{level}] gen={gen} worker timed out, skipping generation")
+                    continue
+
                 #Compare results and update genome
                 if a_beat or b_beat:
                     level_beaten = True

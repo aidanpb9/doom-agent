@@ -7,3 +7,6 @@ vizdoom>=1.1.13
 
 # System monitoring (optional, used for rss_mb in Tier 0 telemetry)
 psutil>=5.9.0
+
+# Testing
+pytest>=7.0.0

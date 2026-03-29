@@ -185,6 +185,7 @@ After evolution completes, generate plots from evolution_history.json:
 - Test mutation produces valid parameters (all in range)
 - Check parameters aren't stuck at min/max boundaries
 - Re-evaluate final elite several times to confirm consistency
+- Verify generations don't slow down over evolve
 
 
 ## Future Work

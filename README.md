@@ -60,6 +60,8 @@ RENAME the wad file to: doom.wad
 
 ## Usage
 
+Run tests with: python3 -m pytest tests/
+
 ## License
 
 [Add license information]
