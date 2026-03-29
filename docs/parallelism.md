@@ -25,6 +25,38 @@ multiprocessing spawns separate OS processes, each with their own Python interpr
 
 The tradeoff is that processes don't share memory. Passing data between them requires serialization (pickling in Python). For this use case, the data being passed in (a genome dict, ~200 bytes) and out (a stats dict, ~100 bytes) is tiny, so this cost is negligible.
 
+### Threading vs Multiprocessing
+Blue = threads/processes running eval, red = GIL bottleneck, green = independent GIL per process.
+
+```mermaid
+flowchart LR
+    classDef thread fill:#0077b6,color:#fff,stroke:#023e8a
+    classDef gil    fill:#c1121f,color:#fff,stroke:#7b0000
+    classDef mpbox  fill:#6a0dad,color:#fff,stroke:#4a0080
+    classDef mpgil  fill:#2d6a4f,color:#fff,stroke:#1b4332
+
+    subgraph TM["Threading — one process"]
+        direction TB
+        T1["Thread 1 - Elite eval"]:::thread
+        T2["Thread 2 - Challenger eval"]:::thread
+        GIL["Single GIL\none thread runs at a time"]:::gil
+        T1 -->|compete for lock| GIL
+        T2 -->|compete for lock| GIL
+    end
+
+    subgraph MM["Multiprocessing — separate processes"]
+        direction TB
+        subgraph PA["Process A — Elite"]
+            GILA["own GIL"]:::mpgil
+            TA["Elite eval"]:::mpbox
+        end
+        subgraph PB["Process B — Challenger"]
+            GILB["own GIL"]:::mpgil
+            TB["Challenger eval"]:::mpbox
+        end
+    end
+```
+
 
 ## Approach: ProcessPoolExecutor with Fork
 
@@ -63,6 +95,40 @@ Fork is safe with VizDoom because each `DoomGame` instance creates its own child
 `_apply_params` in `agent.py` applies genome params by patching module-level globals in `state_machine` and `path_tracker` (e.g. `sm_mod.HEALTH_THRESHOLD = 50`). This works because of how fork's copy-on-write memory works:
 
 When a process is forked, both parent and child initially share the same memory pages. The moment either process writes to a page, the OS gives that process its own private copy. So when a worker patches `sm_mod.HEALTH_THRESHOLD`, it writes to its own private copy of that memory and the other worker's copy stays unaffected. This means both workers can safely patch different genome values into the same module globals simultaneously with no interference.
+
+### Process Memory After Fork
+Navy = parent, teal = elite worker, purple = challenger worker. Orange = patched value. Each worker writes its own genome into its private copy of the module globals, with no effect on the other.
+
+```mermaid
+flowchart LR
+    classDef parent  fill:#1d3557,color:#fff,stroke:#0d1b2a
+    classDef workerA fill:#0077b6,color:#fff,stroke:#023e8a
+    classDef workerB fill:#6a0dad,color:#fff,stroke:#4a0080
+    classDef patched fill:#e07b39,color:#fff,stroke:#b5541a
+
+    subgraph PARENT["Parent Process"]
+        direction TB
+        PD["Module Globals\nHEALTH_THRESHOLD = 50\nSCAN_INTERVAL = 235\n..."]:::parent
+        PGIL(["own GIL"]):::parent
+    end
+
+    subgraph WA["Worker A — Elite"]
+        direction TB
+        AD["Module Globals\nSCAN_INTERVAL = 235\n..."]:::workerA
+        AH["HEALTH_THRESHOLD = 15"]:::patched
+        AGIL(["own GIL"]):::workerA
+    end
+
+    subgraph WB["Worker B — Challenger"]
+        direction TB
+        BD["Module Globals\nSCAN_INTERVAL = 235\n..."]:::workerB
+        BH["HEALTH_THRESHOLD = 85"]:::patched
+        BGIL(["own GIL"]):::workerB
+    end
+
+    PARENT -->|"fork() - copy-on-write"| WA
+    PARENT -->|"fork() - copy-on-write"| WB
+```
 
 
 ## Known Constraints

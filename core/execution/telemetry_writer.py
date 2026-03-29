@@ -30,12 +30,13 @@ def _encode_action(action: list[int]) -> int:
 
 class TelemetryWriter:
 
-    def __init__(self, evolve: bool = False) -> None:
-        self._dir: Path = Path(EVOLVE_DIR if evolve else RUN_DIR)
+    def __init__(self, evolve: bool = False, output_dir: str | None = None) -> None:
+        self._dir: Path = Path(output_dir) if output_dir else Path(EVOLVE_DIR if evolve else RUN_DIR)
         self._episode_id: int = 0
         self._seed: int = 0
         self._genome: Optional[dict] = None
         self._full_telemetry: bool = False
+        self._prefix: str = "ep_0000"
 
         self._tier0_file = None
         self._tier2_file = None
@@ -54,7 +55,8 @@ class TelemetryWriter:
         episode_id: int,
         seed: int = 0,
         genome: Optional[dict] = None,
-        full_telemetry: bool = False
+        full_telemetry: bool = False,
+        episode_prefix: str = "",
     ) -> None:
         """Open output files for a new episode."""
         self.close()
@@ -72,7 +74,8 @@ class TelemetryWriter:
         self._last_sm_state = 5
 
         self._dir.mkdir(parents=True, exist_ok=True)
-        prefix = f"ep_{episode_id:04d}"
+        self._prefix = f"{episode_prefix}_ep_{episode_id:04d}" if episode_prefix else f"ep_{episode_id:04d}"
+        prefix = self._prefix
 
         if full_telemetry:
             self._tier0_file = (self._dir / f"{prefix}_debug.jsonl").open("w", encoding="utf-8")
@@ -135,7 +138,7 @@ class TelemetryWriter:
 
     def finalize_episode(self, stats: dict) -> dict:
         """Write Tier 1 summary, generate map if applicable. Returns output file paths."""
-        prefix = f"ep_{self._episode_id:04d}"
+        prefix = self._prefix
         tier1_path = self._dir / f"{prefix}_summary.json"
         tier2_path = self._dir / f"{prefix}_actions.csv"
         map_path = self._dir / f"{prefix}_map.svg"

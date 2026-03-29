@@ -69,12 +69,11 @@ class GeneticAlgo:
         evolve_dir.mkdir(parents=True, exist_ok=True)
 
         history = {}
+        level_elites = {}
         elite = None
 
         for level in LEVELS:
-            self.agent.close()
-            self.agent.initialize_game(headless=True, evolve=True, map_name=level)
-            history[level] = []
+            history[level] = {}
             gens_no_change = 0
             level_beaten = False
 
@@ -83,19 +82,18 @@ class GeneticAlgo:
                 elite = random_genome()
             challenger = mutate(elite)
 
-            a_fit, a_beat = self._evaluate(elite)
-            b_fit, b_beat = self._evaluate(challenger)
+            a_fit, a_beat = self._evaluate(elite, level, 0, "elite")
+            b_fit, b_beat = self._evaluate(challenger, level, 0, "challenger")
             level_beaten = a_beat or b_beat
             winner = "challenger" if b_fit > a_fit else "elite"
             if winner == "challenger":
                 elite = challenger
 
             print(f"[{level}] gen=0  elite={a_fit}  challenger={b_fit}  winner={winner}")
-            history[level].append({
-                "generation": 0,
+            history[level][0] = {
                 "elite_fitness": a_fit, "challenger_fitness": b_fit,
                 "winner": winner, "elite_genome": dict(elite),
-            })
+            }
             (evolve_dir / "evolution_history.json").write_text(json.dumps(history, indent=2))
 
             gen = 0
@@ -103,8 +101,8 @@ class GeneticAlgo:
                 gen += 1
                 challenger = mutate(elite)
 
-                a_fit, a_beat = self._evaluate(elite)
-                b_fit, b_beat = self._evaluate(challenger)
+                a_fit, a_beat = self._evaluate(elite, level, gen, "elite")
+                b_fit, b_beat = self._evaluate(challenger, level, gen, "challenger")
 
                 if a_beat or b_beat:
                     level_beaten = True
@@ -119,30 +117,34 @@ class GeneticAlgo:
                 print(f"[{level}] gen={gen}  elite={a_fit}  challenger={b_fit}"
                       f"  winner={winner}  plateau={gens_no_change}/{PLATEAU_GENS}")
 
-                history[level].append({
-                    "generation": gen,
+                history[level][gen] = {
                     "elite_fitness": a_fit, "challenger_fitness": b_fit,
                     "winner": winner, "elite_genome": dict(elite),
-                })
+                }
                 (evolve_dir / "evolution_history.json").write_text(json.dumps(history, indent=2))
 
                 if level_beaten and gens_no_change >= PLATEAU_GENS:
-                    print(f"[{level}] plateau after gen {gen}, advancing")
+                    level_elites[level] = dict(elite)
+                    genome_str = "  ".join(f"{k}={v}" for k, v in elite.items())
+                    print(f"[{level}] plateau after gen {gen}  elite genome: {genome_str}")
                     break
 
-        (evolve_dir / "final_elite.json").write_text(json.dumps(elite, indent=2))
-        print(f"Evolution complete. Final elite: {elite}")
+        (evolve_dir / "final_elite.json").write_text(json.dumps(level_elites, indent=2))
+        print(f"Evolution complete. Level elites: {level_elites}")
 
-    def _evaluate(self, genome: dict) -> tuple[float, bool]:
+    def _evaluate(self, genome: dict, level: str, gen: int, role: str) -> tuple[float, bool]:
         """Run EVAL_RUNS episodes and return (avg_fitness, any_completed)."""
-        fitnesses = []
-        any_completed = False
-        for _ in range(EVAL_RUNS):
-            stats = self.agent.run_episode(genome=genome, full_telemetry=False)
-            fitness = compute_fitness(stats)
-            stats["fitness"] = fitness
-            self.agent.telemetry_writer.finalize_episode(stats)
-            fitnesses.append(fitness)
-            if stats.get("finish_level"):
-                any_completed = True
-        return round(sum(fitnesses) / len(fitnesses), 2), any_completed
+        results = [self._run_once(genome, level, gen, role) for _ in range(EVAL_RUNS)]
+        avg = round(sum(r["fitness"] for r in results) / EVAL_RUNS, 2)
+        any_completed = any(r.get("finish_level") for r in results)
+        return avg, any_completed
+
+    def _run_once(self, genome: dict, level: str, gen: int, role: str) -> dict:
+        """Run a single episode. Re-initializes game to reset all state."""
+        self.agent.close()
+        output_dir = str(Path(EVOLVE_DIR) / f"gen_{gen:04d}")
+        self.agent.initialize_game(headless=True, evolve=True, map_name=level, output_dir=output_dir)
+        stats = self.agent.run_episode(genome=genome, full_telemetry=False, episode_prefix=role)
+        stats["fitness"] = compute_fitness(stats)
+        self.agent.telemetry_writer.finalize_episode(stats)
+        return stats

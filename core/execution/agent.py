@@ -27,7 +27,7 @@ class Agent:
         self.blocking_segments = None #useful for combat
         self.episode_count = 0
     
-    def initialize_game(self, headless=False, map_name=DEFAULT_MAP_NAME, evolve=False) -> None:
+    def initialize_game(self, headless=False, map_name=DEFAULT_MAP_NAME, evolve=False, output_dir=None) -> None:
         """Does VizDoom setup, loads configs, and creates runtime objects."""
         self.map_name = map_name
         self.headless = headless
@@ -53,9 +53,9 @@ class Agent:
         self.path_tracker.load_static_nodes(map_name)
         self.state_machine = StateMachine(self.path_tracker, self.blocking_segments)
         self.perception = Perception()
-        self.telemetry_writer = TelemetryWriter(evolve=evolve)
+        self.telemetry_writer = TelemetryWriter(evolve=evolve, output_dir=output_dir)
 
-    def run_episode(self, genome: dict | None = None, full_telemetry: bool = True) -> dict:
+    def run_episode(self, genome: dict | None = None, full_telemetry: bool = True, episode_prefix: str = "") -> dict:
         """calls Perception and StateMachine each tick.
         Uses genome as inputs from the GA.
         Returns stats for the genetic algorithm."""
@@ -78,7 +78,7 @@ class Agent:
         random.seed(seed)
         self.game.new_episode()
         self.episode_count += 1
-        self.telemetry_writer.start_episode(self.map_name, self.episode_count, seed=seed, genome=genome, full_telemetry=full_telemetry)
+        self.telemetry_writer.start_episode(self.map_name, self.episode_count, seed=seed, genome=genome, full_telemetry=full_telemetry, episode_prefix=episode_prefix)
         state = self.game.get_state()
         gamestate = self.perception.parse(state)
         self.path_tracker.last_node = self.path_tracker._nearest_node(gamestate)

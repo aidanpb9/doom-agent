@@ -101,14 +101,45 @@ else:
 5. Save generation results
 6. Competition occurs until plateau reached, then move onto next level
 
-**Termination:** Plateau detection. Move on to next level if episode is beat with current elites and no elite change in 10 generations. 
+**Termination:** Plateau detection. Move on to next level if episode is beat with current elites and no elite change in 10 generations. A single completion across any of the 6 runs in a generation (3 elite + 3 challenger) is sufficient to set `level_beaten`. One completion is treated as evidence of real capability rather than noise given the 3-run averaging and 10-generation stability requirement.
+
+### Evolution Loop Diagram
+Core evolution cycle from initialization through level advancement. Green = start/end, navy = actions, orange = decisions, teal = parallel evaluation, purple = level advancement.
+
+```mermaid
+flowchart TD
+    classDef terminal fill:#2d6a4f,color:#fff,stroke:#1b4332
+    classDef action   fill:#1d3557,color:#fff,stroke:#0d1b2a
+    classDef decision fill:#e07b39,color:#fff,stroke:#b5541a
+    classDef parallel fill:#0077b6,color:#fff,stroke:#023e8a
+    classDef advance  fill:#6a0dad,color:#fff,stroke:#4a0080
+
+    START([Start]):::terminal
+    INIT[Generate random elite genome]:::action
+    MUTATE[Mutate elite to challenger]:::action
+    EVAL["Evaluate elite and challenger in parallel over 3 runs each"]:::parallel
+    CMP{Challenger fitness > Elite?}:::decision
+    SWAP[Challenger becomes new elite]:::action
+    KEEP[Retain elite]:::action
+    PLATEAU{Plateau reached?}:::decision
+    NEXT[Advance to next level]:::advance
+    DONE([Evolution complete]):::terminal
+
+    START --> INIT --> MUTATE
+    MUTATE --> EVAL --> CMP
+    CMP -->|Yes| SWAP --> PLATEAU
+    CMP -->|No| KEEP --> PLATEAU
+    PLATEAU -->|No| MUTATE
+    PLATEAU -->|Yes - more levels| NEXT --> MUTATE
+    PLATEAU -->|Yes - all levels done| DONE
+```
 
 ## Evaluation Protocol
 **Per-Agent Evaluation:**
 - Map: E1M1 until plateau, then E1M2 and so on
 - Seed: A fresh random seed is generated and set at the start of each episode (`random.seed(seed)`). The seed is recorded in Tier 1. It controls Python RNG only (SCAN timing, STUCK turn direction), but VizDoom's internal RNG is independent, so full episode reproduction is not possible. Average score of 3 runs is used to smooth variation.
 
-**Takes up to 10ish seconds per level in headless mode.**
+**Takes about TODO seconds per generation.**
 
 **Metrics to collect:**
 - Level completion status

@@ -8,16 +8,21 @@ Files are opened by `start_episode()` and finalized by `finalize_episode()`. The
 
 ## Output Files
 ```
-output/run/ep_NNNN_summary.json       ← Tier 1
-output/run/ep_NNNN_actions.csv        ← Tier 2
-output/run/ep_NNNN_map.svg            ← visual map (all episodes)
-output/run/ep_NNNN_debug.jsonl        ← Tier 0 (full_telemetry mode only)
+output/run/ep_NNNN_summary.json            ← Tier 1
+output/run/ep_NNNN_actions.csv             ← Tier 2
+output/run/ep_NNNN_map.svg                 ← visual map
+output/run/ep_NNNN_debug.jsonl             ← Tier 0 (full_telemetry mode only)
 
-output/evolve/ep_NNNN_summary.json    ← same structure, kept across GA runs
-output/evolve/ep_NNNN_actions.csv
-output/evolve/ep_NNNN_map.svg
+output/evolve/gen_NNNN/elite_ep_NNNN_summary.json      ← Tier 1, elite runs
+output/evolve/gen_NNNN/elite_ep_NNNN_actions.csv
+output/evolve/gen_NNNN/elite_ep_NNNN_map.svg
+output/evolve/gen_NNNN/challenger_ep_NNNN_summary.json  ← Tier 1, challenger runs
+output/evolve/gen_NNNN/challenger_ep_NNNN_actions.csv
+output/evolve/gen_NNNN/challenger_ep_NNNN_map.svg
+output/evolve/evolution_history.json       ← per-generation results
+output/evolve/final_elite.json             ← best genome at end of run
 ```
-Episode index is sequential across an entire evolution run and does not reset between maps. The GA doc defines `output/evolve/` outputs.
+Episode index is sequential across an entire evolution run and does not reset between maps or generations. The GA doc defines `output/evolve/` outputs.
 
 
 ## Tier 0 — Per-Tick Debug Log
@@ -97,12 +102,13 @@ Episode index is sequential across an entire evolution run and does not reset be
 
 ## TelemetryWriter Interface
 ```python
-writer.start_episode(level_id, episode_id, genome=None, full_telemetry=False)
+writer.start_episode(level_id, episode_id, genome=None, full_telemetry=False, episode_prefix="")
 writer.record_step(gamestate, action, sm_state)
 writer.finalize_episode(stats)
 ```
 - `full_telemetry=True` enables Tier 0 (run mode), map SVG is always generated
 - `genome` dict is embedded in Tier 1 when provided (evolve mode)
+- `episode_prefix` prepends a label to all output filenames (e.g. `"elite"` → `elite_ep_NNNN_*`)
 - `record_step` is called every tick (frameskip = 1 always)
 
 
@@ -111,14 +117,15 @@ Run mode (`python main.py run`) is ground testing only. It writes to `output/run
 which is wiped at the start of each run so you always have one clean set of outputs.
 `full_telemetry=True` by default. Tier 0 and map SVG always generated.
 
-Evolve mode writes to `output/evolve/` and keeps all episodes across runs so the GA
-can reference any episode by ID. `full_telemetry=False` excludes Tier 0, but map SVG still generated. The satellite runs evolve mode exclusively.
+Evolve mode writes to `output/evolve/` and is wiped at the start of each run. Episodes are
+organized into `gen_NNNN/` subdirectories with `elite_` and `challenger_` filename prefixes.
+`full_telemetry=False` excludes Tier 0, but map SVG still generated. The satellite is meant to run evolve mode only.
 
 
 ## Design Decisions
 **No TLP or spacecraft fields:** removed from original reference implementation. DoomSat payload telemetry covers only game state, not satellite health.
 
-**Sequential episode IDs:** episodes are numbered globally across an entire evolution run so GA output can reference specific telemetry files by ID.
+**Sequential episode IDs:** episodes are numbered globally across an entire evolution run so telemetry files can be cross-referenced by ID across generation folders.
 
 **Tier 2 sufficient for replay:** because record_step is called every tick, the action stream is complete. Replaying it into VizDoom reproduces the episode without re-evaluating any decisions, bypassing RNG entirely.
 
