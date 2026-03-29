@@ -1,6 +1,6 @@
 # DoomSat
 
-![CI](https://github.com/aidanpb9/DoomSat/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/aidanpb9/DoomSat/actions/workflows/ci.yaml/badge.svg)
 
 
 ## Project Overview
