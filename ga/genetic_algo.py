@@ -14,6 +14,7 @@ from core.execution.agent import Agent
 from config.constants import EVOLVE_DIR
 import multiprocessing as mp
 from concurrent.futures import ProcessPoolExecutor, TimeoutError
+from concurrent.futures.process import BrokenProcessPool
 import glob
 
 
@@ -148,7 +149,10 @@ class GeneticAlgo:
                     a_fit, a_beat = f_a.result(timeout=300)
                     b_fit, b_beat = f_b.result(timeout=300)
                     break  #success
-                except TimeoutError:
+                except (TimeoutError, BrokenProcessPool):
+                    #BrokenProcessPool means the worker was killed at the OS level (VizDoom crash).
+                    #The pool is dead and must be recreated before the next attempt can submit work.
+                    self._pool = ProcessPoolExecutor(max_workers=2, mp_context=mp.get_context("fork"))
                     print(f"[{level}] gen={gen} timed out (attempt {attempt + 1}/2), retrying...")
             else:
                 #Both attempts timed out which means VizDoom is likely stuck.
@@ -189,8 +193,11 @@ class GeneticAlgo:
                 try:
                     a_fit, a_beat = f_a.result()
                     b_fit, b_beat = f_b.result()
-                except TimeoutError:
-                    print(f"[{level}] gen={gen} worker timed out, skipping generation")
+                except (TimeoutError, BrokenProcessPool):
+                    #BrokenProcessPool means the C++ VizDoom process was killed at the OS level.
+                    #The pool is dead and must be recreated or all future submits will also raise.
+                    self._pool = ProcessPoolExecutor(max_workers=2, mp_context=mp.get_context("fork"))
+                    print(f"[{level}] gen={gen} worker crashed or timed out, skipping generation")
                     continue
 
                 #Compare results and update genome

@@ -42,7 +42,7 @@ def plot_fitness(history: dict, out_dir: Path) -> None:
         ax.plot(gen_nums, elite_fit, label="Elite", color="#0cd5d2", linewidth=1.7)
         ax.plot(gen_nums, challenger_fit, label="Challenger", color="#ffd700", linewidth=1.5, alpha=0.7)
 
-        ax.set_title(f"{level} — Fitness over Generations", fontsize=14, fontweight="bold", color="white")
+        ax.set_title(f"{level} Fitness over Generations", fontsize=14, fontweight="bold", color="white")
         ax.set_xlabel("Generation", fontsize=12, color="white")
         ax.set_ylabel("Fitness", fontsize=12, color="white")
         ax.tick_params(colors="white")
@@ -70,7 +70,7 @@ def plot_parameters(history: dict, out_dir: Path) -> None:
             normalized = [(v - lo) / (hi - lo) for v in raw]
             ax.plot(gen_nums, normalized, label=param, color=color, linewidth=1.5)
 
-        ax.set_title(f"{level} — Parameter Evolution (normalized)", fontsize=14, fontweight="bold", color="white")
+        ax.set_title(f"{level} Parameter Evolution (normalized)", fontsize=14, fontweight="bold", color="white")
         ax.set_xlabel("Generation", fontsize=12, color="white")
         ax.set_ylabel("Value (0 = min, 1 = max of range)", fontsize=12, color="white")
         ax.tick_params(colors="white")
@@ -103,7 +103,7 @@ def plot_win_rate(history: dict, out_dir: Path) -> None:
         ax.plot(rolling_gens, rolling_rate, color="#ff4500", linewidth=1.7, label=f"Win rate ({window}-gen rolling avg)")
         ax.axhline(0.5, color="#3b3b3b", linestyle=":", linewidth=1)
 
-        ax.set_title(f"{level} — Challenger Win Rate", fontsize=14, fontweight="bold", color="white")
+        ax.set_title(f"{level} Challenger Win Rate", fontsize=14, fontweight="bold", color="white")
         ax.set_xlabel("Generation", fontsize=12, color="white")
         ax.set_ylabel("Challenger Win Rate", fontsize=12, color="white")
         ax.set_ylim(0, 1)
@@ -135,7 +135,7 @@ def plot_fitness_stddev(history: dict, out_dir: Path) -> None:
 
         ax.plot(rolling_gens, rolling_std, color="#1e90ff", linewidth=1.7, label=f"Stddev ({window}-gen rolling)")
 
-        ax.set_title(f"{level} — Elite Fitness Stddev", fontsize=14, fontweight="bold", color="white")
+        ax.set_title(f"{level} Elite Fitness Stddev", fontsize=14, fontweight="bold", color="white")
         ax.set_xlabel("Generation", fontsize=12, color="white")
         ax.set_ylabel("Standard Deviation", fontsize=12, color="white")
         ax.tick_params(colors="white")
@@ -169,7 +169,7 @@ def plot_episode_variance(run_dir: Path, history: dict, out_dir: Path) -> None:
         ax.scatter(scatter_x, scatter_y, color="#ffd700", s=12, alpha=0.3, label="Individual episodes")
         ax.plot(gen_nums, elite_avg, color="#0cd5d2", linewidth=1.7, label="Elite average")
 
-        ax.set_title(f"{level} — Episode Fitness Variance", fontsize=14, fontweight="bold", color="white")
+        ax.set_title(f"{level} Episode Fitness Variance", fontsize=14, fontweight="bold", color="white")
         ax.set_xlabel("Generation", fontsize=12, color="white")
         ax.set_ylabel("Fitness", fontsize=12, color="white")
         ax.tick_params(colors="white")
@@ -201,7 +201,7 @@ def plot_gen_timing(history: dict, out_dir: Path) -> None:
         ax.axhline(np.mean(durations), color="#ff4500", linewidth=1, linestyle="--",
                    label=f"Mean: {np.mean(durations):.1f}s")
 
-        ax.set_title(f"{level} — Generation Timing", fontsize=14, fontweight="bold", color="white")
+        ax.set_title(f"{level} Generation Timing", fontsize=14, fontweight="bold", color="white")
         ax.set_xlabel("Generation", fontsize=12, color="white")
         ax.set_ylabel("Seconds", fontsize=12, color="white")
         ax.tick_params(colors="white")
