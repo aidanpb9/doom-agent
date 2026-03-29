@@ -61,6 +61,7 @@ RENAME the wad file to: doom.wad
 ## Usage
 
 Run tests with: python3 -m pytest tests/
+Run ga report with: python3 ga/report.py output/evolve/YYYY-MM-DD_HHMM/
 
 ## License
 
