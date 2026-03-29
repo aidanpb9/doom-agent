@@ -185,16 +185,8 @@ Sprint is a valid action. However, we are omitting it for simplicity. The main b
 - VizDoom angles: 0=East, 90=North, 180=West, 270=South (tested with temporary script)
 
 
-
 ## References
 - Unit size reference: https://doomwiki.org/wiki/Map_unit
 - Linedef types (doors, exits) https://doomwiki.org/wiki/Linedef_type#Door_linedef_types
 - Weapons and items: https://gamefaqs.gamespot.com/ps4/270132-doom-1993/faqs/80222/weapons-and-items
 - For more specific item names: https://zdoom.org/w/index.php?title=Main_Page
-
-## Future Work
-- If it becomes a problem, can use blocking segments in _nearest_node()
-- Combat blackist (if needed): if we don't kill any enemies after being in combat for a while, it means the enemy is behind some geometry and we need to stop shooting or all ammo will get wasted. Can work similarly to loot node blacklist in path_tracker.
-- Move backwards during combat. A few ways to do this. Could make it a GA param. Helpful when there's an enemy with a lot of health and we need more time to kill it.
-- A way to allow for more exploration. A detour state or some type of breadcrumb pathfinding could help.
-- Port to C++ (good luck :)

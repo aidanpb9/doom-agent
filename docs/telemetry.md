@@ -68,12 +68,12 @@ Episode index is sequential across an entire evolution run and does not reset be
 - `genome`: genome params for this episode (all 7 evolvable parameters), omitted in run mode
 
 
-## Tier 2 — Action Stream
+## Tier 2 — Action and Position Trace
 **File:** `ep_NNNN_actions.csv` — one row per tick
 
 **Written:** always.
 
-**Use for:** replay and visual map generation. Replaying the exact action sequence in VizDoom should reproduce the episode deterministically regardless of RNG, since decisions are not re-evaluated.
+**Use for:** action replay and SVG map generation. `action` is sufficient to replay the episode into VizDoom — positions are recomputed by the game. `pos_x/pos_y` and `sm_state` are included for the map renderer: `replay_map.py` reads them to draw the agent path on the SVG, with path color driven by `sm_state`. Without position there is no path to render; without state the path has no color.
 
 **CSV columns:**
 `tick, action, sm_state, pos_x, pos_y`

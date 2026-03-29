@@ -133,61 +133,8 @@ flowchart LR
 
 ## Known Constraints
 
-- **Stale shared memory:** VizDoom leaves `/dev/shm/ViZDoom*` files if a process is killed without `game.close()`. These don't conflict with new instances (random IDs) but accumulate over time. Ensure `game.close()` is called in exception handlers, and consider purging `/dev/shm/ViZDoom*` on startup.
+- **Stale shared memory:** VizDoom leaves `/dev/shm/ViZDoom*` files if a process is killed without `game.close()`. These don't conflict with new instances (random IDs) but accumulate over time. Ensure `game.close()` is called in exception handlers, and consider purging `/dev/shm/ViZDoom*` on startup. eval_worker() handles this with the try/finally block, and GeneticAlgo's init has a stale file purge.
 
 - **Top-level worker function required:** `ProcessPoolExecutor` sends work to other processes by pickling the callable. Python can only pickle module-level functions (not instance methods or lambdas), so the worker function must be defined at module level, not as a method of `GeneticAlgo`.
 
 - **Episode ID collision:** Each worker process starts `episode_count` at 0, so both would write `ep_0000_summary.json`, `ep_0001_summary.json`, etc. to the same directory. Fix by passing an episode ID offset. For example, elite worker starts at 0 and challenger worker starts at 10000.
-
-
-## Implementation Plan
-
-```python
-import multiprocessing as mp
-from concurrent.futures import ProcessPoolExecutor
-
-#Must be module-level (not a method) so it can be pickled and sent to worker processes
-def _eval_worker(args: tuple) -> tuple[float, bool]:
-    genome, map_name, episode_offset = args
-    agent = Agent()
-    agent.initialize_game(headless=True, evolve=True, map_name=map_name)
-    agent.episode_count = episode_offset
-    fitnesses = []
-    any_completed = False
-    for _ in range(EVAL_RUNS):
-        stats = agent.run_episode(genome=genome, full_telemetry=False)
-        fitness = compute_fitness(stats)
-        stats["fitness"] = fitness
-        agent.telemetry_writer.finalize_episode(stats)
-        fitnesses.append(fitness)
-        if stats.get("finish_level"):
-            any_completed = True
-    agent.close()
-    return round(sum(fitnesses) / len(fitnesses), 2), any_completed
-
-
-class GeneticAlgo:
-
-    def __init__(self) -> None:
-        #Pool created once, persists across all generations and levels
-        #fork context: workers inherit the parent process state without re-importing modules
-        self._pool = ProcessPoolExecutor(
-            max_workers=2,
-            mp_context=mp.get_context("fork")
-        )
-
-    def _evaluate_parallel(self, elite, challenger, level) -> tuple:
-        #Submit both simultaneously. They run in parallel in separate processes.
-        #Episode offsets of 0 and 10000 prevent telemetry filename collisions.
-        f_a = self._pool.submit(_eval_worker, (elite, level, 0))
-        f_b = self._pool.submit(_eval_worker, (challenger, level, 10000))
-        return f_a.result(), f_b.result()
-
-    def evolve(self) -> None:
-        ...
-        #Replace the two sequential _evaluate calls with one parallel call:
-        (a_fit, a_beat), (b_fit, b_beat) = self._evaluate_parallel(elite, challenger, level)
-        ...
-```
-
-The pool is created once in `__init__` and reused across all generations and levels. Workers initialize their own `Agent` per call, which adds ~1-2s startup overhead per eval but keeps workers stateless and avoids stale game state carrying over between levels.

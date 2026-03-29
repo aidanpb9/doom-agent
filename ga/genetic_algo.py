@@ -2,7 +2,7 @@
 
 compute_fitness() is the single source of truth for fitness.
 random_genome() and mutate() are pure genome operations.
-GeneticAlgo owns the Agent and drives the evolution loop.
+GeneticAlgo owns the worker pool and drives the evolution loop.
 
 See genetic_algo_design.md for algorithm details and parameter ranges.
 """
@@ -11,6 +11,15 @@ import random
 from pathlib import Path
 from core.execution.agent import Agent
 from config.constants import EVOLVE_DIR
+import multiprocessing as mp
+from concurrent.futures import ProcessPoolExecutor
+import glob
+
+
+RADIATION_INTENSITY = 0.25  #per-param mutation probability
+EVAL_RUNS = 5               #episodes averaged per genome evaluation
+PLATEAU_GENS = 10           #generations without elite change before advancing
+LEVELS = ["E1M1", "E1M2"]
 
 #Evolvable parameter ranges, must match genetic_algo_design.md
 PARAM_RANGES = {
@@ -23,11 +32,37 @@ PARAM_RANGES = {
     "scan_interval":          (70,  420),
 }
 
-RADIATION_INTENSITY = 0.25  #per-param mutation probability
-EVAL_RUNS = 3               #episodes averaged per genome evaluation
-PLATEAU_GENS = 10           #generations without elite change before advancing
-LEVELS = ["E1M1", "E1M2"]
+def eval_worker(genome: dict, level: str, gen: int, role: str) -> tuple[float, bool]:
+    """Run EVAL_RUNS episodes for one genome. Return average fitness and if
+    any run beat a level. Contained at the module level so it can be pickled and sent
+    to a worker process by ProcessPoolExecutor."""
+    #Initializations
+    ep_offset = 0 if role == "elite" else 10000 #prevent filename collisions
+    output_dir = str(Path(EVOLVE_DIR) / f"gen_{gen:04d}")
+    agent = Agent()
+    agent.episode_count = ep_offset
+    fitnesses = []
+    any_completed = False
 
+    try:
+        #Run EVAL_RUNS episodes and track fitness
+        for _ in range(EVAL_RUNS):
+            #Run a single episode. Re-initialize game to reset all state.
+            agent.close()
+            agent.initialize_game(headless=True, evolve=True, map_name=level, output_dir=output_dir)
+            stats = agent.run_episode(genome=genome, full_telemetry=False, episode_prefix=role)
+            stats["fitness"] = compute_fitness(stats)
+            agent.telemetry_writer.finalize_episode(stats)
+            fitnesses.append(stats["fitness"])
+            if stats.get("finish_level"):
+                any_completed = True
+    finally:
+        agent.close()
+
+    #Close episode and return fitness info
+    agent.close()
+    avg_fitness = round(sum(fitnesses) / EVAL_RUNS, 2)
+    return avg_fitness, any_completed
 
 def compute_fitness(stats: dict) -> float:
     """Compute fitness from episode stats. See genetic_algo_design.md."""
@@ -43,52 +78,76 @@ def compute_fitness(stats: dict) -> float:
                + 10 * stats.get("waypoints_reached", 0))
     return round(raw, 2)
 
-
 def random_genome() -> dict:
-    """Generate a random genome with all params sampled uniformly within valid ranges."""
-    return {k: random.randint(lo, hi) for k, (lo, hi) in PARAM_RANGES.items()}
-
+    """Generate a genome with all 7 params randomly sampled from within their valid ranges."""
+    genome = {}
+    for param, (lo, hi) in PARAM_RANGES.items():
+        genome[param] = random.randint(lo, hi) #pick a random int between min and max for this param
+    return genome
 
 def mutate(genome: dict) -> dict:
-    """Return a new genome with each param independently re-sampled at RADIATION_INTENSITY rate."""
-    child = dict(genome)
-    for k, (lo, hi) in PARAM_RANGES.items():
-        if random.random() < RADIATION_INTENSITY:
-            child[k] = random.randint(lo, hi)
+    """Return a new genome derived from the parent, with random params re-sampled.
+    Each param has a RADIATION_INTENSITY chance of being re-rolled independently.
+    Models cosmic ray bit-flips, most params stay the same, a few change randomly."""
+    child = dict(genome) #copy the parent so we don't modify the original
+    for param, (lo, hi) in PARAM_RANGES.items():
+        if random.random() < RADIATION_INTENSITY: #25% chance per param
+            child[param] = random.randint(lo, hi) #re-roll within valid range
     return child
 
 
 class GeneticAlgo:
 
     def __init__(self) -> None:
-        self.agent = Agent()
+        """Pool created once, persists across all generations and levels.
+        Use fork so workers inherit the parent process state without re-importing modules."""
+        self._pool = ProcessPoolExecutor(
+            max_workers=2,
+            mp_context=mp.get_context("fork"))
+        
+        for f in glob.glob("/dev/shm/ViZDoom*"):
+            Path(f).unlink(missing_ok=True) #cleans up stale files, preserves RAM
+        
 
     def evolve(self) -> None:
         """Main evolution loop. Iterates levels, evolves until plateau, writes history."""
+        #Make output paths
         evolve_dir = Path(EVOLVE_DIR)
         evolve_dir.mkdir(parents=True, exist_ok=True)
-
+        
+        #Initialize genome dicts
         history = {}
         level_elites = {}
         elite = None
 
+        #Loop over every level 
         for level in LEVELS:
+            #The outer loop that starts here is just for run 0 for each level. 
+            #Then genomes compete in the loop below until plateau. 
+            #Then return here to start next level, but use old elite as starting.
             history[level] = {}
             gens_no_change = 0
             level_beaten = False
+            gen = 0
 
             #Gen 0: seed initial population
             if elite is None:
                 elite = random_genome()
             challenger = mutate(elite)
 
-            a_fit, a_beat = self._evaluate(elite, level, 0, "elite")
-            b_fit, b_beat = self._evaluate(challenger, level, 0, "challenger")
+            #Submite the two genomes to the worker and get the returns.
+            f_a = self._pool.submit(eval_worker, elite, level, gen, "elite")
+            f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger")
+            a_fit, a_beat = f_a.result()
+            b_fit, b_beat = f_b.result()
+
+            #Update the elite genome by comparing results
             level_beaten = a_beat or b_beat
             winner = "challenger" if b_fit > a_fit else "elite"
             if winner == "challenger":
                 elite = challenger
 
+            #Print and initialize telemetry output.
             print(f"[{level}] gen=0  elite={a_fit}  challenger={b_fit}  winner={winner}")
             history[level][0] = {
                 "elite_fitness": a_fit, "challenger_fitness": b_fit,
@@ -96,17 +155,19 @@ class GeneticAlgo:
             }
             (evolve_dir / "evolution_history.json").write_text(json.dumps(history, indent=2))
 
-            gen = 0
-            while True:
+            while True: #Until plateau, then move onto next level
                 gen += 1
                 challenger = mutate(elite)
-
-                a_fit, a_beat = self._evaluate(elite, level, gen, "elite")
-                b_fit, b_beat = self._evaluate(challenger, level, gen, "challenger")
-
+                
+                #Submit workers and get returns
+                f_a = self._pool.submit(eval_worker, elite, level, gen, "elite")
+                f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger")
+                a_fit, a_beat = f_a.result()
+                b_fit, b_beat = f_b.result()
+                
+                #Compare results and update genome
                 if a_beat or b_beat:
                     level_beaten = True
-
                 winner = "challenger" if b_fit > a_fit else "elite"
                 if winner == "challenger":
                     elite = challenger
@@ -114,9 +175,9 @@ class GeneticAlgo:
                 else:
                     gens_no_change += 1
 
+                #Print and write to telemetry
                 print(f"[{level}] gen={gen}  elite={a_fit}  challenger={b_fit}"
                       f"  winner={winner}  plateau={gens_no_change}/{PLATEAU_GENS}")
-
                 history[level][gen] = {
                     "elite_fitness": a_fit, "challenger_fitness": b_fit,
                     "winner": winner, "elite_genome": dict(elite),
@@ -128,23 +189,7 @@ class GeneticAlgo:
                     genome_str = "  ".join(f"{k}={v}" for k, v in elite.items())
                     print(f"[{level}] plateau after gen {gen}  elite genome: {genome_str}")
                     break
-
+        
+        #When plateau, update the final_elites doc.
         (evolve_dir / "final_elite.json").write_text(json.dumps(level_elites, indent=2))
         print(f"Evolution complete. Level elites: {level_elites}")
-
-    def _evaluate(self, genome: dict, level: str, gen: int, role: str) -> tuple[float, bool]:
-        """Run EVAL_RUNS episodes and return (avg_fitness, any_completed)."""
-        results = [self._run_once(genome, level, gen, role) for _ in range(EVAL_RUNS)]
-        avg = round(sum(r["fitness"] for r in results) / EVAL_RUNS, 2)
-        any_completed = any(r.get("finish_level") for r in results)
-        return avg, any_completed
-
-    def _run_once(self, genome: dict, level: str, gen: int, role: str) -> dict:
-        """Run a single episode. Re-initializes game to reset all state."""
-        self.agent.close()
-        output_dir = str(Path(EVOLVE_DIR) / f"gen_{gen:04d}")
-        self.agent.initialize_game(headless=True, evolve=True, map_name=level, output_dir=output_dir)
-        stats = self.agent.run_episode(genome=genome, full_telemetry=False, episode_prefix=role)
-        stats["fitness"] = compute_fitness(stats)
-        self.agent.telemetry_writer.finalize_episode(stats)
-        return stats

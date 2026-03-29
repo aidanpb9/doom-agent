@@ -64,6 +64,14 @@ RENAME the wad file to: doom.wad
 
 [Add license information]
 
+## Potential Future Work
+- If node finding becomes a problem, can add blocking segments in _nearest_node()
+- Combat blackist (if needed): if we don't kill any enemies after being in combat for a while, it means the enemy is behind some geometry and we need to stop shooting or all ammo will get wasted. Can work similarly to loot node blacklist in path_tracker.
+- Move backwards during combat. A few ways to do this. Could make it a GA param. Helpful when there's an enemy with a lot of health and we need more time to kill it.
+- A way to allow for more exploration. A detour state or some type of breadcrumb pathfinding could help.
+- Hand-crafted genome testing: Add ga/test_genome.json (flat dict of the 7 evolvable params). main.py run checks if it exists. if yes, loads and passes to run_episode(genome=...). If no, runs with hardcoded defaults. Lets you manually set param values and observe behavior in windowed run mode without touching evolved outputs.
+- Port to C++ to improve runtime or some other reason (good luck :)
+
 ## Acknowledgments
 
 - **VizDoom**: The Doom-based RL research platform

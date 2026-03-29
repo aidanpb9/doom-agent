@@ -1,7 +1,7 @@
 # Genetic Algorithm Design
 
 ## Overview
-The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic Algorithm (µGA) to evolve behavioral parameters for the execution algorithm. This minimal-population approach is designed for low computational overhead which is suitable for spacecraft constraints. It also guarantees non-regression because the elite is always preserved. The two agent will run in parallel, see docs/parallelism.md.
+The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic Algorithm (µGA) to evolve behavioral parameters for the execution algorithm. This minimal-population approach is designed for low computational overhead which is suitable for spacecraft constraints. It also guarantees non-regression because the elite is always preserved. A crossover approach for mutating params is not used because the pool of genomes is not large enough, and this wouldn't reflect the radiation bit-flip anyways. The two agent will run in parallel, see docs/ga_parallelism.md.
 
 
 ## Population Structure
@@ -21,9 +21,10 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Hyperparameter | Value | Description |
 |----------------|-------|-------------|
 | Population size | 2 | Elite + challenger only |
-| Radiation intensity | 0.25 | Represents probability per parameter of a bit-flip occuring (mutation) |
+| Eval runs | 5 | Episodes per genome per generation, averaged to reduce VizDoom RNG variance |
+| Radiation intensity | 0.25 | Probability per parameter of a bit-flip mutation occurring |
 | Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
-| Generations | 50-1000 (Estimate) | Adjust based on convergence/time constraints |
+| Plateau generations | 10 | Generations without elite change before advancing to next level |
 | Episode timeout | 12600 ticks (360 seconds) | E1M1 time limit |
 | Evaluation seed | Random per episode | Python RNG seeded fresh each episode, seed recorded in Tier 1 Telemetry |
 
@@ -71,11 +72,11 @@ else:
 ```
 
 **Rationale:**
-- Completion heavily weighted (1000 pts) - primary objective
-- Completion speed matters 
-- Health more valuable than armor (2× weight)
-- Ammo carryover encouraged for future levels
-- Failed runs get partial credit to improve when levels aren't being completed
+- Completion heavily weighted (1000 pts). It's the primary objective.
+- Completion speed matters.
+- Health more valuable than armor (2× weight).
+- Ammo carryover encouraged for future levels.
+- Failed runs get partial credit to improve when levels aren't being completed.
 
 
 ## Mutation Strategy
@@ -92,8 +93,8 @@ else:
 
 **Evolution:**
 1. Agent B = mutate(Agent A)
-2. Evaluate A and B on E1M1 3 times
-3. Compare fitness scores and average them
+2. Evaluate A and B in parallel, for EVAL_RUNS episodes each
+3. Compare averaged fitness scores
 4. If fitness(B) > fitness(A):
        Agent A ← Agent B  (new elite)
    Else:
@@ -101,7 +102,7 @@ else:
 5. Save generation results
 6. Competition occurs until plateau reached, then move onto next level
 
-**Termination:** Plateau detection. Move on to next level if episode is beat with current elites and no elite change in 10 generations. A single completion across any of the 6 runs in a generation (3 elite + 3 challenger) is sufficient to set `level_beaten`. One completion is treated as evidence of real capability rather than noise given the 3-run averaging and 10-generation stability requirement.
+**Termination:** Plateau detection. Move on to next level if the level has been beaten and no elite change in PLATEAU_GENS generations. A single completion across any run in the generation is sufficient to set `level_beaten`. This is evidence of real capability given the multi-run averaging and stability requirement.
 
 ### Evolution Loop Diagram
 Core evolution cycle from initialization through level advancement. Green = start/end, navy = actions, orange = decisions, teal = parallel evaluation, purple = level advancement.
@@ -117,7 +118,7 @@ flowchart TD
     START([Start]):::terminal
     INIT[Generate random elite genome]:::action
     MUTATE[Mutate elite to challenger]:::action
-    EVAL["Evaluate elite and challenger in parallel over 3 runs each"]:::parallel
+    EVAL["Evaluate elite and challenger in parallel for EVAL_RUNS each"]:::parallel
     CMP{Challenger fitness > Elite?}:::decision
     SWAP[Challenger becomes new elite]:::action
     KEEP[Retain elite]:::action
@@ -137,9 +138,9 @@ flowchart TD
 ## Evaluation Protocol
 **Per-Agent Evaluation:**
 - Map: E1M1 until plateau, then E1M2 and so on
-- Seed: A fresh random seed is generated and set at the start of each episode (`random.seed(seed)`). The seed is recorded in Tier 1. It controls Python RNG only (SCAN timing, STUCK turn direction), but VizDoom's internal RNG is independent, so full episode reproduction is not possible. Average score of 3 runs is used to smooth variation.
+- Seed: A fresh random seed is generated and set at the start of each episode (`random.seed(seed)`). The seed is recorded in Tier 1. It controls Python RNG only (SCAN timing, STUCK turn direction), but VizDoom's internal RNG is independent and uncontrolled. This is the primary source of run-to-run variance. EVAL_RUNS episodes are averaged per genome to smooth this.
 
-**Takes about TODO seconds per generation.**
+**Takes about 10 seconds per headless episode. So with 5 runs per genome running in parallel, a generation can take up to a minute.**
 
 **Metrics to collect:**
 - Level completion status
@@ -180,12 +181,11 @@ After evolution completes, generate plots from evolution_history.json:
 
 ## Testing
 - Verify fitness calculation (better performance = higher score)
+- Try to have agent converge on E1M1
 - Test mutation produces valid parameters (all in range)
 - Check parameters aren't stuck at min/max boundaries
-- Re-evaluate final elite 3× to confirm consistency
+- Re-evaluate final elite several times to confirm consistency
 
 
 ## Future Work
-- make the 2 genomes run in parallel (multithread)
 - make visuals
-- plateau logic to determine when to stop evolving
