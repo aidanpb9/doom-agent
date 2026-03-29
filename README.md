@@ -1,7 +1,14 @@
+# DoomSat
+
+![CI](https://github.com/aidanpb9/DoomSat/actions/workflows/ci.yml/badge.svg)
+
+
 ## Project Overview
+
 Spacecraft flight software and Doom payload development using VizDoom. This project implements an AI agent that autonomously navigates and completes Doom levels using navmesh-based pathfinding, combat behaviors, and genetic algorithm parameter optimization.
 
 DoomSat autonomously plays and completes Doom levels using navmesh pathfinding and genetic algorithm parameter optimization. The agent uses:
+
 
 
 ## Project Structure
