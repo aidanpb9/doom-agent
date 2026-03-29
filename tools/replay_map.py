@@ -221,7 +221,6 @@ def render(
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(svg, encoding="utf-8")
-    print(f"replay_map: wrote {output_path}")
 
 
 if __name__ == "__main__":

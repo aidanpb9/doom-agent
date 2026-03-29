@@ -2,7 +2,7 @@
 The GA will overwrite some of these constants."""
 
 
-#GA Parameters — evolvable per genome, ranges defined in genetic_algo_design.md
+#GA Parameters, evolvable per genome, ranges defined in genetic_algo_design.md
 LOOT_NODE_MAX_DISTANCE = 500     #units from agent that loot nodes can be placed
 STUCK_RECOVERY_TICKS = 70        #ticks of turn+forward to dislodge from obstacles (~2 seconds)
 HEALTH_THRESHOLD = 80            #enter RECOVER if health drops below this

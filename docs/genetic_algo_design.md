@@ -1,10 +1,7 @@
 # Genetic Algorithm Design
 
 ## Overview
-The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic Algorithm (µGA) to evolve behavioral parameters for the execution algorithm. This minimal-population approach is designed for:
-- Low computational overhead (suitable for spacecraft constraints)
-- Guaranteed non-regression (elite always preserved)
-- Continuous adaptation through head-to-head competition
+The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic Algorithm (µGA) to evolve behavioral parameters for the execution algorithm. This minimal-population approach is designed for low computational overhead which is suitable for spacecraft constraints. It also guarantees non-regression because the elite is always preserved. The two agent will run in parallel, see docs/parallelism.md.
 
 
 ## Population Structure

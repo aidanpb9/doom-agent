@@ -7,7 +7,7 @@ Usage:
     python main.py run --map E1M2             # run on a specific map
     python main.py run --headless             # run without window (high tickrate)
     python main.py run -v                     # verbose/debug logging
-    python main.py evolve                     # GA evolution (not yet implemented)
+    python main.py evolve                     # GA evolution
 """
 
 import sys
@@ -17,8 +17,8 @@ import logging
 from pathlib import Path
 from datetime import datetime
 from core.execution.agent import Agent
-from ga.genome import compute_fitness
-from config.constants import RUN_DIR
+from ga.genetic_algo import compute_fitness
+from config.constants import RUN_DIR, EVOLVE_DIR
 
 
 #Ensure project root is on the path so imports work from any working directory
@@ -73,7 +73,7 @@ def cmd_run(args):
     agent = Agent()
     try:
         agent.initialize_game(headless=args.headless, map_name=args.map)
-        stats = agent.run_episode(params={})
+        stats = agent.run_episode()
         stats["fitness"] = compute_fitness(stats)
         agent.telemetry_writer.finalize_episode(stats)
         logger.info("Stats: %s", stats)
@@ -86,14 +86,18 @@ def cmd_run(args):
 
 
 def cmd_evolve(args):
-    """GA evolution — main delegates fully to GeneticAlgo."""
+    """GA evolution, main delegates fully to GeneticAlgo."""
     logger = setup_logging("evolve", args.verbose)
     logger.info("DoomSat - Evolve Mode")
+
+    #Wipe previous evolve output so output/evolve/ always reflects the latest run only
+    if Path(EVOLVE_DIR).exists():
+        shutil.rmtree(EVOLVE_DIR)
 
     from ga.genetic_algo import GeneticAlgo
     ga = GeneticAlgo()
     try:
-        ga.run()
+        ga.evolve()
         return 0
     except Exception as e:
         logger.error("Error: %s", e, exc_info=True)

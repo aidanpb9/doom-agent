@@ -55,10 +55,13 @@ class Agent:
         self.perception = Perception()
         self.telemetry_writer = TelemetryWriter(evolve=evolve)
 
-    def run_episode(self, params: dict | None = None, full_telemetry: bool = True) -> dict:
+    def run_episode(self, genome: dict | None = None, full_telemetry: bool = True) -> dict:
         """calls Perception and StateMachine each tick.
-        Uses params as inputs from the GA.
+        Uses genome as inputs from the GA.
         Returns stats for the genetic algorithm."""
+        if genome:
+            self._apply_params(genome)
+
         stats = {
             "finish_level": False,
             "ticks": 0,
@@ -75,7 +78,7 @@ class Agent:
         random.seed(seed)
         self.game.new_episode()
         self.episode_count += 1
-        self.telemetry_writer.start_episode(self.map_name, self.episode_count, seed=seed, full_telemetry=full_telemetry)
+        self.telemetry_writer.start_episode(self.map_name, self.episode_count, seed=seed, genome=genome, full_telemetry=full_telemetry)
         state = self.game.get_state()
         gamestate = self.perception.parse(state)
         self.path_tracker.last_node = self.path_tracker._nearest_node(gamestate)
@@ -120,6 +123,18 @@ class Agent:
         stats["end_reason"] = end_reason
 
         return stats
+
+    def _apply_params(self, genome: dict) -> None:
+        """Patch GA module globals with genome values so state_machine and path_tracker
+        pick up the evolvable params for this episode."""
+        import core.execution.state_machine as sm_mod
+        import core.navigation.path_tracker as pt_mod
+        for key, val in genome.items():
+            k = key.upper()
+            if hasattr(sm_mod, k):
+                setattr(sm_mod, k, val)
+            if hasattr(pt_mod, k):
+                setattr(pt_mod, k, val)
 
     def close(self) -> None:
         if self.game:
