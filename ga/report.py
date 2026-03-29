@@ -213,18 +213,18 @@ def plot_gen_timing(history: dict, out_dir: Path) -> None:
 
 
 def run(run_dir: Path) -> None:
-    out_dir = run_dir / "report"
-    out_dir.mkdir(exist_ok=True)
-
     history = load_history(run_dir)
-    plot_fitness(history, out_dir)
-    plot_parameters(history, out_dir)
-    plot_win_rate(history, out_dir)
-    plot_fitness_stddev(history, out_dir)
-    plot_episode_variance(run_dir, history, out_dir)
-    plot_gen_timing(history, out_dir)
-
-    print(f"Report saved to {out_dir}")
+    for level, gens in history.items():
+        out_dir = run_dir / level / "report"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        level_history = {level: gens}
+        plot_fitness(level_history, out_dir)
+        plot_parameters(level_history, out_dir)
+        plot_win_rate(level_history, out_dir)
+        plot_fitness_stddev(level_history, out_dir)
+        plot_episode_variance(run_dir, level_history, out_dir)
+        plot_gen_timing(level_history, out_dir)
+        print(f"Report saved to {out_dir}")
 
 
 if __name__ == "__main__":
