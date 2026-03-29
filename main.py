@@ -7,9 +7,17 @@ Usage:
     python main.py run --map E1M2             # run on a specific map
     python main.py run --headless             # run without window (high tickrate)
     python main.py evolve                     # GA evolution
+
+Hand-crafted genome testing:
+    Edit ga/test_genome.json with custom param values, then run main.py run.
+    If the file exists it is loaded and passed to run_episode(genome=...).
+    If it does not exist, the agent runs with hardcoded constant defaults.
+    Lets you observe specific parameter combinations in windowed mode without
+    touching evolved outputs in output/evolve/.
 """
 
 import sys
+import json
 import shutil
 import argparse
 from pathlib import Path
@@ -32,10 +40,19 @@ def cmd_run(args):
     if Path(RUN_DIR).exists():
         shutil.rmtree(RUN_DIR)
 
+    #Load hand-crafted genome if present, otherwise run with constant defaults
+    genome = None
+    test_genome_path = ROOT_DIR / "ga" / "test_genome.json"
+    if test_genome_path.exists():
+        genome = json.loads(test_genome_path.read_text())
+        print(f"Loaded test genome: {genome}")
+    else:
+        print("No ga/test_genome.json found, running with defaults")
+
     agent = Agent()
     try:
         agent.initialize_game(headless=args.headless, map_name=args.map)
-        stats = agent.run_episode()
+        stats = agent.run_episode(genome=genome)
         stats["fitness"] = compute_fitness(stats)
         agent.telemetry_writer.finalize_episode(stats)
         print("Stats:", stats)

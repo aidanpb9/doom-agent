@@ -183,9 +183,3 @@ Whether all levels were beaten or the run was stopped, calling `python ga/report
 **5. Per-Episode Fitness Distribution**
 - Distribution of fitness scores across EVAL_RUNS for a given genome
 - Shows how much variance the agent has on the same genome, high variance means Python RNG is a significant factor
-
-
-## Future Work
-- Side-by-side run comparison: run `report.py` on two different timestamped folders and compare output plots manually.useful for A/B testing hyperparameter changes (e.g. seeded vs unseeded VizDoom)
-- Hand-crafted genome testing: Add ga/test_genome.json (flat dict of the 7 evolvable params). main.py run checks if it exists. if yes, loads and passes to run_episode(genome=...). If no, runs with hardcoded defaults. Lets you manually set param values and observe behavior in windowed run mode without touching evolved outputs.
-- Multi-level elite carry-forward tuning: verify the elite from E1M1 gives a useful head start on E1M2 rather than converging to a local optimum from the wrong level
