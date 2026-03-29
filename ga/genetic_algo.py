@@ -9,6 +9,7 @@ See genetic_algo_design.md for algorithm details and parameter ranges.
 import json
 import random
 from pathlib import Path
+from datetime import datetime
 from core.execution.agent import Agent
 from config.constants import EVOLVE_DIR
 import multiprocessing as mp
@@ -32,13 +33,13 @@ PARAM_RANGES = {
     "scan_interval":          (70,  420),
 }
 
-def eval_worker(genome: dict, level: str, gen: int, role: str) -> tuple[float, bool]:
+def eval_worker(genome: dict, level: str, gen: int, role: str, game_seed: int, run_dir: str) -> tuple[float, bool]:
     """Run EVAL_RUNS episodes for one genome. Return average fitness and if
     any run beat a level. Contained at the module level so it can be pickled and sent
     to a worker process by ProcessPoolExecutor."""
     #Initializations
     ep_offset = 0 if role == "elite" else 10000 #prevent filename collisions
-    output_dir = str(Path(EVOLVE_DIR) / f"gen_{gen:04d}")
+    output_dir = str(Path(run_dir) / level / f"gen_{gen:04d}")
     agent = Agent()
     agent.episode_count = ep_offset
     fitnesses = []
@@ -49,7 +50,7 @@ def eval_worker(genome: dict, level: str, gen: int, role: str) -> tuple[float, b
         for _ in range(EVAL_RUNS):
             #Run a single episode. Re-initialize game to reset all state.
             agent.close()
-            agent.initialize_game(headless=True, evolve=True, map_name=level, output_dir=output_dir)
+            agent.initialize_game(headless=True, evolve=True, map_name=level, output_dir=output_dir, game_seed=game_seed)
             stats = agent.run_episode(genome=genome, full_telemetry=False, episode_prefix=role)
             stats["fitness"] = compute_fitness(stats)
             agent.telemetry_writer.finalize_episode(stats)
@@ -111,8 +112,9 @@ class GeneticAlgo:
 
     def evolve(self) -> None:
         """Main evolution loop. Iterates levels, evolves until plateau, writes history."""
-        #Make output paths
-        evolve_dir = Path(EVOLVE_DIR)
+        #Each run gets a timestamped subfolder so previous runs are never overwritten
+        run_dir = str(Path(EVOLVE_DIR) / datetime.now().strftime("%Y-%m-%d_%H%M"))
+        evolve_dir = Path(run_dir)
         evolve_dir.mkdir(parents=True, exist_ok=True)
         
         #Initialize genome dicts
@@ -138,9 +140,10 @@ class GeneticAlgo:
             #Submit the two genomes to the workers and get returns
             #The purpose of wrapping this in attempt block is to handle crashes
             #that occur on the first generation, but we don't want to retry forver.
+            game_seed = random.randint(0, 2**31) #same seed for both workers for fair comparison
             for attempt in range(2):
-                f_a = self._pool.submit(eval_worker, elite, level, gen, "elite")
-                f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger")
+                f_a = self._pool.submit(eval_worker, elite, level, gen, "elite", game_seed, run_dir)
+                f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger", game_seed, run_dir)
                 try:
                     a_fit, a_beat = f_a.result(timeout=300)
                     b_fit, b_beat = f_b.result(timeout=300)
@@ -165,7 +168,9 @@ class GeneticAlgo:
             print(f"[{level}] gen=0  elite={a_fit}  challenger={b_fit}  winner={winner}")
             history[level][0] = {
                 "elite_fitness": a_fit, "challenger_fitness": b_fit,
-                "winner": winner, "elite_genome": dict(elite),
+                "winner": winner, "game_seed": game_seed,
+                "timestamp": datetime.now().isoformat(timespec="seconds"),
+                "elite_genome": dict(elite),
             }
             (evolve_dir / "evolution_history.json").write_text(json.dumps(history, indent=2))
 
@@ -174,8 +179,9 @@ class GeneticAlgo:
                 challenger = mutate(elite)
                 
                 #Submit the two genomes to the workers and get returns
-                f_a = self._pool.submit(eval_worker, elite, level, gen, "elite")
-                f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger")
+                game_seed = random.randint(0, 2**31) #same seed for both workers for fair comparison
+                f_a = self._pool.submit(eval_worker, elite, level, gen, "elite", game_seed, run_dir)
+                f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger", game_seed, run_dir)
                 #VizDoom can hang at the C++ level with no Python exception raised.
                 #If a worker freezes past 5 minutes we skip the generation entirely.
                 #The elite is unchanged, the plateau counter is not incremented,
@@ -202,7 +208,9 @@ class GeneticAlgo:
                       f"  winner={winner}  plateau={gens_no_change}/{PLATEAU_GENS}")
                 history[level][gen] = {
                     "elite_fitness": a_fit, "challenger_fitness": b_fit,
-                    "winner": winner, "elite_genome": dict(elite),
+                    "winner": winner, "game_seed": game_seed,
+                    "timestamp": datetime.now().isoformat(timespec="seconds"),
+                    "elite_genome": dict(elite),
                 }
                 (evolve_dir / "evolution_history.json").write_text(json.dumps(history, indent=2))
 

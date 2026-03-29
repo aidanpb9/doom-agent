@@ -6,7 +6,7 @@ This doc details how StateMachine works. The state machine is hierarchical with 
 
 
 ## Navigation
-The state machine delegates all movement to PathTracker and NavigationEngine. States that navigate (TRAVERSE, RECOVER) set a goal node. PathTracker manages the node graph, tracks mission progress, and detects stuck conditions. NavigationEngine handles A* pathfinding and movement. The state machine only decides what to target; the navigation stack handles how to get there. See architecture_design.md for class-level details.
+The state machine delegates all movement to PathTracker and NavigationEngine. States that navigate (TRAVERSE, RECOVER) set a goal node. PathTracker manages the node graph, tracks mission progress, and detects stuck conditions. NavigationEngine handles A* pathfinding and movement. The state machine only decides what to target; the navigation stack handles how to get there. See system_design.md for execution flow and class_reference.md for class-level details.
 
 
 ## State Machine & Priority

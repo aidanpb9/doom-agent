@@ -138,7 +138,7 @@ flowchart TD
 ## Evaluation Protocol
 **Per-Agent Evaluation:**
 - Map: E1M1 until plateau, then E1M2 and so on
-- Seed: A fresh random seed is generated and set at the start of each episode (`random.seed(seed)`). The seed is recorded in Tier 1. It controls Python RNG only (SCAN timing, STUCK turn direction), but VizDoom's internal RNG is independent and uncontrolled. This is the primary source of run-to-run variance. EVAL_RUNS episodes are averaged per genome to smooth this.
+- Seed: Two separate RNGs are in play. VizDoom's internal RNG controls world state (enemy positions, item spawns) and is set to the same random value for both workers per generation so elite and challenger face identical episode conditions. This gives a fairer fitness comparison. The seed changes each generation so the genome is evaluated across varied world states over time. Python's RNG controls agent behavior (SCAN angle timing, STUCK turn direction) and is re-randomized each episode intentionally. This variance means the EVAL_RUNS average reflects how well the genome performs across many possible agent behavior sequences, not just one fixed pattern.
 
 **Takes about 10 seconds per headless episode. So with 5 runs per genome running in parallel, a generation can take up to a minute.**
 
@@ -159,34 +159,33 @@ flowchart TD
 - evolution_history.json: all generations, competitions, elite lineage
 - final_elite.json: best genome parameters
 
+
 ## Post-Run Analysis
-After evolution completes, generate plots from evolution_history.json:
+Whether all levels were beaten or the run was stopped, calling `python ga/report.py output/evolve/YYYY-MM-DD_HHMM/` will parse `evolution_history.json` and produce a report. The report contains:
 
-**1. Fitness over Generations:**
-- X-axis: Generation number
-- Y-axis: Elite fitness
-- Shows: Convergence trend
+**1. Fitness over Generations**
+- Elite and challenger fitness on the same plot
+- Shows convergence trend and how much the challenger is competing
 
-**2. Parameter Evolution:**
-- X-axis: Generation number  
-- Y-axis: Parameter value
-- One line per parameter (7 lines total)
-- Shows: Which params changed most
+**2. Parameter Evolution**
+- One line per evolvable parameter across generations
+- Shows which params converged early and which kept changing
+- Check for params stuck at min/max boundaries
 
-**3. Success Rate:**
-- X-axis: Generation number (grouped by 5)
-- Y-axis: % of elite wins vs challenger wins
-- Shows: Elite stability over time
+**3. Win Rate over Generations**
+- Challenger win rate grouped by generation windows
+- High early = exploring, low late = converged
 
+**4. Fitness Stddev**
+- Standard deviation of elite fitness across generations
+- Used to measure run stability, useful for comparing seeded vs unseeded runs
 
-## Testing
-- Verify fitness calculation (better performance = higher score)
-- Try to have agent converge on E1M1
-- Test mutation produces valid parameters (all in range)
-- Check parameters aren't stuck at min/max boundaries
-- Re-evaluate final elite several times to confirm consistency
-- Verify generations don't slow down over evolve
+**5. Per-Episode Fitness Distribution**
+- Distribution of fitness scores across EVAL_RUNS for a given genome
+- Shows how much variance the agent has on the same genome, high variance means Python RNG is a significant factor
 
 
 ## Future Work
-- make visuals
+- Side-by-side run comparison: run `report.py` on two different timestamped folders and compare output plots manually.useful for A/B testing hyperparameter changes (e.g. seeded vs unseeded VizDoom)
+- Hand-crafted genome testing: manually specify a genome via `--genome` flag in run mode to test specific parameter combinations without running full evolution
+- Multi-level elite carry-forward tuning: verify the elite from E1M1 gives a useful head start on E1M2 rather than converging to a local optimum from the wrong level

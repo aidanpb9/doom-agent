@@ -51,10 +51,6 @@ def cmd_evolve(args):
     """GA evolution, main delegates fully to GeneticAlgo."""
     print("DoomSat - Evolve Mode")
 
-    #Wipe previous evolve output so output/evolve/ always reflects the latest run only
-    if Path(EVOLVE_DIR).exists():
-        shutil.rmtree(EVOLVE_DIR)
-
     from ga.genetic_algo import GeneticAlgo
     ga = GeneticAlgo()
     try:

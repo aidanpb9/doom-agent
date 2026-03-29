@@ -14,6 +14,8 @@ core/execution/state_machine.py — priority and transitions
  TRAVERSE is default when nothing else fires
 
 
+test_genetic_algo.py — yes, new file. test_compute_fitness.py tests the formula. The new file would test the genome operations: mutation stays in range, random_genome produces valid values, etc. The fitness weight concern ("better performance = higher score") is a sanity check test — something like "a run that finishes with full health scores higher than one with 0 health" — that belongs in test_compute_fitness.py since it's still testing compute_fitness, not a new file.
+
 core/execution/state_machine.py — _get_best_enemy
 
  Ignores enemies beyond COMBAT_MAX_RANGE

@@ -27,7 +27,7 @@ class Agent:
         self.blocking_segments = None #useful for combat
         self.episode_count = 0
     
-    def initialize_game(self, headless=False, map_name=DEFAULT_MAP_NAME, evolve=False, output_dir=None) -> None:
+    def initialize_game(self, headless=False, map_name=DEFAULT_MAP_NAME, evolve=False, output_dir=None, game_seed=None) -> None:
         """Does VizDoom setup, loads configs, and creates runtime objects."""
         self.map_name = map_name
         self.headless = headless
@@ -43,6 +43,8 @@ class Agent:
         self.game.set_doom_scenario_path(str(Path(DEFAULT_WAD_PATH).resolve()))
         self.game.set_doom_map(map_name)
         self.game.set_episode_timeout(DEFAULT_EPISODE_TIMEOUT)
+        if game_seed is not None:
+            self.game.set_seed(game_seed)  #same seed for both workers in a gen for fair elite vs challenger comparison
         self.game.init()
         self.blocking_segments = load_blocking_segments_from_wad(DEFAULT_WAD_PATH, map_name)
 

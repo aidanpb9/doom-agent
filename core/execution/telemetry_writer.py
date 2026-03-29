@@ -201,7 +201,7 @@ class TelemetryWriter:
 
         #Generate SVG map from Tier 2 positions. Not fatal if fails.
         try:
-            from tools.replay_map import render
+            from maps.tools.replay_map import render
             render(
                 tier2_path=tier2_path,
                 map_json_path=Path(f"maps/json/{map_name}.json"),

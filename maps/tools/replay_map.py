@@ -2,10 +2,10 @@
 Called automatically by TelemetryWriter.finalize_episode() at the end of every episode.
 
 Usage (CLI):
-    python tools/replay_map.py <tier2_csv> <map_json> <output_svg> [wad_path] [map_name] [end_reason]
+    python maps/tools/replay_map.py <tier2_csv> <map_json> <output_svg> [wad_path] [map_name] [end_reason]
 
 Usage (programmatic):
-    from tools.replay_map import render
+    from maps.tools.replay_map import render
     render(tier2_path, map_json_path, output_path, end_reason="death")
 """
 

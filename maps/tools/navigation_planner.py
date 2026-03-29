@@ -4,16 +4,16 @@ the sector-level A* route from player start to exit. No gameplay control logic i
 
 Usage:
     # Single map — outputs SVG and JSON for E1M1
-    python tools/navigation_planner.py --wad maps/wads/doom.wad --map E1M1
+    python maps/tools/navigation_planner.py --wad maps/wads/doom.wad --map E1M1
 
     # Specify output SVG path explicitly
-    python tools/navigation_planner.py --wad maps/wads/doom.wad --map E1M1 --out maps/svg/E1M1.svg
+    python maps/tools/navigation_planner.py --wad maps/wads/doom.wad --map E1M1 --out maps/svg/E1M1.svg
 
     # Generate SVG for every map in the WAD (outputs to maps/svg/all_maps_astar/)
-    python tools/navigation_planner.py --wad maps/wads/doom.wad --all-maps
+    python maps/tools/navigation_planner.py --wad maps/wads/doom.wad --all-maps
 
     # Custom output directory for --all-maps
-    python tools/navigation_planner.py --wad maps/wads/doom.wad --all-maps --out-dir maps/svg/custom/
+    python maps/tools/navigation_planner.py --wad maps/wads/doom.wad --all-maps --out-dir maps/svg/custom/
 """
 
 from __future__ import annotations
