@@ -47,12 +47,12 @@ def test_normalize_angle_wraps_at_180():
 
 
 def test_normalize_angle_large_positive():
-    #540 = 180 + 360 → wraps to -180
+    #540 = 180 + 360 -> wraps to -180
     assert normalize_angle(540.0) == pytest.approx(-180.0)
 
 
 def test_normalize_angle_large_negative():
-    #-270 → equivalent to 90
+    #-270 -> equivalent to 90
     assert normalize_angle(-270.0) == pytest.approx(90.0)
 
 
@@ -61,7 +61,7 @@ def test_normalize_angle_large_negative():
 # ---------------------------------------------------------------------------
 
 def test_clear_line_no_segments():
-    #empty segment list → always clear regardless of positions
+    #empty segment list -> always clear regardless of positions
     assert has_clear_world_line(0, 0, 10, 10, []) is True
 
 
@@ -80,7 +80,7 @@ def test_blocked_line():
 
 
 def test_clear_line_none_target():
-    #None object coordinates → no target to check, treated as clear
+    #None object coordinates -> no target to check, treated as clear
     segments = [(5, -5, 5, 5)]
     assert has_clear_world_line(0, 0, None, None, segments) is True
 

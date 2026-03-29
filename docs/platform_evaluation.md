@@ -27,9 +27,9 @@ VizDoom successfully runs full Doom 1 (registered version) with all episodes and
 
 Tested `doom.wad` compatibility with all episodes:
 
-- Episode 1: E1M1-E1M9 ✓
-- Episode 2: E2M1-E2M9 ✓  
-- Episode 3: E3M1-E3M9 ✓
+- Episode 1: E1M1-E1M9 confirmed
+- Episode 2: E2M1-E2M9 confirmed
+- Episode 3: E3M1-E3M9 confirmed
 
 **Total: 27 levels confirmed working**
 
@@ -38,7 +38,7 @@ Command:
 - make sure doom.wad is named correctly in the wads folder 
 - YOU MUST VISUALLY VERIFY THAT DIFFERENT LEVELS ARE BEING OPENED
 
-python3 -c "import vizdoom as vzd; import time; game = vzd.DoomGame(); game.set_doom_scenario_path('wads/doom.wad'); [print(f'✓ E{ep}M{lv}') if (game.set_doom_map(f'E{ep}M{lv}'), game.init(), time.sleep(0.5), game.close(), True)[-1] else print(f'✗ E{ep}M{lv}') for ep in [1,2,3] for lv in range(1,10)]"
+python3 -c "import vizdoom as vzd; import time; game = vzd.DoomGame(); game.set_doom_scenario_path('maps/wads/doom.wad'); [print(f'GOOD E{ep}M{lv}') if (game.set_doom_map(f'E{ep}M{lv}'), game.init(), time.sleep(0.5), game.close(), True)[-1] else print(f'BAD E{ep}M{lv}') for ep in [1,2,3] for lv in range(1,10)]"
 
 **WAD File Details:**
 - File: `doom.wad`

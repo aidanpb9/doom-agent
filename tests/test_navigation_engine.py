@@ -13,7 +13,6 @@ FORWARD_ANGLE_THRESHOLD values in constants.py. If those constants change,
 these tests may pass while the actual behavior is still wrong. The geometry
 and A* correctness tests are independent of constants and safe from this.
 """
-import pytest
 from collections import deque
 from core.navigation.graph import Graph, Node, NodeType
 from core.navigation.navigation_engine import NavigationEngine
@@ -50,7 +49,7 @@ def test_astar_finds_direct_path():
 
 
 def test_astar_finds_path_through_intermediate():
-    #A → B → C with no direct A-C edge. Path must go through B.
+    #A -> B -> C with no direct A-C edge. Path must go through B.
     a, b, c = make_node(0, 0), make_node(5, 0), make_node(10, 0)
     _, engine = make_graph(a, b, c, edges=[(a, b), (b, c)])
     path = engine.make_path(a, c)
@@ -58,7 +57,7 @@ def test_astar_finds_path_through_intermediate():
 
 
 def test_astar_prefers_shorter_path():
-    #Two routes A→C: direct (cost=10) and via B (cost=5+8=13). A* should pick direct
+    #Two routes A->C: direct (cost=10) and via B (cost=5+8=13). A* should pick direct
     a = make_node(0, 0)
     b = make_node(5, 0)
     c = make_node(10, 0)

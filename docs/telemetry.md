@@ -8,17 +8,17 @@ Files are opened by `start_episode()` and finalized by `finalize_episode()`. The
 
 ## Output Files
 ```
-output/run/ep_NNNN_summary.json            ← Tier 1
-output/run/ep_NNNN_actions.csv             ← Tier 2
-output/run/ep_NNNN_map.svg                 ← visual map
-output/run/ep_NNNN_debug.jsonl             ← Tier 0 (full_telemetry mode only)
+output/run/ep_NNNN_summary.json            <- Tier 1
+output/run/ep_NNNN_actions.csv             <- Tier 2
+output/run/ep_NNNN_map.svg                 <- visual map
+output/run/ep_NNNN_debug.jsonl             <- Tier 0 (full_telemetry mode only)
 
-output/evolve/YYYY-MM-DD_HHMM/               ← one folder per run, never overwritten
-    evolution_history.json                   ← per-generation results
-    final_elite.json                         ← best genome per level
+output/evolve/YYYY-MM-DD_HHMM/               <- one folder per run, never overwritten
+    evolution_history.json                   <- per-generation results
+    final_elite.json                         <- best genome per level
     E1M1/gen_NNNN/
-        elite_ep_NNNN_{summary,actions,map}  ← Tier 1/2, elite runs
-        challenger_ep_NNNN_{summary,actions,map}  ← Tier 1/2, challenger runs
+        elite_ep_NNNN_{summary,actions,map}  <- Tier 1/2, elite runs
+        challenger_ep_NNNN_{summary,actions,map}  <- Tier 1/2, challenger runs
 ```
 Episode index is sequential across an entire evolution run and does not reset between maps or generations. Each run gets a timestamped folder so previous runs are never overwritten. The GA doc defines evolve mode outputs.
 
@@ -106,7 +106,7 @@ writer.finalize_episode(stats)
 ```
 - `full_telemetry=True` enables Tier 0 (run mode), map SVG is always generated
 - `genome` dict is embedded in Tier 1 when provided (evolve mode)
-- `episode_prefix` prepends a label to all output filenames (e.g. `"elite"` → `elite_ep_NNNN_*`)
+- `episode_prefix` prepends a label to all output filenames (e.g. `"elite"` -> `elite_ep_NNNN_*`)
 - `record_step` is called every tick (frameskip = 1 always)
 
 

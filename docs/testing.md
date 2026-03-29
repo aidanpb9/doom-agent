@@ -1,29 +1,3 @@
-core/execution/state_machine.py — priority and transitions
-
- STUCK fires when path_tracker.is_stuck = True, overrides everything
- COMBAT fires when enemies visible and ammo > 0
- COMBAT does not fire when ammo = 0
- COMBAT stays active during combat_hold countdown
- COMBAT exits when combat_hold expires and no enemies
- SCAN fires when damage taken and cooldown = 0
- SCAN continues when last_state = SCAN (sticky until complete)
- RECOVER fires when health below threshold and health loot known
- RECOVER fires when ammo below threshold and ammo loot known
- RECOVER does not fire when loot not known
- SCAN fires above RECOVER when both conditions met
- TRAVERSE is default when nothing else fires
-
-
-test_genetic_algo.py — yes, new file. test_compute_fitness.py tests the formula. The new file would test the genome operations: mutation stays in range, random_genome produces valid values, etc. The fitness weight concern ("better performance = higher score") is a sanity check test — something like "a run that finishes with full health scores higher than one with 0 health" — that belongs in test_compute_fitness.py since it's still testing compute_fitness, not a new file.
-
-core/execution/state_machine.py — _get_best_enemy
-
- Ignores enemies beyond COMBAT_MAX_RANGE
- Ignores enemies with no clear LOS
- Returns most centered enemy when multiple visible
- Returns None when no valid enemies
-
-
 core/execution/telemetry_writer.py
 
  Tier 1 summary contains all required fields

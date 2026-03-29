@@ -60,7 +60,7 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Weighted combination** - rewards completion, speed, and player stats:
 ```python
 if level_completed:
-    fitness = 1000                          # Base completion bonus
+    fitness = 5000                          # Base completion bonus
             + 500 * (1 - time_ticks / 4200)  # Speed bonus 
             + 2 * health_remaining          # Health
             + 1 * armor_remaining           # Armor   
@@ -72,7 +72,7 @@ else:
 ```
 
 **Rationale:**
-- Completion heavily weighted (1000 pts). It's the primary objective.
+- Completion heavily weighted (5000 pts base). Guarantees any completion outscores even the best non-completion run on any level, even accounting for the worst-case negative speed penalty (−1000).
 - Completion speed matters.
 - Health more valuable than armor (2× weight).
 - Ammo carryover encouraged for future levels.
@@ -96,7 +96,7 @@ else:
 2. Evaluate A and B in parallel, for EVAL_RUNS episodes each
 3. Compare averaged fitness scores
 4. If fitness(B) > fitness(A):
-       Agent A ← Agent B  (new elite)
+       Agent A <- Agent B  (new elite)
    Else:
        Retain Agent A (elite preserved)
 5. Save generation results
@@ -186,6 +186,7 @@ Whether all levels were beaten or the run was stopped, calling `python ga/report
 
 
 ## Future Work
+- Verify the fitness lets the agent improve when not beating levels
 - Side-by-side run comparison: run `report.py` on two different timestamped folders and compare output plots manually.useful for A/B testing hyperparameter changes (e.g. seeded vs unseeded VizDoom)
 - Hand-crafted genome testing: manually specify a genome via `--genome` flag in run mode to test specific parameter combinations without running full evolution
 - Multi-level elite carry-forward tuning: verify the elite from E1M1 gives a useful head start on E1M2 rather than converging to a local optimum from the wrong level
