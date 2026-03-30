@@ -60,7 +60,7 @@ Requires Python 3.10+ and a copy of `doom.wad` (not included).
 git clone https://github.com/aidanpb9/DoomSat.git
 cd DoomSat
 pip install ".[dev]"
-cp /path/to/doom.wad maps/wads/doom.wad
+cp /path/to/doom.wad maps/wads/doom.wad (YOU NEED TO PUT THE WAD THERE)
 ```
 
 
@@ -91,8 +91,8 @@ Generates charts per level under `output/evolve/YYYY-MM-DD_HHMM/<level>/report/`
 
 ### Docker
 Notes:
-For running the agent without setting up dependencies. Only supports headless run mode right now.
-If you're a dev don't use this.
+Used for running the agent without setting up dependencies. Only supports headless run mode right now.
+If you're a dev you probably won't use this.
 The WAD file must be mounted at runtime and cannot be bundled in the image.
 Docker Desktop must be running. Must be inside the DoomSat directory:
 
@@ -103,12 +103,15 @@ docker run -v "$PWD/maps/wads/doom.wad:/app/maps/wads/doom.wad" doomsat
 
 
 ## Future work
-
-- **Multi-level progression:** E1M2 requires mechanics for key-lcoked doors and lifts. The architecture supports it but the mechanics need implementing.
+- **Update nav planner with Thomas code:** Get the nav planner working for later levels.
+- **GA plot to see how each reward metric evolves:** Need to normalize visited waypoints for GA by making a LEVEL_WAYPOINTS based on the number of nodes in the map json. This gives level completion percentage. Then we can add a plot to see which rewards are more important and how they evolve. And could also make a plot involving agent scores across episodes.
+- **Multi-level progression:** E1M2 requires mechanics for key-locked doors, lifts, and switches. Can add more weapon choices. The architecture supports it but the mechanics need implementing.
 - **FSW integration:** merge with flight software branch once repo structure is finalized.
 - **Combat improvement:** agent cannot retreat during combat. Adding backward movement (possibly as a GA param) would help against high-health enemies.
 - **Combat ammo waste:** if the agent deals no damage after several combat ticks, the enemy is likely behind geometry. A combat blacklist similar to the loot node blacklist would prevent wasted ammo.
 - **Exploration:** a detour state or breadcrumb pathfinding would add more exploration to help the agent discover more areas it's avoiding.
+- **Test GA live visuals:** See convergence in real time. Can use TensorBoard.
+- **Recreate gameplay from logs:** Investigate RNG and see if we can get more deterministic gameplay too.
 
 
 ## Acknowledgments
@@ -127,4 +130,5 @@ Aidan Brinkley:
 - aidanpb9@gmail.com (happy to respond)
 
 Thomas Brown:
-#TODO
+- Auburn University Software Engineering 2026
+- thomas.r.brown2005@gmail.com
