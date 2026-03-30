@@ -191,8 +191,8 @@ class GeneticAlgo:
                 #The elite is unchanged, the plateau counter is not incremented,
                 #and the next generation will retry with a fresh mutant.
                 try:
-                    a_fit, a_beat = f_a.result()
-                    b_fit, b_beat = f_b.result()
+                    a_fit, a_beat = f_a.result(timeout=300)
+                    b_fit, b_beat = f_b.result(timeout=300)
                 except (TimeoutError, BrokenProcessPool):
                     #BrokenProcessPool means the C++ VizDoom process was killed at the OS level.
                     #The pool is dead and must be recreated or all future submits will also raise.
