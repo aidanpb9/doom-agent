@@ -117,4 +117,4 @@ LOOT_NODE_COOLDOWN = 210        #ticks before a removed loot node can be re-adde
 
 #Combat
 COMBAT_AIM_THRESHOLD = 0.01     #fraction of screen width, fire when enemy center is within this of screen center
-COMBAT_MAX_RANGE = 900          #units, ignore enemies beyond this distance to avoid wasting ammo
+COMBAT_MAX_RANGE = 850          #units, ignore enemies beyond this distance to avoid wasting ammo

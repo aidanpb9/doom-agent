@@ -2,114 +2,129 @@
 
 ![CI](https://github.com/aidanpb9/DoomSat/actions/workflows/ci.yaml/badge.svg)
 
+An autonomous agent plays DOOM 1993 for CubeSat payload simulation. The agent navigates and completes Doom levels using waypoint-graph pathfinding, a priority-based state machine, and a genetic algorithm that evolves behavioral parameters to simulate cosmic radiation resilience.
 
-## Project Overview
-
-Spacecraft flight software and Doom payload development using VizDoom. This project implements an AI agent that autonomously navigates and completes Doom levels using navmesh-based pathfinding, combat behaviors, and genetic algorithm parameter optimization.
-
-DoomSat autonomously plays and completes Doom levels using navmesh pathfinding and genetic algorithm parameter optimization. The agent uses:
+For a guided tour of the codebase read docs/HANDOFF.md
 
 
+## How it works
 
-## Project Structure
+The agent runs inside VizDoom, perceiving game state each tick and selecting actions through a hierarchical state machine (STUCK > COMBAT > SCAN > RECOVER > TRAVERSE). A micro-genetic algorithm evolves 7 behavioral parameters like health thresholds and scan frequency by running two genomes head-to-head each generation and keeping the better performer.
+
+
+## Project structure
 
 ```
 DoomSat/
-├── README.md                        
-├── .gitignore                         
-├── requirements.txt                 
-├── main.py 
-├── wads/
-├── maps/
-├── logs/
-├── docs/
+├── main.py                      #entry point: run and evolve modes
+├── pyproject.toml               #dependencies
+├── Dockerfile
 ├── config/
-│   ├── constants.py
-│   └── vizdoom.cfg
-├── tools/
-│   └── TBD...(navigation_planner.py)
-├── ga/
-│   ├── genetic_algorithm.py
-│   └── agent_genome.py
+│   ├── constants.py             #all tunable constants including GA param defaults
+│   └── vizdoom.cfg              #VizDoom engine configuration
 ├── core/
+│   ├── utils.py                 #shared geometry helpers (LOS, distance, intersections)
 │   ├── execution/
-│   │   ├── agent.py
-│   │   ├── state_machine.py
-│   │   ├── perception.py
-│   │   ├── action_decoder.py
-│   │   ├── game_state.py
-│   │   └── telemetry_writer.py
+│   │   ├── agent.py             #episode lifecycle, VizDoom I/O
+│   │   ├── state_machine.py     #decision-making, state priority logic
+│   │   ├── perception.py        #parses VizDoom state into GameState
+│   │   ├── action_decoder.py    #builds action vectors
+│   │   ├── game_state.py        #GameState, EnemyObject, LootObject dataclasses
+│   │   └── telemetry_writer.py  #per-episode logging (3 tiers)
 │   └── navigation/
-│       ├── graph.py
-│       ├── navigation_engine.py
-│       └── path_tracker.py
-
-
-            
+│       ├── graph.py             #node graph (waypoints, loot, doors, exits)
+│       ├── navigation_engine.py #A* pathfinding and movement
+│       └── path_tracker.py      #dynamic node placement, mission progress
+├── ga/
+│   ├── genetic_algo.py          #GA evolution loop and fitness function
+│   ├── report.py                #post-run analysis charts
+│   └── test_genome.json         #edit this, for watching a specific genome in run mode
+├── maps/
+│   ├── images/                  #map screenshots used by navigation_planner
+│   ├── json/                    #pre-processed map node data (one file per level)
+│   ├── tools/                   #offline map processing scripts
+│   └── wads/                    #doom.wad goes here (not committed)
+├── docs/                        #design documents
+├── tests/                       #pytest test suite
+└── output/                      #generated at runtime, not committed
+    ├── run/                     #single episode outputs (summary, CSV, SVG)
+    └── evolve/                  #timestamped GA run folders
 ```
 
-# #Installation
 
-1. **Install dependencies**:
+## Installation
+
+Requires Python 3.10+ and a copy of `doom.wad` (not included).
+
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/aidanpb9/DoomSat.git
+cd DoomSat
+pip install ".[dev]"
+cp /path/to/doom.wad maps/wads/doom.wad
 ```
 
-2. **Add your Doom WAD** to the `wads/` directory:
-```bash
-# For shareware Doom
-cp /path/to/doom.wad wads/
-
-# Or for full Doom
-cp /path/to/doom.wad wads/
-```
-RENAME the wad file to: doom.wad
 
 ## Usage
 
-### Local development
+### Run the agent
 ```bash
-python3 main.py run                  # single episode, windowed
-python3 main.py run --headless       # single episode, headless
-python3 main.py run --map E1M2       # specific map
-python3 main.py evolve               # GA evolution
-pytest tests/ -m "not local" -v          # unit tests (CI)
-pytest tests/ -v                         # all tests including integration (local only, requires VizDoom)
-python3 ga/report.py output/evolve/YYYY-MM-DD_HHMM/  # post-run analysis
+python3 main.py run                   #single episode, windowed
+python3 main.py run --headless        #single episode, headless (faster)
+python3 main.py run --map E1M2        #specific map
+python3 main.py evolve                #GA evolution
 ```
 
-### Docker (quick run, no local setup required, NEED TO HAVE DOCKER DESKTOP OPEN)
-```bash
-# TODO: update paths and usage notes once flight software repo structure is defined
-docker build -t doomsat .
+### Hand-crafted genome testing
+Edit `ga/test_genome.json` to set custom parameter values, then run normally. If the file exists it overrides the defaults, letting you observe specific parameter combinations in windowed mode without touching evolved outputs.
 
-#Must be run from inside the DoomSat directory
-#Quotes are required. "$PWD" expands to the absolute path of your current directory
+### Tests
+```bash
+pytest tests/ -m "not local" -v      #unit tests (the CI runs these)
+pytest tests/ -v                     #all tests including integration (requires VizDoom)
+```
+
+### Post-run analysis
+```bash
+python3 ga/report.py output/evolve/YYYY-MM-DD_HHMM/
+```
+Generates charts per level under `output/evolve/YYYY-MM-DD_HHMM/<level>/report/`.
+
+### Docker
+Notes:
+For running the agent without setting up dependencies. Only supports headless run mode right now.
+If you're a dev don't use this.
+The WAD file must be mounted at runtime and cannot be bundled in the image.
+Docker Desktop must be running. Must be inside the DoomSat directory:
+
+```bash
+docker build -t doomsat .
 docker run -v "$PWD/maps/wads/doom.wad:/app/maps/wads/doom.wad" doomsat
 ```
 
-## License
 
-[Add license information]
+## Future work
 
-## Potential Future Work
-- Combine with FSW branch into one main branch (need to fix dependencies and paths after)
-- If node finding becomes a problem, can add blocking segments in _nearest_node()
-- Combat blackist (if needed): if we don't kill any enemies after being in combat for a while, it means the enemy is behind some geometry and we need to stop shooting or all ammo will get wasted. Can work similarly to loot node blacklist in path_tracker.
-- Move backwards during combat. A few ways to do this. Could make it a GA param. Helpful when there's an enemy with a lot of health and we need more time to kill it.
-- A way to allow for more exploration. A detour state or some type of breadcrumb pathfinding could help.
-- Port to C++ to improve runtime or some other reason (good luck :)
+- **Multi-level progression:** E1M2 requires mechanics for key-lcoked doors and lifts. The architecture supports it but the mechanics need implementing.
+- **FSW integration:** merge with flight software branch once repo structure is finalized.
+- **Combat improvement:** agent cannot retreat during combat. Adding backward movement (possibly as a GA param) would help against high-health enemies.
+- **Combat ammo waste:** if the agent deals no damage after several combat ticks, the enemy is likely behind geometry. A combat blacklist similar to the loot node blacklist would prevent wasted ammo.
+- **Exploration:** a detour state or breadcrumb pathfinding would add more exploration to help the agent discover more areas it's avoiding.
+
 
 ## Acknowledgments
 
-- **VizDoom**: The Doom-based RL research platform
-- **zdoom-navmesh-generator**: Navmesh extraction tools
-- **zdoom-pathfinding**: A* and funnel algorithms
+- [VizDoom](https://github.com/Farama-Foundation/ViZDoom): Doom-based AI research platform
+- [zdoom-navmesh-generator](https://github.com/pbr1111/zdoom-navmesh-generator): navmesh extraction
+- [zdoom-pathfinding](https://github.com/dev-null-undefined/zdoom-pathfinding): A* and funnel algorithms
+
+Doom and related trademarks are property of id Software. This project is for research and educational purposes.
+
 
 ## Authors
 
-[Add contact information]
+Aidan Brinkley: 
+- Auburn University Software Engineering 2026
+- aidanpb9@gmail.com (happy to respond)
 
----
-
-**Note**: This project is for research and educational purposes. Doom and related trademarks are property of id Software.
+Thomas Brown:
+#TODO

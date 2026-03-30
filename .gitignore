@@ -3,6 +3,7 @@ __pycache__/
 *.egg-info/
 build/
 .pytest_cache/
+.ruff_cache/
 *.py[cod]
 *$py.class
 *.so
@@ -47,9 +48,6 @@ zdoom-pathfinding-master/
 
 # WADs — binary, distributed separately
 maps/wads/
-
-# Hand-crafted genome scratch file, edit freely, not part of version history
-ga/test_genome.json
 
 # VizDoom generated files
 _vizdoom.ini
