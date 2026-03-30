@@ -17,7 +17,7 @@ Tbh, it's still a little fuzzy how this part works, ask the boss for more info.
 
 ## Continuing from the previous group
 
-This codebase started January 2026. 
+This codebase started January 2026.
 The handoff docs we were given mainly included research into what algorithms work with the spacecraft and Doom.
 The algorithms_tree.html was the only thing we thought worth saving.
 It will tell you what algorithms in general work well on spacecraft + VizDoom.
@@ -45,25 +45,27 @@ We got stuck after not making progress for 2 weeks because traversing levels wit
 
 
 ## Prioritize planning before coding
-We changed our approach to be more thorough with the system design upfront. 
+We changed our approach to be more thorough with the system design upfront.
 First was playing through all of DOOM and understanding what kind of complexity the game had.
 There are a ton of mechanics that need to be addressed by our execution algorithm.
 After realizing this, we started with focusing on beating E1M1, but creating an architecture that could work for all levels.
 
 ```Now, just read the readme if you haven't already.```
-```Now, acquire the doom.wad``` 
+```Now, acquire the doom.wad```
 That file is basically just the doom game; there are many ways to get it. Good luck, ask the boss.
 
 ```Next, I recommend at some point you play thru at least the first 2 levels to get an understanding of DOOM.```
-I used uzdoom.exe; you'll need to find that online. 
+I used uzdoom.exe; you'll need to find that online.
 You also will need to give it the doom.wad.
 
 ```You can also read the doc I made after my full playthrough: game_mechanics.md```
 The main takeaway is that levels are very different from each other.
 The params that work for one level might crap the bed on the next one.
-Thats why the GA evolves params per level. 
+Thats why the GA evolves params per level.
 If it was for all levels, we'd just end up with one mediocre genome, or just the best genome for the last level.
 ```Now's a good time to read the genetic_algo_design doc.```
+
+blah blah blah
 
 
 
