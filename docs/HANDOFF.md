@@ -65,10 +65,6 @@ Thats why the GA evolves params per level.
 If it was for all levels, we'd just end up with one mediocre genome, or just the best genome for the last level.
 ```Now's a good time to read the genetic_algo_design doc.```
 
-blah blah blah
-
-
-
 DO NOT BLOW UP THE NODES
 #did use ai, would recommend carefully
 #claude in terminal
