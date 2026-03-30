@@ -17,6 +17,7 @@ jobs:
     strategy:
       #Matrix runs the full test suite against both versions in parallel.
       #3.10 matches local dev environment. 3.11 catches forward-compatibility issues.
+      #VizDoom is not installed in CI (integration tests skipped) so wheel support is not a concern.
       matrix:
         python-version: ["3.10", "3.11"]
 

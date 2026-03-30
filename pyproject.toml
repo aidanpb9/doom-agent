@@ -16,6 +16,7 @@ dependencies = [
     "vizdoom>=1.1.13",
     "psutil>=5.9.0",
     "matplotlib>=3.7.0",
+    "numpy>=1.24.0",
 ]
 
 [tool.pytest.ini_options]

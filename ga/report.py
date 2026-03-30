@@ -11,16 +11,15 @@ Reads evolution_history.json from the given run folder and produces:
     5. Per-episode fitness dist   — variance across EVAL_RUNS for a given genome
     6. Check if multiprocessing slowed down per gen
 """
+from ga.genetic_algo import PARAM_RANGES
 import json
 import sys
 from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent.parent)) #ensure project root is on path
-
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
-from ga.genetic_algo import PARAM_RANGES
+from datetime import datetime as dt
+sys.path.insert(0, str(Path(__file__).parent.parent)) #ensure project root is on path
 
 
 def load_history(run_dir: Path) -> dict:
@@ -182,9 +181,8 @@ def plot_episode_variance(run_dir: Path, history: dict, out_dir: Path) -> None:
 
 def plot_gen_timing(history: dict, out_dir: Path) -> None:
     """6. Time per generation derived from timestamps, one plot per level.
-    Flat line = consistent gen time. Rising line = multiprocessing slowing down over time."""
-    from datetime import datetime as dt
-
+    Flat line = consistent gen time. Rising line = multiprocessing slowing down over time.
+    Also shows genome episode completion time."""
     for level, gens in history.items():
         gen_nums = sorted(int(g) for g in gens if g not in ("timeout",) and "timestamp" in gens[str(g)])
         if len(gen_nums) < 2:

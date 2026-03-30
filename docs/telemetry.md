@@ -46,7 +46,7 @@ Episode index is sequential across an entire evolution run and does not reset be
 ## Tier 1: Episode Summary
 **File:** `ep_NNNN_summary.json`: written once at episode end
 
-**Written:** always, including all 3 evaluation runs per genome in evolve mode.
+**Written:** always, including all 5 evaluation runs per genome in evolve mode.
 
 **Use for:** GA fitness tracking, comparing genomes, post-run plots.
 
@@ -83,7 +83,7 @@ Episode index is sequential across an entire evolution run and does not reset be
 - `pos_x`, `pos_y`: player position in Doom map units
 
 
-## Visual Map
+## Visual Map (Tier 2 also)
 **File:** `ep_NNNN_map.svg`: generated at end of episode
 
 **Written:** always generate a map since all end reasons (completion, death, timeout) give useful info.

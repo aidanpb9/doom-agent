@@ -23,7 +23,6 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 | Population size | 2 | Elite + challenger only |
 | Eval runs | 5 | Episodes per genome per generation, averaged to reduce VizDoom RNG variance |
 | Radiation intensity | 0.25 | Probability per parameter of a bit-flip mutation occurring |
-| Sigma (mutation std) | 15% of range | Per-parameter, adaptive |
 | Plateau generations | 10 | Generations without elite change before advancing to next level |
 | Episode timeout | 12600 ticks (360 seconds) | E1M1 time limit |
 | Evaluation seed | Random per episode | Python RNG seeded fresh each episode, seed recorded in Tier 1 Telemetry |
@@ -60,15 +59,15 @@ The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic
 **Weighted combination** - rewards completion, speed, and player stats:
 ```python
 if level_completed:
-    fitness = 5000                          # Base completion bonus
-            + 500 * (1 - time_ticks / 4200)  # Speed bonus 
-            + 2 * health_remaining          # Health
-            + 1 * armor_remaining           # Armor   
-            + 0.5 * ammo_remaining          # Ammo 
+    fitness = 5000                          #Base completion bonus
+            + 500 * (1 - time_ticks / 4200) #Speed bonus
+            + 2 * health_remaining          #Health
+            + 1 * armor_remaining           #Armor 
+            + 0.5 * ammo_remaining          #Ammo
 else:
     fitness = 0
-            + 5 * enemies_killed            # Partial credit for progress
-            + 10 * waypoints_reached        # Proximity to goal
+            + 5 * enemies_killed            #Partial credit for progress
+            + 10 * waypoints_reached        #Proximity to goal
 ```
 
 **Rationale:**
@@ -153,7 +152,7 @@ flowchart TD
 
 ## Output & Logging
 **During Evolution:**
-- Console: Real-time progress (generation N, winner, fitness)
+- Console: Real-time progress (generation N, winner, fitness, plateau)
 
 **After Evolution:**
 - evolution_history.json: all generations, competitions, elite lineage

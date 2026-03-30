@@ -19,7 +19,7 @@ Played through the 27 levels of Doom (E1M1 - E3M9). Noted all the important game
 
 
 **Stuck Recovery:**
-- Many map locations can trap the player (corners, narrow passages)
+- Many map locations can trap an agent (corners, narrow passages, obstacles)
 - Agent must detect and escape stuck states
 
 **Environmental Hazards:**

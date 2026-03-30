@@ -81,14 +81,14 @@ When creating a new worker process, the OS can either:
 
 Fork is safe with VizDoom because each `DoomGame` instance creates its own child `vizdoom` binary via `fork+exec` and its own uniquely-named shared memory segments (`/dev/shm/ViZDoomSM<random_id>`). There is no shared mutable state between VizDoom instances at the C++ level.
 
-### Benchmarks
+### Benchmarks (3 runs)
 
 | Method | 2 parallel evals wall time | Speedup vs sequential |
 |--------|---------------------------|----------------------|
 | Sequential | ~60s | 1.0x |
 | ProcessPoolExecutor + fork | ~31s | ~1.95x |
 | ProcessPoolExecutor + spawn | ~36s | ~1.65x |
-| threading | ~35s | ~1.7x |
+| Threading | ~35s | ~1.7x |
 
 
 ## Safety of Module-Level Patching

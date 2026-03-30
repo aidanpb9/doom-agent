@@ -1,0 +1,7 @@
+The bug: the agent enters RECOVER, navigates toward a loot node that is physically unreachable (behind a wall or in geometry A* can't route through), approaches as close as it can get, then either the node disappears (as above) or STUCK eventually fires and the agent recovers and immediately re-enters RECOVER heading for the same node again. The cycle repeats until something else breaks it — the loot node times out, stats change, or the agent wanders far enough away.
+
+Why it happens: A* plans a path to the nearest node in the graph but has no concept of whether the destination is actually reachable in the game world. The navigation graph is built offline from the map geometry but loot nodes are placed dynamically at runtime based on what the agent sees — there's no guarantee a dynamically placed loot node is in a reachable position.
+
+The fix: a blacklist on loot nodes that the agent has failed to reach. After N stuck events while targeting the same node, or after the agent has been within some distance of the node for too long without the stat increasing, remove the node permanently for that episode and add it to a cooldown list. This is the same pattern as the existing loot node cooldown — just triggered by failure to reach rather than by time.
+
+The prerequisite is the same logging fix from the first bug — you need to know when and why nodes are being removed before you can add reliable blacklist logic on top of it.
