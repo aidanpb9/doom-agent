@@ -2,8 +2,6 @@
 
 Hey.
 
-You can start with this doc even if you haven't read the primary readme. Trust.
-
 This doc will tell you the steps I recommend to take to understand this codebase.
 It also includes advice about how to contribute and thoughts about why things were done.
 
@@ -38,9 +36,9 @@ This was surprisingly helpful for getting the project off the ground and underst
 We were able to set up the environments fast without having to read documentation.
 It gave us a great reference point for how things should work and what capabilities VizDoom has.
 We were quickly able to beat E1M1, but found difficulty on levels after because the map layout is so complex.
-The codebase quickly grew to an unmaintainable size, and we didn't really understand how anything worked.
-Using ai, we put bandaid on top of bandaid until we got stuck.
-We got stuck after not making progress for 2 weeks because traversing levels without getting stuck had no real solution yet.
+The codebase quickly grew to an unmaintainable size, and we didn't really understand all the moving parts.
+We ended up putting bandaid on top of bandaid until we got stuck.
+The main issue was traversing levels without getting stuck on objects.
 1 month after taking over the project, we restarted with a new approach.
 
 
@@ -54,11 +52,11 @@ After realizing this, we started with focusing on beating E1M1, but creating an 
 ```Now, acquire the doom.wad```
 That file is basically just the doom game; there are many ways to get it. Good luck, ask the boss.
 
-```Next, I recommend at some point you play thru at least the first 2 levels to get an understanding of DOOM.```
+```At some point play thru a few levels to get an understanding of DOOM, and think about all the mechanics you'd need to address with code.```
 I used uzdoom.exe; you'll need to find that online.
 You also will need to give it the doom.wad.
 
-```You can also read the doc I made after my full playthrough: game_mechanics.md```
+```You might find the doc I made after my full playthrough helpful: game_mechanics.md```
 The main takeaway is that levels are very different from each other.
 The params that work for one level might crap the bed on the next one.
 Thats why the GA evolves params per level.

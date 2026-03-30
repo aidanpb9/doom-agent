@@ -105,7 +105,7 @@ TURN_DEAD_ZONE = 10             #degrees, stop turning when this close to target
 FORWARD_ANGLE_THRESHOLD = 10    #degrees, only move forward when aligned within this angle
 NODE_PROXIMITY = 40             #units, distance to consider a node reached (tested: ~35-60 depending on angle)
 DOOR_USE_DISTANCE = 30          #units, must be this close to fire USE on a door or exit
-LOOT_PROXIMITY = 20             #units, loot within this distance of an existing node is already marked
+LOOT_PROXIMITY = 10             #units, loot within this distance of an existing node is already marked
 
 
 #Stuck detection and loot node placement

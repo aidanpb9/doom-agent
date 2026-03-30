@@ -79,7 +79,7 @@ class Agent:
             "end_reason": "timeout"
         }
 
-        #Setup — seed Python RNG per episode so SCAN/STUCK randomness is reproducible from seed alone
+        #Setup: seed Python RNG per episode so SCAN/STUCK randomness is reproducible from seed alone
         seed = random.randrange(2**32)
         random.seed(seed)
         self.game.new_episode()

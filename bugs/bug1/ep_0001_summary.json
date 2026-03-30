@@ -1,0 +1,25 @@
+{
+  "episode_id": 1,
+  "level_id": "E1M1",
+  "seed": 3297667121,
+  "end_reason": "completion",
+  "ticks": 3917,
+  "health": 100.0,
+  "armor": 5.0,
+  "ammo": 40.0,
+  "enemies_killed": 6,
+  "waypoints_reached": 55,
+  "stuck_events": 0,
+  "damage_taken_total": 8,
+  "ammo_used": 10,
+  "fitness": 5258.69,
+  "genome": {
+    "loot_node_max_distance": 500,
+    "stuck_recovery_ticks": 70,
+    "combat_hold_ticks": 35,
+    "health_threshold": 80,
+    "armor_threshold": 5,
+    "ammo_threshold": 25,
+    "scan_interval": 140
+  }
+}
