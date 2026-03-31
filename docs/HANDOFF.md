@@ -3,7 +3,8 @@
 Hey.
 
 This doc will tell you the steps I recommend to take to understand this codebase.
-It also includes advice about how to contribute and thoughts about why things were done.
+It also includes advice about how to contribute and thoughts about why things were done the way they were.
+It should take you a while to make it thru this guide, don't rush.
 
 ## Thesis
 
@@ -18,8 +19,9 @@ Tbh, it's still a little fuzzy how this part works, ask the boss for more info.
 This codebase started January 2026.
 The handoff docs we were given mainly included research into what algorithms work with the spacecraft and Doom.
 The algorithms_tree.html was the only thing we thought worth saving.
-It will tell you what algorithms in general work well on spacecraft + VizDoom.
+It will tell you what algorithms in general work well on spacecraft + VizDoom. It's pretty cool.
 ```You can take a quick look at it and revisit later if you need context about the broader scope of the project.```
+
 We continued with their conclusion that it would be best to use a state machine for the execution side (agent gameplay).
 The downside is that for a surprisingly complex game like DOOM, every mechanic and scenario needs to be addressed.
 That is why the agent currently only beats E1M1 (experimental branch beats E1M2).
@@ -40,13 +42,16 @@ The codebase quickly grew to an unmaintainable size, and we didn't really unders
 We ended up putting bandaid on top of bandaid until we got stuck.
 The main issue was traversing levels without getting stuck on objects.
 1 month after taking over the project, we restarted with a new approach.
-
-
-## Prioritize planning before coding
 We changed our approach to be more thorough with the system design upfront.
 First was playing through all of DOOM and understanding what kind of complexity the game had.
 There are a ton of mechanics that need to be addressed by our execution algorithm.
 After realizing this, we started with focusing on beating E1M1, but creating an architecture that could work for all levels.
+
+
+## Overview of our project and Doom
+
+```download presentation.pdf. It will be a little outdated but it will give a great overview of the project and the things you'll find here.```
+A lot of the pictures came from docs/ which you'll see later, as well as outputs the code produces.
 
 ```Now, just read the readme if you haven't already.```
 ```Now, acquire the doom.wad```
@@ -55,14 +60,15 @@ That file is basically just the doom game; there are many ways to get it. Good l
 ```At some point play thru a few levels to get an understanding of DOOM, and think about all the mechanics you'd need to address with code.```
 I used uzdoom.exe; you'll need to find that online.
 You also will need to give it the doom.wad.
-
 ```You might find the doc I made after my full playthrough helpful: game_mechanics.md```
 The main takeaway is that levels are very different from each other.
 The params that work for one level might crap the bed on the next one.
 Thats why the GA evolves params per level.
 If it was for all levels, we'd just end up with one mediocre genome, or just the best genome for the last level.
+
 ```Now's a good time to read the genetic_algo_design doc.```
 
-DO NOT BLOW UP THE NODES
+#DO NOT BLOW UP THE NODES
+#Contributing: The architecture supports it but the mechanics for later levels need implementing
 #did use ai, would recommend carefully
 #claude in terminal
