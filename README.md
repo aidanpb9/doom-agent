@@ -103,13 +103,9 @@ docker run -v "$PWD/maps/wads/doom.wad:/app/maps/wads/doom.wad" doomsat
 
 
 ## Future work
-- **2 Pathfinding bugs:** See bugs/ for more info.
-- **Update nav planner with Thomas code:** Get the nav planner working for later levels.
-- **Improve GA runtime:** Currently we call init_game for every episode which adds overhead. The reason it exists like this currently is because it's an easy way to reset the level. A better way to do it is have reset functions so we can avoid this overhead. Should see a lot of improvement after this change.
-- **GA plot to see how each reward metric evolves:** Need to normalize visited waypoints for GA by making a LEVEL_WAYPOINTS based on the number of nodes in the map json. This gives level completion percentage. Then we can add a plot to see which rewards are more important and how they evolve. And could also make a plot involving agent scores across episodes.
-- **Multi-level progression:** E1M2 requires mechanics for key-locked doors, lifts, and switches. Can add more weapon choices. The architecture supports it but the mechanics need implementing. Need to normalize waypoints reached for the GA since some levels have a lot more.
-- **FSW integration:** merge with flight software branch once repo structure is finalized.
-- **Test GA live visuals:** See convergence in real time. Can use TensorBoard.
+
+See docs/tasks.md
+
 - **Recreate gameplay from logs:** Investigate RNG and see if we can get more deterministic gameplay too. See what telemetry is actually needed.
 - **Combat improvement:** agent cannot retreat during combat. Adding backward movement (possibly as a GA param) would help against high-health enemies.
 - **Combat ammo waste:** if the agent deals no damage after several combat ticks, the enemy is likely behind geometry. A combat blacklist similar to the loot node blacklist would prevent wasted ammo.
