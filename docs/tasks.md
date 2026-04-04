@@ -2,14 +2,15 @@
 
 - Showcase + poster + team pic (all)
 
-FSW integration User Story 3: 
-- (Thomas) recreate gameplay from logs. 
+FSW integration User Story 3: see HANDOFF for more details
 - (FSW) design and document how FSW runs DOOM and where it lives in repo.
 - (Aidan) Telemetry: redesign telemetry for minimum info, don't need all tiers, update the docs using that design, move svg to report.py so it doesn't happen at runtime, and change the Telemtry Writer class to reflect the new design 
 - (Aidan + Blake) Repo merge. 
 - (All)Test full process.
 
 ### Thomas
+(Thomas) recreate gameplay from logs. 
+
 (Thomas) delete experimental branch, not the Thomas branch yet. That comes after nav_planner working for E1M2
 
 (Thomas) GA param tweaking: tune GA fitness as Hal instructed, so kills in completion and waypoints normalized in non-completion. Run the GA and observe changes. Then update the ga design doc to reflect. Then update tests/test_compute_fitness.py. Then run pytest after before pr.
@@ -41,6 +42,5 @@ GA runtime improvement by refactoring agent initialization (touches many files b
 
 ## Future ideas
 
-combat improvement
-combat waste
+combat improvement: going backwards while shooting to deal with tanky enemies
 more exploration system (new states?)

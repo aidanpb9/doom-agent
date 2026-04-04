@@ -3,15 +3,22 @@
 Hey.
 
 This doc will tell you the steps I recommend to take to understand this codebase.
-It also includes advice about how to contribute and thoughts about why things were done the way they were.
-It should take you a while to make it thru this guide, don't rush.
+It should take you a while to make it thru this guide, don't rush. Perhaps read it twice, once skimming the docs mentioned and again going more in depth so you understand what you're looking at.
+
+It also includes advice about how to contribute and thoughts about why things were done the way they were. 
+
+Our team had a Doom side and a FSW side. This Doom folder/repo includes everything you need to know about the Doom code and a little about its integration with FSW, but not the FSW stuff itself. 
+
+I didn't include anything that would be more of a nuisance to read like our written reports and presentations which were mostly just yap and specific to Auburn. So if its in this doom folder/repo it's safe to assume it's important and has some use worth noting. If there's FSW docs they're not here.
+
 
 ## Thesis
 
 The thesis of the project is that in space, cosmic radiation corrupts memory which causes bit flips.
 Rather than fixing the spacecraft's conditions with error codes, we want to take advantage of these.
 The genetic algorithm mutates parameters that control the agent's gameplay and improves by passing on the better performer.
-Tbh, it's still a little fuzzy how this part works, ask the boss for more info.
+
+Right now we completed ground testing for E1M1 (first doom level). When it gets deployed in space there will need to be changes and the other docs should help with that. Also, not everything here is perfect, we worked very quickly so feel free to question things and discuss with boss.
 
 
 ## Continuing from the previous group
@@ -53,22 +60,78 @@ After realizing this, we started with focusing on beating E1M1, but creating an 
 ```download presentation.pdf. It will be a little outdated but it will give a great overview of the project and the things you'll find here.```
 A lot of the pictures came from docs/ which you'll see later, as well as outputs the code produces.
 
-```Now, just read the readme if you haven't already.```
 ```Now, acquire the doom.wad```
-That file is basically just the doom game; there are many ways to get it. Good luck, ask the boss.
+That file is basically just the doom game; there are many ways to get it. Good luck, ask the boss. Make sure to put it where the readme specifies.
 
-```At some point play thru a few levels to get an understanding of DOOM, and think about all the mechanics you'd need to address with code.```
+```Now, read the readme if you haven't already and run the different modes so you can see the inputs and outputs. The GA will take a while so just cancel after a few generations. Note the output/ structure.```
+
+
+```At some point play thru a few levels yourself to get an understanding of DOOM, and think about all the mechanics you'd need to address with code.```
 I used uzdoom.exe; you'll need to find that online.
 You also will need to give it the doom.wad.
+
 ```You might find the doc I made after my full playthrough helpful: game_mechanics.md```
 The main takeaway is that levels are very different from each other.
 The params that work for one level might crap the bed on the next one.
 Thats why the GA evolves params per level.
 If it was for all levels, we'd just end up with one mediocre genome, or just the best genome for the last level.
 
+## Genetic Algorithm
+
 ```Now's a good time to read the genetic_algo_design doc.```
+If there's figures view them on github so they render right.
+So the GA is basically a wrapper around the code in core/.
+
+```Now read the ga_parallelism doc (just skim for the first time).```
+It explains multiprocessing in python and how we've used it for the GA.
+Basically we just run the elite and challenger on 2 different cores. 
+
+```Take a gander at the code in ga/. Reading top level docstrings, classes names, and function names is enough for now.```
+
+## Execution Algorithm
+
+You should have a good idea of the GA's role in the experiment, so we can move onto the core/, known as the "execution algorithm".
+This is the main part of the code that controls the agent's gameplay.
+If you want the agent to beat more levels or behave differently, this is where to go.
+
+```Now read the state_machine_design.```
+It's easy to understand without knowing the rest of the system yet.
+
+```Then read the system_design to see how all the parts work together.```
+
+```Then read class_reference.```
+
+```Then check out out any code you're curious about. Go into all the files and just read the class and function names.```
+
+
+## Config
+
+The .cfg is for the vizdoom engine. The c++ vizdoom engine provides utilities that make our lives really easy. For example, instead of trying to figure out how we know if something's on the screen using like pixels or internal game code, vizdoom does that for us.
+```Now read platform_evaluation in-depth, won't take long.```
+
+In constants, there's fixed constants and GA constants. Fixed constants are not worth tuning, like max_combat_range isn't a meaningful change because there is only one max range, and turning it down is just a bad strategy. Remember that what is there is all used in some way.
+```Now skim config/ focusing on the comments.```
+
+
+# Maps/
+
+Maps is where the pre-processing happens. 
+The images are helpful for seeing the map.
+The json is what is loaded into the graph at runtime start.
+This is where the WAD is stored too.
+```Look at the stuff in maps. Don't read the tools code though, not worth understanding.```
+
+
+# Codebase features
+
+git, tests, ruff, docker, ci/cd
+
+# Our process with AI
+
 
 #DO NOT BLOW UP THE NODES
 #Contributing: The architecture supports it but the mechanics for later levels need implementing
+#what is currently simulated vs how it will work with full system
 #did use ai, would recommend carefully
+#fix path issues
 #claude in terminal

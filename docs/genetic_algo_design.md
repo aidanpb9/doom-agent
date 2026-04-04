@@ -1,7 +1,7 @@
 # Genetic Algorithm Design
 
 ## Overview
-The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic Algorithm (µGA) to evolve behavioral parameters for the execution algorithm. This minimal-population approach is designed for low computational overhead which is suitable for spacecraft constraints. It also guarantees non-regression because the elite is always preserved. A crossover approach for mutating params is not used because the pool of genomes is not large enough, and this wouldn't reflect the radiation bit-flip anyways. The two agent will run in parallel, see docs/ga_parallelism.md.
+The DoomSat payload uses a 2-Agent Micro-Population Steady-State Elitist Genetic Algorithm (µGA) to evolve behavioral parameters for the execution algorithm. This minimal-population approach is designed for low computational overhead which is suitable for spacecraft constraints. A crossover approach for mutating params is not used because the pool of genomes is not large enough, and this wouldn't reflect the radiation bit-flip anyways. The two agent will run in parallel, see docs/ga_parallelism.md. Notes about what to change when deploying in space at bottom.
 
 
 ## Population Structure
@@ -182,3 +182,32 @@ Whether all levels were beaten or the run was stopped, calling `python ga/report
 **5. Per-Episode Fitness Distribution**
 - Distribution of fitness scores across EVAL_RUNS for a given genome
 - Shows how much variance the agent has on the same genome, high variance means Python RNG is a significant factor
+
+
+# Space Deployment
+
+The ground implementation is a proof of concept that validates the selection mechanism. The flight version requires several changes to work with real radiation-induced mutations rather than simulated ones.
+
+
+## What Changes in Flight
+
+**Mutation strategy: remove `radiation_intensity`:**
+On the ground, `radiation_intensity = 0.25` controls the probability of a parameter being mutated each generation, and the mutation samples uniformly from the full valid range to simulate unpredictable bit-flip behavior. In flight, this is removed entirely. Cosmic radiation naturally flips bits in the challenger genome stored in unprotected volatile memory. The GA only selects, we replace the artificial mutations with real ones.
+
+The uniform random sampling is also replaced. A real bit flip flips one bit in the stored integer representation of a parameter, not a random sample from the valid range. The flight mutation implementation should flip a single random bit in the integer value and then clamp the result to the valid range before running the episode.
+
+**Memory architecture: elite vs challenger:**
+The elite genome must be stored in ECC-protected memory to guarantee non-regression. The challenger genome is intentionally placed in unprotected volatile memory so radiation can act as the mutation operator. This memory placement decision requires coordination with the FSW side. Next group figure out which memory regions are protected and which are exposed on the flight hardware.
+
+**Parameter storage types: uint8 vs uint16:**
+Ground parameters are stored as Python floats. Flight parameters must map to fixed-width integers matching the flight hardware's memory layout. Suggested types based on valid ranges like uint8 or uint16 depending on the range of the param.
+
+Next group verify these types with FSW side based on their hardware. A bit flip in a uint8 value of 80 produces a specific deterministic result depending on which bit flips which is different from the ground simulation which samples anywhere in the valid range.
+
+**Clamping:**
+Clamping remains necessary in flight. A bit flip can produce a value outside the valid range. Like if the MSB is flipped and it's signed then it will make a negative, which is outside 0-100. Clamp each parameter to its valid range immediately before launching an episode. Feel free to change the ranges to whatever makes sense, just keep in mind that a negative health threshold means agent would never look for health which has the same effect as 0.
+
+
+## What Stays the Same
+
+The selection mechanism is unchanged. Elite is preserved unless the challenger outscores it across EVAL_RUNS averaged episodes. Plateau detection, level advancement, and fitness function are all identical in flight. The ground validation proves these components work and the space version just replaces the mutation source and integrates the system with hardware considerations.
