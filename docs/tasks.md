@@ -17,14 +17,10 @@ FSW integration User Story 3: see HANDOFF for more details
 
 (Thomas) working nav_planner: part1 is fixing the path. Part 2 is adding support for E1M2 mechanics like key-locked doors, and switches. then salvage anything needed from thomas branch and put in reference folder only if necessary, then delete branch.
 
+(Thomas) handoff.
+
 ### Aidan
-(Aidan) update GA parallelism doc about hardware constraints 
-
 (Aidan) change GA plots to sigma not stddev, and move legend from middle 
-
-(Aidan) Handoff doc with contribution process 
-
-(Aidan) move relevant onedrive stuff to github 
 
 ## Backlog
 
@@ -33,8 +29,6 @@ Update code to support E1M2 mechanics. Test agent on E1M2 after nav_planner upda
 add more GA outputs from live to the report.py tool
 
 continue experimenting with the live visual tool
-
-(Thomas) handoff. Blocker: Aidan finish first.
 
 2 pathfinding bugs in bugs/
 
