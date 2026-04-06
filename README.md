@@ -81,6 +81,7 @@ Edit `ga/test_genome.json` to set custom parameter values, then run normally. If
 ```bash
 pytest tests/ -m "not local" -v      #unit tests (the CI runs these)
 pytest tests/ -v                     #all tests including integration (requires VizDoom)
+ruff check                           #checks style errors, enforced by CI
 ```
 
 ### Post-run analysis
@@ -125,7 +126,7 @@ Doom and related trademarks are property of id Software. This project is for res
 
 Aidan Brinkley: 
 - Auburn University Software Engineering 2026
-- aidanpb9@gmail.com (happy to respond)
+- aidanpb9@gmail.com (happy to respond to questions or feedback)
 
 Thomas Brown:
 - Auburn University Software Engineering 2026

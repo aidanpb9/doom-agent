@@ -138,3 +138,23 @@ flowchart LR
 - **Top-level worker function required:** `ProcessPoolExecutor` sends work to other processes by pickling the callable. Python can only pickle module-level functions (not instance methods or lambdas), so the worker function must be defined at module level, not as a method of `GeneticAlgo`.
 
 - **Episode ID collision:** Each worker process starts `episode_count` at 0, so both would write `ep_0000_summary.json`, `ep_0001_summary.json`, etc. to the same directory. Fix by passing an episode ID offset. For example, elite worker starts at 0 and challenger worker starts at 10000.
+
+
+## Space Deployment
+
+The ground implementation assumes Linux with Python multiprocessing. Several of these assumptions need to be validated against the actual flight hardware before the next group integrates this with FSW.
+
+**2-worker design is intentional:**
+The population size of exactly 2 (elite + challenger) was chosen specifically because the flight hardware plans to have 2 physical cores. Each agent maps to one core. This is not an arbitrary constraint, do not increase population size without confirming additional core availability with the FSW side.
+
+**Fork availability:**
+The current implementation relies on Linux `fork()` via `mp.get_context("fork")`. Fork is the default on Linux and is safe for this project on the ground. Whether `fork()` is available on the flight OS depends on the flight hardware and its OS configuration. The next group must verify this with the FSW side. If fork is not available, spawn is the fallback but adds ~0.4s overhead per pool creation and requires re-loading VizDoom each time.
+
+**Python runtime on flight hardware:**
+The ground implementation assumes CPython is the runtime. The flight board may run a different OS or have Python version constraints that affect multiprocessing behavior. Confirm with the FSW team that Python multiprocessing is viable on the target hardware before assuming the current implementation ports directly.
+
+**Process scheduling:**
+On the ground, the Python payload manages its own process pool independently. In flight, FSW may need to control process scheduling or resource allocation. The next group should clarify with the FSW side whether the payload is expected to manage its own processes or whether FSW handles that at the OS level.
+
+**Shared memory cleanup:**
+VizDoom leaves `/dev/shm/ViZDoom*` files on process kill. On the ground this is manageable. In flight, storage is constrained and the satellite may not have a clean shutdown path if power is cut during payload operation. The next group should ensure stale file cleanup is robust and consider a startup purge as the default behavior rather than optional.
