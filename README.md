@@ -115,4 +115,5 @@ Doom and related trademarks are property of id Software. This project is for res
 ## Authors
 
 Aidan Brinkley
+
 Thomas Brown
