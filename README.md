@@ -114,10 +114,5 @@ Doom and related trademarks are property of id Software. This project is for res
 
 ## Authors
 
-Aidan Brinkley: 
-- Auburn University Software Engineering 2026
-- aidanpb9@gmail.com (happy to respond to questions or feedback)
-
-Thomas Brown:
-- Auburn University Software Engineering 2026
-- thomas.r.brown2005@gmail.com
+Aidan Brinkley
+Thomas Brown
