@@ -91,7 +91,7 @@ To get the most out of these tasks, they should actually reflect how you will do
 This means you need an understanding of what you are doing.
 That first sprint was rough for us because we made tasks without any idea of what we'd actually be doing.
 Before you try to make tasks, advocate for understanding the codebase first.
-We've left some tasks in docs/tasks.md.
+We've left some tasks in docs/future_work.md.
 
 ## Overview of our project and Doom
 
@@ -188,7 +188,7 @@ Do not vibecode, you need to think through how something should work first and p
 ## Contributing
 
 The modular architecture supports the addition of mechanics necessary for beating later levels, it just needs to be added.
-There's some tasks left in the tasks doc you can start with. They're not all necessary to do.
+There's some tasks left in the future_works doc you can start with. They're not all necessary to do.
 Here's an example of how I would add some mechanics:
 
 Starting on E1M2 there's key-locked doors which requires picking up a specific color keycard to open that door.
@@ -216,6 +216,13 @@ That requires a creative solution because it's rare and wouldn't work well with 
 Since you're collaborating, make feature branches and review each other's pull requests. Nobody should own the main branch.
 The last 9 levels have teleporters lol.
 
+We also gave the agent the path it needs to follow rather than having it explore the map itself.
+This is because the latter scenario is 10x as difficult to implement.
+It would be like implementing a SLAM system, the same kind of thing that self driving cars use to identify where they are.
+Thats at least a full semester's worth of work; it would add complexity that is cool but unneeded.
+Adding this would be probably be like ripping a pillar out of a building, since a lot of the architeture was designed on top of the navigation.
+You could still reuse a lot of the core/execution.
+
 ## FSW integration
 
 Our team had a FSW side that handled the flight software in F' (F Prime), which is NASA's open source flight software framework. 
@@ -225,7 +232,7 @@ Then those gameplay logs will be used to recreate the gameplay and livestreamed 
 You'll need to make a new set of tools for recreating that gameplay.
 You'll also have to test the replay determinism to ensure what's being recreated is based on the original (think seeds and floating point errors).
 
-What FSW has is the operational modes framework and ground data system. The two sides have not been fully wired together yet, so a full ground integration test is the next group's first major milestone. This is listed in tasks.
+What FSW has is the operational modes framework and ground data system. The two sides have not been fully wired together yet, so a full ground integration test is the next group's first major milestone. This is listed in future_work.md.
 
 What that test looks like: FSW sends an F' command that triggers a Doom episode, the episode runs and writes telemetry, that telemetry gets downlinked through the ground data system, and gameplay is recreated on the ground. None of those handoff points between the two sides have been tested end to end. 
 Then you'll want to test the GA and figure out how the GA will potentially pause if the satellite switches modes.

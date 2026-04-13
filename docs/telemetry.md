@@ -5,6 +5,8 @@ TelemetryWriter produces per-episode outputs for debugging, replay, and GA fitne
 
 Files are opened by `start_episode()` and finalized by `finalize_episode()`. The GA runner embeds Tier 1 summaries into `evolution_history.json` and links them by `episode_id`.
 
+Btw, it's called telemetry, but it's just gameplay info. FSW wraps this info in its own telemetry package.
+
 
 ## Output Files
 ```

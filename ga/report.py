@@ -11,15 +11,16 @@ Reads evolution_history.json from the given run folder and produces:
     5. Per-episode fitness dist   — variance across EVAL_RUNS for a given genome
     6. Check if multiprocessing slowed down per gen
 """
-from ga.genetic_algo import PARAM_RANGES
-import json
 import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent)) #ensure project root is on path
+
+from ga.genetic_algo import PARAM_RANGES
+import json
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
 from datetime import datetime as dt
-sys.path.insert(0, str(Path(__file__).parent.parent)) #ensure project root is on path
 
 
 def load_history(run_dir: Path) -> dict:
@@ -74,7 +75,8 @@ def plot_parameters(history: dict, out_dir: Path) -> None:
         ax.set_ylabel("Value (0 = min, 1 = max of range)", fontsize=12, color="white")
         ax.tick_params(colors="white")
         ax.grid(color="#3b3b3b", linestyle=":")
-        ax.legend(facecolor="#2b2b2b", edgecolor="white", labelcolor="white")
+        ax.legend(facecolor="#2b2b2b", edgecolor="white", labelcolor="white",
+                  loc="upper left", bbox_to_anchor=(1.01, 1), borderaxespad=0)
 
         fig.savefig(out_dir / f"{level}_parameters.png", dpi=300, bbox_inches="tight")
         plt.close(fig)
@@ -123,8 +125,9 @@ def plot_fitness_stddev(history: dict, out_dir: Path) -> None:
         gen_nums = sorted(int(g) for g in gens if g != "timeout")
         elite_fit = [gens[str(g)]["elite_fitness"] for g in gen_nums]
 
+        overall_std = float(np.std(elite_fit)) or 1.0
         rolling_std = [
-            float(np.std(elite_fit[i:i + window]))
+            float(np.std(elite_fit[i:i + window])) / overall_std
             for i in range(len(elite_fit) - window + 1)
         ]
         rolling_gens = gen_nums[window - 1:]
@@ -136,7 +139,7 @@ def plot_fitness_stddev(history: dict, out_dir: Path) -> None:
 
         ax.set_title(f"{level} Elite Fitness Stddev", fontsize=14, fontweight="bold", color="white")
         ax.set_xlabel("Generation", fontsize=12, color="white")
-        ax.set_ylabel("Standard Deviation", fontsize=12, color="white")
+        ax.set_ylabel("Sigma (σ)", fontsize=12, color="white")
         ax.tick_params(colors="white")
         ax.grid(color="#3b3b3b", linestyle=":")
         ax.legend(facecolor="#2b2b2b", edgecolor="white", labelcolor="white")

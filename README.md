@@ -103,16 +103,6 @@ docker run -v "$PWD/maps/wads/doom.wad:/app/maps/wads/doom.wad" doomsat
 ```
 
 
-## Future work
-
-See docs/tasks.md
-
-- **Recreate gameplay from logs:** Investigate RNG and see if we can get more deterministic gameplay too. See what telemetry is actually needed.
-- **Combat improvement:** agent cannot retreat during combat. Adding backward movement (possibly as a GA param) would help against high-health enemies.
-- **Combat ammo waste:** if the agent deals no damage after several combat ticks, the enemy is likely behind geometry. A combat blacklist similar to the loot node blacklist would prevent wasted ammo.
-- **Exploration:** a detour state or breadcrumb pathfinding would add more exploration to help the agent discover more areas it's avoiding.
-
-
 ## Acknowledgments
 
 - [VizDoom](https://github.com/Farama-Foundation/ViZDoom): Doom-based AI research platform
