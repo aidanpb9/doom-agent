@@ -2,7 +2,12 @@
 
 ![CI](https://github.com/aidanpb9/DoomSat/actions/workflows/ci.yaml/badge.svg)
 
-[DoomSat Space (1).pdf](https://github.com/user-attachments/files/26876787/DoomSat.Space.1.pdf)
+
+
+https://github.com/user-attachments/assets/e87995d5-7cd9-485c-b292-a9149fcceea2
+
+<img width="10004" height="7504" alt="DoomSat Space 1" src="https://github.com/user-attachments/assets/6fbee5ae-1a95-4426-bce6-2306f93ad0fb" />
+
 
 
 
