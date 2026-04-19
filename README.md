@@ -12,6 +12,11 @@ For a guided tour of the codebase read docs/HANDOFF.md
 The agent runs inside VizDoom, perceiving game state each tick and selecting actions through a hierarchical state machine (STUCK > COMBAT > SCAN > RECOVER > TRAVERSE). A micro-genetic algorithm evolves 7 behavioral parameters like health thresholds and scan frequency by running two genomes head-to-head each generation and keeping the better performer.
 
 
+## Results
+
+Consistently converges on E1M1.
+
+
 ## Project structure
 
 ```
