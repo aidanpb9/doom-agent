@@ -18,7 +18,7 @@ Consistently converges on E1M1.
 
 <img width="10004" height="7504" alt="DoomSat Space 1" src="https://github.com/user-attachments/assets/6fbee5ae-1a95-4426-bce6-2306f93ad0fb" />
 
-https://github.com/user-attachments/assets/e87995d5-7cd9-485c-b292-a9149fcceea2
+https://github.com/user-attachments/assets/e3bd1379-2500-439d-93be-8216cc722773
 
 
 ## Project structure
