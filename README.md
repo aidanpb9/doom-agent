@@ -4,8 +4,6 @@
 
 An autonomous agent plays DOOM 1993 for CubeSat payload simulation. The agent navigates and completes Doom levels using waypoint-graph pathfinding, a priority-based state machine, and a genetic algorithm that evolves behavioral parameters to simulate cosmic radiation resilience.
 
-For a guided tour of the codebase read docs/HANDOFF.md
-
 
 ## How it works
 
