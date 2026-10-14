@@ -71,8 +71,6 @@ cp /path/to/doom.wad maps/wads/doom.wad (YOU NEED TO PUT THE WAD THERE)
 ```
 
 
-
-
 ## Usage
 
 ### Run the agent
