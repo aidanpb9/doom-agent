@@ -1,0 +1,9 @@
+{
+  "loot_node_max_distance": 500,
+  "stuck_recovery_ticks": 70,
+  "combat_hold_ticks": 35,
+  "health_threshold": 80,
+  "armor_threshold": 5,
+  "ammo_threshold": 25,
+  "scan_interval": 140
+}

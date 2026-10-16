@@ -25,6 +25,7 @@ wheels/
 *.egg
 
 # Virtual environments
+.venv
 venv/
 ENV/
 env/
@@ -51,5 +52,11 @@ maps/wads/
 
 # VizDoom generated files
 _vizdoom.ini
+_vizdoom/
 vizdoom-crash.log
 gdb-*
+
+doomsat.egg-info/
+uv.lock
+scalene-profile.json
+scalene-profile.html
