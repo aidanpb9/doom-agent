@@ -3,7 +3,7 @@
 ## Overview
 TelemetryWriter produces per-episode outputs for debugging, replay, and GA fitness tracking. There are three outputs: Tier 0 (per-tick game state), Tier 1 (episode summary), and Tier 2 (action stream). Run mode writes to `output/run/`; evolve mode writes to a timestamped subfolder under `output/evolve/`. Files are named by sequential episode index so GA runs don't overwrite each other.
 
-Files are opened by `start_episode()` and finalized by `finalize_episode()`. The GA runner embeds Tier 1 summaries into `evolution_history.json` and links them by `episode_id`.
+Files are opened by `start_episode()` and finalized by `finalize_episode()`. The GA runner records only per-generation averages and genomes in `evolution_history.json`; per-episode Tier 1 summaries live in each generation folder, identified by role prefix and `episode_id`.
 
 Btw, it's called telemetry, but it's just gameplay info. FSW wraps this info in its own telemetry package.
 

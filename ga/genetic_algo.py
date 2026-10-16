@@ -39,19 +39,18 @@ def eval_worker(genome: dict, level: str, gen: int, role: str, game_seed: int, r
     any run beat a level. Contained at the module level so it can be pickled and sent
     to a worker process by ProcessPoolExecutor."""
     #Initializations
-    ep_offset = 0 if role == "elite" else 10000 #prevent filename collisions
     output_dir = str(Path(run_dir) / level / f"gen_{gen:04d}")
     agent = Agent()
-    agent.episode_count = ep_offset
     fitnesses = []
     any_completed = False
 
     try:
         #Run EVAL_RUNS episodes and track fitness
-        for _ in range(EVAL_RUNS):
+        for run_idx in range(EVAL_RUNS):
             #Run a single episode. Re-initialize game to reset all state.
             agent.close()
             agent.initialize_game(headless=True, evolve=True, map_name=level, output_dir=output_dir, game_seed=game_seed)
+            agent.episode_count = run_idx #deterministic id per run, run_episode adds 1
             stats = agent.run_episode(genome=genome, full_telemetry=False, episode_prefix=role)
             stats["fitness"] = compute_fitness(stats)
             agent.telemetry_writer.finalize_episode(stats)

@@ -137,7 +137,7 @@ flowchart LR
 
 - **Top-level worker function required:** `ProcessPoolExecutor` sends work to other processes by pickling the callable. Python can only pickle module-level functions (not instance methods or lambdas), so the worker function must be defined at module level, not as a method of `GeneticAlgo`.
 
-- **Episode ID collision:** Each worker process starts `episode_count` at 0, so both would write `ep_0000_summary.json`, `ep_0001_summary.json`, etc. to the same directory. Fix by passing an episode ID offset. For example, elite worker starts at 0 and challenger worker starts at 10000.
+- **Episode ID collision:** Both workers write to the same generation directory, so output filenames must be unique. The `episode_prefix` (role) keeps elite and challenger files apart (`elite_ep_NNNN_*` vs `challenger_ep_NNNN_*`), and each episode ID is set from its run index (1..EVAL_RUNS) rather than a running counter. IDs depend only on the inputs, so no coordination between workers is needed.
 
 
 ## Space Deployment
