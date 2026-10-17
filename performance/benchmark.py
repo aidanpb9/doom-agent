@@ -38,7 +38,7 @@ GENOME = {
 
 
 def run_benchmark_loop() -> list:
-    """Run episodes and report performance."""
+    """Run several episodes."""
     times = []
     for i in range(EPISODES_TO_RUN):
         with tempfile.TemporaryDirectory() as d:
@@ -56,6 +56,7 @@ def run_benchmark_loop() -> list:
 
 
 def analyze_times(times: list) -> None:
+    """Report time performance."""
     print("\n")
     print(f"Times(including warmup): {times}")
     minimum = min(times)
