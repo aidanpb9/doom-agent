@@ -3,16 +3,6 @@ Determined that episodes have deterministic hashes.
 Saved that result into performance/output/golden/
 All new benchmarks test against this.
 
-## Benchmark Process
-Restart PC.
-Run an entire warmup benchmark.
-
-## Before optimizations (slow seed)
-Used 5 benchmark runs (excluding warmup):
-Time minimum, all runs including warmups: 12.349883046999821
-Avg median: 12.49298887
-Spread percent: 0.007388596673 | (max median - min median) / avg median = 
-
 ## Optimizations
 
 ### path_tracker
@@ -33,5 +23,7 @@ Implemented lru_cache on the function anyways.
 Only 1% episode speedup for removing file flushes according to Amdahl's.
 Not implemented, not worth the log safety.
 
-## After optimizations
-Alternate branches to get benchmarks.
+## Benchmarks
+Restarted pc and ran a warmup run, then alternated branches to get even benchmarks, 3 each.
+Before avg median episode seconds: 12.53820346
+Before avg stddev
