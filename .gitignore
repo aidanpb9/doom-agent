@@ -42,6 +42,7 @@ logs/
 # Runtime outputs generated each run
 output/run/
 output/evolve/
+performance/output/tests/
 
 # Vendored github repos
 zdoom-navmesh-generator-master/
