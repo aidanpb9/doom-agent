@@ -45,11 +45,15 @@ def eval_worker(genome: dict, level: str, gen: int, role: str, game_seed: int, r
     any_completed = False
 
     try:
+        #Start the engine once for all EVAL_RUNS episodes. Starting it is the slow part of setup.
+        agent.initialize_engine(headless=True, map_name=level, game_seed=game_seed)
+
         #Run EVAL_RUNS episodes and track fitness
         for run_idx in range(EVAL_RUNS):
-            #Run a single episode. Re-initialize game to reset all state.
-            agent.close()
-            agent.initialize_game(headless=True, evolve=True, map_name=level, output_dir=output_dir, game_seed=game_seed)
+            #Run a single episode. Reset the engine seed and rebuild the Python objects so no state carries over.
+            if run_idx > 0: #first episode is already on a fresh engine
+                agent.reset_engine(game_seed)
+            agent.build_episode_objects(evolve=True, output_dir=output_dir)
             agent.episode_count = run_idx #deterministic id per run, run_episode adds 1
             stats = agent.run_episode(genome=genome, full_telemetry=False, episode_prefix=role)
             stats["fitness"] = compute_fitness(stats)

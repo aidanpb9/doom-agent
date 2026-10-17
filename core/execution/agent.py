@@ -28,7 +28,12 @@ class Agent:
         self.episode_count = 0
     
     def initialize_game(self, headless=False, map_name=DEFAULT_MAP_NAME, evolve=False, output_dir=None, game_seed=None) -> None:
-        """Does VizDoom setup, loads configs, and creates runtime objects."""
+        """Starts the engine and creates runtime objects for one episode."""
+        self.initialize_engine(headless=headless, map_name=map_name, game_seed=game_seed)
+        self.build_episode_objects(evolve=evolve, output_dir=output_dir)
+
+    def initialize_engine(self, headless=False, map_name=DEFAULT_MAP_NAME, game_seed=None) -> None:
+        """Does VizDoom setup and loads configs. Expensive, so GA reuses the engine across episodes."""
         self.map_name = map_name
         self.headless = headless
         self.game = vzd.DoomGame()
@@ -50,16 +55,28 @@ class Agent:
         if game_seed is not None:
             self.game.set_seed(game_seed)  #same seed for both workers in a gen for fair elite vs challenger comparison
         self.game.init()
-        self.blocking_segments = load_blocking_segments_from_wad(DEFAULT_WAD_PATH, map_name)
 
-        #Create all runtime objects
+    def build_episode_objects(self, evolve=False, output_dir=None) -> None:
+        """Creates the per-episode runtime objects. Must be rebuilt every episode
+        because PathTracker and StateMachine hold state from the previous one."""
+        self.blocking_segments = load_blocking_segments_from_wad(DEFAULT_WAD_PATH, self.map_name)
         graph = Graph() #one Graph instance shared between classes
         nav_engine = NavigationEngine(graph)
         self.path_tracker = PathTracker(graph, nav_engine, self.blocking_segments)
-        self.path_tracker.load_static_nodes(map_name)
+        self.path_tracker.load_static_nodes(self.map_name)
         self.state_machine = StateMachine(self.path_tracker, self.blocking_segments)
         self.perception = Perception()
         self.telemetry_writer = TelemetryWriter(evolve=evolve, output_dir=output_dir)
+
+    def reset_engine(self, game_seed=None) -> None:
+        """Make a running engine behave like a freshly initialized one.
+        set_seed restarts the engine's episode-seed RNG, and game.init() already consumes the
+        first draw by starting an episode. run_episode's new_episode() then takes the second.
+        The extra new_episode() here burns the first draw so a reused engine plays the same
+        episode as a fresh one."""
+        if game_seed is not None:
+            self.game.set_seed(game_seed)
+        self.game.new_episode()
 
     def run_episode(self, genome: dict | None = None, full_telemetry: bool = True, episode_prefix: str = "") -> dict:
         """calls Perception and StateMachine each tick.

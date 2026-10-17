@@ -1,4 +1,4 @@
-"""Micro-benchmark the improvements to adding lru_cache to utils.load_blocking_segments_from_wad.
+"""Micro-benchmark the improvements to adding lru_cache to utils.load_blocking_segments_from_wad().
 To test this, the function in utils should not use lru_cache because it is added here.
 The speedup is 150x, but the function is only called once per episodes, so the speedup is minimal."""
 
