@@ -7,22 +7,11 @@ All new benchmarks test against this.
 Restart PC.
 Run an entire warmup benchmark.
 
-## Before optimizations
-For 5 runs (excluded warmup):
-Time median: 12.47853938299997
-Time stddev: 0.18186761029289528
-Time median: 12.544539234000013
-Time stddev: 0.08923337872052745
-Time median: 12.498794928999928
-Time stddev: 0.034226910872357456
-Time median: 12.490837247500053
-Time stddev: 0.06656521109199322
-Time median: 12.452233578000005
-Time stddev: 0.059151548542807124
-
+## Before optimizations (slow seed)
+Used 5 benchmark runs (excluding warmup):
 Time minimum, all runs including warmups: 12.349883046999821
 Avg median: 12.49298887
-Spread: (max median - min median) / avg median = 0.007388596673
+Spread percent: 0.007388596673 | (max median - min median) / avg median = 
 
 ## Optimizations
 
@@ -43,3 +32,6 @@ Implemented lru_cache on the function anyways.
 ### telemetry file flushes
 Only 1% episode speedup for removing file flushes according to Amdahl's.
 Not implemented, not worth the log safety.
+
+## After optimizations
+Alternate branches to get benchmarks.

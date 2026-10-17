@@ -20,7 +20,7 @@ OUTLIER_FROM_MEDIAN_PERCENT = 0.05
 # Seeds. Golden is saved for each of these.
 FAST_SEED = 123 # 5 seconds per episode.
 SLOW_SEED = 42  # 12 seconds per episode.
-SEED = FAST_SEED
+SEED = SLOW_SEED
 
 # Files
 ACTION_FILE = "benchmark_ep_0001_actions.csv"
@@ -158,4 +158,4 @@ def _run_and_finalize(agent: Agent) -> dict:
 
 
 if __name__ == "__main__":
-    benchmark_engine(close_engine=False)
+    benchmark_engine(close_engine=True)
