@@ -4,7 +4,7 @@ from core.navigation.graph import NodeType
 from core.navigation.path_tracker import PathTracker
 from core.execution.game_state import GameState, EnemyObject
 from core.execution.action_decoder import ActionDecoder
-from core.utils import has_clear_world_line, calculate_euclidean_distance
+from core.utils import has_clear_world_line, calculate_euclidean_distance, build_segment_bounds
 from config.constants import (HEALTH_THRESHOLD, ARMOR_THRESHOLD, AMMO_THRESHOLD,
     HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS, SCAN_INTERVAL, COMBAT_HOLD_TICKS,
     COMBAT_AIM_THRESHOLD, COMBAT_MAX_RANGE, TICK, STUCK_RECOVERY_TICKS)
@@ -30,6 +30,7 @@ class StateMachine:
         self.recover_type = None #so we know what type of loot to find when entering RECOVER
         self.combat_hold = 0 #keeps combat active after last enemy seen, avoid flickering
         self.blocking_segments = blocking_segments
+        self._segment_bounds = build_segment_bounds(blocking_segments or ()) #bounding boxes for the line of sight check
         self.scan_cooldown = 0 #update() decrements this
         self.scan_last_angle = 0 #for calculating how far we've turned since last tick
         self.scan_total_deg = 0 #number of degs since starting a scan
@@ -169,7 +170,7 @@ class StateMachine:
                 continue
             if calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, enemy.pos_x, enemy.pos_y) > COMBAT_MAX_RANGE:
                 continue
-            if not has_clear_world_line(gamestate.pos_x, gamestate.pos_y, enemy.pos_x, enemy.pos_y, self.blocking_segments):
+            if not has_clear_world_line(gamestate.pos_x, gamestate.pos_y, enemy.pos_x, enemy.pos_y, self._segment_bounds):
                 continue
             #normalize horizontal offset to -0.5..0.5 (negative=left, positive=right)
             #no vertical filter needed — engine autoaim handles elevation via +autoaim 35 in vizdoom.cfg

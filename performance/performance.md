@@ -26,7 +26,9 @@ Spread: (max median - min median) / avg median = 0.007388596673
 
 ## Optimizations
 
-### path_tracker._place_node() inside an episode
+### path_tracker
+Moved the cheap checks in _place_node() before expensive checks.
+Added bounds to segments to cut down on searching.
 
 ### reusing vizdoom engine for ga multi-episodes
 Instead of closing and opening the engine each episode in the ga,

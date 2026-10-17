@@ -5,7 +5,7 @@ from core.navigation.graph import Node, NodeType, Graph
 from core.navigation.navigation_engine import NavigationEngine
 from core.execution.game_state import GameState
 from core.execution.action_decoder import ActionDecoder
-from core.utils import calculate_euclidean_distance, has_clear_world_line, point_to_segment_distance
+from core.utils import calculate_euclidean_distance, has_clear_world_line, build_segment_bounds, is_near_any_segment
 from config.constants import (DOOR_USE_COOLDOWN, 
     NODE_PROXIMITY, LOOT_NODE_MAX_DISTANCE, DOOR_USE_DISTANCE, 
     LOOT_PROXIMITY, TICK, HEALTH_KEYWORDS, ARMOR_KEYWORDS, AMMO_KEYWORDS,
@@ -14,7 +14,6 @@ from config.constants import (DOOR_USE_COOLDOWN,
 import json
 from pathlib import Path
 from collections import deque
-
 
 class PathTracker:
 
@@ -33,6 +32,7 @@ class PathTracker:
         self.visited_waypoints = set() #static waypoints reached, used for GA fitness
         self.door_use_timer = 0 #cooldown after USE action to prevent door spam
         self.blocking_segments = blocking_segments #improve node placing by adding map objects to geometry
+        self._segment_bounds = build_segment_bounds(blocking_segments or ()) #bounding boxes for the wall-distance check
         self.loot_blacklist = {} #(x, y) -> ticks remaining; prevents re-marking loot that was removed as unreachable
         self.stuck_timer = 0 #ticks elapsed since last stuck check
         self.stuck_last_pos = (0.0, 0.0) #agent position at last stuck check, compared against current pos
@@ -259,24 +259,22 @@ class PathTracker:
                 #_make_anchor returns early and the loot node is added with no edges (unreachable).
                 #It will be picked up on a future tick once next_node is repopulated.
                 is_in_range = calculate_euclidean_distance(gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y) < LOOT_NODE_MAX_DISTANCE
-                is_clear_path = has_clear_world_line(gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y, self.blocking_segments)
-                
+
+                #Skip loot that was recently removed due to being unreachable, agent will reposition
+                in_cooldown = any(
+                    calculate_euclidean_distance(loot.pos_x, loot.pos_y, cx, cy) < LOOT_PROXIMITY
+                    for cx, cy in self.loot_blacklist)
+
+                #The cheap conditions go first. The two wall checks loop over every blocking segment,
+                #so `and` only reaches them when everything before them already passed.
                 #Don't mark loot if the anchor would be placed too close to a wall.
                 #Anchors are created at the agent's current position — if that position is
                 #wall-adjacent (e.g. near a candle next to a wall), every future path to
                 #this loot routes through that tight spot and the agent gets stuck.
                 #The loot will be marked on a future tick from a safer position.
-                too_close_to_wall = self.blocking_segments and any(
-                    point_to_segment_distance(gamestate.pos_x, gamestate.pos_y, x1, y1, x2, y2) < ANCHOR_MIN_WALL_DISTANCE
-                    for x1, y1, x2, y2 in self.blocking_segments
-                )
-
-                #Skip loot that was recently removed due to being unreachable, agent will reposition
-                in_cooldown = any(
-                    calculate_euclidean_distance(loot.pos_x, loot.pos_y, cx, cy) < LOOT_PROXIMITY
-                    for cx, cy in self.loot_blacklist) 
-
-                if self.next_node is not None and is_in_range and is_clear_path and not too_close_to_wall and not in_cooldown:
+                if (self.next_node is not None and is_in_range and not in_cooldown
+                    and has_clear_world_line(gamestate.pos_x, gamestate.pos_y, loot_node.x, loot_node.y, self._segment_bounds)
+                    and not is_near_any_segment(gamestate.pos_x, gamestate.pos_y, self._segment_bounds, ANCHOR_MIN_WALL_DISTANCE)):
                     self.graph.add_node(loot_node)
                     self._make_anchor(gamestate, loot_node)
 
