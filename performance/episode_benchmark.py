@@ -37,13 +37,27 @@ GENOME = {
 }
 
 
-def run_benchmark_loop() -> list:
-    """Run several episodes."""
+def benchmark_engine(close_engine: bool):
+    """Runs the benchmark with an episode function that either
+    closes the vizdoom engine each run or leaves it running."""
+    _delete_test_folder()
+    episode_fn = _run_episode_close_engine if close_engine else _run_episode_keep_engine
+    agent = Agent()
+    try:
+        times = _run_benchmark_loop(episode_fn, agent)
+    finally:
+        agent.close() #always release the engine
+    _analyze_times(times)
+    _check_result_hashes()
+
+def _run_benchmark_loop(episode_fn, agent: Agent) -> list:
+    """Run several episodes. Use a function that runs
+    one episode with the agent in a temporary directory."""
     times = []
     for i in range(EPISODES_TO_RUN):
         with tempfile.TemporaryDirectory() as d:
             start_time = time.perf_counter()
-            print(i, _run_one_episode(d))
+            print(i, episode_fn(agent, d))
             end_time = time.perf_counter()
             times.append(end_time - start_time)
 
@@ -55,7 +69,7 @@ def run_benchmark_loop() -> list:
     return times
 
 
-def analyze_times(times: list) -> None:
+def _analyze_times(times: list) -> None:
     """Report time performance."""
     print("\n")
     print(f"Times(including warmup): {times}")
@@ -74,7 +88,7 @@ def analyze_times(times: list) -> None:
             print(f"Episode {i} with time {ep_time} is an outlier")
 
 
-def check_result_hashes() -> None:
+def _check_result_hashes() -> None:
     """
     Checks that episodes deterministic using saved results.
     Catches regression in episode results and if the episodes
@@ -103,35 +117,45 @@ def check_result_hashes() -> None:
     print("All hashes valid")
 
 
-def delete_test_folder() -> None:
+def _delete_test_folder() -> None:
     """Deletes the current tests folder."""
     shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
 
 
-def _run_one_episode(out_dir: str) -> dict:
-    """Run one deterministic episode."""
-    agent = Agent()
-    try:
-        random.seed(SEED)
-        
-        agent.initialize_game(
-            headless=True,
-            evolve=True,
-            map_name="E1M1",
-            output_dir=out_dir,
-            game_seed=SEED
-        )
-        
-        stats = agent.run_episode(genome=GENOME, full_telemetry=False, episode_prefix="benchmark")
-        stats["fitness"] = compute_fitness(stats)
-        agent.telemetry_writer.finalize_episode(stats)
-        return stats
-    finally:
-        agent.close() #always release the engine
+def _run_episode_close_engine(agent: Agent, out_dir: str) -> dict:
+    """Run one deterministic episode. Use a new vizdoom engine for each episode."""
+    random.seed(SEED)
+    agent.close()
+    agent.initialize_game(
+        headless=True,
+        evolve=True,
+        map_name="E1M1",
+        output_dir=out_dir,
+        game_seed=SEED
+    )
+    agent.episode_count = 0 # Same file names every episode: ep_0001.
+    return _run_and_finalize(agent)
+
+
+def _run_episode_keep_engine(agent: Agent, out_dir: str) -> dict:
+    """Run one deterministic episode. Reuse the engine from the previous episode."""
+    random.seed(SEED)
+    if agent.game is None:
+        agent.initialize_engine(headless=True, map_name="E1M1", game_seed=SEED)
+    else:
+        agent.reset_engine(SEED)
+    agent.build_episode_objects(evolve=True, output_dir=out_dir)
+    agent.episode_count = 0
+    return _run_and_finalize(agent)
+
+
+def _run_and_finalize(agent: Agent) -> dict:
+    """Run the episode on an already set up agent and write its results."""
+    stats = agent.run_episode(genome=GENOME, full_telemetry=False, episode_prefix="benchmark")
+    stats["fitness"] = compute_fitness(stats)
+    agent.telemetry_writer.finalize_episode(stats)
+    return stats
 
 
 if __name__ == "__main__":
-    delete_test_folder()
-    times = run_benchmark_loop()
-    analyze_times(times)
-    check_result_hashes()
+    benchmark_engine(close_engine=True)

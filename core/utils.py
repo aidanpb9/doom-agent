@@ -2,9 +2,13 @@
 from config.constants import OBSTACLE_KEYWORDS, OBSTACLE_RADIUS
 from math import sqrt
 from pathlib import Path
+from functools import lru_cache
 import struct
 import re
 MAP_MARKER_RE = re.compile(r"^(E[1-9]M[1-9]|MAP[0-9][0-9])$")
+#Slack on the bounding box overlap test. _segments_intersect counts walls that touch the line
+#within a tiny tolerance (1e-6), so the box test must not skip a wall that only just misses.
+BOX_MARGIN = 1e-3
 
 
 
@@ -16,7 +20,8 @@ def normalize_angle(angle_deg: float) -> float:
     """Wrap an angle -180 to 180 deg."""
     return (angle_deg + 180.0) % 360.0 - 180.0
 
-def load_blocking_segments_from_wad(wad_path: str, map_name: str) -> list[tuple[float, float, float, float]]:
+@lru_cache(maxsize=64) #big enough to cache all doom maps
+def load_blocking_segments_from_wad(wad_path: str, map_name: str) -> tuple[tuple[float, float, float, float], ...]:
     """Get wall data for better combat."""
     if not wad_path or not map_name:
         return []
@@ -79,24 +84,31 @@ def load_blocking_segments_from_wad(wad_path: str, map_name: str) -> list[tuple[
             segments.append((cx + r, cy - r, cx + r, cy + r))
             segments.append((cx + r, cy + r, cx - r, cy + r))
             segments.append((cx - r, cy + r, cx - r, cy - r))
-    return segments
+    return tuple(segments)
 
 def has_clear_world_line(
         player_x: float,
         player_y: float,
         object_x: float | None,
         object_y: float | None,
-        segments: list[tuple[float, float, float, float]]
+        bounded_segments: tuple[tuple[float, ...], ...]
     ) -> bool:
         """Use blocking segments to determine if the agent has a clear line.
-        Used for enemies and loot."""
-        if object_x is None or object_y is None or not segments:
+        Used for enemies and loot. bounded_segments comes from build_segment_bounds.
+        A wall can only cross the line if its bounding box overlaps the line's bounding box,
+        so segments whose box doesn't overlap are skipped before the exact intersection test."""
+        if object_x is None or object_y is None or not bounded_segments:
             return True
         
         line_start = (float(player_x), float(player_y))
         line_end = (float(object_x), float(object_y))
+        line_min_x, line_max_x = sorted((line_start[0], line_end[0]))
+        line_min_y, line_max_y = sorted((line_start[1], line_end[1]))
 
-        for x1, y1, x2, y2 in segments:
+        for min_x, max_x, min_y, max_y, x1, y1, x2, y2 in bounded_segments:
+            if (max_x < line_min_x - BOX_MARGIN or min_x > line_max_x + BOX_MARGIN
+                    or max_y < line_min_y - BOX_MARGIN or min_y > line_max_y + BOX_MARGIN):
+                continue
             if _segments_intersect(line_start, line_end, (x1, y1), (x2, y2)):
                 return False
         return True
@@ -109,6 +121,35 @@ def point_to_segment_distance(px: float, py: float, x1: float, y1: float, x2: fl
         return calculate_euclidean_distance(px, py, x1, y1)
     t = max(0.0, min(1.0, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)))
     return calculate_euclidean_distance(px, py, x1 + t * dx, y1 + t * dy)
+
+
+def build_segment_bounds(
+        segments: list[tuple[float, float, float, float]]
+    ) -> tuple[tuple[float, ...], ...]:
+    """Pair each segment with its bounding box as (min_x, max_x, min_y, max_y, x1, y1, x2, y2).
+    Build once per map so is_near_any_segment can skip far-away segments cheaply."""
+    return tuple(
+        (min(x1, x2), max(x1, x2), min(y1, y2), max(y1, y2), x1, y1, x2, y2)
+        for x1, y1, x2, y2 in segments
+    )
+
+
+def is_near_any_segment(
+        px: float,
+        py: float,
+        bounded_segments: tuple[tuple[float, ...], ...],
+        distance: float
+    ) -> bool:
+    """True if (px, py) is closer than distance to any segment.
+    bounded_segments comes from build_segment_bounds. A segment lies inside its bounding box,
+    so a point more than distance outside that box can't be within distance of the segment.
+    Those segments are skipped before the exact (slower) distance test."""
+    for min_x, max_x, min_y, max_y, x1, y1, x2, y2 in bounded_segments:
+        if px < min_x - distance or px > max_x + distance or py < min_y - distance or py > max_y + distance:
+            continue
+        if point_to_segment_distance(px, py, x1, y1, x2, y2) < distance:
+            return True
+    return False
 
 
 def _segments_intersect(

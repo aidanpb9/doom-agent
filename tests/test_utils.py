@@ -3,12 +3,12 @@
 Functions tested:
   - calculate_euclidean_distance(x1, y1, x2, y2) -> float
   - normalize_angle(angle_deg) -> float  — wraps to [-180, 180)
-  - has_clear_world_line(px, py, ox, oy, segments) -> bool
+  - has_clear_world_line(px, py, ox, oy, bounded_segments) -> bool  — segments from build_segment_bounds
 
 load_blocking_segments_from_wad is not tested here because it requires a real WAD file.
 """
 import pytest
-from core.utils import calculate_euclidean_distance, normalize_angle, has_clear_world_line
+from core.utils import calculate_euclidean_distance, normalize_angle, has_clear_world_line, build_segment_bounds
 
 
 # ---------------------------------------------------------------------------
@@ -62,27 +62,27 @@ def test_normalize_angle_large_negative():
 
 def test_clear_line_no_segments():
     #empty segment list -> always clear regardless of positions
-    assert has_clear_world_line(0, 0, 10, 10, []) is True
+    assert has_clear_world_line(0, 0, 10, 10, build_segment_bounds([])) is True
 
 
 def test_clear_line_no_obstruction():
     #segment runs parallel above the line of sight so should not block
     #player at (0,0), target at (10,0), wall at y=5 from x=0 to x=10
     segments = [(0, 5, 10, 5)]
-    assert has_clear_world_line(0, 0, 10, 0, segments) is True
+    assert has_clear_world_line(0, 0, 10, 0, build_segment_bounds(segments)) is True
 
 
 def test_blocked_line():
     #wall crosses directly across the line of sight
     #player at (0,0), target at (10,0), wall at x=5 from y=-5 to y=5
     segments = [(5, -5, 5, 5)]
-    assert has_clear_world_line(0, 0, 10, 0, segments) is False
+    assert has_clear_world_line(0, 0, 10, 0, build_segment_bounds(segments)) is False
 
 
 def test_clear_line_none_target():
     #None object coordinates -> no target to check, treated as clear
     segments = [(5, -5, 5, 5)]
-    assert has_clear_world_line(0, 0, None, None, segments) is True
+    assert has_clear_world_line(0, 0, None, None, build_segment_bounds(segments)) is True
 
 
 def test_clear_line_collinear_touch():
@@ -91,4 +91,4 @@ def test_clear_line_collinear_touch():
     #the wall starts on the line but goes perpendicular away so should block
     #since (5,0) is on the line of sight and _on_segment returns True
     segments = [(5, 0, 5, 5)]
-    assert has_clear_world_line(0, 0, 10, 0, segments) is False
+    assert has_clear_world_line(0, 0, 10, 0, build_segment_bounds(segments)) is False
