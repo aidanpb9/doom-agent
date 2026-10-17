@@ -7,6 +7,7 @@ Usage:
     python main.py run --map E1M2             # run on a specific map
     python main.py run --headless             # run without window (high tickrate)
     python main.py evolve                     # GA evolution
+    python main.py evolve --workers 4         # GA evolution with 4 episodes running at once
 
 Hand-crafted genome testing:
     Edit ga/test_genome.json with custom param values, then run main.py run.
@@ -22,7 +23,7 @@ import shutil
 import argparse
 from pathlib import Path
 from core.execution.agent import Agent
-from ga.genetic_algo import compute_fitness
+from ga.genetic_algo import compute_fitness, DEFAULT_WORKERS
 from config.constants import RUN_DIR
 
 
@@ -69,7 +70,7 @@ def cmd_evolve(args):
     print("DoomSat - Evolve Mode")
 
     from ga.genetic_algo import GeneticAlgo
-    ga = GeneticAlgo()
+    ga = GeneticAlgo(workers=args.workers)
     try:
         ga.evolve()
         return 0
@@ -89,6 +90,8 @@ def main():
     run_parser.set_defaults(func=cmd_run)
 
     evolve_parser = subparsers.add_parser('evolve', help='Run GA evolution')
+    evolve_parser.add_argument('--workers', type=int, default=DEFAULT_WORKERS,
+                               help=f'Episodes run at once (default: {DEFAULT_WORKERS}, matches the 2-core flight hardware)')
     evolve_parser.set_defaults(func=cmd_evolve)
 
     args = parser.parse_args()

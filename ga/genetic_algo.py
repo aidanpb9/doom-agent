@@ -7,13 +7,14 @@ GeneticAlgo owns the worker pool and drives the evolution loop.
 See genetic_algo_design.md for algorithm details and parameter ranges.
 """
 import json
+import math
 import random
 from pathlib import Path
 from datetime import datetime
 from core.execution.agent import Agent
 from config.constants import EVOLVE_DIR
 import multiprocessing as mp
-from concurrent.futures import ProcessPoolExecutor, TimeoutError
+from concurrent.futures import ProcessPoolExecutor, TimeoutError, wait
 from concurrent.futures.process import BrokenProcessPool
 import glob
 
@@ -21,6 +22,8 @@ import glob
 RADIATION_INTENSITY = 0.25  #per-param mutation probability
 EVAL_RUNS = 5               #episodes averaged per genome evaluation
 PLATEAU_GENS = 10           #generations without elite change before advancing
+DEFAULT_WORKERS = 2         #matches the 2-core flight hardware, change only for ground runs
+EPISODE_TIMEOUT = 60        #seconds allowed per episode task, VizDoom can hang with no Python exception
 LEVELS = ["E1M1", "E1M2"]
 
 #Evolvable parameter ranges, must match genetic_algo_design.md
@@ -34,40 +37,25 @@ PARAM_RANGES = {
     "scan_interval":          (70,  420),
 }
 
-def eval_worker(genome: dict, level: str, gen: int, role: str, game_seed: int, run_dir: str) -> tuple[float, bool]:
-    """Run EVAL_RUNS episodes for one genome. Return average fitness and if
-    any run beat a level. Contained at the module level so it can be pickled and sent
-    to a worker process by ProcessPoolExecutor."""
-    #Initializations
+def eval_episode(genome: dict, level: str, gen: int, role: str, game_seed: int, run_dir: str,
+                 run_idx: int, py_seed: int | None = None) -> tuple[float, bool]:
+    """Run one episode for one genome. Return its fitness and whether it beat the level.
+    Contained at the module level so it can be pickled and sent to a worker process
+    by ProcessPoolExecutor. run_idx makes the output files of the EVAL_RUNS episodes distinct.
+    py_seed fixes the Python RNG so the episode is reproducible, None keeps it random."""
     output_dir = str(Path(run_dir) / level / f"gen_{gen:04d}")
     agent = Agent()
-    fitnesses = []
-    any_completed = False
-
     try:
-        #Start the engine once for all EVAL_RUNS episodes. Starting it is the slow part of setup.
-        agent.initialize_engine(headless=True, map_name=level, game_seed=game_seed)
-
-        #Run EVAL_RUNS episodes and track fitness
-        for run_idx in range(EVAL_RUNS):
-            #Run a single episode. Reset the engine seed and rebuild the Python objects so no state carries over.
-            if run_idx > 0: #first episode is already on a fresh engine
-                agent.reset_engine(game_seed)
-            agent.build_episode_objects(evolve=True, output_dir=output_dir)
-            agent.episode_count = run_idx #deterministic id per run, run_episode adds 1
-            stats = agent.run_episode(genome=genome, full_telemetry=False, episode_prefix=role)
-            stats["fitness"] = compute_fitness(stats)
-            agent.telemetry_writer.finalize_episode(stats)
-            fitnesses.append(stats["fitness"])
-            if stats.get("finish_level"):
-                any_completed = True
+        if py_seed is not None:
+            random.seed(py_seed) #run_episode draws its own seed from this RNG
+        agent.initialize_game(headless=True, evolve=True, map_name=level, output_dir=output_dir, game_seed=game_seed)
+        agent.episode_count = run_idx #deterministic id per run, run_episode adds 1
+        stats = agent.run_episode(genome=genome, full_telemetry=False, episode_prefix=role)
+        stats["fitness"] = compute_fitness(stats)
+        agent.telemetry_writer.finalize_episode(stats)
+        return stats["fitness"], bool(stats.get("finish_level"))
     finally:
         agent.close()
-
-    #Close episode and return fitness info
-    agent.close()
-    avg_fitness = round(sum(fitnesses) / EVAL_RUNS, 2)
-    return avg_fitness, any_completed
 
 def compute_fitness(stats: dict) -> float:
     """Compute fitness from episode stats. See genetic_algo_design.md."""
@@ -103,16 +91,53 @@ def mutate(genome: dict) -> dict:
 
 class GeneticAlgo:
 
-    def __init__(self) -> None:
+    def __init__(self, workers: int = DEFAULT_WORKERS, py_seed_base: int | None = None) -> None:
         """Pool created once, persists across all generations and levels.
-        Use fork so workers inherit the parent process state without re-importing modules."""
-        self._pool = ProcessPoolExecutor(
-            max_workers=2,
-            mp_context=mp.get_context("fork"))
-        
+        workers is the number of episodes that run at once. Each generation has 2 * EVAL_RUNS
+        episode tasks (elite and challenger), so more workers than that sit idle.
+        py_seed_base makes every episode reproducible (for benchmarks and tests), None keeps it random."""
+        if workers < 1:
+            raise ValueError(f"workers must be at least 1, got {workers}")
+        self._workers = workers
+        self._py_seed_base = py_seed_base
+        self._pool = self._make_pool()
+
         for f in glob.glob("/dev/shm/ViZDoom*"):
             Path(f).unlink(missing_ok=True) #cleans up stale files, preserves RAM
-        
+
+    def _make_pool(self) -> ProcessPoolExecutor:
+        """Use fork so workers inherit the parent process state without re-importing modules."""
+        return ProcessPoolExecutor(max_workers=self._workers, mp_context=mp.get_context("fork"))
+
+    def evaluate_genomes(self, elite: dict, challenger: dict, level: str, gen: int,
+                         game_seed: int, run_dir: str) -> tuple[float, bool, float, bool]:
+        """Run EVAL_RUNS episodes for each genome across the worker pool. Return
+        (elite_fitness, elite_beat, challenger_fitness, challenger_beat), where fitness is
+        the average over the episodes and beat is True if any episode beat the level.
+        Raises TimeoutError if the episodes don't all finish in time, and
+        BrokenProcessPool if a worker is killed. The caller recreates the pool."""
+        futures: dict[str, list] = {"elite": [], "challenger": []}
+        for role, genome in (("elite", elite), ("challenger", challenger)):
+            for run_idx in range(EVAL_RUNS):
+                py_seed = None if self._py_seed_base is None else self._py_seed_base + gen * EVAL_RUNS + run_idx
+                futures[role].append(self._pool.submit(
+                    eval_episode, genome, level, gen, role, game_seed, run_dir, run_idx, py_seed))
+
+        #Tasks beyond the worker count queue up, so the deadline covers every round of work.
+        rounds = math.ceil(2 * EVAL_RUNS / self._workers)
+        _, not_done = wait(futures["elite"] + futures["challenger"], timeout=rounds * EPISODE_TIMEOUT)
+        if not_done:
+            for future in not_done:
+                future.cancel() #only cancels tasks that haven't started
+            raise TimeoutError(f"{len(not_done)} episode tasks did not finish")
+
+        #Collect in run_idx order so the float sum doesn't depend on which finished first.
+        results = {}
+        for role, role_futures in futures.items():
+            episodes = [future.result() for future in role_futures]
+            avg_fitness = round(sum(fitness for fitness, _ in episodes) / EVAL_RUNS, 2)
+            results[role] = (avg_fitness, any(beat for _, beat in episodes))
+        return results["elite"] + results["challenger"]
 
     def evolve(self) -> None:
         """Main evolution loop. Iterates levels, evolves until plateau, writes history."""
@@ -141,21 +166,18 @@ class GeneticAlgo:
                 elite = random_genome()
             challenger = mutate(elite)
 
-            #Submit the two genomes to the workers and get returns
+            #Evaluate the two genomes across the workers and get returns
             #The purpose of wrapping this in attempt block is to handle crashes
             #that occur on the first generation, but we don't want to retry forver.
-            game_seed = random.randint(0, 2**31) #same seed for both workers for fair comparison
+            game_seed = random.randint(0, 2**31) #same seed for both genomes for fair comparison
             for attempt in range(2):
-                f_a = self._pool.submit(eval_worker, elite, level, gen, "elite", game_seed, run_dir)
-                f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger", game_seed, run_dir)
                 try:
-                    a_fit, a_beat = f_a.result(timeout=300)
-                    b_fit, b_beat = f_b.result(timeout=300)
+                    a_fit, a_beat, b_fit, b_beat = self.evaluate_genomes(elite, challenger, level, gen, game_seed, run_dir)
                     break  #success
                 except (TimeoutError, BrokenProcessPool):
                     #BrokenProcessPool means the worker was killed at the OS level (VizDoom crash).
                     #The pool is dead and must be recreated before the next attempt can submit work.
-                    self._pool = ProcessPoolExecutor(max_workers=2, mp_context=mp.get_context("fork"))
+                    self._pool = self._make_pool()
                     print(f"[{level}] gen={gen} timed out (attempt {attempt + 1}/2), retrying...")
             else:
                 #Both attempts timed out which means VizDoom is likely stuck.
@@ -185,21 +207,18 @@ class GeneticAlgo:
                 gen += 1
                 challenger = mutate(elite)
                 
-                #Submit the two genomes to the workers and get returns
-                game_seed = random.randint(0, 2**31) #same seed for both workers for fair comparison
-                f_a = self._pool.submit(eval_worker, elite, level, gen, "elite", game_seed, run_dir)
-                f_b = self._pool.submit(eval_worker, challenger, level, gen, "challenger", game_seed, run_dir)
+                #Evaluate the two genomes across the workers and get returns
+                game_seed = random.randint(0, 2**31) #same seed for both genomes for fair comparison
                 #VizDoom can hang at the C++ level with no Python exception raised.
-                #If a worker freezes past 5 minutes we skip the generation entirely.
+                #If the episodes don't finish within their time budget we skip the generation entirely.
                 #The elite is unchanged, the plateau counter is not incremented,
                 #and the next generation will retry with a fresh mutant.
                 try:
-                    a_fit, a_beat = f_a.result(timeout=300)
-                    b_fit, b_beat = f_b.result(timeout=300)
+                    a_fit, a_beat, b_fit, b_beat = self.evaluate_genomes(elite, challenger, level, gen, game_seed, run_dir)
                 except (TimeoutError, BrokenProcessPool):
                     #BrokenProcessPool means the C++ VizDoom process was killed at the OS level.
                     #The pool is dead and must be recreated or all future submits will also raise.
-                    self._pool = ProcessPoolExecutor(max_workers=2, mp_context=mp.get_context("fork"))
+                    self._pool = self._make_pool()
                     print(f"[{level}] gen={gen} worker crashed or timed out, skipping generation")
                     continue
 

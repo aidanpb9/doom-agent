@@ -79,6 +79,7 @@ python3 main.py run                   #single episode, windowed
 python3 main.py run --headless        #single episode, headless (faster)
 python3 main.py run --map E1M2        #specific map
 python3 main.py evolve                #GA evolution
+python3 main.py evolve --workers N    #GA evolution, N episodes at once (default 2)
 ```
 
 ### Hand-crafted genome testing
