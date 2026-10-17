@@ -1,6 +1,5 @@
 ## Optimizations To Do
 _place_node
-wad lru
 ga closing
 telemetry file writes
 

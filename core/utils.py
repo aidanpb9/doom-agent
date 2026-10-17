@@ -2,6 +2,7 @@
 from config.constants import OBSTACLE_KEYWORDS, OBSTACLE_RADIUS
 from math import sqrt
 from pathlib import Path
+from functools import lru_cache
 import struct
 import re
 MAP_MARKER_RE = re.compile(r"^(E[1-9]M[1-9]|MAP[0-9][0-9])$")
@@ -16,7 +17,8 @@ def normalize_angle(angle_deg: float) -> float:
     """Wrap an angle -180 to 180 deg."""
     return (angle_deg + 180.0) % 360.0 - 180.0
 
-def load_blocking_segments_from_wad(wad_path: str, map_name: str) -> list[tuple[float, float, float, float]]:
+@lru_cache(maxsize=64) #big enough to cache all doom maps
+def load_blocking_segments_from_wad(wad_path: str, map_name: str) -> tuple[tuple[float, float, float, float], ...]:
     """Get wall data for better combat."""
     if not wad_path or not map_name:
         return []
@@ -79,7 +81,7 @@ def load_blocking_segments_from_wad(wad_path: str, map_name: str) -> list[tuple[
             segments.append((cx + r, cy - r, cx + r, cy + r))
             segments.append((cx + r, cy + r, cx - r, cy + r))
             segments.append((cx - r, cy + r, cx - r, cy - r))
-    return segments
+    return tuple(segments)
 
 def has_clear_world_line(
         player_x: float,
