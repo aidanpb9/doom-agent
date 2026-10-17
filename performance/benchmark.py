@@ -12,9 +12,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from core.execution.agent import Agent
 from ga.genetic_algo import compute_fitness
 
+# Normalization
 EPISODES_TO_RUN = 15
 WARMUP_EPISODES = 3 # Use this many less time values, removing from the beginning
 OUTLIER_FROM_MEDIAN_PERCENT = 0.05
+
+# Seeds. Golden is saved for each of these.
+FAST_SEED = 123 # 5 seconds per episode.
+SLOW_SEED = 42  # 12 seconds per episode.
+SEED = SLOW_SEED
+
+# Files
 ACTION_FILE = "benchmark_ep_0001_actions.csv"
 OUTPUT_PATH = "performance/output/tests/"
 
@@ -29,8 +37,8 @@ GENOME = {
 }
 
 
-def run_benchmark_loop():
-    """Runs several episodes and reports the performance."""
+def run_benchmark_loop() -> list:
+    """Run episodes and report performance."""
     times = []
     for i in range(EPISODES_TO_RUN):
         with tempfile.TemporaryDirectory() as d:
@@ -41,38 +49,44 @@ def run_benchmark_loop():
 
             # Save files to compare against golden
             from_path: str = os.path.join(d, ACTION_FILE)
-            to_path = f"{OUTPUT_PATH}test_{i}"
+            to_path = f"{OUTPUT_PATH}test{i}"
             os.makedirs(to_path, exist_ok=True)
             shutil.copy(from_path, to_path)
+    return times
 
-    # Time benchmarks.
-    print(f"Time minimum: {min(times)}") # maybe the min was in a warmup
+
+def analyze_times(times: list) -> None:
+    print("\n")
+    print(f"Times(including warmup): {times}")
+    minimum = min(times)
     times = times[WARMUP_EPISODES:] # cut the warmups
-
-    print(f"\nTimes: {times}")
-    print(f"Time stddev: {statistics.stdev(times)}")
-
     median = statistics.median(times)
+
+    print("\n")
     print(f"Time median: {median}")
+    print(f"Time stddev: {statistics.stdev(times)}")
+    print(f"Time minimum(including warmup): {minimum}")
+
+    print("\n")
     for i, ep_time in enumerate(times, start=WARMUP_EPISODES):
         if abs(ep_time - median) / median > OUTLIER_FROM_MEDIAN_PERCENT:
             print(f"Episode {i} with time {ep_time} is an outlier")
 
 
-def check_result_hashes():
+def check_result_hashes() -> None:
     """
     Checks that episodes deterministic using saved results.
     Catches regression in episode results and if the episodes
     become non-deterministic.
     """
     # Get the golden's hash.
-    with open(f"performance/output/golden/{ACTION_FILE}", "rb") as f:
+    with open(f"performance/output/golden/seed{SEED}_{ACTION_FILE}", "rb") as f:
         golden_hash = hashlib.file_digest(f, "sha256").hexdigest()
 
     # Get the hashes from the benchmark.
     action_hashes = set()
     for i in range(EPISODES_TO_RUN):
-        action_file = f"{OUTPUT_PATH}test_{i}/{ACTION_FILE}"
+        action_file = f"{OUTPUT_PATH}test{i}/{ACTION_FILE}"
         with open(action_file, "rb") as f:
             digest = hashlib.file_digest(f, "sha256").hexdigest()
         action_hashes.add(digest)
@@ -88,22 +102,23 @@ def check_result_hashes():
     print("All hashes valid")
 
 
-def delete_test_folder():
+def delete_test_folder() -> None:
+    """Deletes the current tests folder."""
     shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
 
 
-def _run_one_episode(out_dir: str, game_seed: int = 123, py_seed: int = 1) -> dict:
-    """TODO"""
+def _run_one_episode(out_dir: str) -> dict:
+    """Run one deterministic episode."""
     agent = Agent()
     try:
-        random.seed(py_seed)
+        random.seed(SEED)
         
         agent.initialize_game(
             headless=True,
             evolve=True,
             map_name="E1M1",
             output_dir=out_dir,
-            game_seed=game_seed
+            game_seed=SEED
         )
         
         stats = agent.run_episode(genome=GENOME, full_telemetry=False, episode_prefix="benchmark")
@@ -116,5 +131,6 @@ def _run_one_episode(out_dir: str, game_seed: int = 123, py_seed: int = 1) -> di
 
 if __name__ == "__main__":
     delete_test_folder()
-    run_benchmark_loop()
+    times = run_benchmark_loop()
+    analyze_times(times)
     check_result_hashes()
