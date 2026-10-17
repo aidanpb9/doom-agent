@@ -25,6 +25,7 @@ wheels/
 *.egg
 
 # Virtual environments
+.venv
 venv/
 ENV/
 env/
@@ -41,6 +42,7 @@ logs/
 # Runtime outputs generated each run
 output/run/
 output/evolve/
+performance/output/tests/
 
 # Vendored github repos
 zdoom-navmesh-generator-master/
@@ -51,5 +53,11 @@ maps/wads/
 
 # VizDoom generated files
 _vizdoom.ini
+_vizdoom/
 vizdoom-crash.log
 gdb-*
+
+doomsat.egg-info/
+uv.lock
+scalene-profile.json
+scalene-profile.html
